@@ -1,0 +1,25 @@
+# Follow-up Tasks
+
+- Configure Terraform backend resources:
+  - [ ] Create S3 bucket `political-sphere-terraform-state` with versioning and default encryption.
+  - [ ] Create DynamoDB table `political-sphere-terraform-locks`.
+- Replace placeholder values before deployment:
+  - [ ] Update IAM role ARNs in Helm values (`platform/charts/*/values-*.yaml`).
+  - [ ] Substitute real ACM certificate ARN in `platform/charts/platform-core/values.yaml` (`${ACM_CERT_ARN}`).
+  - [ ] Provide actual Route53 zone names and RDS endpoints per environment.
+- Secrets & security:
+  - [ ] Decide on secrets backend (Vault vs AWS Secrets Manager) and integrate ExternalSecrets.
+  - [ ] Populate Kubernetes secrets (`auth-admin-credentials`, `api-database`, etc.).
+  - [ ] Store sensitive Terraform variables (RDS password, Redis auth token) in secret manager.
+- CI/CD setup:
+  - [ ] Add GitHub repo secrets (`AWS_ROLE_TO_ASSUME`, `AWS_REGION`, `ECR_REGISTRY`, `ARGOCD_TOKEN`).
+  - [ ] Enable GitHub environments for staging/prod with required reviewers.
+  - [ ] Configure Renovate bot (once repository is public/internal as appropriate).
+- Observability & alerts:
+  - [ ] Configure Slack webhook/token for Argo CD notifications.
+  - [ ] Build Grafana dashboards for application SLOs.
+  - [ ] Integrate PagerDuty schedule (`SRE-4`).
+- Documentation:
+  - [ ] Add incident issue template and postmortem template links in runbook (placeholders now).
+  - [ ] Supply sample data fixtures for `dev/scripts/seed-data.sh`.
+  - [ ] Document domain-specific workflows in `docs/onboarding.md` as app evolves.

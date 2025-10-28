@@ -1,0 +1,51 @@
+{
+  "name": "political-sphere-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "workspaces": [
+    "ci",
+    "dev",
+    "docs",
+    "infrastructure",
+    "platform"
+  ],
+  "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
+    "@typescript-eslint/eslint-plugin": "^7.7.0",
+    "@typescript-eslint/parser": "^7.7.0",
+    "cspell": "^8.8.4",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "lefthook": "^1.6.10",
+    "lint-staged": "^15.2.2",
+    "markdownlint-cli": "^0.39.0",
+    "prettier": "^3.2.5",
+    "vale": "^3.7.1",
+    "concurrently": "^8.2.2",
+    "@playwright/test": "^1.45.0"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "lint": "eslint . --ext .ts,.tsx --max-warnings=0",
+    "typecheck": "tsc -p tsconfig.base.json --noEmit",
+    "test": "nx test --parallel",
+    "build": "nx build",
+    "release": "release-please github-release --release-type node",
+    "prepare": "lefthook install",
+    "docs:lint": "markdownlint **/*.md && npx vale . && cspell '**/*' --no-progress",
+    "ai:commit": "node dev/ai/commit-msg.mjs | head -n 20",
+    "ai:review": "node dev/ai/review-pr.mjs",
+    "dev:api": "nx serve api --configuration=development",
+    "dev:frontend": "nx serve frontend --configuration=development",
+    "dev:worker": "nx serve worker --configuration=development",
+    "dev:all": "concurrently --kill-others-on-fail \"npm:dev:api\" \"npm:dev:frontend\" \"npm:dev:worker\"",
+    "docker:up": "./dev/scripts/dev-up.sh",
+    "docker:down": "./dev/scripts/dev-down.sh",
+    "docker:seed": "./dev/scripts/seed-data.sh",
+    "e2e:prepare": "npm run docker:up && npm run docker:seed",
+    "test:e2e": "npx playwright test --reporter=html",
+  "test:unit": "node --test tests/unit",
+    "test:ci": "npm run test:unit && npx playwright install --with-deps && npx playwright test --reporter=html --retries=1"
+  }
+}

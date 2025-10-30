@@ -3,7 +3,8 @@
 FROM node:20-alpine AS base
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+# Skip lifecycle scripts during image build to avoid lefthook/git errors
+RUN npm ci --ignore-scripts
 
 FROM base AS dev
 CMD ["npm", "run", "start:worker"]

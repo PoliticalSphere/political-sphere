@@ -174,7 +174,7 @@ services:
 
   api:
     build:
-      context: ../..
+      context: ../../..
       dockerfile: apps/api/Dockerfile
       target: dev
     environment:
@@ -209,7 +209,7 @@ services:
 
   frontend:
     build:
-      context: ../..
+      context: ../../..
       dockerfile: apps/frontend/Dockerfile
       target: dev
     environment:
@@ -238,7 +238,7 @@ services:
 
   worker:
     build:
-      context: ../..
+      context: ../../..
       dockerfile: apps/worker/Dockerfile
       target: dev
     environment:

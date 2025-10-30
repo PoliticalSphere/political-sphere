@@ -184,8 +184,8 @@ services:
     ports:
       - '${API_PORT:-4000}:4000'
     volumes:
-      - ../../apps/api:/app/apps/api
-      - ../../libs:/app/libs
+      - ../../../apps/api:/app/apps/api
+      - ../../../libs:/app/libs
       - api-node-modules:/app/node_modules
     command: ['npm', 'run', 'start:api']
     depends_on:
@@ -214,8 +214,8 @@ services:
     ports:
       - '${FRONTEND_PORT:-3000}:3000'
     volumes:
-      - ../../apps/frontend:/app/apps/frontend
-      - ../../libs:/app/libs
+      - ../../../apps/frontend:/app/apps/frontend
+      - ../../../libs:/app/libs
       - frontend-node-modules:/app/node_modules
     command: ['npm', 'run', 'start:frontend']
     depends_on:
@@ -245,8 +245,8 @@ services:
       NODE_ENV: development
       WORKER_INTERVAL_MS: ${WORKER_INTERVAL_MS:-15000}
     volumes:
-      - ../../apps/worker:/app/apps/worker
-      - ../../libs:/app/libs
+      - ../../../apps/worker:/app/apps/worker
+      - ../../../libs:/app/libs
       - worker-node-modules:/app/node_modules
     command: ['npm', 'run', 'start:worker']
     depends_on:

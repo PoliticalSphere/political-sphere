@@ -4,6 +4,109 @@
   "service": "dev",
   "workspaceFolder": "/workspaces/political-sphere",
   "shutdownAction": "stopCompose",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "ms-vscode.vscode-typescript-next",
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-json",
+        "redhat.vscode-yaml",
+        "ms-azuretools.vscode-docker",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+        "ms-vscode.vscode-jest",
+        "ms-playwright.playwright",
+        "GitHub.copilot",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-pull-request-github",
+        "eamodio.gitlens",
+        "nrwl.angular-console",
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+        "humao.rest-client",
+        "bierner.markdown-mermaid",
+        "yzhang.markdown-all-in-one"
+      ],
+      "settings": {
+        "typescript.preferences.importModuleSpecifier": "relative",
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": { "source.fixAll.eslint": "explicit" },
+        "editor.rulers": [80, 120],
+        "editor.tabSize": 2,
+        "jest.runMode": "watch",
+        "playwright.reuseBrowser": true,
+        "testing.automaticallyOpenPeekView": "never",
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.cwd": "${workspaceFolder}",
+        "security.workspace.trust.enabled": true,
+        "security.workspace.trust.startupPrompt": "always",
+        "files.watcherExclude": {
+          "**/node_modules/**": true,
+          "**/.nx/**": true,
+          "**/dist/**": true
+        }
+      }
+    }
+  },
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22",
+      "nodeGypDependencies": true,
+      "installYarnUsingApt": true,
+      "nvmVersion": "0.40.0"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {
+      "moby": true,
+      "dockerDashComposeVersion": "v2",
+      "azureDnsAutoDetection": false
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": { "version": "2.58.0" },
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": { "version": "1.31", "helm": "3.16", "minikube": "none" },
+    "ghcr.io/devcontainers/features/terraform:1": { "version": "1.9", "tflint": "0.53", "terragrunt": "0.67" },
+    "ghcr.io/devcontainers/features/aws-cli:1": { "version": "2" },
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.11" }
+  },
+  "forwardPorts": [3000, 3001, 4000, 5432, 6379, 8025, 8080, 9090],
+  "portsAttributes": {
+    "3000": { "label": "Frontend (Host MF)", "onAutoForward": "notify", "protocol": "https" },
+    "3001": { "label": "Remote MF / Grafana", "onAutoForward": "notify", "protocol": "https" },
+    "4000": { "label": "API Server", "onAutoForward": "notify", "protocol": "https" },
+    "5432": { "label": "PostgreSQL", "onAutoForward": "silent", "requireLocalPort": true, "elevateIfNeeded": true },
+    "6379": { "label": "Redis", "onAutoForward": "silent", "requireLocalPort": true },
+    "8025": { "label": "MailHog UI", "onAutoForward": "ignore" },
+    "8080": { "label": "Keycloak Auth", "onAutoForward": "notify" },
+    "9090": { "label": "Prometheus", "onAutoForward": "ignore" }
+  },
+  "initializeCommand": { "validate": "bash .devcontainer/scripts/validate-host.sh" },
+  "onCreateCommand": { "env-setup": "bash .devcontainer/scripts/setup-env.sh", "dependencies": "npm ci --prefer-offline --no-audit" },
+  "updateContentCommand": { "update-deps": "npm ci --prefer-offline" },
+  "postCreateCommand": {
+    "wait": "bash .devcontainer/scripts/wait-for-services.sh",
+    "prepare": "npm run prepare || echo 'Git hooks setup skipped'",
+    "build-shared": "npm run build:shared || echo 'build:shared failed (non-fatal)'",
+    "welcome": "echo '✅ Development environment ready! Run: bash .devcontainer/scripts/status-check.sh'"
+  },
+  "postAttachCommand": { "status": "bash .devcontainer/scripts/status-check.sh" },
+  "runArgs": ["--security-opt=no-new-privileges", "--cap-drop=ALL", "--cap-add=NET_ADMIN", "--cpus=4", "--memory=8g", "--pids-limit=500", "--name=political-sphere-dev"],
+  "hostRequirements": { "cpus": 4, "memory": "8gb", "storage": "32gb" },
+  "remoteUser": "node",
+  "remoteEnv": { "NODE_ENV": "development", "DOCKER_BUILDKIT": "1", "COMPOSE_DOCKER_CLI_BUILD": "1" },
+  "containerEnv": { "TZ": "UTC" },
+  "mounts": [
+    "type=volume,source=political-sphere-node_modules,target=/workspaces/political-sphere/node_modules",
+    "type=volume,source=political-sphere-nx-cache,target=/workspaces/political-sphere/.nx/cache",
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/node/.ssh,type=bind,readonly,consistency=cached"
+  ]
+}
+{
+  "name": "Political Sphere Development Environment",
+  "dockerComposeFile": ["../apps/dev/docker/docker-compose.dev.yaml"],
+  "service": "dev",
+  "workspaceFolder": "/workspaces/political-sphere",
+  "shutdownAction": "stopCompose",
 
   // Configure tool-specific properties.
   "customizations": {
@@ -196,11 +299,12 @@
     "welcome": "echo '✅ Development environment ready! Run: bash .devcontainer/scripts/status-check.sh'"
   },
 
-  "postAttachCommand": {
-    "status": "bash .devcontainer/scripts/status-check.sh"
-  },
-
-  // Security and resource configuration
+    "postCreateCommand": {
+      "wait": "bash .devcontainer/scripts/wait-for-services.sh",
+      "prepare": "npm run prepare || echo 'Git hooks setup skipped'",
+      "build-shared": "npm run build:shared || echo 'build:shared failed (non-fatal)'",
+      "welcome": "echo '✅ Development environment ready! Run: bash .devcontainer/scripts/status-check.sh'"
+    },
   "runArgs": [
     "--security-opt=no-new-privileges",
     "--cap-drop=ALL",

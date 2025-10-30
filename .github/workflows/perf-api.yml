@@ -10,6 +10,10 @@ on:
     - cron: '0 2 * * 1'
   workflow_dispatch:
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   performance-test:
     runs-on: ubuntu-latest
@@ -92,7 +96,12 @@ jobs:
 
             CURRENT_RESPONSE_TIME=$(jq '.aggregate.summaries["http.response_time"].p95' test-results/perf-report.json)
             CURRENT_RPS=$(jq '.aggregate.rates["http.request_rate"]' test-results/perf-report.json)
-            CURRENT_ERROR_RATE=$(jq '.aggregate.counters["http.codes.4xx"] + .aggregate.counters["http.codes.5xx"] | ./aggregate.counters["http.requests"]' test-results/perf-report.json)
+            CURRENT_ERROR_RATE=$(jq -r '
+              (.aggregate.counters["http.requests"] // 0) as $requests
+              | if $requests == 0 then 0
+                else (((.aggregate.counters["http.codes.4xx"] // 0) + (.aggregate.counters["http.codes.5xx"] // 0)) / $requests)
+                end
+            ' test-results/perf-report.json)
 
             if (( $(echo "$CURRENT_RESPONSE_TIME > $BASELINE_RESPONSE_TIME" | bc -l) )); then
               echo "❌ Performance regression: Response time ${CURRENT_RESPONSE_TIME}ms exceeds baseline ${BASELINE_RESPONSE_TIME}ms"

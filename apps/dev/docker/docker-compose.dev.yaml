@@ -1,6 +1,35 @@
 version: '3.9'
 
 services:
+  dev:
+    build:
+      context: ../../..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ../../..:/workspaces/political-sphere:cached
+      - node_modules:/workspaces/political-sphere/node_modules
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: sleep infinity
+    environment:
+      DATABASE_URL: "postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}"
+      REDIS_URL: "redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0"
+      NODE_ENV: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '4'
+          memory: 8G
+        reservations:
+          cpus: '2'
+          memory: 4G
+
   postgres:
     image: postgres:15-alpine
     restart: unless-stopped
@@ -8,8 +37,6 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-political}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
       POSTGRES_DB: ${POSTGRES_DB:-political_dev}
-    ports:
-      - '5432:5432'
     volumes:
       - postgres-data:/var/lib/postgresql/data
     healthcheck:
@@ -17,6 +44,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   redis:
     image: redis:7-alpine
@@ -37,6 +74,16 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
 
   localstack:
     image: localstack/localstack:2.3
@@ -49,12 +96,32 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - localstack-data:/var/lib/localstack
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   mailhog:
     image: mailhog/mailhog:v1.0.1
     ports:
       - '${MAILHOG_SMTP_PORT:-1025}:1025'
       - '${MAILHOG_HTTP_PORT:-8025}:8025'
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
 
   pgadmin:
     image: dpage/pgadmin4:8.6
@@ -65,6 +132,16 @@ services:
       - '5050:80'
     depends_on:
       - postgres
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
 
   auth:
     image: quay.io/keycloak/keycloak:23.0
@@ -82,80 +159,121 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   api:
     build:
-      context: ../..
+      context: ../../..
       dockerfile: apps/api/Dockerfile
-      target: dev
     environment:
       API_PORT: ${API_PORT:-4000}
-      DATABASE_URL: postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}
-      REDIS_URL: redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0
       AUTH_URL: http://auth:8080
       NODE_ENV: development
       LOG_LEVEL: debug
+      DATABASE_URL: "postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}"
+      REDIS_URL: "redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0"
     ports:
       - '${API_PORT:-4000}:4000'
     volumes:
-      - ../../apps/api:/app/apps/api
-      - ../../libs:/app/libs
-      - api-node-modules:/app/node_modules
+      - ../../../apps/api:/app/apps/api
+      - ../../../libs:/app/libs
+      - ../../../libs/shared/dist:/app/node_modules/@political-sphere/shared:ro
+      # package.override.json mount removed; libs/shared/dist now contains package.json
+      # Use image-bundled node_modules to avoid empty named-volume masking compiled native modules
     command: ['npm', 'run', 'start:api']
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
 
   frontend:
     build:
-      context: ../..
+      context: ../../..
       dockerfile: apps/frontend/Dockerfile
-      target: dev
     environment:
       API_BASE_URL: http://api:4000
       NODE_ENV: development
     ports:
       - '${FRONTEND_PORT:-3000}:3000'
     volumes:
-      - ../../apps/frontend:/app/apps/frontend
-      - ../../libs:/app/libs
-      - frontend-node-modules:/app/node_modules
+      - ../../../apps/frontend:/app/apps/frontend
+      - ../../../libs:/app/libs
+      - ../../../libs/shared/dist:/app/node_modules/@political-sphere/shared:ro
+  # Use image-bundled node_modules to avoid empty named-volume masking compiled native modules
     command: ['npm', 'run', 'start:frontend']
     depends_on:
       api:
         condition: service_started
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 2G
+        reservations:
+          cpus: '1'
+          memory: 1G
 
   worker:
     build:
-      context: ../..
+      context: ../../..
       dockerfile: apps/worker/Dockerfile
-      target: dev
     environment:
       QUEUE_URL: http://localstack:4566/000000000000/political-sphere
       API_URL: http://api:4000
-      DATABASE_URL: postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}
-      REDIS_URL: redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0
+      DATABASE_URL: "postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}"
+      REDIS_URL: "redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0"
       NODE_ENV: development
       WORKER_INTERVAL_MS: ${WORKER_INTERVAL_MS:-15000}
     volumes:
-      - ../../apps/worker:/app/apps/worker
-      - ../../libs:/app/libs
-      - worker-node-modules:/app/node_modules
+      - ../../../apps/worker:/app/apps/worker
+      - ../../../libs:/app/libs
+      - ../../../libs/shared/dist:/app/node_modules/@political-sphere/shared:ro
+  # Use image-bundled node_modules to avoid empty named-volume masking compiled native modules
     command: ['npm', 'run', 'start:worker']
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_healthy
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   prometheus:
     image: prom/prometheus:v2.48.1
     ports:
       - '9090:9090'
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ../monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
       - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -164,6 +282,16 @@ services:
       - '--web.console.templates=/etc/prometheus/consoles'
       - '--storage.tsdb.retention.time=200h'
       - '--web.enable-lifecycle'
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
 
   grafana:
     image: grafana/grafana:10.2.3
@@ -175,10 +303,20 @@ services:
       - '3001:3000'
     volumes:
       - grafana-data:/var/lib/grafana
-      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
-      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
+      - ../monitoring/grafana/provisioning:/etc/grafana/provisioning:ro
+      - ../monitoring/grafana/dashboards:/var/lib/grafana/dashboards:ro
     depends_on:
       - prometheus
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
 
   node-exporter:
     image: prom/node-exporter:v1.7.0
@@ -195,13 +333,25 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     depends_on:
       - prometheus
+    networks:
+      - dev-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.25'
+          memory: 256M
+        reservations:
+          cpus: '0.1'
+          memory: 128M
 
 volumes:
   postgres-data:
   redis-data:
   localstack-data:
-  api-node-modules:
-  frontend-node-modules:
-  worker-node-modules:
   prometheus-data:
   grafana-data:
+  node_modules:
+
+networks:
+  dev-network:
+    driver: bridge

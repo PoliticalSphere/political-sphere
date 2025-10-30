@@ -419,8 +419,8 @@ Acknowledgments: https://political-sphere.com/security-acknowledgments
 3. `libs/shared/src/index.ts` - Library exports
 4. `libs/shared/tests/security.test.js` - Unit tests
 5. `apps/api/tests/security.test.js` - Integration tests
-6. `COMPREHENSIVE-AUDIT-REPORT.md` - Full audit
-7. `REMEDIATION-SUMMARY.md` - Implementation guide
+6. `docs/06-security-and-risk/audits/COMPREHENSIVE-AUDIT-REPORT.md` - Full audit
+7. `docs/06-security-and-risk/audits/REMEDIATION-SUMMARY.md` - Implementation guide
 8. `docs/INCIDENT-RESPONSE-PLAN.md` - IR procedures
 9. `docs/DISASTER-RECOVERY-RUNBOOK.md` - DR procedures
 10. `docs/PRODUCTION-READINESS-CHECKLIST.md` - Launch checklist
@@ -594,8 +594,8 @@ This comprehensive security audit and remediation was completed in accordance wi
 - [RFC 9116 - security.txt](https://www.rfc-editor.org/rfc/rfc9116)
 
 ### C. Related Documents
-- `COMPREHENSIVE-AUDIT-REPORT.md` - Detailed audit findings
-- `REMEDIATION-SUMMARY.md` - Implementation details
+- `docs/06-security-and-risk/audits/COMPREHENSIVE-AUDIT-REPORT.md` - Detailed audit findings
+- `docs/06-security-and-risk/audits/REMEDIATION-SUMMARY.md` - Implementation details
 - `INCIDENT-RESPONSE-PLAN.md` - Incident procedures
 - `DISASTER-RECOVERY-RUNBOOK.md` - DR procedures
 - `PRODUCTION-READINESS-CHECKLIST.md` - Launch checklist

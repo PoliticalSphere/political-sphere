@@ -16,6 +16,11 @@ COPY --chown=nodejs:nodejs package.json package-lock.json ./
 RUN npm ci --only=production && \
     npm cache clean --force
 
+# Dev-time shim: if code imports 'bcrypt' but project uses the pure-JS 'bcryptjs',
+# create a small package that re-exports bcryptjs so imports like `import bcrypt from 'bcrypt'`
+# resolve in the image without requiring native bcrypt compilation.
+RUN node -e "const fs=require('fs'); const dir='/app/node_modules/bcrypt'; fs.mkdirSync(dir,{recursive:true}); fs.writeFileSync(dir+'/package.json', JSON.stringify({name:'bcrypt',version:'0.0.0',type:'module','main':'index.js'})); fs.writeFileSync(dir+'/index.js', 'import bcryptjs from \"bcryptjs\"; export default bcryptjs;');"
+
 FROM base AS production-deps
 RUN npm prune --omit=dev
 
@@ -38,6 +43,13 @@ COPY --from=production-deps --chown=nodejs:nodejs /app/node_modules ./node_modul
 COPY --chown=nodejs:nodejs apps/api ./apps/api
 COPY --chown=nodejs:nodejs libs ./libs
 COPY --chown=nodejs:nodejs package.json ./
+
+# If runtime packages used by the apps are missing from the monorepo root lockfile,
+# install a minimal set required at runtime (dev-friendly): jsonwebtoken and bcryptjs.
+RUN npm install --no-audit --no-fund --no-save jsonwebtoken bcryptjs
+
+# Ensure bcrypt shim exists in the final image (after node_modules are copied/installed)
+RUN node -e "const fs=require('fs'); const dir='/app/node_modules/bcrypt'; fs.mkdirSync(dir,{recursive:true}); fs.writeFileSync(dir+'/package.json', JSON.stringify({name:'bcrypt',version:'0.0.0',type:'module','main':'index.js'})); fs.writeFileSync(dir+'/index.js', 'import bcryptjs from \"bcryptjs\"; export default bcryptjs;');"
 
 # Security: Switch to non-root user
 USER nodejs

@@ -36,8 +36,8 @@
 - [x] File and console log outputs
 
 ### Documentation (COMPLETE)
-- [x] Comprehensive audit report (COMPREHENSIVE-AUDIT-REPORT.md)
-- [x] Remediation summary (REMEDIATION-SUMMARY.md)
+- [x] Comprehensive audit report (../../06-security-and-risk/audits/COMPREHENSIVE-AUDIT-REPORT.md)
+- [x] Remediation summary (../../06-security-and-risk/audits/REMEDIATION-SUMMARY.md)
 - [x] security.txt file (RFC 9116)
 - [x] Incident response plan (INCIDENT-RESPONSE-PLAN.md)
 - [x] Disaster recovery runbook (DISASTER-RECOVERY-RUNBOOK.md)

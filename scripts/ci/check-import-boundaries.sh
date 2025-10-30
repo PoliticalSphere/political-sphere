@@ -17,7 +17,7 @@ echo "Scanning for disallowed cross-package relative imports ('../../')..."
 # Prefer Node-based checker if Node is available (better comment/string stripping). Fall back to grep-based check.
 if command -v node >/dev/null 2>&1; then
   echo "Node found; running JS-based import boundary checker"
-  if node scripts/ci/check-import-boundaries.js; then
+  if node scripts/ci/check-import-boundaries.mjs; then
     echo "Import boundary check passed."
     exit 0
   else

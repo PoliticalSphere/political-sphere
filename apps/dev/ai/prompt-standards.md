@@ -166,6 +166,15 @@ DELIVERABLES:
 - Security scan required for generated code
 - Manual review required for production deployment
 - Performance testing mandatory for critical paths
+- Run `npm run guard:blackbox` before submitting changes to execute lint, type-check, docs lint, and smoke tests
+- Refresh context index with `npm run ai:context` whenever foundational docs change
+- Rebuild telemetry and learning stats with `npm run ai:metrics` (or `npm run ai:accelerate` to run context + metrics together)
+
+### Automation Shortcuts
+
+- `npm run ai:context` — produce `ai-cache/context-index.json` for high-signal prompt grounding
+- `npm run ai:metrics` — roll up guard history into `ai-metrics/stats.json` and refresh `ai-learning/patterns.json`
+- `npm run ai:accelerate` — run context + metrics back-to-back for full assistant readiness
 
 ### Audit Trail
 

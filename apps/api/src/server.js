@@ -11,6 +11,18 @@ import {
   isIpAllowed,
   getLogger
 } from '@political-sphere/shared';
+import {
+  createUser,
+  authenticateUser,
+  generateAccessToken,
+  generateRefreshToken,
+  verifyRefreshToken,
+  revokeRefreshToken,
+  requireAuth,
+  initiatePasswordReset,
+  resetPassword,
+  getUserById
+} from './auth.js';
 
 function parsePositiveInt(value, fallback) {
   const parsed = Number.parseInt(value ?? '', 10);
@@ -291,10 +303,241 @@ async function handleRequest(req, res, newsService, apiBasePath) {
     return;
   }
 
+  // Authentication routes
+  if (pathname.startsWith('/auth/')) {
+    if (method === 'POST' && pathname === '/auth/register') {
+      let payload;
+      try {
+        payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
+      } catch (error) {
+        if (error.code === 'PAYLOAD_TOO_LARGE') {
+          sendError(res, 413, 'Payload too large');
+          return;
+        }
+        if (error.code === 'INVALID_JSON') {
+          sendError(res, 400, 'Invalid JSON payload');
+          return;
+        }
+        throw error;
+      }
+
+      const { email, password, role } = payload;
+      if (!email || !password) {
+        sendError(res, 400, 'Email and password are required');
+        return;
+      }
+
+      try {
+        const user = await createUser(email, password, role);
+        const accessToken = generateAccessToken(user);
+        const refreshToken = generateRefreshToken(user);
+
+        sendJson(res, 201, {
+          user: { id: user.id, email: user.email, role: user.role },
+          accessToken,
+          refreshToken
+        });
+      } catch (error) {
+        if (error.message === 'User already exists') {
+          sendError(res, 409, 'User already exists');
+          return;
+        }
+        throw error;
+      }
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/auth/login') {
+      let payload;
+      try {
+        payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
+      } catch (error) {
+        if (error.code === 'PAYLOAD_TOO_LARGE') {
+          sendError(res, 413, 'Payload too large');
+          return;
+        }
+        if (error.code === 'INVALID_JSON') {
+          sendError(res, 400, 'Invalid JSON payload');
+          return;
+        }
+        throw error;
+      }
+
+      const { email, password } = payload;
+      if (!email || !password) {
+        sendError(res, 400, 'Email and password are required');
+        return;
+      }
+
+      const user = await authenticateUser(email, password);
+      if (!user) {
+        sendError(res, 401, 'Invalid credentials');
+        return;
+      }
+
+      const accessToken = generateAccessToken(user);
+      const refreshToken = generateRefreshToken(user);
+
+      sendJson(res, 200, {
+        user: { id: user.id, email: user.email, role: user.role },
+        accessToken,
+        refreshToken
+      });
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/auth/refresh') {
+      let payload;
+      try {
+        payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
+      } catch (error) {
+        if (error.code === 'PAYLOAD_TOO_LARGE') {
+          sendError(res, 413, 'Payload too large');
+          return;
+        }
+        if (error.code === 'INVALID_JSON') {
+          sendError(res, 400, 'Invalid JSON payload');
+          return;
+        }
+        throw error;
+      }
+
+      const { refreshToken } = payload;
+      if (!refreshToken) {
+        sendError(res, 400, 'Refresh token is required');
+        return;
+      }
+
+      const decoded = verifyRefreshToken(refreshToken);
+      if (!decoded) {
+        sendError(res, 401, 'Invalid or expired refresh token');
+        return;
+      }
+
+      const user = getUserById(decoded.userId);
+      if (!user) {
+        sendError(res, 401, 'User not found');
+        return;
+      }
+
+      revokeRefreshToken(refreshToken);
+      const newAccessToken = generateAccessToken(user);
+      const newRefreshToken = generateRefreshToken(user);
+
+      sendJson(res, 200, {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken
+      });
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/auth/logout') {
+      let payload;
+      try {
+        payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
+      } catch (error) {
+        if (error.code === 'PAYLOAD_TOO_LARGE') {
+          sendError(res, 413, 'Payload too large');
+          return;
+        }
+        if (error.code === 'INVALID_JSON') {
+          sendError(res, 400, 'Invalid JSON payload');
+          return;
+        }
+        throw error;
+      }
+
+      const { refreshToken } = payload;
+      if (refreshToken) {
+        revokeRefreshToken(refreshToken);
+      }
+
+      sendJson(res, 200, { message: 'Logged out successfully' });
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/auth/forgot-password') {
+      let payload;
+      try {
+        payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
+      } catch (error) {
+        if (error.code === 'PAYLOAD_TOO_LARGE') {
+          sendError(res, 413, 'Payload too large');
+          return;
+        }
+        if (error.code === 'INVALID_JSON') {
+          sendError(res, 400, 'Invalid JSON payload');
+          return;
+        }
+        throw error;
+      }
+
+      const { email } = payload;
+      if (!email) {
+        sendError(res, 400, 'Email is required');
+        return;
+      }
+
+      const resetToken = await initiatePasswordReset(email);
+      // In production, send email with reset token
+      // For now, return token for testing
+      sendJson(res, 200, {
+        message: 'If an account with that email exists, a password reset link has been sent.',
+        resetToken // Remove in production
+      });
+      return;
+    }
+
+    if (method === 'POST' && pathname === '/auth/reset-password') {
+      let payload;
+      try {
+        payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
+      } catch (error) {
+        if (error.code === 'PAYLOAD_TOO_LARGE') {
+          sendError(res, 413, 'Payload too large');
+          return;
+        }
+        if (error.code === 'INVALID_JSON') {
+          sendError(res, 400, 'Invalid JSON payload');
+          return;
+        }
+        throw error;
+      }
+
+      const { token, newPassword } = payload;
+      if (!token || !newPassword) {
+        sendError(res, 400, 'Reset token and new password are required');
+        return;
+      }
+
+      try {
+        await resetPassword(token, newPassword);
+        sendJson(res, 200, { message: 'Password reset successfully' });
+      } catch (error) {
+        sendError(res, 400, error.message);
+        return;
+      }
+      return;
+    }
+
+    methodNotAllowed(res);
+    return;
+  }
+
   if (method === 'GET' && pathname === '/') {
     sendJson(res, 200, {
       message: 'Political Sphere API is online.',
-      endpoints: [apiBasePath, `${apiBasePath}/{id}`, '/metrics/news'],
+      endpoints: [
+        apiBasePath,
+        `${apiBasePath}/{id}`,
+        '/metrics/news',
+        '/auth/register',
+        '/auth/login',
+        '/auth/refresh',
+        '/auth/logout',
+        '/auth/forgot-password',
+        '/auth/reset-password'
+      ],
     });
     return;
   }

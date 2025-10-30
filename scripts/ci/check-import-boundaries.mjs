@@ -1,9 +1,12 @@
-#!/usr/bin/env node
 // Lightweight AST-ish checker: strips comments and strings, then detects '../../' style imports.
 // No external dependencies.
-const fs = require('fs');
-const path = require('path');
+import fs from 'fs';
+import path from 'path';
+import { execSync } from 'child_process';
 
+import { fileURLToPath } from 'url';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const ROOT = path.resolve(__dirname, '../..');
 const REPORT_DIR = path.join(ROOT, 'artifacts');
 const REPORT_FILE = path.join(REPORT_DIR, 'import-boundary-report.txt');
@@ -44,7 +47,6 @@ function processFile(filePath) {
 function listFiles() {
   // Use git ls-files to respect repo files; fallback to scanning workspace.
   try {
-    const { execSync } = require('child_process');
     const out = execSync('git ls-files "*.js" "*.ts" "*.jsx" "*.tsx"', {
       cwd: ROOT,
       encoding: 'utf8',

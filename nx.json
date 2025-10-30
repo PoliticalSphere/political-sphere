@@ -55,7 +55,8 @@
           "e2e",
           "test:e2e",
           "lint:boundaries"
-        ]
+        ],
+        "parallel": 3
       }
     }
   },

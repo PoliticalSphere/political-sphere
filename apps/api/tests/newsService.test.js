@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { test } from 'node:test';
-import { JsonNewsStore } from '../src/newsStore.js';
+import { JsonNewsStore } from '../src/news-store.js';
 import { NewsService } from '../src/newsService.js';
 
 const fixturesDir = fileURLToPath(new URL('../data/', import.meta.url));

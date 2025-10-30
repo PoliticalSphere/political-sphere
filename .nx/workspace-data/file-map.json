@@ -2,35 +2,351 @@
   "version": "6.0",
   "nxVersion": "22.0.1",
   "pathMappings": {
-    "@political-sphere/*": [
-      "libs/*/src/index.ts"
-    ],
-    "@political-sphere/ui": [
-      "libs/ui/src/index.ts"
-    ],
-    "@political-sphere/platform": [
-      "libs/platform/src/index.ts"
-    ],
-    "@political-sphere/ci": [
-      "libs/ci/src/index.ts"
-    ],
-    "@political-sphere/infrastructure": [
-      "libs/infrastructure/src/index.ts"
-    ]
+    "@political-sphere/*": ["libs/*/src/index.ts"],
+    "@political-sphere/ui": ["libs/ui/src/index.ts"],
+    "@political-sphere/platform": ["libs/platform/src/index.ts"],
+    "@political-sphere/ci": ["libs/ci/src/index.ts"],
+    "@political-sphere/infrastructure": ["libs/infrastructure/src/index.ts"]
   },
   "nxJsonPlugins": [],
   "fileMap": {
     "projectFileMap": {
-      "ci-app": [
+      "docs": [
         {
-          "file": "ci/project.json",
-          "hash": "7998047955333333517"
+          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/chunk-QAXAIFA7.js",
+          "hash": "1398820070538979638"
+        },
+        {
+          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/chunk-QAXAIFA7.js.map",
+          "hash": "6004849464876339960"
+        },
+        {
+          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/package.json",
+          "hash": "8630294688235076505"
+        },
+        {
+          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vitepress___@vue_devtools-api.js",
+          "hash": "7255766381817982934"
+        },
+        {
+          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vitepress___@vue_devtools-api.js.map",
+          "hash": "6652298274088186207"
+        },
+        {
+          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vitepress___@vueuse_core.js",
+          "hash": "12696528716083278143"
+        },
+        {
+          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vitepress___@vueuse_core.js.map",
+          "hash": "15278077490113582041"
+        },
+        {
+          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vue.js",
+          "hash": "3226929011064258800"
+        },
+        {
+          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vue.js.map",
+          "hash": "9947606979680686569"
+        },
+        {
+          "file": "apps/docs/.vitepress/config.mjs",
+          "hash": "2326943085738562015"
+        },
+        {
+          "file": "apps/docs/AUDIT-REPORT.md",
+          "hash": "17020048416961031357"
+        },
+        {
+          "file": "apps/docs/adr/0000-template-record-decision.md",
+          "hash": "17087479443272550398"
+        },
+        {
+          "file": "apps/docs/adr/0001-enable-renovate.md",
+          "hash": "8588320589680890577"
+        },
+        {
+          "file": "apps/docs/adr/README.md",
+          "hash": "14160383516940221152"
+        },
+        {
+          "file": "apps/docs/ai-enhancement-framework.md",
+          "hash": "2539129859133416236"
+        },
+        {
+          "file": "apps/docs/ai-ethics-policy.md",
+          "hash": "5419834807284222337"
+        },
+        {
+          "file": "apps/docs/ai-on-dev.md",
+          "hash": "6675585202593087029"
+        },
+        {
+          "file": "apps/docs/architecture.md",
+          "hash": "15090737592584685064"
+        },
+        {
+          "file": "apps/docs/compliance/eu-ai-act.md",
+          "hash": "11487546507908537814"
+        },
+        {
+          "file": "apps/docs/contract-testing.md",
+          "hash": "8628391999015125838"
+        },
+        {
+          "file": "apps/docs/delivery-report.md",
+          "hash": "1519357692845323371"
+        },
+        {
+          "file": "apps/docs/dev-autopilot.md",
+          "hash": "4896919028890889063"
+        },
+        {
+          "file": "apps/docs/eu-ai-act-compliance.md",
+          "hash": "4050633267281800130"
+        },
+        {
+          "file": "apps/docs/module-federation.md",
+          "hash": "1133927779426733816"
+        },
+        {
+          "file": "apps/docs/onboarding.md",
+          "hash": "17691814544908961002"
+        },
+        {
+          "file": "apps/docs/project.json",
+          "hash": "15395791247870581169"
+        },
+        {
+          "file": "apps/docs/risk-register.md",
+          "hash": "4837478537794619354"
+        },
+        {
+          "file": "apps/docs/runbooks/dr-plan.md",
+          "hash": "2349298754712863668"
+        },
+        {
+          "file": "apps/docs/runbooks/incident.md",
+          "hash": "14117869538076355155"
+        },
+        {
+          "file": "apps/docs/secrets-inventory.md",
+          "hash": "11627220797026302869"
+        },
+        {
+          "file": "apps/docs/security.md",
+          "hash": "12181518783130671280"
+        },
+        {
+          "file": "apps/docs/templates/postmortem.md",
+          "hash": "12204224967423793714"
+        },
+        {
+          "file": "apps/docs/templates/smoke-test-checklist.md",
+          "hash": "13775826700683363132"
+        }
+      ],
+      "infrastructure": [
+        {
+          "file": "libs/infrastructure/.github/CODEOWNERS",
+          "hash": "15484730002798524220"
+        },
+        {
+          "file": "libs/infrastructure/CODE_OF_CONDUCT.md",
+          "hash": "1084617685923722651"
+        },
+        {
+          "file": "libs/infrastructure/CONTRIBUTING.md",
+          "hash": "12356970197028026722"
+        },
+        {
+          "file": "libs/infrastructure/LICENSE",
+          "hash": "6887377681110861689"
+        },
+        {
+          "file": "libs/infrastructure/README.md",
+          "hash": "9476098463801994575"
+        },
+        {
+          "file": "libs/infrastructure/envs/README.md",
+          "hash": "14848532639855604006"
+        },
+        {
+          "file": "libs/infrastructure/envs/dev/main.tf",
+          "hash": "2880147910349146423"
+        },
+        {
+          "file": "libs/infrastructure/envs/dev/terraform.tfvars.example",
+          "hash": "265355347187528996"
+        },
+        {
+          "file": "libs/infrastructure/envs/dev/variables.tf",
+          "hash": "14934808170083118318"
+        },
+        {
+          "file": "libs/infrastructure/envs/prod/main.tf",
+          "hash": "16998912515912525718"
+        },
+        {
+          "file": "libs/infrastructure/envs/prod/terraform.tfvars.example",
+          "hash": "15255880134998280670"
+        },
+        {
+          "file": "libs/infrastructure/envs/prod/variables.tf",
+          "hash": "10720991057783754935"
+        },
+        {
+          "file": "libs/infrastructure/envs/staging/main.tf",
+          "hash": "8957817090664437111"
+        },
+        {
+          "file": "libs/infrastructure/envs/staging/terraform.tfvars.example",
+          "hash": "11872411053156847247"
+        },
+        {
+          "file": "libs/infrastructure/envs/staging/variables.tf",
+          "hash": "584673667020570847"
+        },
+        {
+          "file": "libs/infrastructure/main.tf",
+          "hash": "4322916197858883728"
+        },
+        {
+          "file": "libs/infrastructure/modules/acm/main.tf",
+          "hash": "7008856834079391189"
+        },
+        {
+          "file": "libs/infrastructure/modules/acm/outputs.tf",
+          "hash": "13892791618648732380"
+        },
+        {
+          "file": "libs/infrastructure/modules/acm/variables.tf",
+          "hash": "12937576054678525999"
+        },
+        {
+          "file": "libs/infrastructure/modules/ecr/main.tf",
+          "hash": "8059920171528923322"
+        },
+        {
+          "file": "libs/infrastructure/modules/ecr/outputs.tf",
+          "hash": "16799457698625323458"
+        },
+        {
+          "file": "libs/infrastructure/modules/ecr/variables.tf",
+          "hash": "16846115983641091888"
+        },
+        {
+          "file": "libs/infrastructure/modules/eks/main.tf",
+          "hash": "6523155965219389346"
+        },
+        {
+          "file": "libs/infrastructure/modules/eks/outputs.tf",
+          "hash": "12333079080334539267"
+        },
+        {
+          "file": "libs/infrastructure/modules/eks/variables.tf",
+          "hash": "2391617385604926"
+        },
+        {
+          "file": "libs/infrastructure/modules/iam/main.tf",
+          "hash": "14446677149709460021"
+        },
+        {
+          "file": "libs/infrastructure/modules/iam/outputs.tf",
+          "hash": "14582136815976385386"
+        },
+        {
+          "file": "libs/infrastructure/modules/iam/variables.tf",
+          "hash": "11270684422491850497"
+        },
+        {
+          "file": "libs/infrastructure/modules/kms/main.tf",
+          "hash": "7523475539204420973"
+        },
+        {
+          "file": "libs/infrastructure/modules/kms/outputs.tf",
+          "hash": "4084897608313066254"
+        },
+        {
+          "file": "libs/infrastructure/modules/kms/variables.tf",
+          "hash": "4844632440047848212"
+        },
+        {
+          "file": "libs/infrastructure/modules/rds/main.tf",
+          "hash": "975563413408264568"
+        },
+        {
+          "file": "libs/infrastructure/modules/rds/outputs.tf",
+          "hash": "11493586721575220895"
+        },
+        {
+          "file": "libs/infrastructure/modules/rds/variables.tf",
+          "hash": "2243860081645557879"
+        },
+        {
+          "file": "libs/infrastructure/modules/redis/main.tf",
+          "hash": "5701858601890902577"
+        },
+        {
+          "file": "libs/infrastructure/modules/redis/outputs.tf",
+          "hash": "10715434744763866903"
+        },
+        {
+          "file": "libs/infrastructure/modules/redis/variables.tf",
+          "hash": "2585047133561059614"
+        },
+        {
+          "file": "libs/infrastructure/modules/route53/main.tf",
+          "hash": "2950374308241189109"
+        },
+        {
+          "file": "libs/infrastructure/modules/route53/outputs.tf",
+          "hash": "3171182083356859032"
+        },
+        {
+          "file": "libs/infrastructure/modules/route53/variables.tf",
+          "hash": "489885648456222815"
+        },
+        {
+          "file": "libs/infrastructure/modules/s3/main.tf",
+          "hash": "6183818399008193635"
+        },
+        {
+          "file": "libs/infrastructure/modules/s3/variables.tf",
+          "hash": "5162828677285594948"
+        },
+        {
+          "file": "libs/infrastructure/modules/vpc/main.tf",
+          "hash": "15000762537538628194"
+        },
+        {
+          "file": "libs/infrastructure/modules/vpc/outputs.tf",
+          "hash": "1961206114330004783"
+        },
+        {
+          "file": "libs/infrastructure/modules/vpc/variables.tf",
+          "hash": "12486848503888142087"
+        },
+        {
+          "file": "libs/infrastructure/project.json",
+          "hash": "11135160586648907173"
+        },
+        {
+          "file": "libs/infrastructure/providers.tf",
+          "hash": "10514865655707143549"
+        },
+        {
+          "file": "libs/infrastructure/variables.tf",
+          "hash": "9782242938533755628"
+        },
+        {
+          "file": "libs/infrastructure/vault/README.md",
+          "hash": "14942550358144895253"
         }
       ],
       "worker": [
         {
           "file": "apps/worker/Dockerfile",
-          "hash": "638141978963269899"
+          "hash": "11288803329211599687"
         },
         {
           "file": "apps/worker/README.md",
@@ -55,6 +371,84 @@
         {
           "file": "apps/worker/tests/aggregator.test.js",
           "hash": "4862894492488048325"
+        }
+      ],
+      "ui": [
+        {
+          "file": "libs/ui/README.md",
+          "hash": "6926340928892188572"
+        },
+        {
+          "file": "libs/ui/project.json",
+          "hash": "14482594747917426574"
+        }
+      ],
+      "api": [
+        {
+          "file": "apps/api/Dockerfile",
+          "hash": "6097566971276713252"
+        },
+        {
+          "file": "apps/api/README.md",
+          "hash": "6117523241885452917"
+        },
+        {
+          "file": "apps/api/data/news.json",
+          "hash": "2850613287664466091"
+        },
+        {
+          "file": "apps/api/project.json",
+          "hash": "8541043791256006971"
+        },
+        {
+          "file": "apps/api/src/auth.js",
+          "hash": "16406000614225479943"
+        },
+        {
+          "file": "apps/api/src/httpUtils.js",
+          "hash": "1821397520345496802"
+        },
+        {
+          "file": "apps/api/src/index.js",
+          "hash": "5495833630259143047"
+        },
+        {
+          "file": "apps/api/src/news-store.js",
+          "hash": "17716726573345761485"
+        },
+        {
+          "file": "apps/api/src/newsService.js",
+          "hash": "18353053814410369454"
+        },
+        {
+          "file": "apps/api/src/server.js",
+          "hash": "11262241082556277752"
+        },
+        {
+          "file": "apps/api/tests/auth.test.js",
+          "hash": "6507638977523339750"
+        },
+        {
+          "file": "apps/api/tests/newsService.test.js",
+          "hash": "13498617446595769240"
+        },
+        {
+          "file": "apps/api/tests/security.test.js",
+          "hash": "10174598879528062352"
+        },
+        {
+          "file": "apps/api/tests/server.test.js",
+          "hash": "2707100583321415444"
+        }
+      ],
+      "ci-app": [
+        {
+          "file": "ci/README.md",
+          "hash": "9613858550954693846"
+        },
+        {
+          "file": "ci/project.json",
+          "hash": "7998047955333333517"
         }
       ],
       "ci": [
@@ -99,6 +493,264 @@
           "hash": "7587174745653659744"
         }
       ],
+      "dev": [
+        {
+          "file": "apps/dev/README.md",
+          "hash": "9570443806440292404"
+        },
+        {
+          "file": "apps/dev/Tiltfile",
+          "hash": "9725074424613854822"
+        },
+        {
+          "file": "apps/dev/ai/blackbox-review.mjs",
+          "hash": "16280634654725341326"
+        },
+        {
+          "file": "apps/dev/ai/commit-msg.mjs",
+          "hash": "16887480062203029055"
+        },
+        {
+          "file": "apps/dev/ai/context-indexer.mjs",
+          "hash": "7836500494565292578"
+        },
+        {
+          "file": "apps/dev/ai/copilot-experiment-log.mjs",
+          "hash": "2940443637487018577"
+        },
+        {
+          "file": "apps/dev/ai/governance.js",
+          "hash": "17043640467527099638"
+        },
+        {
+          "file": "apps/dev/ai/knowledge-base.md",
+          "hash": "6675991634796752219"
+        },
+        {
+          "file": "apps/dev/ai/learning.js",
+          "hash": "479444583891075513"
+        },
+        {
+          "file": "apps/dev/ai/metrics-aggregator.mjs",
+          "hash": "13346034220662085787"
+        },
+        {
+          "file": "apps/dev/ai/ml-pipeline.js",
+          "hash": "8159234239371377646"
+        },
+        {
+          "file": "apps/dev/ai/performance-monitor.js",
+          "hash": "9342375817020461044"
+        },
+        {
+          "file": "apps/dev/ai/pr-desc.mjs",
+          "hash": "13298724294062764320"
+        },
+        {
+          "file": "apps/dev/ai/predictive-analytics.js",
+          "hash": "8429359001249954577"
+        },
+        {
+          "file": "apps/dev/ai/prompt-standards.md",
+          "hash": "6285251730035425688"
+        },
+        {
+          "file": "apps/dev/ai/review-pr.mjs",
+          "hash": "7694784373498979180"
+        },
+        {
+          "file": "apps/dev/ai/telemetry-dashboard.mjs",
+          "hash": "9665803534548698517"
+        },
+        {
+          "file": "apps/dev/docker/docker-compose.dev.yaml",
+          "hash": "6440041747246146517"
+        },
+        {
+          "file": "apps/dev/docker/docker-compose.prod.yaml",
+          "hash": "12792964927564420305"
+        },
+        {
+          "file": "apps/dev/docker/docker-compose.staging.yaml",
+          "hash": "12291443432771378486"
+        },
+        {
+          "file": "apps/dev/e2e/README.md",
+          "hash": "11472979944234497429"
+        },
+        {
+          "file": "apps/dev/e2e/playwright.config.ts",
+          "hash": "7684134352357443155"
+        },
+        {
+          "file": "apps/dev/e2e/tests/home.spec.ts",
+          "hash": "6065218271435436959"
+        },
+        {
+          "file": "apps/dev/e2e/tests/login.spec.ts",
+          "hash": "3810880609454700899"
+        },
+        {
+          "file": "apps/dev/k3d/create-cluster.sh",
+          "hash": "543413369766751832"
+        },
+        {
+          "file": "apps/dev/k3d/port-forward-vault.sh",
+          "hash": "9227632697256067181"
+        },
+        {
+          "file": "apps/dev/monitoring/grafana/dashboards/kpi-dashboard.json",
+          "hash": "5698974191683958261"
+        },
+        {
+          "file": "apps/dev/monitoring/grafana/dashboards/political-sphere-overview.json",
+          "hash": "10798897517033044189"
+        },
+        {
+          "file": "apps/dev/monitoring/grafana/provisioning/alerting/alerts.yml",
+          "hash": "3001204206024850291"
+        },
+        {
+          "file": "apps/dev/monitoring/grafana/provisioning/dashboards/dashboard.yml",
+          "hash": "5411998854122275720"
+        },
+        {
+          "file": "apps/dev/monitoring/grafana/provisioning/datasources/prometheus.yml",
+          "hash": "1411148898683889608"
+        },
+        {
+          "file": "apps/dev/monitoring/prometheus.yml",
+          "hash": "18325121230849632544"
+        },
+        {
+          "file": "apps/dev/monitoring/prometheus/rules.yml",
+          "hash": "8615800303522122651"
+        },
+        {
+          "file": "apps/dev/project.json",
+          "hash": "13252439522757258942"
+        },
+        {
+          "file": "apps/dev/scripts/dev-down.sh",
+          "hash": "3836074156399511405"
+        },
+        {
+          "file": "apps/dev/scripts/dev-service.sh",
+          "hash": "2220441559042796553"
+        },
+        {
+          "file": "apps/dev/scripts/dev-up.sh",
+          "hash": "8221685979336411912"
+        },
+        {
+          "file": "apps/dev/scripts/seed-data.sh",
+          "hash": "1627919644922326736"
+        },
+        {
+          "file": "apps/dev/templates/.env.example",
+          "hash": "13775714581316638942"
+        },
+        {
+          "file": "apps/dev/templates/.env.local.example",
+          "hash": "9595703343338985847"
+        },
+        {
+          "file": "apps/dev/terraform/main.tf",
+          "hash": "13944547948508486376"
+        },
+        {
+          "file": "apps/dev/terraform/outputs.tf",
+          "hash": "1314490971125785402"
+        },
+        {
+          "file": "apps/dev/terraform/variables.tf",
+          "hash": "13744074197593913990"
+        },
+        {
+          "file": "apps/dev/testing/accessibility-testing.js",
+          "hash": "978433328685559556"
+        },
+        {
+          "file": "apps/dev/testing/chaos-engineering.js",
+          "hash": "4714518625719637450"
+        },
+        {
+          "file": "apps/dev/testing/integration-tests.js",
+          "hash": "18203477950568943454"
+        },
+        {
+          "file": "apps/dev/testing/performance-benchmarking.js",
+          "hash": "6678850517516197570"
+        },
+        {
+          "file": "apps/dev/testing/ui-visual-testing.js",
+          "hash": "1243581069366026681"
+        },
+        {
+          "file": "apps/dev/tests/integration/api.test.mjs",
+          "hash": "11335666461658458536"
+        },
+        {
+          "file": "apps/dev/tests/unit/broken-test.mjs",
+          "hash": "6638369761619048415"
+        },
+        {
+          "file": "apps/dev/tests/unit/example.test.cjs",
+          "hash": "11683453143770268411"
+        },
+        {
+          "file": "apps/dev/tests/unit/example.test.mjs",
+          "hash": "10971746250214565585"
+        }
+      ],
+      "frontend": [
+        {
+          "file": "apps/frontend/Dockerfile",
+          "hash": "2138599909865878875"
+        },
+        {
+          "file": "apps/frontend/README.md",
+          "hash": "14653493906540287185"
+        },
+        {
+          "file": "apps/frontend/project.json",
+          "hash": "12528297710339016493"
+        },
+        {
+          "file": "apps/frontend/public/index.html",
+          "hash": "15126979427157438876"
+        },
+        {
+          "file": "apps/frontend/src/server.js",
+          "hash": "3125211695313429102"
+        }
+      ],
+      "host": [
+        {
+          "file": "apps/host/README.md",
+          "hash": "7647808013037863641"
+        },
+        {
+          "file": "apps/host/project.json",
+          "hash": "1007567755219256079"
+        },
+        {
+          "file": "apps/host/public/index.html",
+          "hash": "8822495874131422781"
+        },
+        {
+          "file": "apps/host/src/index.js",
+          "hash": "6768869270960612571"
+        },
+        {
+          "file": "apps/host/webpack.config.cjs",
+          "hash": "16953561547662600198"
+        },
+        {
+          "file": "apps/host/webpack.config.js",
+          "hash": "2944078289341261036"
+        }
+      ],
       "remote": [
         {
           "file": "apps/remote/README.md",
@@ -129,108 +781,6 @@
           "hash": "8559437132706440067"
         }
       ],
-      "api": [
-        {
-          "file": "apps/api/Dockerfile",
-          "hash": "2855126950408141431"
-        },
-        {
-          "file": "apps/api/README.md",
-          "hash": "6117523241885452917"
-        },
-        {
-          "file": "apps/api/data/news.json",
-          "hash": "2850613287664466091"
-        },
-        {
-          "file": "apps/api/project.json",
-          "hash": "8541043791256006971"
-        },
-        {
-          "file": "apps/api/src/auth.js",
-          "hash": "16406000614225479943"
-        },
-        {
-          "file": "apps/api/src/httpUtils.js",
-          "hash": "1821397520345496802"
-        },
-        {
-          "file": "apps/api/src/index.js",
-          "hash": "2111424647101068011"
-        },
-        {
-          "file": "apps/api/src/newsService.js",
-          "hash": "18353053814410369454"
-        },
-        {
-          "file": "apps/api/src/newsStore.js",
-          "hash": "17716726573345761485"
-        },
-        {
-          "file": "apps/api/src/server.js",
-          "hash": "7479947488442251314"
-        },
-        {
-          "file": "apps/api/tests/newsService.test.js",
-          "hash": "4616243651106379163"
-        },
-        {
-          "file": "apps/api/tests/security.test.js",
-          "hash": "8501369820035877633"
-        },
-        {
-          "file": "apps/api/tests/server.test.js",
-          "hash": "2707100583321415444"
-        }
-      ],
-      "host": [
-        {
-          "file": "apps/host/README.md",
-          "hash": "7647808013037863641"
-        },
-        {
-          "file": "apps/host/project.json",
-          "hash": "1007567755219256079"
-        },
-        {
-          "file": "apps/host/public/index.html",
-          "hash": "8822495874131422781"
-        },
-        {
-          "file": "apps/host/src/index.js",
-          "hash": "6768869270960612571"
-        },
-        {
-          "file": "apps/host/webpack.config.cjs",
-          "hash": "16953561547662600198"
-        },
-        {
-          "file": "apps/host/webpack.config.js",
-          "hash": "2944078289341261036"
-        }
-      ],
-      "frontend": [
-        {
-          "file": "apps/frontend/Dockerfile",
-          "hash": "13923148897020434044"
-        },
-        {
-          "file": "apps/frontend/README.md",
-          "hash": "14653493906540287185"
-        },
-        {
-          "file": "apps/frontend/project.json",
-          "hash": "12528297710339016493"
-        },
-        {
-          "file": "apps/frontend/public/index.html",
-          "hash": "15126979427157438876"
-        },
-        {
-          "file": "apps/frontend/src/server.js",
-          "hash": "3125211695313429102"
-        }
-      ],
       "political-sphere-ai-assistant": [
         {
           "file": "apps/dev/ai/ai-assistant/package.json",
@@ -251,44 +801,6 @@
         {
           "file": "apps/dev/ai/ai-assistant/tsconfig.json",
           "hash": "9513696985106221781"
-        }
-      ],
-      "shared": [
-        {
-          "file": "libs/shared/README.md",
-          "hash": "10200723888682019118"
-        },
-        {
-          "file": "libs/shared/jest.config.js",
-          "hash": "12839521940875294147"
-        },
-        {
-          "file": "libs/shared/project.json",
-          "hash": "4483334915276053237"
-        },
-        {
-          "file": "libs/shared/src/index.ts",
-          "hash": "14765642943770303996"
-        },
-        {
-          "file": "libs/shared/src/logger.d.ts",
-          "hash": "2401997627077690322"
-        },
-        {
-          "file": "libs/shared/src/logger.js",
-          "hash": "14226035449217494136"
-        },
-        {
-          "file": "libs/shared/src/security.d.ts",
-          "hash": "5677691564956981450"
-        },
-        {
-          "file": "libs/shared/src/security.js",
-          "hash": "7238662953830549381"
-        },
-        {
-          "file": "libs/shared/tests/security.test.js",
-          "hash": "17494033806142267745"
         }
       ],
       "platform": [
@@ -661,551 +1173,89 @@
           "hash": "13467575759250076933"
         }
       ],
-      "ui": [
+      "shared": [
         {
-          "file": "libs/ui/README.md",
-          "hash": "6926340928892188572"
+          "file": "libs/shared/README.md",
+          "hash": "10200723888682019118"
         },
         {
-          "file": "libs/ui/project.json",
-          "hash": "14482594747917426574"
-        }
-      ],
-      "infrastructure": [
-        {
-          "file": "libs/infrastructure/.github/CODEOWNERS",
-          "hash": "15484730002798524220"
-        },
-        {
-          "file": "libs/infrastructure/CODE_OF_CONDUCT.md",
-          "hash": "1084617685923722651"
-        },
-        {
-          "file": "libs/infrastructure/CONTRIBUTING.md",
-          "hash": "12356970197028026722"
-        },
-        {
-          "file": "libs/infrastructure/LICENSE",
-          "hash": "6887377681110861689"
-        },
-        {
-          "file": "libs/infrastructure/README.md",
-          "hash": "9476098463801994575"
-        },
-        {
-          "file": "libs/infrastructure/envs/README.md",
-          "hash": "14848532639855604006"
-        },
-        {
-          "file": "libs/infrastructure/envs/dev/main.tf",
-          "hash": "2880147910349146423"
-        },
-        {
-          "file": "libs/infrastructure/envs/dev/terraform.tfvars.example",
-          "hash": "265355347187528996"
-        },
-        {
-          "file": "libs/infrastructure/envs/dev/variables.tf",
-          "hash": "14934808170083118318"
-        },
-        {
-          "file": "libs/infrastructure/envs/prod/main.tf",
-          "hash": "16998912515912525718"
-        },
-        {
-          "file": "libs/infrastructure/envs/prod/terraform.tfvars.example",
-          "hash": "15255880134998280670"
-        },
-        {
-          "file": "libs/infrastructure/envs/prod/variables.tf",
-          "hash": "10720991057783754935"
-        },
-        {
-          "file": "libs/infrastructure/envs/staging/main.tf",
-          "hash": "8957817090664437111"
-        },
-        {
-          "file": "libs/infrastructure/envs/staging/terraform.tfvars.example",
-          "hash": "11872411053156847247"
-        },
-        {
-          "file": "libs/infrastructure/envs/staging/variables.tf",
-          "hash": "584673667020570847"
-        },
-        {
-          "file": "libs/infrastructure/main.tf",
-          "hash": "4322916197858883728"
-        },
-        {
-          "file": "libs/infrastructure/modules/acm/main.tf",
-          "hash": "7008856834079391189"
-        },
-        {
-          "file": "libs/infrastructure/modules/acm/outputs.tf",
-          "hash": "13892791618648732380"
-        },
-        {
-          "file": "libs/infrastructure/modules/acm/variables.tf",
-          "hash": "12937576054678525999"
-        },
-        {
-          "file": "libs/infrastructure/modules/ecr/main.tf",
-          "hash": "8059920171528923322"
-        },
-        {
-          "file": "libs/infrastructure/modules/ecr/outputs.tf",
-          "hash": "16799457698625323458"
-        },
-        {
-          "file": "libs/infrastructure/modules/ecr/variables.tf",
-          "hash": "16846115983641091888"
-        },
-        {
-          "file": "libs/infrastructure/modules/eks/main.tf",
-          "hash": "6523155965219389346"
-        },
-        {
-          "file": "libs/infrastructure/modules/eks/outputs.tf",
-          "hash": "12333079080334539267"
-        },
-        {
-          "file": "libs/infrastructure/modules/eks/variables.tf",
-          "hash": "2391617385604926"
-        },
-        {
-          "file": "libs/infrastructure/modules/iam/main.tf",
-          "hash": "14446677149709460021"
-        },
-        {
-          "file": "libs/infrastructure/modules/iam/outputs.tf",
-          "hash": "14582136815976385386"
-        },
-        {
-          "file": "libs/infrastructure/modules/iam/variables.tf",
-          "hash": "11270684422491850497"
-        },
-        {
-          "file": "libs/infrastructure/modules/kms/main.tf",
-          "hash": "7523475539204420973"
-        },
-        {
-          "file": "libs/infrastructure/modules/kms/outputs.tf",
-          "hash": "4084897608313066254"
-        },
-        {
-          "file": "libs/infrastructure/modules/kms/variables.tf",
-          "hash": "4844632440047848212"
-        },
-        {
-          "file": "libs/infrastructure/modules/rds/main.tf",
-          "hash": "975563413408264568"
-        },
-        {
-          "file": "libs/infrastructure/modules/rds/outputs.tf",
-          "hash": "11493586721575220895"
-        },
-        {
-          "file": "libs/infrastructure/modules/rds/variables.tf",
-          "hash": "2243860081645557879"
-        },
-        {
-          "file": "libs/infrastructure/modules/redis/main.tf",
-          "hash": "5701858601890902577"
-        },
-        {
-          "file": "libs/infrastructure/modules/redis/outputs.tf",
-          "hash": "10715434744763866903"
-        },
-        {
-          "file": "libs/infrastructure/modules/redis/variables.tf",
-          "hash": "2585047133561059614"
-        },
-        {
-          "file": "libs/infrastructure/modules/route53/main.tf",
-          "hash": "2950374308241189109"
-        },
-        {
-          "file": "libs/infrastructure/modules/route53/outputs.tf",
-          "hash": "3171182083356859032"
-        },
-        {
-          "file": "libs/infrastructure/modules/route53/variables.tf",
-          "hash": "489885648456222815"
-        },
-        {
-          "file": "libs/infrastructure/modules/s3/main.tf",
-          "hash": "6183818399008193635"
-        },
-        {
-          "file": "libs/infrastructure/modules/s3/variables.tf",
-          "hash": "5162828677285594948"
-        },
-        {
-          "file": "libs/infrastructure/modules/vpc/main.tf",
-          "hash": "15000762537538628194"
-        },
-        {
-          "file": "libs/infrastructure/modules/vpc/outputs.tf",
-          "hash": "1961206114330004783"
-        },
-        {
-          "file": "libs/infrastructure/modules/vpc/variables.tf",
-          "hash": "12486848503888142087"
-        },
-        {
-          "file": "libs/infrastructure/project.json",
-          "hash": "11135160586648907173"
-        },
-        {
-          "file": "libs/infrastructure/providers.tf",
-          "hash": "10514865655707143549"
-        },
-        {
-          "file": "libs/infrastructure/variables.tf",
-          "hash": "9782242938533755628"
-        },
-        {
-          "file": "libs/infrastructure/vault/README.md",
-          "hash": "14942550358144895253"
-        }
-      ],
-      "dev": [
-        {
-          "file": "apps/dev/README.md",
-          "hash": "9570443806440292404"
-        },
-        {
-          "file": "apps/dev/Tiltfile",
-          "hash": "9725074424613854822"
-        },
-        {
-          "file": "apps/dev/ai/blackbox-review.mjs",
-          "hash": "16280634654725341326"
-        },
-        {
-          "file": "apps/dev/ai/commit-msg.mjs",
-          "hash": "16887480062203029055"
-        },
-        {
-          "file": "apps/dev/ai/governance.js",
-          "hash": "17043640467527099638"
-        },
-        {
-          "file": "apps/dev/ai/knowledge-base.md",
-          "hash": "6675991634796752219"
-        },
-        {
-          "file": "apps/dev/ai/learning.js",
-          "hash": "479444583891075513"
-        },
-        {
-          "file": "apps/dev/ai/ml-pipeline.js",
-          "hash": "8159234239371377646"
-        },
-        {
-          "file": "apps/dev/ai/performance-monitor.js",
-          "hash": "9342375817020461044"
-        },
-        {
-          "file": "apps/dev/ai/pr-desc.mjs",
-          "hash": "13298724294062764320"
-        },
-        {
-          "file": "apps/dev/ai/predictive-analytics.js",
-          "hash": "8429359001249954577"
-        },
-        {
-          "file": "apps/dev/ai/prompt-standards.md",
-          "hash": "15647930235370340080"
-        },
-        {
-          "file": "apps/dev/ai/review-pr.mjs",
-          "hash": "7694784373498979180"
-        },
-        {
-          "file": "apps/dev/docker/docker-compose.dev.yaml",
-          "hash": "4771122703472394793"
-        },
-        {
-          "file": "apps/dev/docker/docker-compose.prod.yaml",
-          "hash": "12792964927564420305"
-        },
-        {
-          "file": "apps/dev/docker/docker-compose.staging.yaml",
-          "hash": "12291443432771378486"
-        },
-        {
-          "file": "apps/dev/e2e/README.md",
-          "hash": "11472979944234497429"
-        },
-        {
-          "file": "apps/dev/e2e/playwright.config.ts",
-          "hash": "7684134352357443155"
-        },
-        {
-          "file": "apps/dev/e2e/tests/home.spec.ts",
-          "hash": "6065218271435436959"
-        },
-        {
-          "file": "apps/dev/e2e/tests/login.spec.ts",
-          "hash": "3810880609454700899"
-        },
-        {
-          "file": "apps/dev/k3d/create-cluster.sh",
-          "hash": "543413369766751832"
-        },
-        {
-          "file": "apps/dev/k3d/port-forward-vault.sh",
-          "hash": "9227632697256067181"
-        },
-        {
-          "file": "apps/dev/monitoring/grafana/dashboards/kpi-dashboard.json",
-          "hash": "5698974191683958261"
-        },
-        {
-          "file": "apps/dev/monitoring/grafana/dashboards/political-sphere-overview.json",
-          "hash": "10798897517033044189"
-        },
-        {
-          "file": "apps/dev/monitoring/grafana/provisioning/alerting/alerts.yml",
-          "hash": "3001204206024850291"
-        },
-        {
-          "file": "apps/dev/monitoring/grafana/provisioning/dashboards/dashboard.yml",
-          "hash": "5411998854122275720"
-        },
-        {
-          "file": "apps/dev/monitoring/grafana/provisioning/datasources/prometheus.yml",
-          "hash": "1411148898683889608"
-        },
-        {
-          "file": "apps/dev/monitoring/prometheus.yml",
-          "hash": "18325121230849632544"
-        },
-        {
-          "file": "apps/dev/monitoring/prometheus/rules.yml",
-          "hash": "8615800303522122651"
-        },
-        {
-          "file": "apps/dev/project.json",
-          "hash": "13252439522757258942"
-        },
-        {
-          "file": "apps/dev/scripts/dev-down.sh",
-          "hash": "3836074156399511405"
-        },
-        {
-          "file": "apps/dev/scripts/dev-service.sh",
-          "hash": "2220441559042796553"
-        },
-        {
-          "file": "apps/dev/scripts/dev-up.sh",
-          "hash": "8221685979336411912"
-        },
-        {
-          "file": "apps/dev/scripts/seed-data.sh",
-          "hash": "1627919644922326736"
-        },
-        {
-          "file": "apps/dev/templates/.env.example",
-          "hash": "13775714581316638942"
-        },
-        {
-          "file": "apps/dev/templates/.env.local.example",
-          "hash": "9595703343338985847"
-        },
-        {
-          "file": "apps/dev/terraform/main.tf",
-          "hash": "13944547948508486376"
-        },
-        {
-          "file": "apps/dev/terraform/outputs.tf",
-          "hash": "1314490971125785402"
-        },
-        {
-          "file": "apps/dev/terraform/variables.tf",
-          "hash": "13744074197593913990"
-        },
-        {
-          "file": "apps/dev/testing/accessibility-testing.js",
-          "hash": "978433328685559556"
-        },
-        {
-          "file": "apps/dev/testing/chaos-engineering.js",
-          "hash": "4714518625719637450"
-        },
-        {
-          "file": "apps/dev/testing/integration-tests.js",
-          "hash": "18203477950568943454"
-        },
-        {
-          "file": "apps/dev/testing/performance-benchmarking.js",
-          "hash": "6678850517516197570"
-        },
-        {
-          "file": "apps/dev/testing/ui-visual-testing.js",
-          "hash": "1243581069366026681"
-        },
-        {
-          "file": "apps/dev/tests/integration/api.test.mjs",
-          "hash": "11335666461658458536"
-        },
-        {
-          "file": "apps/dev/tests/unit/broken-test.mjs",
-          "hash": "6638369761619048415"
-        },
-        {
-          "file": "apps/dev/tests/unit/example.test.cjs",
-          "hash": "11683453143770268411"
-        },
-        {
-          "file": "apps/dev/tests/unit/example.test.mjs",
-          "hash": "10971746250214565585"
-        }
-      ],
-      "docs": [
-        {
-          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/chunk-QAXAIFA7.js",
-          "hash": "1398820070538979638"
-        },
-        {
-          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/chunk-QAXAIFA7.js.map",
-          "hash": "6004849464876339960"
-        },
-        {
-          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/package.json",
-          "hash": "8630294688235076505"
-        },
-        {
-          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vitepress___@vue_devtools-api.js",
-          "hash": "7255766381817982934"
-        },
-        {
-          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vitepress___@vue_devtools-api.js.map",
-          "hash": "6652298274088186207"
-        },
-        {
-          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vitepress___@vueuse_core.js",
-          "hash": "12696528716083278143"
-        },
-        {
-          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vitepress___@vueuse_core.js.map",
-          "hash": "15278077490113582041"
-        },
-        {
-          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vue.js",
-          "hash": "3226929011064258800"
-        },
-        {
-          "file": "apps/docs/.vitepress/cache/deps_temp_e07a905f/vue.js.map",
-          "hash": "9947606979680686569"
-        },
-        {
-          "file": "apps/docs/.vitepress/config.mjs",
-          "hash": "2326943085738562015"
-        },
-        {
-          "file": "apps/docs/AUDIT-REPORT.md",
-          "hash": "17020048416961031357"
-        },
-        {
-          "file": "apps/docs/adr/0000-template-record-decision.md",
-          "hash": "17087479443272550398"
-        },
-        {
-          "file": "apps/docs/adr/0001-enable-renovate.md",
-          "hash": "8588320589680890577"
-        },
-        {
-          "file": "apps/docs/adr/README.md",
-          "hash": "14160383516940221152"
-        },
-        {
-          "file": "apps/docs/ai-enhancement-framework.md",
-          "hash": "2539129859133416236"
-        },
-        {
-          "file": "apps/docs/ai-ethics-policy.md",
-          "hash": "5419834807284222337"
-        },
-        {
-          "file": "apps/docs/ai-on-dev.md",
-          "hash": "6675585202593087029"
-        },
-        {
-          "file": "apps/docs/architecture.md",
-          "hash": "15090737592584685064"
-        },
-        {
-          "file": "apps/docs/compliance/eu-ai-act.md",
-          "hash": "11487546507908537814"
-        },
-        {
-          "file": "apps/docs/contract-testing.md",
-          "hash": "8628391999015125838"
-        },
-        {
-          "file": "apps/docs/delivery-report.md",
-          "hash": "1519357692845323371"
-        },
-        {
-          "file": "apps/docs/dev-autopilot.md",
-          "hash": "4896919028890889063"
-        },
-        {
-          "file": "apps/docs/eu-ai-act-compliance.md",
-          "hash": "4050633267281800130"
-        },
-        {
-          "file": "apps/docs/module-federation.md",
-          "hash": "1133927779426733816"
-        },
-        {
-          "file": "apps/docs/onboarding.md",
-          "hash": "17691814544908961002"
-        },
-        {
-          "file": "apps/docs/project.json",
-          "hash": "15395791247870581169"
+          "file": "libs/shared/jest.config.js",
+          "hash": "12839521940875294147"
         },
         {
-          "file": "apps/docs/risk-register.md",
-          "hash": "4837478537794619354"
+          "file": "libs/shared/project.json",
+          "hash": "4483334915276053237"
         },
         {
-          "file": "apps/docs/runbooks/dr-plan.md",
-          "hash": "2349298754712863668"
+          "file": "libs/shared/src/index.ts",
+          "hash": "14765642943770303996"
         },
         {
-          "file": "apps/docs/runbooks/incident.md",
-          "hash": "14117869538076355155"
+          "file": "libs/shared/src/logger.d.ts",
+          "hash": "2401997627077690322"
         },
         {
-          "file": "apps/docs/secrets-inventory.md",
-          "hash": "11627220797026302869"
+          "file": "libs/shared/src/logger.js",
+          "hash": "14226035449217494136"
         },
         {
-          "file": "apps/docs/security.md",
-          "hash": "12181518783130671280"
+          "file": "libs/shared/src/security.d.ts",
+          "hash": "5677691564956981450"
         },
         {
-          "file": "apps/docs/templates/postmortem.md",
-          "hash": "12204224967423793714"
+          "file": "libs/shared/src/security.js",
+          "hash": "7238662953830549381"
         },
         {
-          "file": "apps/docs/templates/smoke-test-checklist.md",
-          "hash": "13775826700683363132"
+          "file": "libs/shared/tests/security.test.js",
+          "hash": "17494033806142267745"
         }
       ]
     },
     "nonProjectFiles": [
       {
+        "file": ".blackboxrules",
+        "hash": "17311755523449021630"
+      },
+      {
         "file": ".commitlintrc.cjs",
         "hash": "1797922694529005585"
       },
       {
+        "file": ".devcontainer/.dockerignore",
+        "hash": "17195963251873820526"
+      },
+      {
+        "file": ".devcontainer/Dockerfile",
+        "hash": "10527230476860924935"
+      },
+      {
+        "file": ".devcontainer/README.md",
+        "hash": "11131273314196276021"
+      },
+      {
+        "file": ".devcontainer/WELCOME.txt",
+        "hash": "14199015397973774703"
+      },
+      {
         "file": ".devcontainer/devcontainer.json",
-        "hash": "10383168438261025390"
+        "hash": "12341643232966485112"
+      },
+      {
+        "file": ".devcontainer/scripts/setup-env.sh",
+        "hash": "12519825782857499037"
+      },
+      {
+        "file": ".devcontainer/scripts/status-check.sh",
+        "hash": "2486432356648162694"
+      },
+      {
+        "file": ".devcontainer/scripts/validate-host.sh",
+        "hash": "6209240054068705506"
+      },
+      {
+        "file": ".devcontainer/scripts/wait-for-services.sh",
+        "hash": "10907800034710904091"
       },
       {
         "file": ".dockerignore",
@@ -1232,12 +1282,24 @@
         "hash": "4974583115856540801"
       },
       {
+        "file": ".github/ISSUE_TEMPLATE/feature_request.md",
+        "hash": "3572303124020897235"
+      },
+      {
+        "file": ".github/ISSUE_TEMPLATE/security_issue.md",
+        "hash": "15707255122157158651"
+      },
+      {
         "file": ".github/PULL_REQUEST_TEMPLATE.md",
         "hash": "6881194997206272375"
       },
       {
         "file": ".github/codeql-config.yml",
         "hash": "17888386706659962667"
+      },
+      {
+        "file": ".github/copilot-instructions.md",
+        "hash": "12647366398076734717"
       },
       {
         "file": ".github/labeler.yml",
@@ -1261,11 +1323,15 @@
       },
       {
         "file": ".github/workflows/ci.yml",
-        "hash": "2021600937593544118"
+        "hash": "3425218100590974341"
       },
       {
         "file": ".github/workflows/codeql.yml",
         "hash": "9426052029103743524"
+      },
+      {
+        "file": ".github/workflows/copilot-experiment-summary.yml",
+        "hash": "12106932595319530998"
       },
       {
         "file": ".github/workflows/deploy.yml",
@@ -1273,7 +1339,7 @@
       },
       {
         "file": ".github/workflows/e2e.yml",
-        "hash": "353911033832474837"
+        "hash": "2489711468465063243"
       },
       {
         "file": ".github/workflows/gitleaks.yml",
@@ -1281,27 +1347,27 @@
       },
       {
         "file": ".github/workflows/integration.yml",
-        "hash": "16218261374911733142"
+        "hash": "1378986751861358195"
       },
       {
         "file": ".github/workflows/lint-boundaries.yml",
-        "hash": "16579017502831043988"
+        "hash": "6062580821429082942"
       },
       {
         "file": ".github/workflows/migrate.yml",
-        "hash": "14252828123080131346"
+        "hash": "1057072674844618595"
       },
       {
         "file": ".github/workflows/nx-guard.yml",
-        "hash": "9441529723274530029"
+        "hash": "7185869726280568276"
       },
       {
         "file": ".github/workflows/perf-api.yml",
-        "hash": "1113274628146824449"
+        "hash": "110959341225041998"
       },
       {
         "file": ".github/workflows/perf-smoke.yml",
-        "hash": "4788759235857449741"
+        "hash": "14248044476468739493"
       },
       {
         "file": ".github/workflows/release.yml",
@@ -1313,7 +1379,7 @@
       },
       {
         "file": ".github/workflows/security.yml",
-        "hash": "11034611749488770077"
+        "hash": "8616033073481061529"
       },
       {
         "file": ".github/workflows/semgrep.yml",
@@ -1321,15 +1387,19 @@
       },
       {
         "file": ".github/workflows/smoke-remote.yml",
-        "hash": "13575741964325067180"
+        "hash": "11340916140280252833"
       },
       {
         "file": ".github/workflows/vulnerability-scan.yml",
-        "hash": "10347055152448457020"
+        "hash": "8627579266201897581"
+      },
+      {
+        "file": ".github/workflows/workspace-integrity.yml",
+        "hash": "4586433388127145795"
       },
       {
         "file": ".gitignore",
-        "hash": "1729406515544418425"
+        "hash": "6168615414029388454"
       },
       {
         "file": ".gitleaks.toml",
@@ -1342,6 +1412,10 @@
       {
         "file": ".husky/pre-commit",
         "hash": "14911021170947838303"
+      },
+      {
+        "file": ".husky/pre-push",
+        "hash": "17830380410864487546"
       },
       {
         "file": ".husky/prepare-commit-msg",
@@ -1365,7 +1439,7 @@
       },
       {
         "file": ".ps/knowledge.json",
-        "hash": "15336546919337724977"
+        "hash": "4468274785058568203"
       },
       {
         "file": ".swcrc",
@@ -1376,12 +1450,12 @@
         "hash": "3198484804818979605"
       },
       {
-        "file": "COMPREHENSIVE-AUDIT-REPORT.md",
-        "hash": "8230593489594633308"
+        "file": "CONTRIBUTING.md",
+        "hash": "11537841849696155955"
       },
       {
-        "file": "CONTRIBUTING.md",
-        "hash": "10152226201853749951"
+        "file": "CONTRIBUTING.prompt.md",
+        "hash": "12017322391752412804"
       },
       {
         "file": "LICENSE",
@@ -1396,24 +1470,44 @@
         "hash": "2481260712975512419"
       },
       {
-        "file": "REMEDIATION-SUMMARY.md",
-        "hash": "8453107330361008687"
-      },
-      {
         "file": "SECURITY.md",
         "hash": "13603199885340592781"
       },
       {
-        "file": "TODO-implementation.md",
-        "hash": "1651487438396748024"
+        "file": "TODO-assistant-tooling.md",
+        "hash": "4301768651682105038"
       },
       {
-        "file": "TODO-remediation.md",
-        "hash": "16468338977532957007"
+        "file": "TODO-audit.md",
+        "hash": "6475352660701239874"
+      },
+      {
+        "file": "TODO-bottlenecks-fix.md",
+        "hash": "16762595187597328413"
+      },
+      {
+        "file": "TODO-bottlenecks-implementation.md",
+        "hash": "7058295549462698009"
+      },
+      {
+        "file": "TODO-foundation.md",
+        "hash": "16230572473925464204"
+      },
+      {
+        "file": "TODO-strategy-docs.md",
+        "hash": "18415465180548863445"
       },
       {
         "file": "TODO.md",
-        "hash": "4866941775233061941"
+        "hash": "6219793016389091772"
+      },
+      {
+        "file": "ai-cache/cache.json",
+        "hash": "239362157592561082"
+      },
+      {
+        "file": "ai-cache/context-index.json",
+        "hash": "9083504221612490382"
       },
       {
         "file": "ai-controls.json",
@@ -1421,15 +1515,23 @@
       },
       {
         "file": "ai-learning/patterns.json",
-        "hash": "16308851232733285843"
+        "hash": "9439569598650972867"
       },
       {
         "file": "ai-metrics.json",
         "hash": "3702936774166102038"
       },
       {
+        "file": "ai-metrics/guard-history.json",
+        "hash": "4026778837642583015"
+      },
+      {
         "file": "ai-metrics/stats.json",
-        "hash": "10553096500694462515"
+        "hash": "2007224468553351094"
+      },
+      {
+        "file": "apps/README.md",
+        "hash": "2911848222287779671"
       },
       {
         "file": "apps/infrastructure/terraform/autoscaling.tf",
@@ -1493,699 +1595,723 @@
       },
       {
         "file": "docs/00-foundation/README.md",
-        "hash": "17010675487138876661"
+        "hash": "6420731985423781057"
       },
       {
         "file": "docs/00-foundation/business-model-overview.md",
-        "hash": "2593867292882991872"
+        "hash": "5486936988833785735"
       },
       {
         "file": "docs/00-foundation/core-values-ethics.md",
-        "hash": "2690369352003056913"
+        "hash": "15270753429907126255"
       },
       {
         "file": "docs/00-foundation/glossary-domain-concepts.md",
-        "hash": "16809885096520703260"
+        "hash": "9939287885837454851"
       },
       {
         "file": "docs/00-foundation/market-brief.md",
-        "hash": "7743876032991983059"
+        "hash": "3244421341483603138"
       },
       {
         "file": "docs/00-foundation/personas-and-use-cases.md",
-        "hash": "9877524316460148841"
+        "hash": "11631230517956766834"
       },
       {
         "file": "docs/00-foundation/product-principles.md",
-        "hash": "7221884646315339501"
+        "hash": "10265765055376355379"
       },
       {
         "file": "docs/00-foundation/stakeholder-map.md",
-        "hash": "10420638285465784589"
+        "hash": "2919523468039205834"
       },
       {
         "file": "docs/00-foundation/success-metrics-north-star.md",
-        "hash": "1858227327159793186"
+        "hash": "8600043758210117201"
       },
       {
         "file": "docs/00-foundation/vision-mission.md",
-        "hash": "11336751947033871396"
+        "hash": "10969632908121088381"
       },
       {
         "file": "docs/01-strategy/README.md",
-        "hash": "7884645264052065869"
+        "hash": "4486825509151163425"
       },
       {
         "file": "docs/01-strategy/ai-strategy-and-differentiation.md",
-        "hash": "12741938801252362707"
+        "hash": "7715116133750099677"
       },
       {
         "file": "docs/01-strategy/internationalization-localization-strategy.md",
-        "hash": "1670099646834035690"
+        "hash": "10209282646028234997"
       },
       {
         "file": "docs/01-strategy/objectives-and-key-results-okrs.md",
-        "hash": "7392874322080329869"
+        "hash": "13945878421470814086"
       },
       {
         "file": "docs/01-strategy/partnerships-and-education-strategy.md",
-        "hash": "1895691263082747968"
+        "hash": "1911845148183445419"
       },
       {
         "file": "docs/01-strategy/platform-strategy-multiplayer-simulation.md",
-        "hash": "9307518670566600080"
+        "hash": "12668189781842138209"
       },
       {
         "file": "docs/01-strategy/pricing-and-packaging-strategy.md",
-        "hash": "172253466598341121"
+        "hash": "15662971208357765206"
       },
       {
         "file": "docs/01-strategy/product-strategy.md",
-        "hash": "5394547390387135951"
+        "hash": "1373307731987709715"
       },
       {
         "file": "docs/01-strategy/risked-assumptions-and-bets.md",
-        "hash": "7565223388748885706"
+        "hash": "8733845721653590076"
       },
       {
         "file": "docs/01-strategy/strategic-roadmap-03-12-36-months.md",
-        "hash": "10291794474113436992"
+        "hash": "1545495880784242483"
       },
       {
         "file": "docs/02-governance/README.md",
-        "hash": "10510680708632673992"
+        "hash": "16321612147452054933"
       },
       {
         "file": "docs/02-governance/architectural-decision-records/README.md",
-        "hash": "8176482211340793309"
+        "hash": "8811581094605688269"
       },
       {
         "file": "docs/02-governance/architectural-decision-records/adr-0001-initial-stack.md",
-        "hash": "6722057080991647607"
+        "hash": "466910317952471190"
       },
       {
         "file": "docs/02-governance/architectural-decision-records/adr-template.md",
-        "hash": "15451761897305975848"
+        "hash": "15070016432366399784"
       },
       {
         "file": "docs/02-governance/change-management-policy.md",
-        "hash": "17025903733452062894"
+        "hash": "17649931459574418198"
       },
       {
         "file": "docs/02-governance/compliance-governance-model.md",
-        "hash": "11362989537876728590"
+        "hash": "322377741630976718"
       },
       {
         "file": "docs/02-governance/decision-rights-matrix.md",
-        "hash": "10877749695831722637"
+        "hash": "11320209210880724447"
       },
       {
         "file": "docs/02-governance/governance-charter.md",
-        "hash": "16754650523926158998"
+        "hash": "3294822607650195304"
       },
       {
         "file": "docs/02-governance/rfcs/README.md",
-        "hash": "11109928439746605400"
+        "hash": "16801960200782142547"
       },
       {
         "file": "docs/02-governance/rfcs/rfc-template.md",
-        "hash": "15756244047939658361"
+        "hash": "11673333267955962671"
       },
       {
         "file": "docs/02-governance/risk-management-framework.md",
-        "hash": "11677137416873861293"
+        "hash": "12237466426249896786"
       },
       {
         "file": "docs/02-governance/roles-and-responsibilities-raci.md",
-        "hash": "219035307232728552"
+        "hash": "11143154355535964585"
       },
       {
         "file": "docs/03-legal-and-compliance/README.md",
-        "hash": "11275616657335945212"
+        "hash": "14060925820899095285"
       },
       {
         "file": "docs/03-legal-and-compliance/acceptable-use-and-community-standards.md",
-        "hash": "5978246872339487472"
+        "hash": "9010153205362784157"
       },
       {
         "file": "docs/03-legal-and-compliance/accessibility-statement-wcag-22.md",
-        "hash": "1773307615169159582"
+        "hash": "4720635091057280923"
       },
       {
         "file": "docs/03-legal-and-compliance/age-assurance-and-online-safety.md",
-        "hash": "5421760975587785908"
+        "hash": "666624021371672527"
       },
       {
         "file": "docs/03-legal-and-compliance/ai-compliance/README.md",
-        "hash": "17295376058251862986"
+        "hash": "9429121611777645571"
       },
       {
         "file": "docs/03-legal-and-compliance/ai-compliance/ai-impact-assessment-aia.md",
-        "hash": "164782387538969262"
+        "hash": "17387174058844828892"
       },
       {
         "file": "docs/03-legal-and-compliance/ai-compliance/eu-ai-act-readiness-matrix.md",
-        "hash": "2272393283055656540"
+        "hash": "1971843134405214581"
       },
       {
         "file": "docs/03-legal-and-compliance/ai-compliance/human-oversight-and-intervention.md",
-        "hash": "13610440468344672938"
+        "hash": "11816652233294998486"
       },
       {
         "file": "docs/03-legal-and-compliance/ai-compliance/model-and-system-cards-index.md",
-        "hash": "14813939712896701897"
+        "hash": "17687725733991643290"
       },
       {
         "file": "docs/03-legal-and-compliance/ai-compliance/transparency-and-disclosure-policy.md",
-        "hash": "2863851187344620413"
+        "hash": "5522487360877055519"
       },
       {
         "file": "docs/03-legal-and-compliance/cookie-policy.md",
-        "hash": "18194456077732281691"
+        "hash": "17178367323180939920"
       },
       {
         "file": "docs/03-legal-and-compliance/data-protection/README.md",
-        "hash": "3824845950810511872"
+        "hash": "12476115316489592041"
       },
       {
         "file": "docs/03-legal-and-compliance/data-protection/cross-border-data-transfers.md",
-        "hash": "8069762551657605230"
+        "hash": "2234040277260889556"
       },
       {
         "file": "docs/03-legal-and-compliance/data-protection/data-breach-notification-procedure.md",
-        "hash": "14347473628962556586"
+        "hash": "7753566237314789757"
       },
       {
         "file": "docs/03-legal-and-compliance/data-protection/data-protection-impact-assessment-dpia.md",
-        "hash": "18163332412417754069"
+        "hash": "231932650689746248"
       },
       {
         "file": "docs/03-legal-and-compliance/data-protection/data-retention-and-deletion-policy.md",
-        "hash": "2755175783186017343"
+        "hash": "13676149223001046276"
       },
       {
         "file": "docs/03-legal-and-compliance/data-protection/lawful-basis-register.md",
-        "hash": "2363660236268164552"
+        "hash": "10675210478837114665"
       },
       {
         "file": "docs/03-legal-and-compliance/data-protection/records-of-processing-activities-ropa.md",
-        "hash": "18423606955400666929"
+        "hash": "1658366636540525331"
       },
       {
         "file": "docs/03-legal-and-compliance/data-protection/subject-rights-request-procedure-dsar.md",
-        "hash": "9459862950530842796"
+        "hash": "12911042068831739716"
       },
       {
         "file": "docs/03-legal-and-compliance/licensing-and-ip/README.md",
-        "hash": "11875898941180749233"
+        "hash": "17494729814352264519"
       },
       {
         "file": "docs/03-legal-and-compliance/licensing-and-ip/open-source-license-inventory-sbom.md",
-        "hash": "4385299964152896444"
+        "hash": "15006394289911471521"
       },
       {
         "file": "docs/03-legal-and-compliance/licensing-and-ip/third-party-licenses.md",
-        "hash": "3866067158330521092"
+        "hash": "4693773638742466797"
       },
       {
         "file": "docs/03-legal-and-compliance/licensing-and-ip/trademark-and-brand-usage.md",
-        "hash": "134247820509829035"
+        "hash": "18085180230017380390"
       },
       {
         "file": "docs/03-legal-and-compliance/privacy-policy.md",
-        "hash": "9615128481965141713"
+        "hash": "11221922638339279923"
       },
       {
         "file": "docs/03-legal-and-compliance/regulatory-mapping-and-gap-analysis.md",
-        "hash": "1624396111191259899"
+        "hash": "110527264639284481"
       },
       {
         "file": "docs/03-legal-and-compliance/terms-of-service.md",
-        "hash": "2253299354735867334"
+        "hash": "3490211185253276509"
       },
       {
         "file": "docs/04-architecture/README.md",
-        "hash": "4168983023670946099"
+        "hash": "8241455096356566171"
       },
       {
         "file": "docs/04-architecture/api-architecture/README.md",
-        "hash": "8252656408959476159"
+        "hash": "4368501267225711990"
       },
       {
         "file": "docs/04-architecture/api-architecture/graphql-schema-and-conventions.md",
-        "hash": "9749729198530041780"
+        "hash": "15629589316510622437"
       },
       {
         "file": "docs/04-architecture/api-architecture/rest-openapi-specs.md",
-        "hash": "8833805174951890784"
+        "hash": "4334665432829053397"
       },
       {
         "file": "docs/04-architecture/api-architecture/versioning-and-deprecation-policy.md",
-        "hash": "14420988082496119445"
+        "hash": "13735131577291969208"
       },
       {
         "file": "docs/04-architecture/context-diagrams-c4.md",
-        "hash": "15342453528991268334"
+        "hash": "1626688678414542872"
       },
       {
         "file": "docs/04-architecture/cost-architecture-and-finops.md",
-        "hash": "1902575607244636722"
+        "hash": "11202613721449671187"
       },
       {
         "file": "docs/04-architecture/data-architecture/README.md",
-        "hash": "9203196303613881156"
+        "hash": "6184769552424903812"
       },
       {
         "file": "docs/04-architecture/data-architecture/data-lifecycle-and-backups.md",
-        "hash": "15733265800944451766"
+        "hash": "13147257825009776964"
       },
       {
         "file": "docs/04-architecture/data-architecture/data-models-and-erd.md",
-        "hash": "12005525165306876196"
+        "hash": "2954950913813048052"
       },
       {
         "file": "docs/04-architecture/data-architecture/eventing-and-streams.md",
-        "hash": "6807164905947118337"
+        "hash": "3689320089063593953"
       },
       {
         "file": "docs/04-architecture/data-architecture/pii-classification-and-tokenization.md",
-        "hash": "16575805835553510161"
+        "hash": "16352476314359003649"
       },
       {
         "file": "docs/04-architecture/domain-driven-design-map.md",
-        "hash": "5874477818146354625"
+        "hash": "14401678879773088240"
       },
       {
         "file": "docs/04-architecture/observability-architecture.md",
-        "hash": "17728520812655774927"
+        "hash": "9338420718382819962"
       },
       {
         "file": "docs/04-architecture/reliability-and-resilience.md",
-        "hash": "6111929689422827280"
+        "hash": "3516562136520456174"
       },
       {
         "file": "docs/04-architecture/scalability-and-performance.md",
-        "hash": "5981968001572471296"
+        "hash": "17236090415306725600"
       },
       {
         "file": "docs/04-architecture/system-overview.md",
-        "hash": "2750367454079515860"
+        "hash": "15721860654747097448"
       },
       {
         "file": "docs/05-engineering-and-devops/README.md",
-        "hash": "9000606390824719917"
+        "hash": "12652426854501319258"
       },
       {
         "file": "docs/05-engineering-and-devops/branching-and-release-strategy.md",
-        "hash": "4934692863050447908"
+        "hash": "14862725869352122653"
       },
       {
         "file": "docs/05-engineering-and-devops/ci-cd/README.md",
-        "hash": "16369365420610046469"
+        "hash": "5427530111662843843"
       },
       {
         "file": "docs/05-engineering-and-devops/ci-cd/artifact-management-and-release-notes.md",
-        "hash": "2928096655042511921"
+        "hash": "11613784978489622602"
       },
       {
         "file": "docs/05-engineering-and-devops/ci-cd/ci-secrets-hardening.md",
-        "hash": "8759544652770764031"
+        "hash": "7619689211695293427"
       },
       {
         "file": "docs/05-engineering-and-devops/ci-cd/pipeline-architecture.md",
-        "hash": "17230322787035552738"
+        "hash": "15682150951044061452"
       },
       {
         "file": "docs/05-engineering-and-devops/ci-cd/quality-gates-and-blockers.md",
-        "hash": "12845708114465631606"
+        "hash": "9591387191728491653"
       },
       {
         "file": "docs/05-engineering-and-devops/code-review-guidelines.md",
-        "hash": "3878314524096697398"
+        "hash": "79693437792729721"
       },
       {
         "file": "docs/05-engineering-and-devops/coding-standards-typescript-react.md",
-        "hash": "3244134098563772012"
+        "hash": "16676352784689013207"
       },
       {
         "file": "docs/05-engineering-and-devops/developer-experience/README.md",
-        "hash": "17152184236197284551"
+        "hash": "16927832907894745852"
       },
       {
         "file": "docs/05-engineering-and-devops/developer-experience/dev-containers-and-tooling.md",
-        "hash": "18263715595759375685"
+        "hash": "18325159420003280752"
+      },
+      {
+        "file": "docs/05-engineering-and-devops/developer-experience/devcontainers/DEVCONTAINER-AUDIT-REPORT.md",
+        "hash": "6923617580383207748"
+      },
+      {
+        "file": "docs/05-engineering-and-devops/developer-experience/devcontainers/DEVCONTAINER-REMEDIATION.md",
+        "hash": "16882888504624147728"
+      },
+      {
+        "file": "docs/05-engineering-and-devops/developer-experience/github-usage-policy.md",
+        "hash": "17261680769556598910"
       },
       {
         "file": "docs/05-engineering-and-devops/developer-experience/local-dev-setup.md",
-        "hash": "12221405432306128024"
+        "hash": "7674943239651008988"
       },
       {
         "file": "docs/05-engineering-and-devops/developer-experience/productivity-playbook.md",
-        "hash": "7484474532960300163"
+        "hash": "7903578578109553216"
       },
       {
         "file": "docs/05-engineering-and-devops/developer-experience/repo-scripts-and-generators.md",
-        "hash": "9693854140658899917"
+        "hash": "8430381397250834544"
       },
       {
         "file": "docs/05-engineering-and-devops/environments-and-config.md",
-        "hash": "16431637896085565280"
+        "hash": "3438827781801874908"
       },
       {
         "file": "docs/05-engineering-and-devops/infrastructure-as-code/README.md",
-        "hash": "8786318703941290975"
+        "hash": "15966634491461985898"
       },
       {
         "file": "docs/05-engineering-and-devops/infrastructure-as-code/kubernetes-baseline.md",
-        "hash": "11314462782159264690"
+        "hash": "956601934005844001"
       },
       {
         "file": "docs/05-engineering-and-devops/infrastructure-as-code/runtime-parameters-and-secrets.md",
-        "hash": "13484023426524141799"
+        "hash": "6097237065860362526"
       },
       {
         "file": "docs/05-engineering-and-devops/infrastructure-as-code/terraform-conventions.md",
-        "hash": "6417698956754892411"
+        "hash": "3836978265984131337"
       },
       {
         "file": "docs/05-engineering-and-devops/monorepo-standards-nx.md",
-        "hash": "960710532325025936"
+        "hash": "1010611939405835607"
       },
       {
         "file": "docs/05-engineering-and-devops/testing/README.md",
-        "hash": "4873084965168008969"
+        "hash": "7106085375418328251"
       },
       {
         "file": "docs/05-engineering-and-devops/testing/chaos-and-resilience-testing.md",
-        "hash": "5812663937526721855"
+        "hash": "6476779115200112504"
       },
       {
         "file": "docs/05-engineering-and-devops/testing/contract-and-api-testing.md",
-        "hash": "14155944418313338723"
+        "hash": "9200347723733747819"
       },
       {
         "file": "docs/05-engineering-and-devops/testing/performance-and-load-testing.md",
-        "hash": "3873221538285370114"
+        "hash": "2159049327818491678"
       },
       {
         "file": "docs/05-engineering-and-devops/testing/security-testing-sast-dast-sca.md",
-        "hash": "2169815823513640099"
+        "hash": "730140926183898046"
       },
       {
         "file": "docs/05-engineering-and-devops/testing/test-data-management.md",
-        "hash": "16546183131613242198"
+        "hash": "8972308903223750887"
       },
       {
         "file": "docs/05-engineering-and-devops/testing/testing-strategy.md",
-        "hash": "15403361081106586570"
+        "hash": "4346554112200633040"
       },
       {
         "file": "docs/05-engineering-and-devops/testing/unit-integration-e2e-guides.md",
-        "hash": "3530524357639049010"
+        "hash": "17644140919876276922"
       },
       {
         "file": "docs/06-security-and-risk/README.md",
-        "hash": "6663445634007612105"
+        "hash": "13629823548356930601"
+      },
+      {
+        "file": "docs/06-security-and-risk/audits/COMPREHENSIVE-AUDIT-REPORT.md",
+        "hash": "8230593489594633308"
+      },
+      {
+        "file": "docs/06-security-and-risk/audits/REMEDIATION-SUMMARY.md",
+        "hash": "8453107330361008687"
       },
       {
         "file": "docs/06-security-and-risk/business-continuity-and-disaster-recovery-bcdr.md",
-        "hash": "3130425181185034458"
+        "hash": "11727737480270432807"
       },
       {
         "file": "docs/06-security-and-risk/encryption-and-key-management.md",
-        "hash": "12335013751711909686"
+        "hash": "9825445065773417689"
       },
       {
         "file": "docs/06-security-and-risk/identity-and-access-management.md",
-        "hash": "4107106836841045235"
+        "hash": "14189065779421224420"
       },
       {
         "file": "docs/06-security-and-risk/incident-response/README.md",
-        "hash": "12181770051000649179"
+        "hash": "17202933804309102274"
       },
       {
         "file": "docs/06-security-and-risk/incident-response/incident-response-plan.md",
-        "hash": "11763403683523371279"
+        "hash": "2030707200488248700"
       },
       {
         "file": "docs/06-security-and-risk/incident-response/postmortem-template.md",
-        "hash": "8956919262007303986"
+        "hash": "8550591028589603117"
       },
       {
         "file": "docs/06-security-and-risk/incident-response/severity-classification-and-playbooks.md",
-        "hash": "8615230969856227815"
+        "hash": "1261468522740382541"
       },
       {
         "file": "docs/06-security-and-risk/information-security-policy-iso27001.md",
-        "hash": "6104474434591064939"
+        "hash": "10489925215957901977"
       },
       {
         "file": "docs/06-security-and-risk/logging-and-forensics.md",
-        "hash": "10637885949283727190"
+        "hash": "15423812221335766849"
       },
       {
         "file": "docs/06-security-and-risk/risk-appetite-and-matrix.md",
-        "hash": "6331180067376589306"
+        "hash": "10919528429358609447"
       },
       {
         "file": "docs/06-security-and-risk/risk-register.md",
-        "hash": "4669594741896208063"
+        "hash": "846330172507300266"
       },
       {
         "file": "docs/06-security-and-risk/secrets-management.md",
-        "hash": "17018953636733362214"
+        "hash": "6716734177712077235"
       },
       {
         "file": "docs/06-security-and-risk/secure-development-lifecycle-sdl.md",
-        "hash": "3313032430706205938"
+        "hash": "5916248610459926898"
       },
       {
         "file": "docs/06-security-and-risk/threat-modeling-stride.md",
-        "hash": "17732797418704534578"
+        "hash": "13879068642841329632"
       },
       {
         "file": "docs/06-security-and-risk/vulnerability-management.md",
-        "hash": "2242301372725643693"
+        "hash": "6668184188798585471"
       },
       {
         "file": "docs/07-ai-and-simulation/README.md",
-        "hash": "48521600727961396"
+        "hash": "1139530757620945274"
       },
       {
         "file": "docs/07-ai-and-simulation/ai-governance-framework.md",
-        "hash": "13627058101106589297"
+        "hash": "17601374136553699747"
       },
       {
         "file": "docs/07-ai-and-simulation/alignment-and-safety-constraints.md",
-        "hash": "14501189379957215081"
+        "hash": "12243306915142191223"
       },
       {
         "file": "docs/07-ai-and-simulation/bias-fairness-and-harms-assessment.md",
-        "hash": "10478194444146571461"
+        "hash": "15539802477621749157"
       },
       {
         "file": "docs/07-ai-and-simulation/data-sources-and-dataset-statements.md",
-        "hash": "1109246645488745692"
+        "hash": "18097159544649618676"
       },
       {
         "file": "docs/07-ai-and-simulation/evaluation-and-benchmarking.md",
-        "hash": "11084368402686387728"
+        "hash": "12935013632043782030"
       },
       {
         "file": "docs/07-ai-and-simulation/human-in-the-loop-oversight.md",
-        "hash": "16509433432035194904"
+        "hash": "11754671158555362627"
       },
       {
         "file": "docs/07-ai-and-simulation/model-inventory-and-system-cards/README.md",
-        "hash": "10366185702575324857"
+        "hash": "13879202161171089007"
       },
       {
         "file": "docs/07-ai-and-simulation/model-inventory-and-system-cards/model-card-template.md",
-        "hash": "12687479558545256900"
+        "hash": "2225506214813112675"
       },
       {
         "file": "docs/07-ai-and-simulation/model-inventory-and-system-cards/system-card-template.md",
-        "hash": "4541389686132996017"
+        "hash": "14665584720489334348"
       },
       {
         "file": "docs/07-ai-and-simulation/multi-agent-orchestration.md",
-        "hash": "10714710612265796519"
+        "hash": "15971674554302406511"
       },
       {
         "file": "docs/07-ai-and-simulation/red-teaming-and-adversarial-testing.md",
-        "hash": "1476678157457798836"
+        "hash": "1377458239575027417"
       },
       {
         "file": "docs/07-ai-and-simulation/rollback-and-kill-switches.md",
-        "hash": "6949470098657425387"
+        "hash": "8650695049411232382"
       },
       {
         "file": "docs/07-ai-and-simulation/telemetry-for-ai-systems.md",
-        "hash": "15479318225222220978"
+        "hash": "586448677931188475"
       },
       {
         "file": "docs/08-game-design-and-mechanics/README.md",
-        "hash": "3279335262091390075"
+        "hash": "1650843035863881501"
       },
       {
         "file": "docs/08-game-design-and-mechanics/accessibility-and-ux-harm-minimisation.md",
-        "hash": "774620720901338215"
+        "hash": "5170027472860093369"
       },
       {
         "file": "docs/08-game-design-and-mechanics/ai-npc-behaviours-and-tuning.md",
-        "hash": "9134169141188315267"
+        "hash": "1916486362532804979"
       },
       {
         "file": "docs/08-game-design-and-mechanics/balancing-and-anti-exploit-design.md",
-        "hash": "4066633328410412865"
+        "hash": "3809640419623729724"
       },
       {
         "file": "docs/08-game-design-and-mechanics/content-moderation-and-enforcement.md",
-        "hash": "14141685863151712106"
+        "hash": "2499091304307899297"
       },
       {
         "file": "docs/08-game-design-and-mechanics/economy-and-budgets.md",
-        "hash": "10277575136879443712"
+        "hash": "18285239183994785720"
       },
       {
         "file": "docs/08-game-design-and-mechanics/elections-policy-and-mechanics.md",
-        "hash": "7837816409209362466"
+        "hash": "13147158509154523802"
       },
       {
         "file": "docs/08-game-design-and-mechanics/game-design-document-gdd.md",
-        "hash": "18173544598125415129"
+        "hash": "9185837817100387671"
       },
       {
         "file": "docs/08-game-design-and-mechanics/lawmaking-and-procedure-engine.md",
-        "hash": "10976077217565470943"
+        "hash": "10509856479902364754"
       },
       {
         "file": "docs/08-game-design-and-mechanics/media-press-and-public-opinion-system.md",
-        "hash": "6648101959623429155"
+        "hash": "15428111726386874749"
       },
       {
         "file": "docs/08-game-design-and-mechanics/parties-caucuses-and-factions.md",
-        "hash": "10576885976600075591"
+        "hash": "1561291945712269263"
       },
       {
         "file": "docs/08-game-design-and-mechanics/roles-and-progressions.md",
-        "hash": "13223336021648067472"
+        "hash": "13886553189091351284"
       },
       {
         "file": "docs/08-game-design-and-mechanics/world-and-institutions-blueprint.md",
-        "hash": "2853405758027207480"
+        "hash": "1172488185340412755"
       },
       {
         "file": "docs/09-observability-and-ops/README.md",
-        "hash": "15198867532613676726"
+        "hash": "7558793780699284511"
       },
       {
         "file": "docs/09-observability-and-ops/capacity-and-demand-management.md",
-        "hash": "4906312220448756106"
+        "hash": "12993526997748018972"
       },
       {
         "file": "docs/09-observability-and-ops/change-failure-rate-and-velocity-metrics.md",
-        "hash": "10258526902908029855"
+        "hash": "14174149541534277567"
       },
       {
         "file": "docs/09-observability-and-ops/dashboards-and-alerts.md",
-        "hash": "14711861243011316121"
+        "hash": "1289018899124822669"
       },
       {
         "file": "docs/09-observability-and-ops/on-call-and-incident-handbook.md",
-        "hash": "2390717419669832922"
+        "hash": "8691521851422136240"
       },
       {
         "file": "docs/09-observability-and-ops/ops-kpis-and-executive-reporting.md",
-        "hash": "13056422681839905125"
+        "hash": "12634131399305396235"
       },
       {
         "file": "docs/09-observability-and-ops/runbooks-index.md",
-        "hash": "17424023210593111857"
+        "hash": "3015450364780509834"
       },
       {
         "file": "docs/09-observability-and-ops/slos-slas-and-sli-catalog.md",
-        "hash": "8448257085340288530"
+        "hash": "6895679236653686968"
       },
       {
         "file": "docs/10-people-and-policy/README.md",
-        "hash": "17419005123770391145"
+        "hash": "2686952030615159002"
       },
       {
         "file": "docs/10-people-and-policy/code-of-conduct.md",
-        "hash": "5216345444061511154"
+        "hash": "8996341603348106512"
       },
       {
         "file": "docs/10-people-and-policy/ethics-hotline-and-reporting.md",
-        "hash": "4491005794022306594"
+        "hash": "8111186531688452426"
       },
       {
         "file": "docs/10-people-and-policy/performance-and-feedback.md",
-        "hash": "384621717931715146"
+        "hash": "9705955869057018067"
       },
       {
         "file": "docs/10-people-and-policy/recruiting-and-onboarding.md",
-        "hash": "3940807815435281813"
+        "hash": "16437148895085021329"
       },
       {
         "file": "docs/10-people-and-policy/supplier-and-vendor-management.md",
-        "hash": "4928224440290413067"
+        "hash": "8554417075912775746"
       },
       {
         "file": "docs/10-people-and-policy/training-and-continuous-learning.md",
-        "hash": "14050735750161138045"
+        "hash": "2221881701145965271"
       },
       {
         "file": "docs/11-commercial-and-finance/README.md",
-        "hash": "11312606421565465930"
+        "hash": "4758496126000173307"
       },
       {
         "file": "docs/11-commercial-and-finance/customer-success-and-sla-commitments.md",
-        "hash": "10060715772492307941"
+        "hash": "16231673045327253274"
       },
       {
         "file": "docs/11-commercial-and-finance/financial-model-and-unit-economics.md",
-        "hash": "3516927364235040988"
+        "hash": "1496585537439706058"
       },
       {
         "file": "docs/11-commercial-and-finance/go-to-market-plan.md",
-        "hash": "14441165080450959100"
+        "hash": "7980431419397994634"
       },
       {
         "file": "docs/11-commercial-and-finance/pricing-tiers-and-billing-policy.md",
-        "hash": "102227234980191024"
+        "hash": "6645052406120860274"
       },
       {
         "file": "docs/11-commercial-and-finance/sales-playbook-and-enterprise-faq.md",
-        "hash": "13482571502998169928"
+        "hash": "12294848323331729085"
       },
       {
         "file": "docs/12-communications-and-brand/README.md",
-        "hash": "12808936359995809749"
+        "hash": "17997343225289447720"
       },
       {
         "file": "docs/12-communications-and-brand/brand-guidelines.md",
-        "hash": "1472145653373663345"
+        "hash": "1777313992119770648"
       },
       {
         "file": "docs/12-communications-and-brand/crisis-comms-incident-briefing-template.md",
-        "hash": "3373343715657918641"
+        "hash": "375843106648400174"
       },
       {
         "file": "docs/12-communications-and-brand/messaging-and-positioning.md",
-        "hash": "13960349809727404257"
+        "hash": "3212861877895551354"
       },
       {
         "file": "docs/12-communications-and-brand/public-roadmap-and-changelog.md",
-        "hash": "14011475374157836541"
+        "hash": "9214771331473795441"
       },
       {
         "file": "docs/12-communications-and-brand/transparency-reports.md",
-        "hash": "8993540713639119565"
+        "hash": "8968566510436854762"
       },
       {
         "file": "docs/DISASTER-RECOVERY-RUNBOOK.md",
         "hash": "10094448754578859473"
+      },
+      {
+        "file": "docs/INCIDENT-POSTMORTEM.md",
+        "hash": "16185968472545920457"
       },
       {
         "file": "docs/INCIDENT-RESPONSE-PLAN.md",
@@ -2197,11 +2323,11 @@
       },
       {
         "file": "docs/README.md",
-        "hash": "11821203763520143052"
+        "hash": "10253641515171295718"
       },
       {
         "file": "docs/SECURITY-AUDIT-SUMMARY.md",
-        "hash": "5083593534458496218"
+        "hash": "9552219293273270973"
       },
       {
         "file": "docs/api.md",
@@ -2213,39 +2339,51 @@
       },
       {
         "file": "docs/contributing.md",
-        "hash": "6220462015078563296"
+        "hash": "18222563066554329984"
       },
       {
         "file": "docs/document-control/README.md",
-        "hash": "10220795299583978410"
+        "hash": "11459439294398604534"
       },
       {
         "file": "docs/document-control/change-log.md",
-        "hash": "16766478673077893841"
+        "hash": "6930680469830816985"
       },
       {
         "file": "docs/document-control/document-classification-policy.md",
-        "hash": "7874880028742834588"
+        "hash": "5997431836041166357"
       },
       {
         "file": "docs/document-control/retention-and-archiving-policy.md",
-        "hash": "8706806648393976999"
+        "hash": "17113453031654650084"
       },
       {
         "file": "docs/document-control/review-and-approval-workflow.md",
-        "hash": "17601349082628621907"
+        "hash": "9557988590123769205"
       },
       {
         "file": "docs/document-control/templates-index.md",
-        "hash": "15923290550986798148"
+        "hash": "2970679375667103469"
+      },
+      {
+        "file": "docs/document-control/updates/TODO-implementation.md",
+        "hash": "15256417458359212833"
+      },
+      {
+        "file": "docs/document-control/updates/TODO-remediation.md",
+        "hash": "312652900545889987"
+      },
+      {
+        "file": "docs/document-control/updates/TODO.md",
+        "hash": "8363132799883717885"
       },
       {
         "file": "docs/document-control/versioning-policy.md",
-        "hash": "8203984573556249474"
+        "hash": "12167853961310233361"
       },
       {
         "file": "docs/glossary.md",
-        "hash": "14092723401193955305"
+        "hash": "17873011306189248117"
       },
       {
         "file": "docs/onboarding.md",
@@ -2253,7 +2391,7 @@
       },
       {
         "file": "docs/toc.md",
-        "hash": "16819000606713105769"
+        "hash": "63916816148386848"
       },
       {
         "file": "jest.preset.js",
@@ -2262,6 +2400,10 @@
       {
         "file": "jest.setup.js",
         "hash": "9466985928797155198"
+      },
+      {
+        "file": "libs/README.md",
+        "hash": "6944679557676637415"
       },
       {
         "file": "lint-staged.config.js",
@@ -2281,15 +2423,15 @@
       },
       {
         "file": "nx.json",
-        "hash": "14390478742874117638"
+        "hash": "10608125505044689913"
       },
       {
         "file": "package-lock.json",
-        "hash": "7520457436296144081"
+        "hash": "12861625454814754007"
       },
       {
         "file": "package.json",
-        "hash": "14322677555878661860"
+        "hash": "7220376893976586276"
       },
       {
         "file": "public/.well-known/security.txt",
@@ -2312,6 +2454,10 @@
         "hash": "9366215736211483808"
       },
       {
+        "file": "scripts/automation/guard-blackbox.mjs",
+        "hash": "11659065283989563303"
+      },
+      {
         "file": "scripts/automation/self-heal.js",
         "hash": "14003717868891038905"
       },
@@ -2326,6 +2472,10 @@
       {
         "file": "scripts/bootstrap.sh",
         "hash": "15234379175085050183"
+      },
+      {
+        "file": "scripts/build-shared.js",
+        "hash": "3075291366900261386"
       },
       {
         "file": "scripts/check-remote-entry.sh",

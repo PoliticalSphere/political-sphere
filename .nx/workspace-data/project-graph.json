@@ -6,10 +6,16 @@
       "data": {
         "root": "apps/dev/ai/ai-assistant",
         "name": "political-sphere-ai-assistant",
-        "tags": ["npm:public"],
+        "tags": [
+          "npm:public"
+        ],
         "metadata": {
           "targetGroups": {
-            "NPM Scripts": ["build", "start", "dev"]
+            "NPM Scripts": [
+              "build",
+              "start",
+              "dev"
+            ]
           },
           "description": "MCP Server for AI-powered development assistance in Political Sphere",
           "js": {
@@ -31,8 +37,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           },
           "start": {
@@ -61,7 +72,9 @@
           },
           "nx-release-publish": {
             "executor": "@nx/js:release-publish",
-            "dependsOn": ["^nx-release-publish"],
+            "dependsOn": [
+              "^nx-release-publish"
+            ],
             "options": {},
             "configurations": {},
             "parallelism": true
@@ -79,7 +92,9 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "libs/infrastructure",
         "projectType": "library",
-        "tags": ["infra"],
+        "tags": [
+          "infra"
+        ],
         "targets": {
           "plan": {
             "executor": "nx:run-commands",
@@ -133,7 +148,10 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "apps/frontend/src",
         "projectType": "application",
-        "tags": ["scope:frontend", "type:ui"],
+        "tags": [
+          "scope:frontend",
+          "type:ui"
+        ],
         "targets": {
           "build": {
             "executor": "nx:run-commands",
@@ -142,8 +160,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           },
           "serve": {
@@ -182,7 +205,9 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "libs/platform",
         "projectType": "library",
-        "tags": ["platform"],
+        "tags": [
+          "platform"
+        ],
         "targets": {
           "deploy": {
             "executor": "nx:run-commands",
@@ -228,7 +253,9 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "apps/remote",
         "projectType": "application",
-        "tags": ["app"],
+        "tags": [
+          "app"
+        ],
         "targets": {
           "build": {
             "executor": "nx:run-commands",
@@ -237,8 +264,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           },
           "serve": {
@@ -262,7 +294,9 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "libs/shared",
         "projectType": "library",
-        "tags": ["shared"],
+        "tags": [
+          "shared"
+        ],
         "targets": {
           "build": {
             "executor": "nx:run-commands",
@@ -271,8 +305,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           }
         },
@@ -288,7 +327,10 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "apps/worker/src",
         "projectType": "application",
-        "tags": ["scope:worker", "type:service"],
+        "tags": [
+          "scope:worker",
+          "type:service"
+        ],
         "targets": {
           "build": {
             "executor": "nx:run-commands",
@@ -297,8 +339,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           },
           "serve": {
@@ -351,7 +398,9 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "apps/docs",
         "projectType": "application",
-        "tags": ["docs"],
+        "tags": [
+          "docs"
+        ],
         "targets": {
           "build": {
             "executor": "nx:run-commands",
@@ -360,8 +409,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           },
           "serve": {
@@ -400,7 +454,9 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "apps/host",
         "projectType": "application",
-        "tags": ["app"],
+        "tags": [
+          "app"
+        ],
         "targets": {
           "build": {
             "executor": "nx:run-commands",
@@ -409,8 +465,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           },
           "serve": {
@@ -434,7 +495,11 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "apps/api/src",
         "projectType": "application",
-        "tags": ["scope:api", "type:service", "app"],
+        "tags": [
+          "scope:api",
+          "type:service",
+          "app"
+        ],
         "targets": {
           "build": {
             "executor": "nx:run-commands",
@@ -443,8 +508,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           },
           "serve": {
@@ -497,7 +567,9 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "apps/dev",
         "projectType": "application",
-        "tags": ["app"],
+        "tags": [
+          "app"
+        ],
         "targets": {
           "build": {
             "executor": "nx:run-commands",
@@ -506,8 +578,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           },
           "start": {
@@ -553,7 +630,9 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "libs/ci",
         "projectType": "library",
-        "tags": ["ci"],
+        "tags": [
+          "ci"
+        ],
         "targets": {
           "lint": {
             "executor": "nx:run-commands",
@@ -591,7 +670,9 @@
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "sourceRoot": "libs/ui",
         "projectType": "library",
-        "tags": ["ui"],
+        "tags": [
+          "ui"
+        ],
         "targets": {
           "build": {
             "executor": "nx:run-commands",
@@ -600,8 +681,13 @@
             },
             "configurations": {},
             "parallelism": true,
-            "dependsOn": ["^build"],
-            "inputs": ["production", "^production"],
+            "dependsOn": [
+              "^build"
+            ],
+            "inputs": [
+              "production",
+              "^production"
+            ],
             "cache": true
           }
         },
@@ -616,7 +702,9 @@
         "name": "ci-app",
         "$schema": "../../node_modules/nx/schemas/project-schema.json",
         "projectType": "application",
-        "tags": ["ci"],
+        "tags": [
+          "ci"
+        ],
         "targets": {},
         "implicitDependencies": []
       }
@@ -20895,5 +20983,5 @@
   },
   "version": "6.0",
   "errors": [],
-  "computedAt": 1761854570884
+  "computedAt": 1761856096075
 }

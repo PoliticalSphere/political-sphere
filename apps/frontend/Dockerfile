@@ -12,8 +12,8 @@ RUN chown nodejs:nodejs /app
 # Copy package files
 COPY --chown=nodejs:nodejs package.json package-lock.json ./
 
-# Install dependencies (omit dev deps in image builds)
-RUN npm ci --omit=dev --ignore-scripts && \
+# Install dependencies
+RUN npm ci --only=production && \
     npm cache clean --force
 
 FROM base AS production-deps

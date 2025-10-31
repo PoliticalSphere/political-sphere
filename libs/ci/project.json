@@ -1,5 +1,5 @@
 {
-  "name": "ci",
+  "name": "ci-utils",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
   "sourceRoot": "libs/ci",
   "projectType": "library",

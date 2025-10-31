@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |
-| :------------: | :-----: | :----------: | :--------------: | :----------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Draft** |
 
 </div>
 

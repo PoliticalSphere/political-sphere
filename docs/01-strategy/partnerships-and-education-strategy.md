@@ -1,5 +1,16 @@
 # Partnerships and Education Strategy
 
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
+
+</div>
+
+---
+
+
 ## Overview
 
 Political Sphere does not currently have active partnerships or education strategies. This document outlines the potential framework for future collaborations and outreach, aligned with the mission of simulating politics as a system without real-world persuasion or activism.

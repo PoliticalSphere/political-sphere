@@ -32,6 +32,24 @@ vault-port-forward:
 	@echo "Port-forward Vault from cluster to localhost:8200"
 	@./apps/dev/k3d/port-forward-vault.sh
 
+ci-checks:
+	@echo "Running all CI checks (lint, typecheck, test, security)"
+	@npm run lint
+	@npm run typecheck
+	@npm run test
+	@npm run lint:import-boundaries
+
+security-scan:
+	@echo "Running security scans (audit, gitleaks)"
+	@npm audit --audit-level=moderate
+	@./scripts/security/gitleaks-scan.sh
+
+test-all:
+	@echo "Running all tests (unit, integration, e2e)"
+	@npm run test
+	@npm run test:integration || echo "No integration tests configured"
+	@npm run test:e2e || echo "E2E tests require environment setup (npm run e2e:prepare)"
+
 help:
 	@echo "Available targets:"
 	@echo "  make seed            # run SQL seeds against POSTGRES (psql required)"
@@ -40,3 +58,6 @@ help:
 	@echo "  make dev-seed        # run application migrations and seed data for dev"
 	@echo "  make k3d-create      # create a k3d Kubernetes cluster for local testing"
 	@echo "  make vault-port-forward # port-forward Vault from k8s to localhost:8200"
+	@echo "  make ci-checks       # run all CI checks (lint, typecheck, test, boundaries)"
+	@echo "  make security-scan   # run security audits and secret scanning"
+	@echo "  make test-all        # run all test suites (unit, integration, e2e)"

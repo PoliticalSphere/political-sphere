@@ -1,6 +1,6 @@
 {
   "npmScope": "political",
-  "useDaemonProcess": false,
+  "useDaemonProcess": true,
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -44,10 +44,12 @@
     "@nx/next": { "application": { "style": "css", "linter": "eslint" } },
     "@nx/react": { "library": { "linter": "eslint" } }
   },
+  "nxCloudAccessToken": "ZmQ1YmJjMDEtNmQ5OS00ZmY0LWJjNDUtZmIyNjQ1Yzg1ODQyfHJlYWQtd3JpdGU=",
   "tasksRunnerOptions": {
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
+<<<<<<< Updated upstream
         "cacheableOperations": [
           "build",
           "lint",
@@ -55,8 +57,12 @@
           "e2e",
           "test:e2e",
           "lint:boundaries"
-        ],
-        "parallel": 3
+        ]
+=======
+        "cacheableOperations": ["build", "lint", "test", "e2e", "test:e2e", "lint:boundaries"],
+        "parallel": 4,
+        "maxParallel": 4
+>>>>>>> Stashed changes
       }
     }
   },

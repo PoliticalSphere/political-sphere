@@ -1,5 +1,16 @@
 # GitHub Usage Policy
 
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Approved** |
+
+</div>
+
+---
+
+
 This document outlines best practices for safely using GitHub in this repository, ensuring security, collaboration, and compliance with our security policies.
 
 ## General Guidelines

@@ -1,5 +1,16 @@
 # Governance Charter
 
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
+
+</div>
+
+---
+
+
 ## Purpose
 
 This Governance Charter establishes the foundational principles, structures, and processes for governing Political Sphere. It ensures that all decisions — whether platform-level or in-game — are made transparently, accountably, and in alignment with the project's core values of fairness, safety, and ethical containment.

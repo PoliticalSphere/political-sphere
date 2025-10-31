@@ -20,15 +20,34 @@ else
 fi
 
 if ! command -v psql >/dev/null 2>&1; then
-  echo "psql not found in PATH. Install PostgreSQL client or run seeds inside the DB container."
-  echo "You can run: docker exec -i <db-container> psql \"$PSQL_CONN\" -f scripts/seed/seed.sql"
+  echo "❌ ERROR: psql not found in PATH." >&2
+  echo "" >&2
+  echo "To fix this:" >&2
+  echo "  1. Install PostgreSQL client: brew install postgresql (macOS) or apt-get install postgresql-client (Linux)" >&2
+  echo "  2. Or run seeds inside the DB container:" >&2
+  echo "     docker exec -i <db-container> psql \"$PSQL_CONN\" -f scripts/seed/seed.sql" >&2
+  echo "" >&2
   exit 2
 fi
 
-echo "Seeding database at $PSQL_CONN"
+echo "🌱 Seeding database at $PSQL_CONN"
 
-# psql accepts a connection string via the environment variable PGPASSWORD and host/db flags, but
-# we'll use the connection string via --dbname for simplicity.
-PGPASSWORD="${POSTGRES_PASSWORD}" psql "$PSQL_CONN" -f scripts/seed/seed.sql
+# Test connection first
+if ! PGPASSWORD="${POSTGRES_PASSWORD}" psql "$PSQL_CONN" -c "SELECT 1" >/dev/null 2>&1; then
+  echo "❌ ERROR: Cannot connect to database at $PSQL_CONN" >&2
+  echo "" >&2
+  echo "Check that:" >&2
+  echo "  - PostgreSQL is running (try: docker ps | grep postgres)" >&2
+  echo "  - Connection details are correct (POSTGRES_HOST, POSTGRES_PORT, POSTGRES_USER, POSTGRES_PASSWORD)" >&2
+  echo "  - Database '$POSTGRES_DB' exists" >&2
+  echo "" >&2
+  exit 3
+fi
 
-echo "Seed complete."
+# Run seed file
+if ! PGPASSWORD="${POSTGRES_PASSWORD}" psql "$PSQL_CONN" -f scripts/seed/seed.sql; then
+  echo "❌ ERROR: Seed script failed. Check scripts/seed/seed.sql for syntax errors." >&2
+  exit 4
+fi
+
+echo "✅ Seed complete."

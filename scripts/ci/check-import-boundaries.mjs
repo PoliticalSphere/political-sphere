@@ -1,12 +1,14 @@
+#!/usr/bin/env node
 // Lightweight AST-ish checker: strips comments and strings, then detects '../../' style imports.
 // No external dependencies.
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import { execSync } from 'child_process';
 
-import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
+
 const ROOT = path.resolve(__dirname, '../..');
 const REPORT_DIR = path.join(ROOT, 'artifacts');
 const REPORT_FILE = path.join(REPORT_DIR, 'import-boundary-report.txt');

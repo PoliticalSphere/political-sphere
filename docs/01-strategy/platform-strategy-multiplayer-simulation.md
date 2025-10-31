@@ -1,5 +1,16 @@
 # Platform Strategy: Multiplayer Simulation
 
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
+
+</div>
+
+---
+
+
 ## Overview
 
 Political Sphere's platform strategy emphasizes a modular monolith architecture for reliability, server-authoritative gameplay for trust, and ethical AI integration. The focus is on persistent, fair multiplayer worlds with zero-budget scalability.

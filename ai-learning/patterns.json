@@ -1,58 +1,103 @@
 {
-  "successfulPrompts": [],
-  "commonIssues": {
-    "Documentation lint": 2
-  },
-  "userPreferences": {},
-  "qualityImprovements": [
+  "successfulPrompts": [
     {
-      "timestamp": "2025-10-30T15:15:39.017Z",
-      "insight": "Focus on the most frequent guard failures to uplift assistant suggestions.",
-      "guardSample": [
-        {
-          "timestamp": "2025-10-30T14:48:13.975Z",
-          "durationMs": 21121,
-          "status": "failed",
-          "actor": "morganlowman",
-          "checks": [
-            {
-              "name": "ESLint",
-              "status": "passed"
-            },
-            {
-              "name": "TypeScript type check",
-              "status": "passed"
-            },
-            {
-              "name": "Documentation lint",
-              "status": "failed",
-              "reason": "npm run docs:lint failed with exit code 1"
-            }
-          ]
-        },
-        {
-          "timestamp": "2025-10-30T15:15:19.249Z",
-          "durationMs": 18250,
-          "status": "failed",
-          "actor": "morganlowman",
-          "checks": [
-            {
-              "name": "ESLint",
-              "status": "passed"
-            },
-            {
-              "name": "TypeScript type check",
-              "status": "passed"
-            },
-            {
-              "name": "Documentation lint",
-              "status": "failed",
-              "reason": "npm run docs:lint failed with exit code 1"
-            }
-          ]
-        }
-      ]
+      "pattern": "Create a new React component with TypeScript",
+      "successRate": 0.95,
+      "avgResponseTime": 1200,
+      "contextUsed": ["new-component", "architecturalPatterns"],
+      "lastUsed": "2025-10-29T12:00:00.000Z"
+    },
+    {
+      "pattern": "Add API endpoint with validation",
+      "successRate": 0.92,
+      "avgResponseTime": 1500,
+      "contextUsed": ["api-endpoint", "security"],
+      "lastUsed": "2025-10-29T12:00:00.000Z"
     }
   ],
-  "lastUpdated": "2025-10-30T15:15:39.017Z"
+  "commonIssues": {
+    "importBoundaries": {
+      "frequency": 0.15,
+      "solution": "Check module boundaries with Nx",
+      "prevention": "Use proper import paths from index files"
+    },
+    "accessibility": {
+      "frequency": 0.12,
+      "solution": "Add ARIA labels and semantic HTML",
+      "prevention": "Include accessibility in initial design"
+    },
+    "security": {
+      "frequency": 0.08,
+      "solution": "Use environment variables for secrets",
+      "prevention": "Follow zero-trust security principles"
+    }
+  },
+  "userPreferences": {
+    "responseStyle": "technical and direct",
+    "codeStyle": "consistent with project conventions",
+    "testing": "comprehensive but efficient"
+  },
+  "qualityImprovements": [
+    {
+      "area": "Performance",
+      "improvement": "Added caching and fast mode",
+      "impact": "50% faster responses",
+      "date": "2025-10-29"
+    },
+    {
+      "area": "Intelligence",
+      "improvement": "Codebase indexing and knowledge base",
+      "impact": "Context-aware suggestions",
+      "date": "2025-10-29"
+    }
+  ],
+  "performancePatterns": {
+    "fastResponses": [
+      "Simple component creation",
+      "Basic CRUD operations",
+      "Configuration changes"
+    ],
+    "slowResponses": [
+      "Complex multi-file refactoring",
+      "New architecture decisions",
+      "Security-critical changes"
+    ],
+    "cacheableQueries": [
+      "What is the project structure?",
+      "How do I run tests?",
+      "What are the coding standards?",
+      "How do I add a new component?",
+      "What is the deployment process?",
+      "How do I handle errors?",
+      "What are the security requirements?",
+      "How do I update dependencies?"
+    ],
+    "optimizationTips": [
+      "Use caching for repeated queries",
+      "Prioritize essential quality gates for speed",
+      "Batch operations when possible",
+      "Leverage pre-computed results",
+      "Pre-cache common queries using scripts/ai/pre-cache.js",
+      "Use FAST_AI=1 for rapid iteration",
+      "Monitor performance with scripts/ai/performance-monitor.js",
+      "Review slow response patterns in ai-learning/patterns.json"
+    ]
+  },
+  "competenceMetrics": {
+    "architecturalDecisions": {
+      "accuracy": 0.94,
+      "consistency": 0.89,
+      "lastReviewed": "2025-10-29"
+    },
+    "codeQuality": {
+      "lintingPassRate": 0.96,
+      "testCoverage": 0.85,
+      "securityScanPass": 0.98
+    },
+    "errorPrevention": {
+      "caughtIssues": 0.78,
+      "falsePositives": 0.04
+    }
+  },
+  "lastUpdated": "2025-10-29T12:00:00.000Z"
 }

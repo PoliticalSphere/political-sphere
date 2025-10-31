@@ -17,10 +17,5 @@
     "type": "es6"
   },
   "minify": false,
-  "sourceMaps": true,
-  "env": {
-    "test": {
-      "module": "commonjs"
-    }
-  }
+  "sourceMaps": true
 }

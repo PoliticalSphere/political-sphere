@@ -1,5 +1,16 @@
 # Roles and Responsibilities (RACI)
 
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
+
+</div>
+
+---
+
+
 ## Overview
 
 This document defines the Roles and Responsibilities using the RACI matrix (Responsible, Accountable, Consulted, Informed) for key activities in Political Sphere. RACI clarifies who does what, ensuring accountability and preventing overlaps or gaps.

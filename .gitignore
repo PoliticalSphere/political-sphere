@@ -44,3 +44,13 @@ docs/.vitepress/cache/
 # Temporary lock files inside node_modules
 node_modules/.package-lock.json
 node_modules
+
+# AI cache and knowledge base files
+.ps/
+ai-cache/
+ai-logs/
+ai-metrics/
+
+# Nx cache and workspace data
+.nx/cache/
+.nx/workspace-data/

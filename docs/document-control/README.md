@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |
-| :------------: | :-----: | :----------: | :----------------: | :----------: |
-|  🔒 Internal   | `1.0.0` |  2025-10-29  | Documentation Team |  Quarterly   |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `1.0.0` |  2025-10-29  | Documentation Team |  Quarterly   | **Approved** |
 
 </div>
 

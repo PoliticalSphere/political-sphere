@@ -198,12 +198,23 @@ graph LR
 #### 🔐 2.3 Data Protection Impact Assessment (DPIA)
 
 <table>
-<tr><td><b>📍 Location</b></td><td><code>data-protection-impact-assessment-dpia.md</code> (Template section)</td></tr>
+<tr><td><b>📍 Location</b></td><td>🚧 <i>(Template to be extracted from compliance docs)</i></td></tr>
 <tr><td><b>🎯 Purpose</b></td><td>Assess privacy risks for data processing activities</td></tr>
 <tr><td><b>⏱️ When to Use</b></td><td>New data processing • Significant changes • High-risk processing</td></tr>
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>Processing description</code> • <code>Necessity</code> • <code>Risks</code> • <code>Safeguards</code></td></tr>
 <tr><td><b>👥 Review Required</b></td><td>Data Protection Officer (DPO) + Legal</td></tr>
 <tr><td><b>⏰ Est. Time</b></td><td>2-4 days</td></tr>
+</table>
+
+#### 🔒 2.4 Security Risk Assessment
+
+<table>
+<tr><td><b>📍 Location</b></td><td>🚧 <code>security-risk-assessment-template.md</code> <i>(Planned)</i></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Identify, assess, and document security risks</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>New systems • Major updates • Periodic reviews (quarterly)</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Risk identification</code> • <code>Impact analysis</code> • <code>Mitigation plan</code> • <code>Residual risk</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>Security Team + Risk Management</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>4-8 hours</td></tr>
 </table>
 
 ---
@@ -216,7 +227,7 @@ graph LR
 <tr><td><b>📍 Location</b></td><td><a href="../07-ai-and-simulation/model-inventory-and-system-cards/model-card-template.md">model-card-template.md</a></td></tr>
 <tr><td><b>🎯 Purpose</b></td><td>Document model details, performance, limitations, and ethical considerations</td></tr>
 <tr><td><b>⏱️ When to Use</b></td><td>Every ML model deployed to production or used in decision-making</td></tr>
-<tr><td><b>✅ Mandatory Fields</b></td><td><code>Model details</code> • <code>Training data</code> • <code>Performance metrics</code> • <code>Limitations</code> • <code>Ethical considerations</code></td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Mments odel details</code> • <code>Training data</code> • <code>Performance metrics</code> • <code>Limitations</code> • <code>Ethical considerations</code></td></tr>
 <tr><td><b>👥 Review Required</b></td><td>AI Ethics Board + ML Engineering Lead</td></tr>
 <tr><td><b>⏰ Est. Time</b></td><td>4-8 hours</td></tr>
 </table>
@@ -228,10 +239,18 @@ graph LR
 <tr><td><b>🎯 Purpose</b></td><td>Document AI systems comprising multiple models and components</td></tr>
 <tr><td><b>⏱️ When to Use</b></td><td>Multi-model systems • Agent orchestration • Production AI workflows</td></tr>
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>System architecture</code> • <code>Component inventory</code> • <code>Data flows</code> • <code>Safety mechanisms</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>AI Ethics Board + System Architect</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>1-2 days</td></tr>
+</table>
+
+---
+
+### 4️⃣ Operational Documentation
+
 #### 📘 4.1 Runbook
 
 <table>
-<tr><td><b>📍 Location</b></td><td><code>runbooks-index.md</code> (Runbook Template section)</td></tr>
+<tr><td><b>📍 Location</b></td><td><a href="../09-observability-and-ops/runbooks-index.md">runbooks-index.md</a> (Template section)</td></tr>
 <tr><td><b>🎯 Purpose</b></td><td>Step-by-step operational procedures for common tasks and incidents</td></tr>
 <tr><td><b>⏱️ When to Use</b></td><td>Repetitive operational tasks • Incident response procedures</td></tr>
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>Prerequisites</code> • <code>Steps</code> • <code>Verification</code> • <code>Rollback procedure</code></td></tr>
@@ -242,7 +261,7 @@ graph LR
 #### 📊 4.2 Service Level Objective (SLO)
 
 <table>
-<tr><td><b>📍 Location</b></td><td><code>slos-slas-and-sli-catalog.md</code> (SLO Template section)</td></tr>
+<tr><td><b>📍 Location</b></td><td>🚧 <i>(Template to be extracted from observability docs)</i></td></tr>
 <tr><td><b>🎯 Purpose</b></td><td>Define and track reliability targets</td></tr>
 <tr><td><b>⏱️ When to Use</b></td><td>All production services</td></tr>
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>SLI definition</code> • <code>Target</code> • <code>Measurement window</code> • <code>Error budget policy</code></td></tr>
@@ -250,11 +269,20 @@ graph LR
 <tr><td><b>⏰ Est. Time</b></td><td>4-6 hours</td></tr>
 </table>
 
+#### 🚀 4.3 Deployment Plan
+
+<table>
+<tr><td><b>📍 Location</b></td><td>🚧 <code>deployment-plan-template.md</code> <i>(Planned)</i></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Document deployment strategy and rollout plan</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>Major releases • Infrastructure changes • Complex deployments</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Deployment steps</code> • <code>Rollback plan</code> • <code>Success criteria</code> • <code>Communication plan</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>Tech Lead + DevOps + Product Manager</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>4-6 hours</td></tr>
+</table>
+
 ---
 
-### 5️⃣ Product & Design`../09-observability-and-ops/slos-slas-and-sli-catalog.md` (section: SLO Template)
-
-**Purpose:** Define and track reliability targets
+### 5️⃣ Product & Design
 
 #### 🎮 5.1 Game Design Document (GDD)
 
@@ -280,9 +308,7 @@ graph LR
 
 ---
 
-### 6️⃣ Legal & ComplianceD - `templates/user-story-template.md` (planned)
-
-**Purpose:** Define user-facing features with acceptance criteria
+### 6️⃣ Legal & Compliance
 
 #### 🔒 6.1 Privacy Policy
 
@@ -308,14 +334,12 @@ graph LR
 
 ---
 
-### 7️⃣ Change Management`../03-legal-and-compliance/terms-of-service.md`](../03-legal-and-compliance/terms-of-service.md)
-
-**Purpose:** Define contractual relationship with users
+### 7️⃣ Change Management
 
 #### 🔄 7.1 Change Request
 
 <table>
-<tr><td><b>📍 Location</b></td><td><code>change-management-policy.md</code> (Change Request Template section)</td></tr>
+<tr><td><b>📍 Location</b></td><td>🚧 <i>(Template to be extracted from change management docs)</i></td></tr>
 <tr><td><b>🎯 Purpose</b></td><td>Formally request and track changes to production systems</td></tr>
 <tr><td><b>⏱️ When to Use</b></td><td>Production deployments • Infrastructure changes • Configuration updates</td></tr>
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>Change description</code> • <code>Impact analysis</code> • <code>Rollback plan</code> • <code>Approvals</code></td></tr>
@@ -326,7 +350,7 @@ graph LR
 #### 📢 7.2 Release Notes
 
 <table>
-<tr><td><b>📍 Location</b></td><td><code>artifact-management-and-release-notes.md</code> (Template section)</td></tr>
+<tr><td><b>📍 Location</b></td><td>🚧 <i>(Template to be created based on CHANGELOG patterns)</i></td></tr>
 <tr><td><b>🎯 Purpose</b></td><td>Communicate changes to users and stakeholders</td></tr>
 <tr><td><b>⏱️ When to Use</b></td><td>Every production release</td></tr>
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>Version</code> • <code>Date</code> • <code>Features</code> • <code>Improvements</code> • <code>Bug fixes</code> • <code>Breaking changes</code></td></tr>
@@ -336,18 +360,94 @@ graph LR
 
 ---
 
-## ⚙️ Template Governance `../05-engineering-and-devops/ci-cd/artifact-management-and-release-notes.md` (section: Template)
+### 8️⃣ Engineering & Development
 
-**Purpose:** Communicate changes to users and stakeholders  
-**When to Use:** Every production release  
-**Mandatory Fields:** Version, date, new features, improvements, bug fixes, breaking changes  
-**Review Required:** Product Manager + Engineering Lead
+#### 🏗️ 8.1 Technical Design Document (TDD)
+
+<table>
+<tr><td><b>📍 Location</b></td><td>🚧 <code>technical-design-document-template.md</code> <i>(Planned)</i></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Detail technical implementation for features or systems</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>Complex features • System integrations • Architecture changes</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Problem statement</code> • <code>Proposed solution</code> • <code>API design</code> • <code>Data model</code> • <code>Testing strategy</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>Tech Lead + Senior Engineers</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>1-3 days</td></tr>
+</table>
+
+#### 🐛 8.2 Bug Report
+
+<table>
+<tr><td><b>📍 Location</b></td><td>🚧 <code>bug-report-template.md</code> <i>(Planned - use GitHub issue template)</i></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Report software defects with reproducible steps</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>Any unexpected behavior or defect</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Description</code> • <code>Steps to reproduce</code> • <code>Expected behavior</code> • <code>Actual behavior</code> • <code>Environment</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>Engineering Team Triage</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>15-30 minutes</td></tr>
+</table>
 
 ---
 
-## Template Governance
+---
 
-### Version Control
+## 🗺️ Template Roadmap
+
+### 📋 Template Status Legend
+
+| Symbol | Status | Description |
+|:---:|---|---|
+| ✅ | **Active** | Template available and maintained |
+| 🚧 | **In Development** | Template being created or extracted |
+| 📝 | **Planned** | Scheduled for future development |
+| 🔄 | **Under Review** | Template being updated or revised |
+| 🗄️ | **Archived** | Deprecated, kept for historical reference |
+
+### 🎯 Current Template Coverage
+
+**Available Templates (6):**
+- ✅ Architectural Decision Record (ADR)
+- ✅ Request for Comments (RFC)
+- ✅ Incident Postmortem
+- ✅ Model Card
+- ✅ System Card
+- ✅ Game Design Document
+
+**In Development (8):**
+- 🚧 Data Protection Impact Assessment (DPIA)
+- 🚧 Security Risk Assessment
+- 🚧 Service Level Objective (SLO)
+- 🚧 Deployment Plan
+- 🚧 Change Request
+- 🚧 Release Notes
+- 🚧 Technical Design Document (TDD)
+- 🚧 Runbook (standardizing existing)
+
+**Planned Q1 2026 (5):**
+- 📝 User Story / Feature Specification
+- 📝 Bug Report (standardized)
+- 📝 Test Plan
+- 📝 API Documentation Template
+- 📝 Onboarding Checklist
+
+### 🎯 Development Priorities
+
+**High Priority** (Blocking work or regulatory requirement):
+1. Data Protection Impact Assessment (DPIA) - GDPR compliance
+2. Security Risk Assessment - Security audit requirement
+3. Change Request - Production change management
+
+**Medium Priority** (Improving efficiency):
+4. Technical Design Document - Engineering workflow
+5. Deployment Plan - DevOps standardization
+6. Release Notes - Communication consistency
+
+**Low Priority** (Nice to have):
+7. User Story Template - Agile workflow support
+8. Bug Report Template - Quality process improvement
+
+---
+
+## ⚙️ Template Governance
+
+### 📦 Version Control
 
 - All templates are version-controlled in the repository at `docs/document-control/templates/`
 - Template versions follow semantic versioning (MAJOR.MINOR.PATCH)
@@ -409,71 +509,119 @@ Before approving new templates:
 
 ---
 
-## Template Metrics & Usage
+## 📊 Template Metrics & Usage
 
-### Adoption Tracking
+### 📈 Adoption Tracking
 
 We track the following metrics to ensure template effectiveness:
 
-**Usage Metrics:**
+<details>
+<summary><b>📊 Usage Metrics</b></summary>
 
-- Template adoption rate (% of documents using approved templates)
-- Template coverage (% of document types with approved templates)
-- Template completion rate (started vs. published documents)
-- Time-to-complete by template type (p50, p90, p99)
-- Automation rate (% of documents created via CLI/tooling vs. manual)
+<br>
 
-**Quality Metrics:**
+| Metric | Description | Target |
+|---|---|---|
+| **Template Adoption Rate** | % of documents using approved templates | ≥95% |
+| **Template Coverage** | % of document types with templates | ≥80% |
+| **Template Completion Rate** | Started vs. published documents | ≥85% |
+| **Time-to-Complete** | Median time by template type | Varies |
+| **Automation Rate** | % of documents created via CLI vs. manual | ≥60% |
 
-- Template satisfaction scores (post-creation NPS survey)
-- Reviewer satisfaction (time spent reviewing, clarity of submissions)
-- Template deviation requests (frequency and reasons)
-- Document quality scores (from reviewers using rubric)
-- First-time-right rate (documents requiring <2 revision cycles)
+</details>
 
-**Compliance Metrics:**
+<details>
+<summary><b>⭐ Quality Metrics</b></summary>
 
-- Audit finding rate (findings attributable to template gaps)
-- Mandatory field completion rate
-- Compliance coverage map (which regulations each template addresses)
-- Override usage (frequency of emergency overrides)
+<br>
 
-**Business Impact Metrics:**
+| Metric | Description | Target |
+|---|---|---|
+| **Template Satisfaction** | Post-creation NPS survey score | ≥4.2/5.0 |
+| **Reviewer Satisfaction** | Time and clarity of submissions | ≥4.5/5.0 |
+| **Deviation Requests** | Frequency and reasons | <5% |
+| **Document Quality Score** | Reviewer rubric scores | ≥80% |
+| **First-Time-Right Rate** | Documents requiring <2 revisions | ≥70% |
 
-- Document creation velocity (documents/week trend)
-- Review cycle time (submission to approval)
-- Onboarding impact (time-to-first-document for new hires)
-- Template ROI (time saved × hourly rate × usage count)
+</details>
 
-### Success Criteria
+<details>
+<summary><b>✅ Compliance Metrics</b></summary>
 
-**Tier 1 (Mandatory):**
+<br>
 
-- ≥95% of documents in scope use approved templates
-- ≥4.2/5.0 average satisfaction rating
-- <5% deviation requests requiring template updates
-- 100% of critical compliance areas covered by templates
-- ≥90% mandatory field completion rate
+| Metric | Description | Target |
+|---|---|---|
+| **Audit Finding Rate** | Findings attributable to template gaps | <2% |
+| **Mandatory Field Completion** | % of required fields completed | ≥90% |
+| **Compliance Coverage** | Regulations addressed by templates | 100% |
+| **Override Usage** | Emergency override frequency | <1% |
 
-**Tier 2 (Target):**
+</details>
 
-- ≥60% automation rate for routine documents
-- ≤2 revision cycles for 80% of documents
-- ≤24h median time from template to published (simple templates)
-- ≥4.5/5.0 reviewer satisfaction with submission quality
+<details>
+<summary><b>💼 Business Impact Metrics</b></summary>
 
-**Tier 3 (Aspirational):**
+<br>
 
-- AI-assisted template suggestions (coming Q2 2026)
-- Real-time collaborative editing integrated
-- Automated translation for 5+ languages
-- Zero-touch approval for low-risk, validated documents
+| Metric | Description | Tracking |
+|---|---|---|
+| **Document Velocity** | Documents created per week (trend) | 📈 Increasing |
+| **Review Cycle Time** | Submission to approval duration | 📉 Decreasing |
+| **Onboarding Impact** | Time-to-first-document for new hires | <2 days |
+| **Template ROI** | Time saved × hourly rate × usage | $XX,XXX/quarter |
 
-### Metrics Dashboard
+</details>
 
-Live metrics available at: `https://metrics.politicalsphere.com/templates`  
-Updated: Hourly  
-Access: All employees
+### 🎯 Success Criteria
+
+<table>
+<tr>
+<th width="25%">Tier</th>
+<th>Criteria</th>
+<th width="15%">Status</th>
+</tr>
+<tr>
+<td><b>🔴 Tier 1</b><br><i>Mandatory</i></td>
+<td>
+• ≥95% template adoption<br>
+• ≥4.2/5.0 satisfaction rating<br>
+• <5% deviation requests<br>
+• 100% compliance coverage<br>
+• ≥90% mandatory field completion
+</td>
+<td>🚧 In Progress</td>
+</tr>
+<tr>
+<td><b>🟡 Tier 2</b><br><i>Target</i></td>
+<td>
+• ≥60% automation rate<br>
+• ≤2 revision cycles (80%)<br>
+• ≤24h median publish time<br>
+• ≥4.5/5.0 reviewer satisfaction
+</td>
+<td>📝 Planned</td>
+</tr>
+<tr>
+<td><b>🟢 Tier 3</b><br><i>Aspirational</i></td>
+<td>
+• AI-assisted suggestions<br>
+• Real-time collaboration<br>
+• 5+ language support<br>
+• Zero-touch approval
+</td>
+<td>🔮 Future</td>
+</tr>
+</table>
+
+### 📍 Metrics Dashboard
+
+> **Note:** Metrics dashboard is under development
+
+- **Future Location:** `https://metrics.politicalsphere.com/templates`
+- **Update Frequency:** Hourly (when available)
+- **Access:** All employees
+- **Current Status:** Manual tracking in progress
 
 ---
 
@@ -514,6 +662,8 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 
 - Generally available
 - Periodic reviews and updates
+
+---
 
 ## 📊 Quick Reference Matrix
 
@@ -575,7 +725,7 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 <td><code>dpia.md</code></td>
 <td>DPO + Legal</td>
 <td>2-4 days</td>
-<td><a href="../03-legal-and-compliance/data-protection/data-protection-impact-assessment-dpia.md">📎</a></td>
+<td>📎 <i>(See GDPR compliance section)</i></td>
 </tr>
 <tr>
 <td>🛡️ Threat Model</td>
@@ -584,8 +734,33 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 <td>4-6 hours</td>
 <td><a href="../06-security-and-risk/threat-modeling-stride.md">📎</a></td>
 </tr>
+<tr>
+<td>🎮 Game Design</td>
+<td><code>game-design-document-gdd.md</code></td>
+<td>Game Design Lead</td>
+<td>1-3 days</td>
+<td><a href="../08-game-design-and-mechanics/game-design-document-gdd.md">📎</a></td>
+</tr>
+<tr>
+<td>🔒 Privacy Policy</td>
+<td><code>privacy-policy.md</code></td>
+<td>Legal + Executive</td>
+<td>3-5 days</td>
+<td><a href="../03-legal-and-compliance/privacy-policy.md">📎</a></td>
+</tr>
+<tr>
+<td>📜 Terms of Service</td>
+<td><code>terms-of-service.md</code></td>
+<td>Legal + Executive</td>
+<td>3-5 days</td>
+<td><a href="../03-legal-and-compliance/terms-of-service.md">📎</a></td>
+</tr>
 </tbody>
 </table>
+
+---
+
+## ❓ Frequently Asked Questions
 
 ---
 
@@ -597,40 +772,173 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 | Model Card | [model-card-template.md](../07-ai-and-simulation/model-inventory-and-system-cards/model-card-template.md) | AI Ethics Board | 4-8 hours |
 | System Card | [system-card-template.md](../07-ai-and-simulation/model-inventory-and-system-cards/system-card-template.md) | AI Governance | 1-2 days |
 | Runbook | See runbooks-index | SRE Review | 3-5 hours |
-| DPIA | See DPIA doc | DPO + Legal | 2-4 days |
-| Threat Model | See threat-modeling | Security Team | 4-6 hours |
+---
+
+## 💡 Best Practices
+
+### ✍️ Template Usage Guidelines
+
+<details>
+<summary><b>1. Choose the Right Template</b></summary>
+
+<br>
+
+✅ **DO:**
+- Review template purpose and "when to use" guidance
+- Check example documents before starting
+- Select the most specific template available
+- Ask for help if unsure (#documentation channel)
+
+❌ **DON'T:**
+- Force-fit content into wrong template
+- Skip mandatory sections without justification
+- Use outdated template versions
+- Ignore template instructions
+
+</details>
+
+<details>
+<summary><b>2. Complete Templates Thoroughly</b></summary>
+
+<br>
+
+✅ **DO:**
+- Fill all mandatory fields completely
+- Provide context and rationale
+- Use clear, concise language
+- Include relevant links and references
+- Follow formatting conventions
+
+❌ **DON'T:**
+- Leave placeholder text ("TODO", "TBD") - use specific values instead
+- Copy-paste without customization - adapt content to your specific context
+- Leave placeholder text ("TODO", "TBD")
+- Copy-paste without customization
+- Skip validation steps
+- Forget to remove template instructions
+
+</details>
+
+<details>
+<summary><b>3. Review Before Submission</b></summary>
+
+<br>
+
+✅ **DO:**
+- Run automated validation (when available)
+- Spell-check and grammar-check
+- Verify all links work
+- Check document classification
+- Test code examples (if applicable)
+- Get peer review before formal submission
+
+❌ **DON'T:**
+- Submit first draft without review
+- Ignore validation warnings
+- Skip stakeholder alignment
+- Rush through review checklist
+
+</details>
+
+<details>
+<summary><b>4. Maintain and Update</b></summary>
+
+<br>
+
+✅ **DO:**
+- Update documents when information changes
+- Archive obsolete documents properly
+- Follow versioning policy
+- Document significant revisions
+- Set review reminders
+
+❌ **DON'T:**
+- Let documents become stale
+- Make major changes without new version
+- Delete without archiving
+- Ignore scheduled review dates
+
+</details>
+
+### 🎯 Template Effectiveness Tips
+
+| Tip | Description | Impact |
+|:---:|---|---|
+| 🚀 | **Start Early** - Begin documentation during planning, not after implementation | High |
+| 👥 | **Collaborate** - Involve stakeholders throughout, not just at review | High |
+| 📝 | **Iterate** - Treat documents as living artifacts, update as you learn | Medium |
+| 🔗 | **Link** - Connect related documents, avoid duplication | Medium |
+| 🎨 | **Visualize** - Use diagrams, tables, and structured data | Medium |
+| 📊 | **Quantify** - Include metrics, costs, timelines where relevant | Low |
 
 ---
 
-## Training & Resources
+## 🎓 Training & Resources
 
-### Getting Started
+### 📚 Getting Started
 
-- **Video Tutorial:** [Using Templates Effectively](https://training.politicalsphere.com/templates-101) (12 min)
-- **Live Workshop:** "Documentation Excellence" - Second Thursday each month, 10 AM UTC
-- **Office Hours:** Tuesdays 2-3 PM UTC (#docs-office-hours)
-- **Quick Start Guide:** `docs/training/template-quick-start.md`
+<table>
+<tr>
+<td width="25%"><b>🎥 Video Tutorial</b></td>
+<td><a href="https://training.politicalsphere.com/templates-101">Using Templates Effectively</a> (12 min)</td>
+</tr>
+<tr>
+<td><b>🔴 Live Workshop</b></td>
+<td>"Documentation Excellence" - Second Thursday each month, 10 AM UTC</td>
+</tr>
+<tr>
+<td><b>🕒 Office Hours</b></td>
+<td>Tuesdays 2-3 PM UTC in <code>#docs-office-hours</code></td>
+</tr>
+<tr>
+<td><b>📖 Quick Start</b></td>
+<td><code>docs/training/template-quick-start.md</code> 🚧 <i>(Coming soon)</i></td>
+</tr>
+</table>
 
-### Advanced Topics
+### 🔧 Advanced Topics
 
-- **Creating Custom Templates:** [Template Developer Guide](./template-developer-guide.md)
-- **Automation & Tooling:** [CLI Documentation](../../scripts/docs-cli/README.md)
-- **Accessibility Best Practices:** [A11y Guide for Docs](./accessibility-guidelines.md)
-- **Internationalization:** [i18n Strategy for Documentation](./i18n-strategy.md)
+<table>
+<tr>
+<td width="40%"><b>Creating Custom Templates</b></td>
+<td>🚧 <i>Template Developer Guide (Planned Q1 2026)</i></td>
+</tr>
+<tr>
+<td><b>Automation & Tooling</b></td>
+<td><a href="../../scripts/README.md">CLI Documentation</a></td>
+</tr>
+<tr>
+<td><b>Accessibility Best Practices</b></td>
+<td>🚧 <i>A11y Guide for Docs (Planned Q1 2026)</i></td>
+</tr>
+<tr>
+<td><b>Internationalization</b></td>
+<td>🚧 <i>i18n Strategy (Planned Q1 2026)</i></td>
+</tr>
+</table>
 
-### Example Documents
+### 📝 Example Documents
 
-Browse completed examples for each template:
-
-- **Repository:** `docs/examples/` (private repo)
-- **Web Gallery:** [Document Examples](https://docs.politicalsphere.com/examples) (internal)
-- **Anonymized Public Examples:** Selected sanitized examples available externally
+<table>
+<tr>
+<td width="25%"><b>📁 Repository</b></td>
+<td>🚧 <code>docs/examples/</code> <i>(Directory to be created)</i></td>
+</tr>
+<tr>
+<td><b>🌐 Web Gallery</b></td>
+<td>🚧 <i>Document Examples Portal (Planned)</i></td>
+</tr>
+<tr>
+<td><b>🔓 Public Examples</b></td>
+<td>Selected anonymized examples available upon request</td>
+</tr>
+</table>
 
 ---
 
-## Automation & Tooling
+## 🤖 Automation & Tooling
 
-### CLI Tools
+### 💻 CLI Tools
 
 ```bash
 # Generate new document from template
@@ -646,130 +954,266 @@ npm run strip-instructions -- docs/path/to/document.md
 npm run compliance-check -- docs/03-legal-and-compliance/privacy-policy.md
 ```
 
-### IDE Integration
+> **Note:** CLI tools are under development. See `scripts/` directory for current automation capabilities.
 
-**VS Code Extension:** "Political Sphere Docs"
+### 🔌 IDE Integration
 
-- Template picker with preview
-- Auto-completion for mandatory fields
-- Inline validation and linting
-- One-click compliance check
-- Snippet library for common sections
+<table>
+<tr>
+<td width="30%"><b>VS Code Extension</b></td>
+<td>🚧 "Political Sphere Docs" <i>(Planned Q2 2026)</i>
+<ul>
+<li>Template picker with preview</li>
+<li>Auto-completion for mandatory fields</li>
+<li>Inline validation and linting</li>
+<li>One-click compliance check</li>
+<li>Snippet library for common sections</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td><b>JetBrains Plugin</b></td>
+<td>🚧 <i>(Planned Q3 2026)</i></td>
+</tr>
+</table>
 
-**JetBrains Plugin:** Available in marketplace (search "Political Sphere")
-
-### API Access (Beta)
+### 🔗 API Access (Beta)
 
 Programmatic template access for automated workflows:
 
 ```bash
-# REST API
+# REST API (Planned)
 GET /api/v1/templates
 GET /api/v1/templates/{template-id}
-POST /api/v1/documents (create from template)
+POST /api/v1/documents
 
-# GraphQL
+# GraphQL (Planned)
 query { templates { id name description } }
 ```
 
-**Documentation:** [Templates API Reference](https://api-docs.politicalsphere.com/templates)
+> **Status:** API development planned for H2 2026. For now, templates are accessed directly via repository.
 
 ---
 
-## Accessibility & Internationalization
+## ♿ Accessibility & Internationalization
 
-### Accessibility Commitment
+### 🎯 Accessibility Commitment
 
-All templates meet WCAG 2.1 AA standards:
+All templates meet **WCAG 2.1 AA** standards:
 
-- ✅ Screen reader compatible (semantic HTML/Markdown)
-- ✅ Sufficient color contrast (for any formatting)
-- ✅ Keyboard navigable (in web interfaces)
-- ✅ Plain language (Flesch-Kincaid Grade 8-10)
-- ✅ Alternative formats available (Word, Google Docs upon request)
+<table>
+<tr>
+<td width="35%">✅ <b>Screen Reader Compatible</b></td>
+<td>Semantic HTML/Markdown structure</td>
+</tr>
+<tr>
+<td>✅ <b>Color Contrast</b></td>
+<td>Sufficient contrast ratios for all text</td>
+</tr>
+<tr>
+<td>✅ <b>Keyboard Navigation</b></td>
+<td>Fully navigable without mouse</td>
+</tr>
+<tr>
+<td>✅ <b>Plain Language</b></td>
+<td>Flesch-Kincaid reading level 8-10</td>
+</tr>
+<tr>
+<td>✅ <b>Alternative Formats</b></td>
+<td>Word, Google Docs available on request</td>
+</tr>
+</table>
 
-### Language Support
+### 🌍 Language Support
 
-**Current:** English (primary)  
-**Planned Q1 2026:**
+**Current Status:** English (en-US) only  
+**Planned Expansion (Q1 2026):**
 
-- Spanish (es)
-- French (fr)
-- German (de)
-- Mandarin Chinese (zh-CN)
+- 🇪🇸 Spanish (es)
+- 🇫🇷 French (fr)
+- 🇩🇪 German (de)
+- 🇨🇳 Mandarin Chinese (zh-CN)
 
 **Translation Process:**
 
-- Professional translation service for templates
-- Native speaker review for domain accuracy
-- Maintain template structure across languages
-- Automated synchronization of template updates
+1. Professional translation service for templates
+2. Native speaker review for domain accuracy
+3. Maintain template structure across languages
+4. Automated synchronization of template updates
 
-### Inclusive Language
+### 🤝 Inclusive Language
 
 Templates use inclusive, bias-free language:
 
-- Gender-neutral terms
-- Culturally sensitive examples
-- Accessible jargon-free instructions
-- International date/time formats
+- **Gender-neutral terms** (e.g., "they/them" instead of "he/she")
+- **Culturally sensitive examples** (diverse names, scenarios)
+- **Accessible jargon-free instructions** (or jargon explained)
+- **International formats** (ISO 8601 dates, 24-hour time)
 
 ---
 
-## Compliance & Audit Trail
+## ⚖️ Compliance & Audit Trail
 
-### Regulatory Mapping
+### 📋 Regulatory Mapping
 
 Each template is mapped to applicable regulations:
 
-- **GDPR** (EU General Data Protection Regulation)
-- **EU AI Act** (High-Risk AI Systems)
-- **SOC 2** (Security & Privacy controls)
-- **ISO 27001** (Information Security)
-- **WCAG 2.1** (Web Accessibility)
+<table>
+<tr>
+<td width="25%"><b>🇪🇺 GDPR</b></td>
+<td>EU General Data Protection Regulation</td>
+</tr>
+<tr>
+<td><b>🤖 EU AI Act</b></td>
+<td>High-Risk AI Systems compliance</td>
+</tr>
+<tr>
+<td><b>🔒 SOC 2</b></td>
+<td>Security & Privacy controls</td>
+</tr>
+<tr>
+<td><b>🛡️ ISO 27001</b></td>
+<td>Information Security Management</td>
+</tr>
+<tr>
+<td><b>♿ WCAG 2.1</b></td>
+<td>Web Content Accessibility Guidelines</td>
+</tr>
+</table>
 
-**Compliance Matrix:** See `docs/03-legal-and-compliance/regulatory-mapping-and-gap-analysis.md`
+**Detailed Mapping:** See [Regulatory Mapping & Gap Analysis](../03-legal-and-compliance/regulatory-mapping-and-gap-analysis.md)
 
-### Audit Requirements
+### 🔍 Audit Requirements
 
 For audit purposes, documents created from templates must:
 
-1. **Retain template metadata** (version, creation date, author)
-2. **Document deviations** (if any mandatory sections omitted)
-3. **Maintain approval trail** (who approved, when, digital signatures)
-4. **Version history** (all revisions preserved)
-5. **Retention compliance** (per [retention policy](./retention-and-archiving-policy.md))
+| # | Requirement | Details |
+|:---:|---|---|
+| 1️⃣ | **Retain Metadata** | Template version, creation date, author |
+| 2️⃣ | **Document Deviations** | Explain any omitted mandatory sections |
+| 3️⃣ | **Approval Trail** | Who approved, when, digital signatures |
+| 4️⃣ | **Version History** | All revisions preserved in Git |
+| 5️⃣ | **Retention Compliance** | Per [retention policy](./retention-and-archiving-policy.md) |
 
-### Automated Compliance Checks
+### ✅ Automated Compliance Checks
 
-Pre-commit hooks validate:
+Pre-commit hooks and CI/CD pipelines validate:
 
-- All mandatory fields completed
-- Sensitive data properly classified
-- Required approvals obtained
-- Versioning metadata present
-- Accessibility standards met
+- ✓ All mandatory fields completed
+- ✓ Sensitive data properly classified
+- ✓ Required approvals obtained
+- ✓ Versioning metadata present
+- ✓ Accessibility standards met
+- ✓ No prohibited language or content
 
 ---
 
-## Frequently Asked Questions
+## ❓ Frequently Asked Questions
 
-### Q: Can I modify a template for my specific use case?
+<details>
+<summary><b>Q: Can I modify a template for my specific use case?</b></summary>
+
+<br>
 
 **A:** Yes, with constraints:
 
-- **Minor adaptations** (reordering optional sections, adding context): Allowed, document in preamble
-- **Major modifications** (removing mandatory sections, changing structure): Requires RFC + approval
-- **Domain-specific additions:** Encouraged, consider proposing as template enhancement
+- **Minor adaptations** (reordering optional sections, adding context): ✅ Allowed, document in preamble
+- **Major modifications** (removing mandatory sections, changing structure): ⚠️ Requires RFC + approval
+- **Domain-specific additions:** ✅ Encouraged, consider proposing as template enhancement
 
-### Q: What if no template exists for my document type?
+</details>
+
+<details>
+<summary><b>Q: What if no template exists for my document type?</b></summary>
+
+<br>
 
 **A:** Follow this decision tree:
 
-1. Can an existing template be adapted? → Use it + provide feedback
-2. Is this a one-time document? → Start from scratch, no template needed
-3. Will this document type recur? → Request new template (standard process)
-4. Is this urgent? → Use emergency override + create template retrospectively
+```mermaid
+graph TD
+    A[No template exists] --> B{Can existing be adapted?}
+    B -->|Yes| C[Use it + provide feedback]
+    B -->|No| D{One-time document?}
+    D -->|Yes| E[Start from scratch]
+    D -->|No| F{Will it recur?}
+    F -->|Yes| G[Request new template]
+    F -->|Urgent| H[Emergency override]
+```
+
+1. **Can an existing template be adapted?** → Use it + provide feedback
+2. **Is this a one-time document?** → Start from scratch, no template needed
+3. **Will this document type recur?** → Request new template (standard process)
+4. **Is this urgent?** → Use emergency override + create template retrospectively
+
+</details>
+
+<details>
+<summary><b>Q: Can I use templates in other languages?</b></summary>
+
+<br>
+
+**A:** Currently **English only**. Multilingual support planned Q1 2026.
+
+For urgent needs, contact Documentation Team for manual translation assistance.
+
+</details>
+
+<details>
+<summary><b>Q: How do I contribute a template improvement?</b></summary>
+
+<br>
+
+**A:** Follow these steps:
+
+1. 🍴 Fork the repository
+2. ✏️ Make changes in `docs/document-control/templates/`
+3. 📤 Submit PR including:
+   - Description of problem/improvement
+   - Example showing before/after
+   - Verification you've tested with real document
+4. 👀 Documentation Team reviews within **5 business days**
+5. ✅ If approved, changes are merged and versioned
+
+</details>
+
+<details>
+<summary><b>Q: What's the SLA for template requests?</b></summary>
+
+<br>
+
+**A:** Service Level Agreements:
+
+| Stage | Timeline |
+|---|---|
+| **Acknowledgment** | 2 business days |
+| **Initial Review** | 5 business days |
+| **Development** (if approved) | 10 business days (1 sprint) |
+| **Urgent/Critical** | 24-48 hours (emergency process) |
+
+</details>
+
+<details>
+<summary><b>Q: How do I know if my document meets template requirements?</b></summary>
+
+<br>
+
+**A:** Use automated validation (when available):
+
+```bash
+npm run validate:doc -- path/to/document.md
+```
+
+Returns:
+- ✅ Compliance status
+- ⚠️ Warnings (missing optional sections)
+- ❌ Errors (missing mandatory fields)
+- 📊 Quality score
+- 🔍 Suggestions for improvement
+
+**Note:** Validation tools are currently under development.
+
+</details>
 
 ---
 
@@ -777,7 +1221,7 @@ Pre-commit hooks validate:
 
 <table>
 <tr>
-<td>📌 <a href="./versioning-policy.md"><b>Versioning Policy</b></a></td>
+<td width="50%">📌 <a href="./versioning-policy.md"><b>Versioning Policy</b></a></td>
 <td>How documents and templates are versioned</td>
 </tr>
 <tr>
@@ -791,6 +1235,14 @@ Pre-commit hooks validate:
 <tr>
 <td>📝 <a href="./change-log.md"><b>Change Log</b></a></td>
 <td>History of template changes</td>
+</tr>
+<tr>
+<td>🗂️ <a href="./retention-and-archiving-policy.md"><b>Retention & Archiving Policy</b></a></td>
+<td>Document lifecycle and retention requirements</td>
+</tr>
+<tr>
+<td>📖 <a href="./README.md"><b>Document Control Home</b></a></td>
+<td>Overview of document control system</td>
 </tr>
 </table>
 
@@ -807,17 +1259,17 @@ Pre-commit hooks validate:
 - 📧 **Email:** docs@politicalsphere.com
 - 💬 **Slack:** `#documentation`
 - 🕒 **Office Hours:** Tuesdays 2-3 PM UTC
-- 📺 **Zoom:** [Join Office Hours](https://zoom.us/docs-office-hours)
+- 📍 **Location:** Virtual (Zoom link in Slack)
 
 </td>
 <td width="50%">
 
 ### 📬 Template Requests & Feedback
 
-- 🐛 **GitHub Issues:** Use label `template-feedback` or `template-request`
+- 🐛 **GitHub Issues:** Label `template-feedback` or `template-request`
 - 💡 **RFC Process:** For significant template changes
 - 🚨 **Urgent:** `#docs-urgent` Slack channel
-- 📊 **Survey:** Quarterly feedback survey (automated)
+- 📊 **Feedback:** Quarterly survey (automated)
 
 </td>
 </tr>
@@ -832,7 +1284,7 @@ Pre-commit hooks validate:
 |         Field         |          Value          |
 | :-------------------: | :---------------------: |
 | 🏷️ **Classification** |        Internal         |
-|    🔢 **Version**     |         `1.0.0`         |
+|    🔢 **Version**     |         `1.1.0`         |
 |  📅 **Last Review**   |       2025-10-29        |
 |  🔄 **Next Review**   |       2026-01-29        |
 |    ✍️ **Approver**    | Documentation Team Lead |
@@ -842,77 +1294,3 @@ Pre-commit hooks validate:
 **Made with ❤️ by the Political Sphere Documentation Team**
 
 </div>
-### Q: Can I use templates in other languages?
-**A:** Currently English only. Planned multilingual support Q1 2026. For urgent needs, contact Documentation Team for manual translation assistance.
-
-### Q: How do I contribute a template improvement?
-
-**A:**
-
-1. Fork repository
-2. Make changes in `docs/document-control/templates/`
-3. Submit PR with:
-   - Description of problem/improvement
-   - Example showing before/after
-   - Verification you've tested with real document
-4. Documentation Team reviews within 5 business days
-5. If approved, merged and versioned
-
-### Q: What's the SLA for template requests?
-
-**A:**
-
-- **Acknowledgment:** 2 business days
-- **Initial review:** 5 business days
-- **Development (if approved):** 10 business days (1 sprint)
-- **Urgent/Critical:** 24-48 hours (emergency process)
-
-### Q: How do I know if my document meets template requirements?
-
-**A:** Use automated validation:
-
-```bash
-npm run validate:doc -- path/to/document.md
-```
-
-Returns:
-
-- ✅ Compliance status
-- ⚠️ Warnings (missing optional sections)
-- ❌ Errors (missing mandatory fields)
-- 📊 Quality score
-- 🔍 Suggestions for improvement
-
----
-
-## Related Documentation
-
-- [Versioning Policy](./versioning-policy.md) - How documents and templates are versioned
-- [Document Classification Policy](./document-classification-policy.md) - Security classifications for documents
-- [Review and Approval Workflow](./review-and-approval-workflow.md) - Review processes for documents
-- [Change Log](./change-log.md) - History of template changes
-
----
-
-## Contact & Support
-
-**Documentation Team:**
-
-- Email: docs@politicalsphere.com
-- Slack: #documentation
-- Office Hours: Tuesdays 2-3 PM UTC
-
-**Template Requests & Feedback:**
-
-- GitHub Issues: Use label `template-feedback` or `template-request`
-- RFC Process: For significant template changes
-
----
-
-**Document Control:**
-
-- Classification: Internal
-- Version: 1.0.0
-- Last Review: 2025-10-29
-- Next Review: 2026-01-29
-- Approver: Documentation Team Lead

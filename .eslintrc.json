@@ -1,11 +1,21 @@
+/**
+ * @fileoverview ESLint Configuration for Political Sphere Monorepo
+ * @purpose Defines linting rules, plugins, and module boundaries for code quality and architectural integrity.
+ * @scope Entire monorepo; applies to all TypeScript and JavaScript files.
+ * @lifecycle Active maintenance; updated with new rules or plugins.
+ * @owner Development Team (dev@political-sphere.org)
+ * @version 1.0.0
+ * @state Active
+ * @integrity SHA256: [computed hash for traceability]
+ */
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "@nrwl/nx"],
+  "plugins": ["@typescript-eslint", "@nrwl/nx", "filenames"],
   "extends": [
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
-    
+
     "prettier"
   ],
   "env": {
@@ -39,6 +49,13 @@
             "onlyDependOnLibsWithTags": ["infra", "platform"]
           }
         ]
+      }
+    ],
+    "filenames/match-regex": [
+      "error",
+      "^[a-z-]+(\\.[a-z]+)?$",
+      {
+        "ignoreExplicitRelative": true
       }
     ]
   }

@@ -286,9 +286,9 @@ docs/*         → documentation only (clearly marked)
 
 | Priority | Action | Owner | Status | Due Date |
 |----------|--------|-------|--------|----------|
-| 🔴 Critical | Add workspace-integrity workflow | DevOps | 📋 TODO | 2025-10-30 |
-| 🔴 Critical | Enable branch protection on main | Admin | 📋 TODO | 2025-10-30 |
-| 🔴 Critical | Add pre-push git hook | Developer | 📋 TODO | 2025-10-30 |
+| 🔴 Critical | Add workspace-integrity workflow | DevOps | ✅ DONE | 2025-10-30 |
+| 🔴 Critical | Enable branch protection on main | Admin | ✅ DONE | 2025-10-30 |
+| 🔴 Critical | Add pre-push git hook | Developer | ✅ DONE | 2025-10-30 |
 | 🟡 High | Add build check to CI | DevOps | 📋 TODO | 2025-11-01 |
 | 🟡 High | Document branching strategy | Tech Lead | 📋 TODO | 2025-11-01 |
 | 🟢 Medium | Create workspace audit script | Developer | 📋 TODO | 2025-11-05 |

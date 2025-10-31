@@ -1,5 +1,16 @@
 # AI Strategy and Differentiation
 
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
+
+</div>
+
+---
+
+
 ## Overview
 
 Political Sphere uses AI ethically and constrainedly to enhance gameplay without compromising safety, fairness, or the simulation's integrity. AI is a tool for immersion and efficiency, not persuasion or ideology.

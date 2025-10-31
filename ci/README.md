@@ -1,20 +1,54 @@
-# CI / CD Guide
+# CI Automation Project
 
-This repo runs a multi-workflow GitHub Actions pipeline optimised for fast feedback and defence in depth.
+This Nx project provides centralized CI/CD automation targets for the Political Sphere monorepo.
 
-## Runtime policy
-- **Node.js 22.x** is the canonical runtime for all workflows and local development (see `.nvmrc`). Use `nvm use` or ensure containers pin the same major version to avoid lockfile churn.
-- npm 10 ships with Node 22; prefer `npm ci` for clean installs and deterministic builds.
+## Purpose
 
-## Core workflows
-- `CI` (lint → typecheck → test → build → security scan) runs on pushes and pull requests. Concurrency groups cancel superseded runs per ref.
-- `E2E Tests` and `Integration Tests` spin up the full stack (API + frontend + Postgres) for Playwright and integration suites.
-- `Deploy` promotes artefacts to AWS ECS using OIDC and runs Trivy/SBOM checks before a blue/green rollout.
-- `Release` executes semantic-release on `main`.
-- `Security`, `Vulnerability Scan`, `CodeQL`, and `Semgrep` provide scheduled and on-demand SAST/SCA coverage.
+The `ci` project acts as a convenience wrapper for running CI checks, security scans, and validation tasks. It provides Nx-compatible targets that can be invoked via `nx run ci:<target>` or as part of dependency graphs.
 
-## Best practices
-- Prefer `nx` targets when adding new checks so we can adopt affected-based execution and remote caching.
-- Reuse build/test artefacts between workflows when practical (e.g., promote the `CI` build into `Deploy` instead of rebuilding).
-- Keep workflow-specific docs and updates in this directory and reference them from contributor guides when behaviour changes.
+## Available Targets
 
+- **lint**: Run ESLint across the codebase
+- **typecheck**: Run TypeScript type checking
+- **test**: Run all unit tests
+- **lint-boundaries**: Check for import boundary violations
+- **security-scan**: Run security audits and secret scanning
+- **ci-checks**: Run all CI checks (depends on lint, typecheck, test, lint-boundaries)
+
+## Usage
+
+```bash
+# Run all CI checks
+nx run ci:ci-checks
+
+# Run individual checks
+nx run ci:lint
+nx run ci:typecheck
+nx run ci:test
+nx run ci:lint-boundaries
+nx run ci:security-scan
+```
+
+## Makefile Integration
+
+For developer convenience, these targets are also exposed via the root `Makefile`:
+
+```bash
+make ci-checks      # Runs all CI checks
+make security-scan  # Runs security audits
+make test-all       # Runs all test suites
+```
+
+## GitHub Actions Integration
+
+CI workflows in `.github/workflows/` use composite actions located in `.github/actions/` to avoid duplication:
+
+- **setup-node-deps**: Sets up Node.js and installs dependencies
+- **quality-checks**: Runs lint, typecheck, and boundary checks
+
+See `docs/05-engineering-and-devops/ci-cd/README.md` for complete CI/CD documentation.
+
+---
+
+**Last updated**: 2025-10-29
+**Maintainer**: Platform Team

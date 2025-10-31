@@ -1,5 +1,16 @@
 # TODO: Complete Document-Control Folder
 
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
+
+</div>
+
+---
+
+
 ## Overview
 Complete the document-control folder by filling in content for placeholder documents. The templates-index.md is already complete. All content must be production-grade, aligned with Political Sphere's context (political simulation, AI, microservices), and comply with .blackboxrules (security, GDPR, EU AI Act, etc.).
 

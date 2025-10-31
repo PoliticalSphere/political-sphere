@@ -1,204 +1,133 @@
-# Governance
-
-> **Transparent, accountable, and ethical decision-making framework for Political Sphere**
+# Governance Documentation
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |
-| :------------: | :-----: | :----------: | :--------------: | :----------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Governance Council |   Quarterly  |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Approved** |
 
 </div>
 
 ---
 
-## 🎯 Objectives
 
-- Establish clear separation between platform authority and player simulation governance.
-- Ensure transparent, fair, and accountable decision-making processes.
-- Protect player safety and maintain ethical boundaries in political simulation.
-- Enable player autonomy within the fictional world while safeguarding real-world rights.
+This section contains the governance framework and organizational policies for Political Sphere, ensuring responsible development and operation of our multiplayer political simulation game.
 
----
+## Overview
 
-## 🧭 Core Principles
+Governance at Political Sphere encompasses the structures, processes, and policies that guide our decision-making, risk management, and compliance efforts. Our governance model balances innovation with responsibility, particularly important given the political nature of our platform.
 
-- **Fairness First:** Consistent rules, equal treatment, no favoritism.
-- **Transparency:** All decisions documented, visible, and explainable.
-- **Accountability:** Actions traceable; power justified and auditable.
-- **Separation of Powers:** Platform authority protects real people; player authority governs the fictional world.
-- **Player Autonomy with Limits:** Strong in-game agency, zero real-world political influence.
-- **Safety and Dignity:** Zero tolerance for harm, harassment, or real-world mobilization.
-- **Procedural Legitimacy:** Rules follow process, not arbitrary decisions.
-- **Appeal Rights:** Error correction is part of justice.
-- **No Ideology or Agenda:** Simulation without real-world political persuasion.
+## Governance Framework
 
----
+### Core Governance Documents
 
-## 🏛️ Governance Structure
+#### Organizational Structure
+- **[Governance Charter](./governance-charter.md)**: Overall governance framework and principles
+- **[Roles and Responsibilities (RACI)](./roles-and-responsibilities-raci.md)**: Clear accountability matrix for key activities
+- **[Decision Rights Matrix](./decision-rights-matrix.md)**: Who can make what decisions and at what level
 
-### Platform Governance (Real Authority)
-Responsible for real-world platform safety, rules, moderation oversight, and feature decisions.
+#### Risk and Compliance
+- **[Risk Management Framework](./risk-management-framework.md)**: Comprehensive approach to identifying and managing risks
+- **[Compliance Governance Model](./compliance-governance-model.md)**: Ensuring regulatory compliance across jurisdictions
+- **[Change Management Policy](./change-management-policy.md)**: Structured approach to organizational and technical changes
 
-- **Composition:** Developers/administrators with community representatives.
-- **Responsibilities:** Policy creation, moderation oversight, feature decisions, safety enforcement.
-- **Key Features:** Transparent policy changes, community input encouraged, dev team final say (ethical guardrail).
-- **Audit Trails:** For power use (bans, sanctions, world resets).
-- **Purpose:** Protects players, not factions.
+### Decision-Making Bodies
 
-### In-Game Governance (Simulation Authority)
-Players govern the fictional parliament and game world, not the platform.
+#### Executive Leadership
+- **Board of Directors**: Strategic oversight and major decisions
+- **Executive Team**: Operational leadership and tactical decisions
 
-- **Scope:** Speaker/Presiding Officer roles, party leaders, whips, committees, election cycles, parliamentary procedure rules.
-- **Limitations:** Purely in-world; never affects platform rights or real-world consequences.
+#### Governance Committees
+- **Product Governance Committee**: Product strategy and roadmap decisions
+- **Technical Governance Committee**: Architecture and technical standards
+- **Security and Compliance Committee**: Security policies and compliance oversight
+- **Ethics Committee**: Ethical considerations and AI governance
 
-### Constitutional Framework
-Two-layer structure ensuring stability and adaptability:
+## Key Governance Principles
 
-| Layer | Purpose | Update Process |
-|-------|---------|---------------|
-| Platform Constitution | Player rights, safety, fairness, moderation, privacy | Governance Council approval, community consultation |
-| Game Constitution | How fictional parliament operates | Player votes, committee review |
+### 1. Transparency
+- Open decision-making processes where appropriate
+- Clear communication of governance decisions
+- Regular reporting on governance activities
 
-Both are documented, versioned, change-logged, appealable, and reviewable.
+### 2. Accountability
+- Clear ownership and responsibility for all activities
+- Regular performance reviews and audits
+- Consequences for governance violations
 
----
+### 3. Inclusivity
+- Diverse representation in governance bodies
+- Stakeholder input in relevant decisions
+- Accessible governance processes
 
-## 🛡️ Moderation Policies
+### 4. Adaptability
+- Regular review and update of governance frameworks
+- Ability to respond to changing circumstances
+- Continuous improvement of governance processes
 
-### Core Principles
-- Protect players above all else.
-- Intent matters, but impact matters more.
-- No harassment, threats, hate, personal abuse.
-- No real-world political advocacy, propaganda, or recruitment.
-- Debate ideas, not identities.
+## Governance in Practice
 
-### Moderation Process
-1. **Reporting:** Players submit reports via in-game tools.
-2. **Triage:** Human moderators review (AI assists only).
-3. **Investigation:** Context gathering and evidence review.
-4. **Decision:** Proportionate sanctions (warnings → mutes → removal).
-5. **Communication:** Reasons provided; appeal rights explained.
-6. **Appeals:** Reviewed by separate moderator or governance panel.
+### Decision-Making Process
 
-### Transparency Measures
-- Reasons provided wherever possible.
-- Anonymous summary logs of moderation actions (privacy-safe).
-- Regular fairness reviews and bias audits.
+1. **Identify Issue**: Problem or opportunity requiring decision
+2. **Assess Impact**: Evaluate potential consequences and stakeholders
+3. **Consult Stakeholders**: Gather input from affected parties
+4. **Evaluate Options**: Consider alternatives and trade-offs
+5. **Make Decision**: Apply appropriate decision rights
+6. **Document and Communicate**: Record decision and rationale
+7. **Monitor and Review**: Track outcomes and adjust as needed
 
-### AI in Moderation
-- AI assists triage and pattern detection only.
-- No AI-only moderation decisions.
-- All AI suggestions logged and reviewable by humans.
+### Risk Management Integration
 
----
+Governance incorporates risk management at all levels:
+- **Strategic Risk**: Long-term business and market risks
+- **Operational Risk**: Day-to-day operational risks
+- **Compliance Risk**: Regulatory and legal compliance risks
+- **Reputational Risk**: Brand and stakeholder trust risks
 
-## ⚖️ Decision-Making Processes
+### Compliance Framework
 
-### Platform Decisions
-Structured ADR (Architectural Decision Record) process:
-1. **Proposal:** Documented RFC with rationale.
-2. **Review:** Ethical & fairness checklist, player impact evaluation.
-3. **Approval:** Governance Council vote.
-4. **Implementation:** Changelog entry, publish rationale.
-5. **Monitoring:** Post-implementation review.
+Our compliance governance ensures:
+- **Legal Compliance**: Adherence to UK and international laws
+- **Regulatory Compliance**: Meeting industry-specific requirements
+- **Ethical Compliance**: Alignment with our values and principles
+- **Standards Compliance**: Meeting technical and quality standards
 
-### Game World Decisions
-Players decide in-game rules through democratic processes:
-- Motions and amendments in parliament.
-- Votes in chamber with quorum requirements.
-- Party processes and caucuses.
-- Constitutional committees for major changes.
+## Governance Tools and Processes
 
-### Override Authority
-Platform retains override right only for:
-- Ethics violations
-- Fairness risks
-- Safety threats
-- Legal compliance issues
+### Documentation and Records
+- **[Architectural Decision Records](./architectural-decision-records/)**: Technical decision documentation
+- **[RFCs](./rfcs/)**: Request for Comments process for major changes
+- Regular governance meeting minutes and decisions
 
-Overrides must be documented publicly with justification.
+### Monitoring and Oversight
+- Key performance indicators for governance effectiveness
+- Regular audits and compliance reviews
+- Stakeholder feedback mechanisms
 
----
+## Governance Evolution
 
-## 📊 Accountability Systems
+Our governance framework evolves with the organization:
+- **Startup Phase**: Flexible, founder-led decision-making
+- **Growth Phase**: Structured committees and processes
+- **Scale Phase**: Formal governance bodies and oversight
+- **Maturity Phase**: Optimized governance with continuous improvement
 
-- **Audit Logs:** Sensitive actions (bans, vote changes, role appointments) logged immutably.
-- **Historical Records:** Immutable world event logs for transparency.
-- **Change Tracking:** Transparent rule updates with version control.
-- **Ethics Checklists:** Required for significant changes.
-- **Periodic Reviews:** Quarterly governance effectiveness assessments.
+## Training and Awareness
 
----
+All team members receive governance training covering:
+- Governance principles and processes
+- Individual roles and responsibilities
+- Compliance requirements and reporting
+- Ethical decision-making frameworks
 
-## 👥 Player Governance Roles
+## Contact and Support
 
-| Role | Function | Selection | Term |
-|------|----------|-----------|------|
-| Speaker | Keeps order, enforces fictional rules | Elected by parliament | 1 session |
-| MPs | Debate, vote, legislate (in-world) | Elected by constituencies | 4 years |
-| Party Leaders | Organise factions, set strategy | Party internal election | Variable |
-| Whips | Enforce party alignment (in-world) | Appointed by leaders | Variable |
-| Committees | Review fictional misconduct or procedures | Appointed/selected | Variable |
-
-**Critical Note:** Player governance affects only in-world consequences. It cannot punish players outside the game simulation or influence real-world rights.
+For governance-related questions or concerns:
+- **Governance Committee**: governance@political-sphere.com
+- **Compliance Officer**: compliance@political-sphere.com
+- **Ethics Hotline**: Available 24/7 for reporting concerns
 
 ---
 
-## 🚨 Safety Hard Lines
-
-Platform immediately intervenes (bypassing normal processes) if:
-- Harassment, bullying, or threats occur.
-- Personal information exposed.
-- Identity-based hostility appears.
-- Real-world political mobilization attempted.
-- Extremist content or manipulation detected.
-
-These are non-negotiable, real-world policy triggers requiring immediate action.
-
----
-
-## 🛡️ Ethics and Protection
-
-- **Pseudonymity:** Default anonymous identities to protect real-world privacy.
-- **Content Boundaries:** No real-world ideology discussion or persuasion.
-- **Bias Mitigation:** Regular bias awareness training for moderators.
-- **Appeals Process:** Always available, reviewed by independent parties.
-- **Data Ethics:** No monetization, profiling, or political data exploitation.
-
----
-
-## 📈 Success Indicators
-
-| Area | Metric | Target | Frequency |
-|------|--------|--------|-----------|
-| Fairness | Successful appeal rate | <2% | Monthly |
-| Trust | Player surveys: "fair process" | ≥85% | Quarterly |
-| Stability | Major controversies resolved | 100% | Ongoing |
-| Safety | Harassment cases | Minimal | Weekly |
-| Compliance | RL politics breach events | 0 | Ongoing |
-
----
-
-## 📋 Document Index
-
-| Document | Purpose | Status |
-| -------- | ------- | ------ |
-| [Governance Charter](governance-charter.md) | Core principles and structure | Active |
-| [Roles and Responsibilities (RACI)](roles-and-responsibilities-raci.md) | Who does what in governance | Active |
-| [Decision Rights Matrix](decision-rights-matrix.md) | Authority levels and escalation | Draft |
-| [Change Management Policy](change-management-policy.md) | How changes are handled | Active |
-| [Risk Management Framework](risk-management-framework.md) | Identifying and mitigating risks | Active |
-| [Compliance Governance Model](compliance-governance-model.md) | Legal and regulatory alignment | Active |
-| [Architectural Decision Records](architectural-decision-records/) | Technical decisions | Active |
-| [RFCs](rfcs/) | Requests for Comments on proposals | Active |
-
----
-
-## 📎 Related References
-
-- [Strategy Overview](../../01-strategy/README.md) (Governance alignment with vision)
-- [Security and Risk](../../06-security-and-risk/README.md) (Risk mitigation)
-- [Legal and Compliance](../../03-legal-and-compliance/README.md) (Regulatory framework)
-
-Governance ensures Political Sphere remains a safe, fair, and trustworthy political simulation—protecting players while enabling meaningful gameplay.
+*Governance documentation is reviewed annually and updated as needed to ensure continued effectiveness.*

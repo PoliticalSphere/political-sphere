@@ -1,5 +1,16 @@
 # Internationalization and Localization Strategy
 
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
+
+</div>
+
+---
+
+
 ## Overview
 
 Political Sphere is designed as a UK-style parliamentary simulation, launching primarily in English with internationalization (i18n) foundations for future global expansion. Localization will prioritize ethical containment, safety, and fictional neutrality, avoiding real-world political imports.

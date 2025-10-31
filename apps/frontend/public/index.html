@@ -25,6 +25,17 @@
         gap: 0.75rem;
         margin-bottom: 1.5rem;
       }
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
       section {
         background: #fff;
         padding: 1.5rem;
@@ -74,22 +85,23 @@
     <main>
       <header>
         <h1>Political Sphere Platform</h1>
-        <span class="status" id="status">__STATUS_MESSAGE__</span>
+        <span class="status" id="status" aria-live="polite">__STATUS_MESSAGE__</span>
       </header>
       <section>
         <h2>Latest policy signals</h2>
         <p class="status">
           Tracking emerging narratives and transparency signals from civic data pipelines.
         </p>
-        <ul id="news"></ul>
-        <button id="refresh">Refresh</button>
+        <ul id="news" aria-label="List of latest policy signals"></ul>
+        <button id="refresh" aria-describedby="refresh-description">Refresh</button>
+        <div id="refresh-description" class="sr-only">Refresh the list of policy signals from the API</div>
       </section>
       <section>
         <h2>Coverage summary</h2>
         <p class="status">Quick breakdown of categories and tags in the latest dataset.</p>
-        <div id="summary"></div>
+        <div id="summary" aria-label="News coverage summary"></div>
       </section>
-      <p class="status">Last updated: <span id="updated">__LAST_UPDATED__</span></p>
+      <p class="status">Last updated: <span id="updated" aria-live="polite">__LAST_UPDATED__</span></p>
     </main>
 
     <script>
@@ -150,9 +162,9 @@
           .map(
             (item) => `
               <li>
-                <h2>${item.title}</h2>
-                <p>${item.excerpt}</p>
-                <p class="status">Last updated: ${new Date(item.updatedAt).toLocaleString()}</p>
+        <h2>${item.title}</h2>
+        <p>${item.excerpt}</p>
+        <p class="status">Last updated: <time datetime="${item.updatedAt}">${new Date(item.updatedAt).toLocaleString()}</time></p>
               </li>
             `,
           )

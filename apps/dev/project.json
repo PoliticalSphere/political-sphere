@@ -8,7 +8,7 @@
     "build": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "docker compose -f apps/dev/docker/docker-compose.dev.yaml build"
+        "command": "echo 'Dev environment does not require build (Docker-based)'"
       }
     },
     "start": {

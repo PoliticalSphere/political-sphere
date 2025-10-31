@@ -1,5 +1,16 @@
 # MCP Servers Setup Guide
 
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Approved** |
+
+</div>
+
+---
+
+
 This document provides setup instructions for the Model Context Protocol (MCP) servers integrated into the Political Sphere project.
 
 ## Overview

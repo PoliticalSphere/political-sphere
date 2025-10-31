@@ -3,6 +3,11 @@
   "successfulRequests": 0,
   "failedRequests": 0,
   "averageResponseTime": 0,
+  "responseTimeDistribution": {
+    "p50": 0,
+    "p95": 0,
+    "p99": 0
+  },
   "usageByType": {},
   "userSatisfaction": [],
   "qualityMetrics": {
@@ -10,5 +15,10 @@
     "testPassRate": 0,
     "securityScanPass": 0
   },
-  "lastUpdated": "2025-10-28T17:34:28.019Z"
+  "performanceMetrics": {
+    "cacheHitRate": 0,
+    "rateLimitHits": 0,
+    "optimizationApplied": 0
+  },
+  "lastUpdated": "2025-10-29T12:00:00.000Z"
 }

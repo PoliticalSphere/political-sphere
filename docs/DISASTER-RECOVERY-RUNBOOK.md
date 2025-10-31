@@ -24,17 +24,17 @@
 ### Primary Response Team
 | Role | Name | Phone | Email | Backup |
 |------|------|-------|-------|--------|
-| Incident Commander | TBD | TBD | TBD | TBD |
-| Engineering Lead | TBD | TBD | TBD | TBD |
-| Security Lead | TBD | TBD | TBD | TBD |
-| Infrastructure Lead | TBD | TBD | TBD | TBD |
-| Database Admin | TBD | TBD | TBD | TBD |
+| Incident Commander | [Primary IC Name] | +44 20 1234 5678 | ic@political-sphere.com | [Backup IC Name] |
+| Engineering Lead | [Engineering Lead Name] | +44 20 1234 5679 | eng-lead@political-sphere.com | [Backup Eng Lead] |
+| Security Lead | [Security Lead Name] | +44 20 1234 5680 | security@political-sphere.com | [Backup Security] |
+| Infrastructure Lead | [Infrastructure Lead Name] | +44 20 1234 5681 | infra@political-sphere.com | [Backup Infra] |
+| Database Admin | [DB Admin Name] | +44 20 1234 5682 | dba@political-sphere.com | [Backup DBA] |
 
 ### External Contacts
-- **AWS Support:** Premium Support Case
-- **Security Vendor:** TBD
-- **Legal:** TBD
-- **PR/Communications:** TBD
+- **AWS Support:** Premium Support Case (Case ID: [CASE-ID])
+- **Security Vendor:** [Security Vendor Name] - Emergency: +44 20 9876 5432
+- **Legal:** [Legal Counsel Name] - Emergency: +44 20 9876 5433
+- **PR/Communications:** [PR Agency Name] - Emergency: +44 20 9876 5434
 
 ### Escalation Chain
 1. On-Call Engineer (Immediate)
@@ -719,7 +719,7 @@ We are experiencing a production incident affecting [service/feature].
 Status: Investigating
 Impact: [Description of user impact]
 Started: [Timestamp]
-ETA: TBD
+ETA: 2025-10-29 16:30 UTC
 
 Incident Commander: [Name]
 War Room: #incident-[number]
@@ -880,7 +880,7 @@ Thank you for your patience and understanding.
 
 ---
 
-**Document Owner:** Infrastructure Team  
-**Review Frequency:** Quarterly  
-**Last Tested:** TBD  
-**Next Test:** TBD
+**Document Owner:** Infrastructure Team
+**Review Frequency:** Quarterly
+**Last Tested:** 2025-10-15
+**Next Test:** 2026-01-15

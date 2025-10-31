@@ -50,29 +50,64 @@ OPTIONAL_REQUIREMENTS=(
   "worker:apps/worker/Dockerfile"
 )
 
+SERVICE_FOUND=false
 for entry in "${OPTIONAL_REQUIREMENTS[@]}"; do
   IFS=":" read -r name required_path <<<"$entry"
   if [[ "$SERVICE" == "$name" ]]; then
+    SERVICE_FOUND=true
     if [[ ! -f "$ROOT_DIR/$required_path" ]]; then
-      echo "Skipping $SERVICE service; expected $required_path but it was not found." >&2
-      echo "Create the service scaffold before running this command." >&2
-      exit 0
+      echo "❌ ERROR: Cannot start $SERVICE service" >&2
+      echo "" >&2
+      echo "Expected file not found: $required_path" >&2
+      echo "" >&2
+      echo "To fix this:" >&2
+      echo "  1. Create the service scaffold in apps/$SERVICE/" >&2
+      echo "  2. Add a Dockerfile at $required_path" >&2
+      echo "  3. Or run a different service: api, frontend, worker, all" >&2
+      echo "" >&2
+      exit 1
     fi
     break
   fi
 done
+
+if [[ "$SERVICE_FOUND" == "false" && "$SERVICE" != "all" ]]; then
+  echo "❌ ERROR: Unknown service '$SERVICE'" >&2
+  echo "" >&2
+  echo "Available services: api, frontend, worker, all" >&2
+  echo "" >&2
+  usage
+  exit 1
+fi
 
 if ! running_services=$("${DOCKER_COMPOSE[@]}" -f "$COMPOSE_FILE" ps --services --filter status=running 2>/dev/null); then
   running_services=$("${DOCKER_COMPOSE[@]}" -f "$COMPOSE_FILE" ps --services 2>/dev/null || true)
 fi
 
 if ! grep -qx "postgres" <<<"$running_services"; then
-  "$ROOT_DIR/apps/dev/scripts/dev-up.sh"
+  echo "🚀 Base infrastructure not running. Starting dev stack first..."
+  if ! "$ROOT_DIR/apps/dev/scripts/dev-up.sh"; then
+    echo "❌ ERROR: Failed to start base dev stack." >&2
+    exit 1
+  fi
 fi
 
-echo "Starting $SERVICE service..."
-"${DOCKER_COMPOSE[@]}" -f "$COMPOSE_FILE" up -d "$SERVICE"
+echo "🚀 Starting $SERVICE service..."
+if ! "${DOCKER_COMPOSE[@]}" -f "$COMPOSE_FILE" up -d "$SERVICE"; then
+  echo "❌ ERROR: Failed to start $SERVICE service." >&2
+  echo "" >&2
+  echo "Check:" >&2
+  echo "  - Docker is running: docker ps" >&2
+  echo "  - Compose file exists: $COMPOSE_FILE" >&2
+  echo "  - Service is defined in docker-compose.dev.yaml" >&2
+  echo "" >&2
+  exit 1
+fi
 
-echo "Service '$SERVICE' is running."
+echo "✅ Service '$SERVICE' is running."
+echo ""
 echo "Stream logs with:"
 echo "  ${DOCKER_COMPOSE[*]} -f $COMPOSE_FILE logs -f $SERVICE"
+echo ""
+echo "Stop with:"
+echo "  ${DOCKER_COMPOSE[*]} -f $COMPOSE_FILE down"

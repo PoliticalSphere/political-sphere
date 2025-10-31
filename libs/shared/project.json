@@ -1,14 +1,37 @@
 {
-  "name": "shared",
+  "name": "@political-sphere/shared",
   "$schema": "../../node_modules/nx/schemas/project-schema.json",
-  "sourceRoot": "libs/shared",
+  "sourceRoot": "libs/shared/src",
   "projectType": "library",
-  "tags": ["shared"],
+  "tags": ["scope:shared", "type:library", "shared"],
   "targets": {
     "build": {
-      "executor": "nx:run-commands",
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
       "options": {
-        "command": "echo 'Build shared library'"
+        "outputPath": "libs/shared/dist",
+        "main": "libs/shared/src/index.ts",
+        "tsConfig": "libs/shared/tsconfig.lib.json",
+        "assets": []
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["libs/shared/**/*.{ts,tsx,js,jsx}"]
+      }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/coverage/libs/shared"],
+      "options": {
+        "command": "npx jest --config=libs/shared/jest.config.cjs --coverage --passWithNoTests"
+      },
+      "configurations": {
+        "watch": {
+          "command": "npx jest --config=libs/shared/jest.config.cjs --watch"
+        }
       }
     }
   }

@@ -1,8 +1,35 @@
+// Prefer the shared telemetry helper so the worker uses a single source of truth.
+// Fall back to a lightweight local logger if the shared logger cannot be imported.
+import { startTelemetry, logger as sharedLogger } from '@political-sphere/shared';
+
+try {
+  // startTelemetry returns a Promise that resolves when the SDK is started
+  // We don't fail the worker startup if telemetry fails, but we try to initialize it.
+  await startTelemetry({
+    serviceName: 'political-sphere-worker',
+    serviceVersion: process.env.APP_VERSION || '0.0.0',
+    environment: process.env.NODE_ENV || 'development',
+  });
+} catch (err) {
+  // Telemetry is best-effort in dev; log the issue and continue
+  const tempLogger = {
+    error: (msg, meta) => console.error(JSON.stringify({ level: 'ERROR', message: msg, ...meta })),
+  };
+  tempLogger.error('Shared telemetry initialization failed (continuing)', { error: err?.message ?? err });
+}
+
 import { mkdir, writeFile } from 'node:fs/promises';
 import { dirname } from 'node:path';
 import process from 'node:process';
 import { fileURLToPath } from 'node:url';
 import { summarizeNews } from './aggregator.js';
+// Prefer the shared logger when available, otherwise fall back to a compact local logger.
+const _localLogger = {
+  info: (msg, meta) => console.log(JSON.stringify({ level: 'INFO', message: msg, ...meta })),
+  warn: (msg, meta) => console.warn(JSON.stringify({ level: 'WARN', message: msg, ...meta })),
+  error: (msg, meta) => console.error(JSON.stringify({ level: 'ERROR', message: msg, ...meta })),
+};
+const logger = (sharedLogger && typeof sharedLogger.info === 'function') ? sharedLogger : _localLogger;
 
 const API_URL = process.env.API_URL ?? 'http://api:4000';
 const INTERVAL = Number.parseInt(process.env.WORKER_INTERVAL_MS ?? '15000', 10);
@@ -27,22 +54,24 @@ async function fetchUpdates() {
     const items = Array.isArray(payload.data) ? payload.data : [];
     const summary = summarizeNews(items);
     await persistSummary(summary);
-    console.log(
-      `[worker] Processed ${summary.total} stories. Latest update: ${summary.latest?.updatedAt ?? 'n/a'}`,
-    );
+    logger.info('Processed news stories', {
+      total: summary.total,
+      latestUpdate: summary.latest?.updatedAt ?? 'n/a',
+      outputPath: OUTPUT_PATH
+    });
   } catch (error) {
-    console.error(`[worker] Failed to call API: ${error.message}`);
+    logger.error('Failed to call API', { error: error.message, apiUrl: API_URL });
   }
 }
 
 function start() {
-  console.log(`[worker] Polling ${API_URL} every ${INTERVAL}ms`);
+  logger.info('Worker started', { apiUrl: API_URL, intervalMs: INTERVAL });
   intervalId = setInterval(fetchUpdates, INTERVAL);
-  fetchUpdates().catch((error) => console.error('[worker] Initial fetch failed', error));
+  fetchUpdates().catch((error) => logger.error('Initial fetch failed', { error: error.message }));
 }
 
 function shutdown() {
-  console.log('[worker] Received termination signal, shutting down…');
+  logger.info('Received termination signal, shutting down');
   if (intervalId) {
     clearInterval(intervalId);
   }

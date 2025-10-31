@@ -1,0 +1,32 @@
+# Centralized environment configuration for CI/CD workflows
+# This file defines reusable environment variables and settings
+# Note: This is not a workflow file, but a configuration reference
+
+# Node.js configuration
+NODE_VERSION: '22'
+NODE_ENV: production
+
+# CI/CD settings
+NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+# Test configuration
+CI: true
+TEST_SHARDS: 3
+COVERAGE_THRESHOLD: 80
+
+# Database configuration for tests
+TEST_DB_HOST: localhost
+TEST_DB_PORT: 5432
+TEST_DB_USER: test
+TEST_DB_PASSWORD: test
+TEST_DB_NAME: testdb
+
+# Service configuration
+BASE_URL: http://localhost:3000
+HEALTH_CHECK_TIMEOUT: 60
+
+# Artifact retention
+ARTIFACT_RETENTION_DAYS: 30
+SECURITY_ARTIFACT_RETENTION_DAYS: 90

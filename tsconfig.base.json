@@ -6,7 +6,7 @@
     "declaration": false,
     "downlevelIteration": true,
     "experimentalDecorators": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
@@ -14,14 +14,15 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "strict": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
     "paths": {
-      "@political-sphere/*": ["libs/*/src/index.ts"],
+      "@political-sphere/shared": ["libs/shared/src/index.ts"],
       "@political-sphere/ui": ["libs/ui/src/index.ts"],
       "@political-sphere/platform": ["libs/platform/src/index.ts"],
-      "@political-sphere/ci": ["libs/ci/src/index.ts"],
+      "@political-sphere/ci-utils": ["libs/ci/src/index.ts"],
       "@political-sphere/infrastructure": ["libs/infrastructure/src/index.ts"]
     }
   },

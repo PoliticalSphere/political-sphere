@@ -1,4 +1,26 @@
+/**
+ * @fileoverview Architecture Documentation for Political Sphere Platform
+ * @purpose Defines the system architecture, patterns, and design decisions for the Political Sphere development platform.
+ * @scope Entire platform; applies to all components, services, and infrastructure.
+ * @lifecycle Active development; updated with architectural changes.
+ * @owner Architecture Team (architecture@political-sphere.org)
+ * @version 1.0.0
+ * @state Active
+ * @integrity SHA256: [computed hash for traceability]
+ */
+
 # Architecture Overview
+
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Approved** |
+
+</div>
+
+---
+
 
 ## System Architecture
 

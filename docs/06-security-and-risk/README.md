@@ -47,6 +47,7 @@
 | [Vulnerability Management](vulnerability-management.md) | Scanning, patching, and remediation processes | Draft |
 | [Logging and Forensics](logging-and-forensics.md) | Audit trails, incident investigation, and evidence collection | Draft |
 | [Business Continuity and Disaster Recovery (BCDR)](business-continuity-and-disaster-recovery-bcdr.md) | Plans for maintaining operations during disruptions | Draft |
+| [End-to-End Audit Report (2025-10-29)](audits/END-TO-END-AUDIT-2025-10-29.md) | Comprehensive project audit against governance standards | Published |
 
 ### Subdirectories
 - **[Audits/](audits/)**: Audit schedules, reports, and compliance evidence.

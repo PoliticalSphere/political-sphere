@@ -1,17 +1,71 @@
 name: 'Run Quality Checks'
-description: 'Runs linting and type checking'
+description: 'Runs linting, type checking, and boundary checks with detailed error reporting'
+
+inputs:
+  fail-fast:
+    description: 'Fail immediately on first error'
+    required: false
+    default: 'true'
 
 runs:
   using: 'composite'
   steps:
     - name: Lint
+      id: lint
       shell: bash
-      run: npm run lint
-    
+      run: |
+        echo "Running ESLint..."
+        if npm run lint; then
+          echo "✅ Linting passed"
+          echo "result=success" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Linting failed"
+          echo "result=failure" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
     - name: Typecheck
+      id: typecheck
       shell: bash
-      run: npm run typecheck
-    
+      run: |
+        echo "Running TypeScript type checking..."
+        if npm run typecheck; then
+          echo "✅ Type checking passed"
+          echo "result=success" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Type checking failed"
+          echo "result=failure" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
     - name: Check import boundaries
+      id: boundaries
       shell: bash
-      run: npm run lint:import-boundaries
+      run: |
+        echo "Checking import boundaries..."
+        if npm run lint:import-boundaries; then
+          echo "✅ Import boundary check passed"
+          echo "result=success" >> $GITHUB_OUTPUT
+        else
+          echo "❌ Import boundary check failed"
+          echo "result=failure" >> $GITHUB_OUTPUT
+          exit 1
+        fi
+
+    - name: Quality check summary
+      if: always()
+      shell: bash
+      run: |
+        echo "## Quality Check Results" >> $GITHUB_STEP_SUMMARY
+        echo "- **Linting**: ${{ steps.lint.outputs.result == 'success' && '✅ Passed' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Type Checking**: ${{ steps.typecheck.outputs.result == 'success' && '✅ Passed' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+        echo "- **Import Boundaries**: ${{ steps.boundaries.outputs.result == 'success' && '✅ Passed' || '❌ Failed' }}" >> $GITHUB_STEP_SUMMARY
+
+        if [[ "${{ steps.lint.outputs.result }}" != "success" ]] || \
+           [[ "${{ steps.typecheck.outputs.result }}" != "success" ]] || \
+           [[ "${{ steps.boundaries.outputs.result }}" != "success" ]]; then
+          echo "❌ Some quality checks failed. Please review the output above." >> $GITHUB_STEP_SUMMARY
+          exit 1
+        else
+          echo "✅ All quality checks passed!" >> $GITHUB_STEP_SUMMARY
+        fi

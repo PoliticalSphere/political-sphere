@@ -3,6 +3,9 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readFile } from 'node:fs/promises';
 import process from 'node:process';
+import { getLogger } from '@political-sphere/shared';
+
+const logger = getLogger({ service: 'frontend' });
 
 const PORT = Number.parseInt(process.env.FRONTEND_PORT ?? '3000', 10);
 const HOST = process.env.FRONTEND_HOST ?? '0.0.0.0';
@@ -40,7 +43,7 @@ async function loadTemplate() {
   try {
     template = await readFile(indexPath, 'utf8');
   } catch (error) {
-    console.error('[frontend] Failed to load index.html', error);
+    logger.error('Failed to load index.html', { error: error.message, path: indexPath });
     template = '<h1>Political Sphere</h1><p>Template missing.</p>';
   }
 }
@@ -97,7 +100,7 @@ const server = http.createServer(async (req, res) => {
       summary = summaryResponse ?? summary;
     } catch (error) {
       statusMessage = `API unavailable: ${error.message}`;
-      console.warn('[frontend] Falling back to empty dashboard', error);
+      logger.warn('Falling back to empty dashboard', { error: error.message, apiUrl: API_BASE_URL });
     }
 
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -123,9 +126,9 @@ const server = http.createServer(async (req, res) => {
 });
 
 function gracefulShutdown() {
-  console.log('[frontend] Received termination signal, shutting down...');
+  logger.info('Received termination signal, shutting down...');
   server.close(() => {
-    console.log('[frontend] Shutdown complete.');
+    logger.info('Shutdown complete');
     process.exit(0);
   });
 }
@@ -134,7 +137,10 @@ process.on('SIGINT', gracefulShutdown);
 process.on('SIGTERM', gracefulShutdown);
 
 server.listen(PORT, HOST, () => {
-  console.log(`[frontend] Listening on ${HOST}:${PORT}`);
-  console.log(`[frontend] API base URL: ${API_BASE_URL}`);
-  console.log(`[frontend] Security headers enabled`);
+  logger.info('Frontend server started', {
+    host: HOST,
+    port: PORT,
+    apiBaseUrl: API_BASE_URL,
+    securityHeadersEnabled: true
+  });
 });

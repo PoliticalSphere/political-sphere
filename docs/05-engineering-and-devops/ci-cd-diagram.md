@@ -1,7 +1,14 @@
 # Political Sphere CI/CD Pipeline - Comprehensive Diagram
 
-**Last Updated**: 2025-10-29  
-**Owner**: DevOps Team
+<div align="center">
+
+| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-30  | DevOps Team        |  Quarterly   | **Approved** |
+
+</div>
+
+---
 
 ## Full CI/CD Flow Diagram
 

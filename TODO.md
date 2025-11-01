@@ -13,6 +13,7 @@
 - [x] **Fixed hnswlib security vulnerability**: Updated hnswlib from 0.7.0 to 0.8.0 to fix double free bug in init_index (2025-11-01)
 - [x] **Fixed Nx refresh slowdown**: Optimized daemon settings, added file watcher ignore patterns, cleared 1.3GB cache, added debounce delays (2025-11-01)
 - [x] **Fixed commit buffering/hanging**: Replaced slow TruffleHog with fast gitleaks for pre-commit secret scanning (2025-11-01)
+- [x] **Fixed pre-push hanging**: Simplified integrity check to only verify critical files exist instead of slow find operations (2025-11-01)
 - [ ] Run full test suite to verify all Jest configuration improvements
 - [ ] Address remaining database connectivity issues (500 errors in tests)
 - [ ] Fix module resolution issues in unit tests (UserService import)

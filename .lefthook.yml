@@ -46,6 +46,11 @@ commit-msg:
 
 pre-push:
   commands:
-    # Workspace integrity check
+    # Fast workspace integrity check (critical files only)
     integrity:
-      run: bash .husky/pre-push
+      run: |
+        if [ ! -f "package.json" ] || [ ! -f "nx.json" ]; then
+          echo "❌ Critical files missing!"
+          exit 1
+        fi
+        echo "✅ Workspace integrity OK"

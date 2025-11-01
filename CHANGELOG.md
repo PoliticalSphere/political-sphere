@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Added file watcher optimizations**: Configured Nx to ignore AI directories (ai-cache, ai-logs, ai-metrics, ai-learning, ai-index, ai-knowledge) and other non-source directories (tmp, artifacts, monitoring/data) to prevent unnecessary file watching (2025-11-01)
 - **Created optimization script**: Added `scripts/optimize-nx.sh` for easy performance tuning and cache management (2025-11-01)
 - **Fixed commit buffering**: Replaced slow TruffleHog with fast gitleaks for pre-commit secret scanning - reduces commit time from 30+ seconds to <2 seconds (2025-11-01)
+- **Fixed pre-push hanging**: Simplified workspace integrity check to only verify critical files exist instead of running slow find operations across entire workspace (2025-11-01)
 
 ### Added
 

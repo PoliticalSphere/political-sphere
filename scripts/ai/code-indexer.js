@@ -214,8 +214,8 @@ function extractSemanticInfo(filePath, content) {
   };
 }
 
-async function buildIndex({ concurrency = 50 } = {}) {
-  const index = {
+async function buildIndex({ concurrency = 50, incremental = false } = {}) {
+  let index = {
     files: {},
     categories: {},
     dependencies: {},
@@ -226,6 +226,18 @@ async function buildIndex({ concurrency = 50 } = {}) {
     totalFiles: 0,
     totalSize: 0,
   };
+
+  // Load existing index for incremental builds
+  if (incremental) {
+    const existingIndex = await loadIndex();
+    if (existingIndex) {
+      index = existingIndex;
+      console.log('Performing incremental index update...');
+    } else {
+      console.log('No existing index found, performing full build...');
+      incremental = false;
+    }
+  }
 
   function normalizeToken(t) {
     return t
@@ -243,88 +255,113 @@ async function buildIndex({ concurrency = 50 } = {}) {
     }
   }
 
+  // Get changed files for incremental builds
+  let changedFiles = [];
+  if (incremental) {
+    try {
+      const lastCommit = index.lastIndexedCommit || 'HEAD~1';
+      const gitOutput = execSync(`git diff --name-only ${lastCommit} HEAD`, { encoding: 'utf8' });
+      changedFiles = gitOutput.split('\n').filter(Boolean);
+      console.log(`Found ${changedFiles.length} changed files since last index`);
+    } catch (err) {
+      console.warn('Failed to get git changes, falling back to full build:', err.message);
+      incremental = false;
+    }
+  }
+
   // Simple async walk with bounded concurrency
-  const queue = [process.cwd()];
+  const queue = incremental ? changedFiles.map(f => path.resolve(f)) : [process.cwd()];
   const workers = [];
 
   async function worker() {
     while (queue.length > 0) {
-      const dirPath = queue.shift();
-      if (!dirPath) break;
-      let items;
+      const itemPath = queue.shift();
+      if (!itemPath) break;
+
       try {
-        items = await fsp.readdir(dirPath);
-      } catch (err) {
-        continue;
-      }
-      await Promise.all(
-        items.map(async (item) => {
-          const fullPath = path.join(dirPath, item);
+        const stat = await fsp.stat(itemPath);
+        if (stat.isDirectory() && !incremental) {
+          // Only recurse directories in full builds
+          let items;
           try {
-            const stat = await fsp.stat(fullPath);
-            if (stat.isDirectory() && !item.startsWith('.') && item !== 'node_modules') {
-              queue.push(fullPath);
-            } else if (stat.isFile() && shouldIncludeFile(fullPath)) {
-              try {
-                const content = await fsp.readFile(fullPath, 'utf8');
-                const semanticInfo = extractSemanticInfo(fullPath, content);
-
-                index.files[semanticInfo.filePath] = semanticInfo;
-                // compute simhash and add to simhash index
-                try {
-                  const sim = computeSimhash(content, 64);
-                  semanticInfo.simhash = sim;
-                  // inline: add to simhash index using a few prefix buckets
-                  const prefixes = [sim.slice(0, 16), sim.slice(0, 12), sim.slice(0, 8)];
-                  for (const p of prefixes) {
-                    if (!index.simhashIndex[p]) index.simhashIndex[p] = new Set();
-                    index.simhashIndex[p].add(semanticInfo.filePath);
-                  }
-                } catch (err) {
-                  // ignore simhash errors
-                }
-                index.totalFiles++;
-                index.totalSize += semanticInfo.size;
-
-                // Group by category
-                if (!index.categories[semanticInfo.category]) {
-                  index.categories[semanticInfo.category] = [];
-                }
-                index.categories[semanticInfo.category].push(semanticInfo.filePath);
-
-                // Build dependency graph
-                semanticInfo.imports.forEach((importPath) => {
-                  if (!index.dependencies[semanticInfo.filePath]) {
-                    index.dependencies[semanticInfo.filePath] = { imports: [], importedBy: [] };
-                  }
-                  index.dependencies[semanticInfo.filePath].imports.push(importPath);
-                });
-                // Update semanticMap (inverted index)
-                try {
-                  addToSemanticMap(index.semanticMap, semanticInfo.fileName, semanticInfo.filePath);
-                  addToSemanticMap(
-                    index.semanticMap,
-                    (semanticInfo.functions || []).join(' '),
-                    semanticInfo.filePath
-                  );
-                  addToSemanticMap(
-                    index.semanticMap,
-                    (semanticInfo.classes || []).join(' '),
-                    semanticInfo.filePath
-                  );
-                  addToSemanticMap(index.semanticMap, semanticInfo.summary, semanticInfo.filePath);
-                } catch (err) {
-                  // ignore semanticMap errors
-                }
-              } catch (error) {
-                console.warn(`Failed to index ${fullPath}: ${error.message}`);
-              }
-            }
+            items = await fsp.readdir(itemPath);
           } catch (err) {
-            // ignore stat errors
+            continue;
           }
-        })
-      );
+          await Promise.all(
+            items.map(async (item) => {
+              const fullPath = path.join(itemPath, item);
+              try {
+                const itemStat = await fsp.stat(fullPath);
+                if (itemStat.isDirectory() && !item.startsWith('.') && item !== 'node_modules') {
+                  queue.push(fullPath);
+                } else if (itemStat.isFile() && shouldIncludeFile(fullPath)) {
+                  queue.push(fullPath);
+                }
+              } catch (err) {
+                // ignore stat errors
+              }
+            })
+          );
+        } else if (stat.isFile() && shouldIncludeFile(itemPath)) {
+          try {
+            const content = await fsp.readFile(itemPath, 'utf8');
+            const semanticInfo = extractSemanticInfo(itemPath, content);
+
+            index.files[semanticInfo.filePath] = semanticInfo;
+            // compute simhash and add to simhash index
+            try {
+              const sim = computeSimhash(content, 64);
+              semanticInfo.simhash = sim;
+              // inline: add to simhash index using a few prefix buckets
+              const prefixes = [sim.slice(0, 16), sim.slice(0, 12), sim.slice(0, 8)];
+              for (const p of prefixes) {
+                if (!index.simhashIndex[p]) index.simhashIndex[p] = new Set();
+                index.simhashIndex[p].add(semanticInfo.filePath);
+              }
+            } catch (err) {
+              // ignore simhash errors
+            }
+            index.totalFiles++;
+            index.totalSize += semanticInfo.size;
+
+            // Group by category
+            if (!index.categories[semanticInfo.category]) {
+              index.categories[semanticInfo.category] = [];
+            }
+            index.categories[semanticInfo.category].push(semanticInfo.filePath);
+
+            // Build dependency graph
+            semanticInfo.imports.forEach((importPath) => {
+              if (!index.dependencies[semanticInfo.filePath]) {
+                index.dependencies[semanticInfo.filePath] = { imports: [], importedBy: [] };
+              }
+              index.dependencies[semanticInfo.filePath].imports.push(importPath);
+            });
+            // Update semanticMap (inverted index)
+            try {
+              addToSemanticMap(index.semanticMap, semanticInfo.fileName, semanticInfo.filePath);
+              addToSemanticMap(
+                index.semanticMap,
+                (semanticInfo.functions || []).join(' '),
+                semanticInfo.filePath
+              );
+              addToSemanticMap(
+                index.semanticMap,
+                (semanticInfo.classes || []).join(' '),
+                semanticInfo.filePath
+              );
+              addToSemanticMap(index.semanticMap, semanticInfo.summary, semanticInfo.filePath);
+            } catch (err) {
+              // ignore semanticMap errors
+            }
+          } catch (error) {
+            console.warn(`Failed to index ${itemPath}: ${error.message}`);
+          }
+        }
+      } catch (err) {
+        // ignore stat errors
+      }
     }
   }
 
@@ -488,7 +525,8 @@ async function main() {
   switch (command) {
     case 'build': {
       const concurrencyArg = parseInt(process.env.INDEXER_CONCURRENCY || '50', 10) || 50;
-      const index = await buildIndex({ concurrency: concurrencyArg });
+      const incremental = process.argv.includes('--incremental') || process.argv.includes('-i');
+      const index = await buildIndex({ concurrency: concurrencyArg, incremental });
       await saveIndex(index);
       break;
     }
@@ -530,7 +568,7 @@ async function main() {
 
     default: {
       console.log('Usage:');
-      console.log('  node code-indexer.js build    - Build/rebuild the codebase index');
+      console.log('  node code-indexer.js build [--incremental|-i] - Build/rebuild the codebase index');
       console.log('  node-code-indexer.js search <query> [category] - Search the index');
       console.log('  node code-indexer.js stats    - Show index statistics');
       break;

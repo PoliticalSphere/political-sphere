@@ -2,6 +2,7 @@
 
 ## Completed Tasks
 
+- [x] Standardised on Lefthook for Git hooks; removed Husky and enhanced hook output (staged overview, timings, robust base detection, SKIP_A11Y) (2025-11-01)
 - [x] Removed invalid NX_CLOUD_ACCESS_TOKEN from CI workflow
 - [x] Renamed files to follow kebab-case naming convention (newsService.js → news-service.js, httpUtils.js → http-utils.js)
 - [x] Cleaned up unused code in news-service.js (removed NEWS_ALLOWED_STATUSES import, normalizeStatus function)
@@ -68,13 +69,24 @@
 - [x] Created comprehensive ANN service documentation (README.md) (2025-11-01)
 - [x] Updated CI workflow for ANN index build and artifact caching (2025-11-01)
 - [x] Validated full integration: 100% ANN success rate, finite scores, clean logs (2025-11-01)
+- [x] Optimize AI code indexer with incremental builds based on git commits (2025-11-01)
+- [x] Improve AI cache management with better TTL and LRU eviction (2025-11-01)
+- [x] Add parallelism to AI context preloader for faster initialization (2025-11-01)
+- [x] Integrate AI tooling initialization into bootstrap process (2025-11-01)
+- [x] Enhance environment validation with AI-specific checks (2025-11-01)
+- [x] Upgrade smoke tests with comprehensive error handling and validation (2025-11-01)
+- [x] Add performance tuning controls to ai-controls.json (2025-11-01)
+- [x] Implement resource monitoring to prevent development resource hogs (2025-11-01)
 
 ### Pending AI Improvements
 
-- [ ] Add unit tests for ANN integration (compare recall vs brute-force)
+- [x] Add unit tests for ANN integration (compare recall vs brute-force) — implemented `apps/dev/tests/integration/ann-recall.test.mjs` with optional ANN-backed comparison, fallback and metrics checks (2025-11-01)
 - [ ] Implement Grafana dashboards for vector-search latency and ANN metrics
 - [ ] Create production deployment guide for ANN service (systemd, gunicorn, health checks)
 - [ ] Explore higher-quality embeddings (sentence-transformers, OpenAI embeddings) for improved recall
+- [ ] Add CI/CD metrics collection for AI performance tracking
+- [ ] Implement automated rule updates and compliance checks
+- [ ] Create dashboards for AI competence and system health monitoring
 
 ## Architecture & Implementation (Critical Priority)
 
@@ -115,6 +127,13 @@
 - [x] Optimize resource usage across services with efficient resource management
 - [x] Set up performance monitoring and alerts with dashboards and alerting
 
+### IDE Performance & Developer Experience
+
+- [x] Reduce VS Code load by excluding heavy generated folders from search and file watchers (`playwright-report/`, `artifacts/`, `ai-metrics/`, `test-results/`, `monitoring/data/`, `data/`) (2025-11-01)
+- [x] Add `scripts/dev/kill-resource-hogs.sh` and npm scripts (`dev:clean:processes`, `dev:reset-performance`) to quickly kill runaway Nx/Playwright processes and reset Nx cache (2025-11-01)
+- [ ] Investigate Nx Console extension auto-running `nx run-many` tasks on workspace open; document recommended settings or disable-by-default guidance (owner: Platform Eng)
+- [ ] Evaluate `.mcp.json` server list for minimal default footprint; consider sample config enabling only filesystem by default and document opt-in for others
+
 ## Developer Experience & Quality (Medium Priority)
 
 ### Testing & Validation
@@ -123,6 +142,10 @@
 - [ ] Implement proper database layer with PostgreSQL, migrations, indexes, N+1 avoidance using GraphQL dataloaders
 - [ ] Implement Redis for rate limiting, caching, and session management
 - [ ] Remove duplicate exports and consolidate utilities following naming conventions
+
+### Follow-ups
+
+- [ ] Rename CI helper scripts from `husky-lefthook-*.mjs` to `git-hooks-*.mjs` for clarity (non-functional change)
 
 ### Documentation & Onboarding
 

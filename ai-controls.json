@@ -3,5 +3,23 @@
     "enabled": true,
     "concurrency": 3,
     "guardTimeoutMs": 120000
+  },
+  "performanceTuning": {
+    "indexerConcurrency": 50,
+    "cacheMaxEntries": 200,
+    "cacheTtlMs": 86400000,
+    "contextPreloadConcurrency": 8,
+    "incrementalIndexing": true
+  },
+  "monitoring": {
+    "metricsCollection": true,
+    "performanceTracking": true,
+    "errorReporting": true,
+    "competenceAssessment": true
+  },
+  "resourceLimits": {
+    "maxMemoryUsage": "512MB",
+    "maxCpuUsage": "80%",
+    "timeoutMs": 300000
   }
 }

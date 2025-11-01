@@ -165,9 +165,13 @@ async function buildContext(contextName) {
   const concurrency = Math.max(2, Math.min(8, filesToProcess.length));
   const queue = filesToProcess.slice();
   const workers = [];
-  async function worker() {
+  const results = new Map();
+
+  async function worker(workerId) {
     while (queue.length > 0) {
       const filePath = queue.shift();
+      if (!filePath) continue;
+
       try {
         const resolved = path.isAbsolute(filePath) ? filePath : path.join(REPO_ROOT, filePath);
         const exists = await fsp
@@ -177,16 +181,28 @@ async function buildContext(contextName) {
         if (exists) {
           const relevantContent = await extractRelevantContent(filePath, context.patterns);
           if (relevantContent.length > 0) {
-            contextData.files[filePath] = relevantContent;
+            results.set(filePath, relevantContent);
           }
         }
       } catch (error) {
-        // ignore per-file errors to keep preloading resilient
+        console.warn(`Worker ${workerId} failed to process ${filePath}:`, error.message);
+        // Continue processing other files
       }
     }
   }
-  for (let i = 0; i < concurrency; i++) workers.push(worker());
+
+  // Start workers
+  for (let i = 0; i < concurrency; i++) {
+    workers.push(worker(i));
+  }
+
+  // Wait for all workers to complete
   await Promise.all(workers);
+
+  // Collect results
+  for (const [filePath, content] of results) {
+    contextData.files[filePath] = content;
+  }
 
   // Extract relevant knowledge
   context.knowledge.forEach((knowledgePath) => {

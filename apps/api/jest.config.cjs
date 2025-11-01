@@ -45,7 +45,7 @@ module.exports = {
   ],
   // Module mapping for shared libraries and dependencies
   moduleNameMapper: {
-    '^@political-sphere/shared$': '<rootDir>/../../libs/shared/dist/index.js',
+    '^@political-sphere/shared$': '<rootDir>/../../libs/shared/dist/src/index.js',
     '^uuid$': require.resolve('uuid'),
   },
   // Environment setup - ensure secrets are loaded before module imports

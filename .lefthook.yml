@@ -19,6 +19,7 @@ pre-commit:
     # Welcome message with branding
     welcome:
       run: |
+        set -u
         echo ""
         echo "╔════════════════════════════════════════════════════╗"
         echo "║         🏛️  POLITICAL SPHERE 🏛️                     ║"
@@ -28,6 +29,32 @@ pre-commit:
         echo ""
         echo "✨ Thank you for contributing to democratic technology!"
         echo ""
+        # Quick context
+        STAGED=$(git diff --name-only --cached | wc -l | tr -d ' ')
+        echo "📦 Staged files: ${STAGED}"
+        if [ "$STAGED" -eq 0 ]; then
+          echo "ℹ️  No staged files detected. Some checks may be skipped."
+        fi
+        echo ""
+
+    # Context overview for staged files (counts by type)
+    staged-overview:
+      run: |
+        set -u
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🧭 Context Overview"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        TS=$(git diff --name-only --cached -- '*.ts' '*.tsx' | wc -l | tr -d ' ')
+        JS=$(git diff --name-only --cached -- '*.js' '*.jsx' | wc -l | tr -d ' ')
+        MD=$(git diff --name-only --cached -- '*.md' | wc -l | tr -d ' ')
+        OTHER=$(git diff --name-only --cached \
+          | grep -Ev '\.(ts|tsx|js|jsx|md)$' || true)
+        if [ -n "$OTHER" ]; then OTHER_COUNT=$(printf "%s\n" "$OTHER" | wc -l | tr -d ' '); else OTHER_COUNT=0; fi
+        printf "   • TypeScript:  %s\n" "$TS"
+        printf "   • JavaScript:  %s\n" "$JS"
+        printf "   • Markdown:    %s\n" "$MD"
+        printf "   • Other:       %s\n" "$OTHER_COUNT"
+        echo ""
 
     # Standard linting and formatting (ESLint, Prettier, Biome)
     lint-staged:
@@ -35,18 +62,46 @@ pre-commit:
 
     # Spell checking with detailed output
     cspell:
-      run: npx cspell {staged_files}
+      run: |
+        set -u
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🔤 Spell Checking (cspell)"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        FILES=$(git diff --name-only --cached -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.md')
+        if [ -z "$FILES" ]; then
+          echo "ℹ️  No relevant files staged; skipping cspell."
+          exit 0
+        fi
+        if npx cspell $FILES; then
+          echo "✅ Spelling OK"
+        else
+          echo "❌ Spelling issues detected. See errors above."
+          echo "💡 Tip: add valid domain terms to cspell.json#words"
+          exit 1
+        fi
       files: git diff --name-only --cached -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.md'
       interactive: true
 
     # Accessibility checks for UI changes
     a11y:
-      run: bash scripts/ci/a11y-check.sh
+      run: |
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "♿ Accessibility Check"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        if [ "${SKIP_A11Y:-0}" = "1" ]; then
+          echo "⚠️  Skipped (SKIP_A11Y=1)"
+          exit 0
+        fi
+        bash scripts/ci/a11y-check.sh
       files: git diff --name-only --cached -- '*.tsx' '*.jsx'
 
     # Module boundary enforcement
     import-boundaries:
-      run: node scripts/ci/check-import-boundaries.js
+      run: |
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🧱 Import Boundaries"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        node scripts/ci/check-import-boundaries.js
       files: git diff --name-only --cached -- '*.ts' '*.tsx' '*.js' '*.jsx'
 
     # Secret scanning (fast mode - gitleaks on staged changes only)
@@ -54,7 +109,7 @@ pre-commit:
       run: |
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-        echo "� Secret Scanning"
+        echo "🛡️  Secret Scanning"
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         if command -v gitleaks >/dev/null 2>&1; then
           if gitleaks protect --staged --verbose --log-level info 2>&1; then
@@ -68,6 +123,7 @@ pre-commit:
         else
           echo "⚠️  Warning: gitleaks not installed"
           echo "   Install: brew install gitleaks"
+          echo "   Docs: docs/SECURITY.md#secret-scanning"
         fi
         echo ""
       interactive: true
@@ -76,7 +132,13 @@ commit-msg:
   commands:
     # Enforce conventional commit messages
     commitlint:
-      run: npx commitlint --edit {1}
+      run: |
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "📝 Commit Message Lint"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        SUBJECT=$(head -n1 "$1" || true)
+        echo "Subject: $SUBJECT"
+        npx commitlint --edit "$1"
 
 pre-push:
   commands:
@@ -97,6 +159,7 @@ pre-push:
     # Run affected tests before push (skip with SKIP_TESTS=1)
     test-affected:
       run: |
+        SECONDS=0
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "🧪 Running Tests"
@@ -108,16 +171,20 @@ pre-push:
         fi
         echo "💡 Tip: Use SKIP_TESTS=1 git push to skip"
         echo ""
-        if npx nx affected:test --base=origin/main --head=HEAD --verbose; then
+        BASE_REF=${BASE_REF:-origin/main}
+        if ! git rev-parse --verify --quiet "$BASE_REF" >/dev/null; then
+          if git rev-parse --verify --quiet main >/dev/null; then BASE_REF=main; fi
+        fi
+        if npx nx affected:test --base="$BASE_REF" --head=HEAD --verbose; then
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✅ All tests passed"
+          echo "✅ All tests passed (time: ${SECONDS}s)"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
         else
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "❌ FAILED: Tests failed"
+          echo "❌ FAILED: Tests failed (time: ${SECONDS}s)"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "Review the output above for details."
           echo "Fix failing tests or use: SKIP_TESTS=1 git push"
@@ -129,6 +196,7 @@ pre-push:
     # Run linting on affected projects (skip with SKIP_LINT=1)
     lint-affected:
       run: |
+        SECONDS=0
         echo ""
         echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         echo "🔍 Linting Code"
@@ -140,16 +208,20 @@ pre-push:
         fi
         echo "💡 Tip: Use SKIP_LINT=1 git push to skip"
         echo ""
-        if npx nx affected:lint --base=origin/main --head=HEAD; then
+        BASE_REF=${BASE_REF:-origin/main}
+        if ! git rev-parse --verify --quiet "$BASE_REF" >/dev/null; then
+          if git rev-parse --verify --quiet main >/dev/null; then BASE_REF=main; fi
+        fi
+        if npx nx affected:lint --base="$BASE_REF" --head=HEAD; then
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "✅ Linting passed"
+          echo "✅ Linting passed (time: ${SECONDS}s)"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo ""
         else
           echo ""
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-          echo "❌ FAILED: Linting errors found"
+          echo "❌ FAILED: Linting errors found (time: ${SECONDS}s)"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "Review the output above for details."
           echo "Fix linting errors or use: SKIP_LINT=1 git push"

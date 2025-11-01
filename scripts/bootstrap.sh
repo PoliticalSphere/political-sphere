@@ -72,6 +72,21 @@ else
     echo "⚠️  Dev compose file not found at ${COMPOSE_FILE}. Please start the dev stack manually."
 fi
 
+# Initialize AI tooling
+echo "Initializing AI tooling..."
+if command -v node >/dev/null 2>&1; then
+    echo "Building AI codebase index..."
+    node ./scripts/ai/code-indexer.js build --incremental 2>/dev/null || node ./scripts/ai/code-indexer.js build
+    echo "Pre-caching AI queries..."
+    node ./scripts/ai/pre-cache.js
+    echo "Pre-loading AI contexts..."
+    node ./scripts/ai/context-preloader.js preload
+    echo "Running AI competence assessment..."
+    node ./scripts/ai/competence-monitor.js assess >/dev/null 2>&1
+else
+    echo "⚠️  Node.js not available - skipping AI tooling initialization"
+fi
+
 # Build docs
 echo "Building docs (if configured)..."
 npm run docs:build --if-present
@@ -91,5 +106,6 @@ echo "- npm run lint        # Lint code"
 echo "- npm run typecheck   # Type check"
 echo "- npm run build       # Build for production"
 echo "- lefthook run pre-commit # Test pre-commit hooks"
+echo "- npm run ai:performance # Check AI performance metrics"
 echo ""
 echo "Happy coding! 🎯"

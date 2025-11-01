@@ -153,19 +153,7 @@ async function preCacheQueries() {
     console.warn('Failed to generate queries from docs:', err?.message || err);
   }
 
-  // Remove expired entries based on TTL
-  try {
-    const ttl = cache.ttlMs || DEFAULT_TTL_MS;
-    const now = Date.now();
-    for (const [k, v] of Object.entries(cache.queries || {})) {
-      const ts = v.timestamp || 0;
-      if (ttl > 0 && now - ts > ttl) {
-        delete cache.queries[k];
-      }
-    }
-  } catch (err) {
-    // ignore TTL cleanup errors
-  }
+  // TTL enforcement is now handled in enforceCacheSize
 
   // Enforce max entries (LRU eviction)
   await enforceCacheSize(cache);
@@ -181,14 +169,28 @@ async function enforceCacheSize(cache) {
     const maxEntries = cache.maxEntries || DEFAULT_MAX_ENTRIES;
     const keys = Object.keys(cache.queries || {});
     if (keys.length <= maxEntries) return cache;
+
+    // LRU eviction: sort by timestamp (oldest first)
     const sorted = keys.sort(
       (a, b) => (cache.queries[a].timestamp || 0) - (cache.queries[b].timestamp || 0)
     );
     const toRemove = sorted.slice(0, keys.length - maxEntries);
     toRemove.forEach((k) => delete cache.queries[k]);
     cache.evicted = toRemove.length;
+
+    // Also enforce TTL
+    const ttl = cache.ttlMs || DEFAULT_TTL_MS;
+    const now = Date.now();
+    const expiredKeys = keys.filter(k => {
+      const ts = cache.queries[k]?.timestamp || 0;
+      return ttl > 0 && now - ts > ttl;
+    });
+    expiredKeys.forEach(k => delete cache.queries[k]);
+    cache.expired = expiredKeys.length;
+
+    console.log(`Cache maintenance: evicted ${toRemove.length} entries, expired ${expiredKeys.length} entries`);
   } catch (err) {
-    // ignore
+    console.warn('Cache size enforcement failed:', err?.message || err);
   }
   return cache;
 }

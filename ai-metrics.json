@@ -126,6 +126,18 @@
       "timestamp": "2025-10-31T15:39:29.092Z",
       "durationMs": 69,
       "success": true
+    },
+    {
+      "script": "context-preloader:preload",
+      "timestamp": "2025-11-01T22:25:17.996Z",
+      "durationMs": 1361,
+      "success": true
+    },
+    {
+      "script": "context-preloader:preload",
+      "timestamp": "2025-11-01T22:28:39.720Z",
+      "durationMs": 1135,
+      "success": true
     }
   ],
   "totalRequests": 0,

@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- AI Indexing: Added ANN recall integration test (`apps/dev/tests/integration/ann-recall.test.mjs`) comparing ANN `/vector-search` to brute-force baseline, with fallback and metrics checks (2025-11-01)
+
+### Performance
+
+- IDE responsiveness: Reduced VS Code load by excluding large generated folders from search and file watchers (`playwright-report/`, `artifacts/`, `ai-metrics/`, `test-results/`, `monitoring/data/`, `data/`). Added `scripts/dev/kill-resource-hogs.sh` and npm scripts `dev:clean:processes`/`dev:reset-performance` to terminate runaway Nx/Playwright processes and reset Nx cache. (2025-11-01)
+
+### Changed
+
+- Standardised on Lefthook for Git hooks; removed Husky hooks and directory. Improved hook UX with staged file overview, clearer section banners, per-step timing, robust base-branch detection for Nx affected commands, optional SKIP_A11Y, and more actionable tips in errors (2025-11-01)
+
+### Removed
+
+- Husky hook files (`.husky/`) to avoid duplicate/conflicting hook runners (2025-11-01)
+
 ### Security
 
 - **Fixed hnswlib vulnerability**: Updated hnswlib from 0.7.0 to 0.8.0 to fix double free bug in init_index when M is a large integer (2025-11-01)

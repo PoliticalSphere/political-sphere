@@ -5,7 +5,8 @@
     "rootDir": "./src",
     "declaration": true,
     "types": ["node"],
-    "module": "es2022"
+    "module": "es2022",
+    "moduleResolution": "bundler"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["jest.config.js", "src/**/*.spec.ts", "src/**/*.test.ts"]

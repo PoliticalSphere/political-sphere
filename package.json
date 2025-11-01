@@ -8,6 +8,7 @@
     "libs/*"
   ],
   "devDependencies": {
+    "@axe-core/playwright": "^4.11.0",
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
     "@modelcontextprotocol/sdk": "^1.20.2",
@@ -34,6 +35,7 @@
     "lint-staged": "^15.2.2",
     "markdownlint-cli": "^0.39.0",
     "nx": "^22.0.1",
+    "playwright": "^1.56.1",
     "prettier": "^3.2.5",
     "puppeteer-mcp-server": "^0.7.2",
     "simple-git": "^3.28.0",
@@ -43,6 +45,8 @@
     "webpack-dev-server": "^5.2.2"
   },
   "scripts": {
+  "dev:clean:processes": "bash scripts/dev/kill-resource-hogs.sh",
+  "dev:reset-performance": "bash scripts/dev/kill-resource-hogs.sh",
     "help": "echo 'Available scripts:\\n  build: Build the project\\n  lint: Lint the code\\n  test: Run tests\\n  bootstrap: Bootstrap the project\\n  format: Format code\\n  typecheck: Type check\\n  docs:lint: Lint documentation\\n  ai:*: AI-related scripts\\n  dev:*: Development servers\\n  validate:env: Validate environment\\n  rollback: Rollback changes'",
     "bootstrap": "bash scripts/bootstrap.sh",
     "validate:env": "node scripts/validate-env.js",

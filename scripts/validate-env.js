@@ -158,6 +158,41 @@ function validateDatabaseConnection() {
   }
 }
 
+function validateAISpecificConfigurations() {
+  logHeader('AI-Specific Configuration');
+
+  const aiConfigs = [
+    { name: 'FAST_AI', value: process.env.FAST_AI, purpose: 'Enable fast AI mode for development' },
+    { name: 'INDEXER_CONCURRENCY', value: process.env.INDEXER_CONCURRENCY, purpose: 'Control AI indexer parallelism' },
+    { name: 'PRE_CACHE_MAX_ENTRIES', value: process.env.PRE_CACHE_MAX_ENTRIES, purpose: 'Limit AI cache size' },
+    { name: 'PRE_CACHE_TTL_MS', value: process.env.PRE_CACHE_TTL_MS, purpose: 'AI cache entry TTL' },
+  ];
+
+  let aiConfigured = false;
+  aiConfigs.forEach(({ name, value, purpose }) => {
+    if (value !== undefined) {
+      console.log(`  ${name}: ${value}`);
+      console.log(`    Purpose: ${purpose}`);
+      aiConfigured = true;
+    }
+  });
+
+  if (aiConfigured) {
+    logSuccess('AI configurations detected');
+  } else {
+    logWarning('No AI-specific configurations found - using defaults');
+  }
+
+  // Check for AI tooling directories
+  const aiDirs = ['ai-cache', 'ai-index', 'ai-knowledge', 'ai-learning', 'ai-metrics'];
+  const missingDirs = aiDirs.filter(dir => !require('fs').existsSync(dir));
+  if (missingDirs.length > 0) {
+    logWarning(`Missing AI directories: ${missingDirs.join(', ')} - run bootstrap to initialize`);
+  } else {
+    logSuccess('AI tooling directories present');
+  }
+}
+
 function validateCICDSecrets() {
   logHeader('CI/CD Secrets (GitHub Actions)');
 
@@ -223,6 +258,7 @@ ${colors.reset}`);
     validateServiceConfiguration();
     validateRateLimits();
     validateDatabaseConnection();
+    validateAISpecificConfigurations();
     validateCICDSecrets();
 
     const exitCode = printSummary();
@@ -238,4 +274,4 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
 
-export { validateJWTSecrets, validateServiceConfiguration, validateRateLimits };
+export { validateJWTSecrets, validateServiceConfiguration, validateRateLimits, validateAISpecificConfigurations };

@@ -1,25 +1,25 @@
-Daemon process terminated and closed the connection
+Failed to start or connect to the Nx Daemon process.
 
 Messages from the log:
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:44.422Z - [REQUEST]: Responding to the client. handleRecordTaskRuns
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:44.423Z - Done responding to the client handleRecordTaskRuns
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:44.423Z - Handled json message RECORD_TASK_RUNS. Handling time: 1. Response time: 1.
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:44.425Z - [REQUEST]: Responding to the client. handleGetFlakyTasks
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:44.425Z - Done responding to the client handleGetFlakyTasks
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:44.425Z - Handled json message GET_FLAKY_TASKS. Handling time: 1. Response time: 0.
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:45.537Z - Time taken for 'Load Nx Plugin: /Users/morganlowman/politicial-sphere (V1)/node_modules/nx/src/plugins/project-json/build-nodes/project-json' 1818.444235ms
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:45.832Z - Time taken for 'Load Nx Plugin: /Users/morganlowman/politicial-sphere (V1)/node_modules/nx/src/plugins/package-json' 2111.9663010000004ms
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:45.995Z - [REQUEST]: Updated workspace context based on watched changes, recomputing project graph...
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:45.996Z - [REQUEST]: 
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:45.996Z - [REQUEST]: 
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:46.147Z - Time taken for 'loadDefaultNxPlugins' 2277.3526ms
-Time for 'nx/core/project-json:createNodes' [33m7.861693000000287[39m
-Time for 'nx/core/package-json:createNodes' [33m94.63441900000043[39m
-Time for 'nx/js/dependencies-and-lockfile:createNodes' [33m142.18261099999972[39m
-Unable to find local plugin [] Map(0) {}
-Unable to find local plugin [] Map(0) {}
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:46.695Z - Time taken for 'build-project-configs' 293.6061520000003ms
-[NX v22.0.2 Daemon Server] - 2025-10-29T21:02:46.695Z - Established a connection. Number of open connections: 4
+    at defaultResolveImpl (node:internal/modules/cjs/loader:1032:19)
+    at resolveForCJSWithHooks (node:internal/modules/cjs/loader:1037:22)
+    at Module._load (node:internal/modules/cjs/loader:1199:37)
+    at c._load (node:electron/js2c/node_init:2:17993)
+    at TracingChannel.traceSync (node:diagnostics_channel:322:14)
+    at wrapModuleLoad (node:internal/modules/cjs/loader:244:24)
+    at Module.require (node:internal/modules/cjs/loader:1470:12)
+    at require (node:internal/modules/helpers:147:16)
+    at Object.<anonymous> (/Users/morganlowman/politicial-sphere (V1)/node_modules/nx/node_modules/supports-color/index.js:4:17) {
+  code: 'MODULE_NOT_FOUND',
+  requireStack: [
+    '/Users/morganlowman/politicial-sphere (V1)/node_modules/nx/node_modules/supports-color/index.js',
+    '/Users/morganlowman/politicial-sphere (V1)/node_modules/nx/node_modules/chalk/source/index.js',
+    '/Users/morganlowman/politicial-sphere (V1)/node_modules/nx/src/utils/output.js',
+    '/Users/morganlowman/politicial-sphere (V1)/node_modules/nx/src/daemon/server/start.js'
+  ]
+}
+
+Node.js v22.19.0
 
 
 

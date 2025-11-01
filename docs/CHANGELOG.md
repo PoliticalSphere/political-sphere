@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+- **AI Indexing: ANN Recall Integration Test (2025-11-01)**
+  - Added `apps/dev/tests/integration/ann-recall.test.mjs` to compare ANN-backed `/vector-search` results against brute-force baseline and validate fallback behaviour and metrics exposure
+  - Test auto-builds index and embeddings if missing; ANN comparison enabled when `TEST_ANN_URL` or `ANN_BACKEND_URL` is provided, otherwise skips gracefully
+  - Impact: Increases confidence in ANN integration correctness and resilience; provides a harness for recall monitoring over time
+
+- **Git Hooks Modernisation (2025-11-01)**
+  - Standardised on Lefthook; removed legacy Husky hooks to prevent duplicate execution
+  - Enhanced `.lefthook.yml` output: staged file overview, clearer banners, per-step timing, robust base-branch detection for `nx affected:*`, SKIP_A11Y support, and improved error tips
+  - Impact: Faster, clearer developer feedback during commit/push; fewer false negatives and easier troubleshooting
+
 - **Core Domain Implementation (2025-11-01)**
   - Fixed missing domain type exports from `@political-sphere/shared` library
   - Added export of domain models (User, Party, Bill, Vote) and Zod validation schemas from `libs/shared/src/index.ts`

@@ -1,14 +1,4 @@
 #!/bin/sh
-# Enhanced pre-commit hook with error handling and logging
-# Owner: Platform Engineering
-# Last updated: 2025-10-31
-
-# Enable strict error handling
-set -euo pipefail
-
-# Set default values for environment variables
-LEFTHOOK_VERBOSE="${LEFTHOOK_VERBOSE:-0}"
-LEFTHOOK="${LEFTHOOK:-1}"
 
 if [ "$LEFTHOOK_VERBOSE" = "1" -o "$LEFTHOOK_VERBOSE" = "true" ]; then
   set -x
@@ -18,12 +8,8 @@ if [ "$LEFTHOOK" = "0" ]; then
   exit 0
 fi
 
-# Log hook execution start
-echo "🔍 Running pre-commit hooks..." >&2
-
 call_lefthook()
 {
-  LEFTHOOK_BIN="${LEFTHOOK_BIN:-}"
   if test -n "$LEFTHOOK_BIN"
   then
     "$LEFTHOOK_BIN" "$@"

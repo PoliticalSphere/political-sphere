@@ -10,6 +10,10 @@
 - [x] Install and configure all new MCP servers with npm scripts (2025-11-01)
 - [x] Test new MCP servers to verify they launch correctly (2025-11-01)
 - [x] Update documentation with detailed capabilities for all 10 MCP servers (2025-11-01)
+- [x] **Fixed hnswlib security vulnerability**: Updated hnswlib from 0.7.0 to 0.8.0 to fix double free bug in init_index (2025-11-01)
+- [x] **Fixed Nx refresh slowdown**: Optimized daemon settings, added file watcher ignore patterns, cleared 1.3GB cache, added debounce delays (2025-11-01)
+- [x] **Fixed commit buffering/hanging**: Replaced slow TruffleHog with fast gitleaks for pre-commit secret scanning (2025-11-01)
+- [x] **Fixed pre-push hanging**: Simplified integrity check to only verify critical files exist instead of slow find operations (2025-11-01)
 - [ ] Run full test suite to verify all Jest configuration improvements
 - [ ] Address remaining database connectivity issues (500 errors in tests)
 - [ ] Fix module resolution issues in unit tests (UserService import)
@@ -92,16 +96,19 @@
 ## ISO 42001 AMLS Implementation Tasks
 
 ### High Priority (Immediate - 30-60 days)
+
 - [x] Create AI Risk Assessment Framework (`docs/07-ai-and-simulation/ai-risk-assessment-framework.md`) - COMPLETED
 - [x] Develop AI Incident Response Plan (`docs/07-ai-and-simulation/ai-incident-response-plan.md`) - COMPLETED
 - [x] Implement AI Model Validation Procedures (`docs/07-ai-and-simulation/ai-model-validation-procedures.md`) - COMPLETED
 
 ### Medium Priority (3-6 months)
+
 - [x] Establish AI Data Provenance Framework (`docs/07-ai-and-simulation/ai-data-provenance-framework.md`) - COMPLETED
 - [x] Create AI Ethics Training Program (`docs/07-ai-and-simulation/ai-ethics-training-program.md`) - COMPLETED
 - [x] Develop External AI Governance Communication Framework (`docs/07-ai-and-simulation/ai-governance-external-communication.md`) - COMPLETED
 
 ### Implementation Phase (Next Steps)
+
 - [ ] Integrate AI risk assessment into development workflow
 - [ ] Implement automated AI model validation pipeline
 - [ ] Deploy AI incident response procedures and training

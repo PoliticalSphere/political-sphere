@@ -6,6 +6,12 @@
 
 # Performance and resource configuration
 colors: true
+output:
+  - summary
+  - execution
+  - execution_out
+  - execution_info
+  - meta
 
 pre-commit:
   parallel: true
@@ -14,10 +20,11 @@ pre-commit:
     lint-staged:
       run: npx lint-staged
 
-    # Spell checking
+    # Spell checking with detailed output
     cspell:
-      run: npx cspell --no-progress {staged_files}
+      run: npx cspell {staged_files}
       files: git diff --name-only --cached -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.md'
+      interactive: true
 
     # Accessibility checks for UI changes
     a11y:
@@ -32,11 +39,18 @@ pre-commit:
     # Secret scanning (fast mode - gitleaks on staged changes only)
     secrets:
       run: |
+        echo "🔍 Scanning for secrets..."
         if command -v gitleaks >/dev/null 2>&1; then
-          gitleaks protect --staged --verbose --log-level error
+          if gitleaks protect --staged --verbose --log-level info; then
+            echo "✅ No secrets detected"
+          else
+            echo "❌ Secrets detected! Review the output above."
+            exit 1
+          fi
         else
           echo "⚠️  Warning: gitleaks not installed, skipping secret scan (install via: brew install gitleaks)"
         fi
+      interactive: true
 
 commit-msg:
   commands:
@@ -49,8 +63,49 @@ pre-push:
     # Fast workspace integrity check (critical files only)
     integrity:
       run: |
+        echo "🔍 Checking workspace integrity..."
         if [ ! -f "package.json" ] || [ ! -f "nx.json" ]; then
           echo "❌ Critical files missing!"
           exit 1
         fi
         echo "✅ Workspace integrity OK"
+
+    # Run affected tests before push (skip with SKIP_TESTS=1)
+    test-affected:
+      run: |
+        if [ "${SKIP_TESTS:-0}" = "1" ]; then
+          echo "⚠️  Skipping tests (SKIP_TESTS=1)"
+          exit 0
+        fi
+        echo "🧪 Running tests for affected projects..."
+        echo "   (Use SKIP_TESTS=1 git push to skip)"
+        if npx nx affected:test --base=origin/main --head=HEAD --verbose; then
+          echo ""
+          echo "✅ All tests passed"
+        else
+          echo ""
+          echo "❌ Tests failed! See output above for details."
+          echo "Fix the failing tests before pushing, or use SKIP_TESTS=1 to bypass."
+          exit 1
+        fi
+      interactive: true
+
+    # Run linting on affected projects (skip with SKIP_LINT=1)
+    lint-affected:
+      run: |
+        if [ "${SKIP_LINT:-0}" = "1" ]; then
+          echo "⚠️  Skipping lint (SKIP_LINT=1)"
+          exit 0
+        fi
+        echo "🔍 Linting affected projects..."
+        echo "   (Use SKIP_LINT=1 git push to skip)"
+        if npx nx affected:lint --base=origin/main --head=HEAD; then
+          echo ""
+          echo "✅ Linting passed"
+        else
+          echo ""
+          echo "❌ Linting failed! See output above for details."
+          echo "Fix the linting errors before pushing, or use SKIP_LINT=1 to bypass."
+          exit 1
+        fi
+      interactive: true

@@ -9,9 +9,9 @@ module.exports = {
       filename: 'remoteEntry.js',
       // expose absolute path to ensure resolution from generated config into the remote app's source
       exposes: {
-        './Widget': path.resolve(process.cwd(), 'apps/remote/src/bootstrap.js')
+        './Widget': path.resolve(process.cwd(), 'apps/remote/src/bootstrap.js'),
       },
-      shared: { react: { singleton: true }, 'react-dom': { singleton: true } }
-    })
-  ]
+      shared: { react: { singleton: true }, 'react-dom': { singleton: true } },
+    }),
+  ],
 };

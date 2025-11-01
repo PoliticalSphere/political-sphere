@@ -39,10 +39,7 @@ class AILearningSystem {
       improvements: feedback.improvements || [],
     };
 
-    await fs.appendFile(
-      this.feedbackFile,
-      JSON.stringify(feedbackEntry) + '\n'
-    );
+    await fs.appendFile(this.feedbackFile, JSON.stringify(feedbackEntry) + '\n');
 
     // Update patterns
     await this.updatePatterns(feedbackEntry);
@@ -199,10 +196,7 @@ class AILearningSystem {
     const successfulParts = successfulPrompt
       .split('\n')
       .filter(
-        (line) =>
-          line.includes('IMPORTANT') ||
-          line.includes('REQUIRE') ||
-          line.includes('ENSURE')
+        (line) => line.includes('IMPORTANT') || line.includes('REQUIRE') || line.includes('ENSURE')
       );
 
     return (
@@ -218,9 +212,7 @@ class AILearningSystem {
 
     const insights = {
       totalFeedback: feedback.length,
-      averageRating:
-        feedback.reduce((sum, f) => sum + (f.userRating || 3), 0) /
-        feedback.length,
+      averageRating: feedback.reduce((sum, f) => sum + (f.userRating || 3), 0) / feedback.length,
       mostSuccessfulOperation: this.getMostSuccessfulOperation(feedback),
       trendingIssues: this.getTrendingIssues(feedback),
       learningProgress: this.calculateLearningProgress(feedback),
@@ -257,11 +249,7 @@ class AILearningSystem {
 
   getTrendingIssues(feedback) {
     const recentFeedback = feedback
-      .filter(
-        (f) =>
-          new Date(f.timestamp) >
-          new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
-      ) // Last 30 days
+      .filter((f) => new Date(f.timestamp) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) // Last 30 days
       .filter((f) => f.type === 'reject' || f.userRating <= 2);
 
     const issueCounts = {};
@@ -282,10 +270,8 @@ class AILearningSystem {
     const recent = feedback.slice(-10);
     const older = feedback.slice(-20, -10);
 
-    const recentAvg =
-      recent.reduce((sum, f) => sum + (f.userRating || 3), 0) / recent.length;
-    const olderAvg =
-      older.reduce((sum, f) => sum + (f.userRating || 3), 0) / older.length;
+    const recentAvg = recent.reduce((sum, f) => sum + (f.userRating || 3), 0) / recent.length;
+    const olderAvg = older.reduce((sum, f) => sum + (f.userRating || 3), 0) / older.length;
 
     if (recentAvg > olderAvg + 0.2) return 'improving';
     if (recentAvg < olderAvg - 0.2) return 'declining';
@@ -321,8 +307,13 @@ class AILearningSystem {
   }
 
   async savePatterns(patterns) {
-    patterns.lastUpdated = new Date().toISOString();
-    await fs.writeFile(this.patternsFile, JSON.stringify(patterns, null, 2));
+    try {
+      patterns.lastUpdated = new Date().toISOString();
+      await fs.writeFile(this.patternsFile, JSON.stringify(patterns, null, 2));
+    } catch (err) {
+      // Best-effort: log and continue. Persistence failures should not crash the CLI.
+      console.warn('Failed to save patterns:', err?.message || err);
+    }
   }
 }
 

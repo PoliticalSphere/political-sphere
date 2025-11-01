@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -50,11 +50,13 @@ tools/
 ## 📋 Project Configuration
 
 ### nx.json
+
 - **Named Inputs:** Define `production` and `test` inputs for selective builds.
 - **Target Defaults:** Configure caching, parallelization, and affected strategies.
 - **Release:** Use Nx release for versioning and publishing.
 
 ### project.json (per project)
+
 - **Targets:** Define build, test, lint, e2e targets with appropriate configurations.
 - **Dependencies:** Use implicitDeps for shared libs; explicit for cross-boundary deps.
 - **Tags:** Apply tags like `scope:shared`, `type:app` for access control.
@@ -63,16 +65,16 @@ tools/
 
 ## 🔗 Dependency Rules
 
-| From | To | Allowed | Rationale |
-| ---- | -- | ------- | --------- |
-| apps/* | libs/shared | ✅ | Core utilities |
-| apps/* | libs/ui | ✅ | UI components |
-| apps/* | libs/infrastructure | ✅ | Infra services |
-| apps/* | libs/platform | ✅ | Platform configs |
-| libs/shared | libs/* | ❌ | No upward deps |
-| libs/ui | libs/shared | ✅ | Depends on utils |
-| libs/infrastructure | libs/shared | ✅ | Depends on utils |
-| libs/platform | libs/* | ❌ | Config only |
+| From                | To                  | Allowed | Rationale        |
+| ------------------- | ------------------- | ------- | ---------------- |
+| apps/\*             | libs/shared         | ✅      | Core utilities   |
+| apps/\*             | libs/ui             | ✅      | UI components    |
+| apps/\*             | libs/infrastructure | ✅      | Infra services   |
+| apps/\*             | libs/platform       | ✅      | Platform configs |
+| libs/shared         | libs/\*             | ❌      | No upward deps   |
+| libs/ui             | libs/shared         | ✅      | Depends on utils |
+| libs/infrastructure | libs/shared         | ✅      | Depends on utils |
+| libs/platform       | libs/\*             | ❌      | Config only      |
 
 **Enforcement:** Use Nx dep-graph and lint rules to prevent violations.
 
@@ -80,14 +82,14 @@ tools/
 
 ## 🛠️ Development Commands
 
-| Command | Purpose | Example |
-| ------- | ------- | ------- |
-| `nx build <project>` | Build specific project | `nx build api` |
-| `nx test <project>` | Run tests for project | `nx test shared` |
-| `nx lint <project>` | Lint project | `nx lint frontend` |
-| `nx graph` | Visualize dependencies | `nx graph` |
-| `nx affected --target=build` | Build only affected projects | `nx affected --target=build` |
-| `nx run-many --target=test --all` | Test all projects | `nx run-many --target=test --all` |
+| Command                           | Purpose                      | Example                           |
+| --------------------------------- | ---------------------------- | --------------------------------- |
+| `nx build <project>`              | Build specific project       | `nx build api`                    |
+| `nx test <project>`               | Run tests for project        | `nx test shared`                  |
+| `nx lint <project>`               | Lint project                 | `nx lint frontend`                |
+| `nx graph`                        | Visualize dependencies       | `nx graph`                        |
+| `nx affected --target=build`      | Build only affected projects | `nx affected --target=build`      |
+| `nx run-many --target=test --all` | Test all projects            | `nx run-many --target=test --all` |
 
 ---
 

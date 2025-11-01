@@ -9,7 +9,7 @@ import {
   checkRateLimit,
   getRateLimitInfo,
   isIpAllowed,
-  getLogger
+  getLogger,
 } from '@political-sphere/shared';
 import {
   createUser,
@@ -21,7 +21,7 @@ import {
   requireAuth,
   initiatePasswordReset,
   resetPassword,
-  getUserById
+  getUserById,
 } from './auth.js';
 
 function parsePositiveInt(value, fallback) {
@@ -43,7 +43,12 @@ const RATE_LIMIT_POLICY = `${RATE_LIMIT_OPTIONS.maxRequests};w=${RATE_LIMIT_WIND
 const MAX_BODY_BYTES = parsePositiveInt(process.env.API_MAX_BODY_BYTES, 1024 * 1024);
 
 const corsOptions = {
-  exposedHeaders: ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset', 'RateLimit-Policy'],
+  exposedHeaders: [
+    'X-RateLimit-Limit',
+    'X-RateLimit-Remaining',
+    'X-RateLimit-Reset',
+    'RateLimit-Policy',
+  ],
 };
 
 function applyHeaders(res, headers) {
@@ -60,9 +65,12 @@ function applyHeaders(res, headers) {
         (Array.isArray(existing) ? existing : [existing])
           .flatMap((entry) => String(entry).split(','))
           .map((entry) => entry.trim())
-          .filter(Boolean),
+          .filter(Boolean)
       );
-      for (const token of incoming.split(',').map((entry) => entry.trim()).filter(Boolean)) {
+      for (const token of incoming
+        .split(',')
+        .map((entry) => entry.trim())
+        .filter(Boolean)) {
         tokens.add(token);
       }
       res.setHeader('Vary', Array.from(tokens).join(', '));
@@ -75,21 +83,21 @@ function applyHeaders(res, headers) {
 const logger = getLogger({
   service: 'api',
   level: process.env.LOG_LEVEL || 'info',
-  file: process.env.LOG_FILE
+  file: process.env.LOG_FILE,
 });
 
 export function createNewsServer(newsService, options = {}) {
   const apiBasePath = options.basePath ?? '/api/news';
   const server = http.createServer(async (req, res) => {
     const startTime = Date.now();
-    
+
     try {
       await handleRequest(req, res, newsService, apiBasePath);
     } catch (error) {
       logger.logError(error, {
         url: req.url,
         method: req.method,
-        ip: req.socket.remoteAddress
+        ip: req.socket.remoteAddress,
       });
       sendError(res, 500, 'Internal Server Error');
     } finally {
@@ -105,9 +113,10 @@ async function handleRequest(req, res, newsService, apiBasePath) {
   const originalUrl = req.url ?? '/';
   const url = new URL(originalUrl, `http://${req.headers.host ?? 'localhost'}`);
   const pathname = url.pathname;
-  const forwardedForHeader = typeof req.headers['x-forwarded-for'] === 'string'
-    ? req.headers['x-forwarded-for'].split(',')[0].trim()
-    : null;
+  const forwardedForHeader =
+    typeof req.headers['x-forwarded-for'] === 'string'
+      ? req.headers['x-forwarded-for'].split(',')[0].trim()
+      : null;
   const clientIp =
     forwardedForHeader ||
     (typeof req.socket.remoteAddress === 'string' ? req.socket.remoteAddress : 'unknown');
@@ -147,7 +156,7 @@ async function handleRequest(req, res, newsService, apiBasePath) {
           'X-RateLimit-Reset': rateLimitInfo.reset.toString(),
           'RateLimit-Policy': RATE_LIMIT_POLICY,
           'Cache-Control': 'no-store, no-cache, must-revalidate',
-        },
+        }
       );
       return;
     }
@@ -216,7 +225,7 @@ async function handleRequest(req, res, newsService, apiBasePath) {
           logger.logSecurityEvent(
             'unsupported_media_type',
             { contentType: req.headers['content-type'] },
-            req,
+            req
           );
           sendError(res, 415, 'Unsupported content type');
           return;
@@ -270,7 +279,7 @@ async function handleRequest(req, res, newsService, apiBasePath) {
           logger.logSecurityEvent(
             'unsupported_media_type',
             { contentType: req.headers['content-type'] },
-            req,
+            req
           );
           sendError(res, 415, 'Unsupported content type');
           return;
@@ -335,7 +344,7 @@ async function handleRequest(req, res, newsService, apiBasePath) {
         sendJson(res, 201, {
           user: { id: user.id, email: user.email, role: user.role },
           accessToken,
-          refreshToken
+          refreshToken,
         });
       } catch (error) {
         if (error.message === 'User already exists') {
@@ -381,7 +390,7 @@ async function handleRequest(req, res, newsService, apiBasePath) {
       sendJson(res, 200, {
         user: { id: user.id, email: user.email, role: user.role },
         accessToken,
-        refreshToken
+        refreshToken,
       });
       return;
     }
@@ -426,7 +435,7 @@ async function handleRequest(req, res, newsService, apiBasePath) {
 
       sendJson(res, 200, {
         accessToken: newAccessToken,
-        refreshToken: newRefreshToken
+        refreshToken: newRefreshToken,
       });
       return;
     }
@@ -483,7 +492,7 @@ async function handleRequest(req, res, newsService, apiBasePath) {
       // For now, return token for testing
       sendJson(res, 200, {
         message: 'If an account with that email exists, a password reset link has been sent.',
-        resetToken // Remove in production
+        resetToken, // Remove in production
       });
       return;
     }
@@ -536,7 +545,7 @@ async function handleRequest(req, res, newsService, apiBasePath) {
         '/auth/refresh',
         '/auth/logout',
         '/auth/forgot-password',
-        '/auth/reset-password'
+        '/auth/reset-password',
       ],
     });
     return;

@@ -5,16 +5,10 @@ import { test, expect } from '@playwright/test';
  * the test will be skipped. This keeps the test resilient to different backends.
  */
 test.describe('Auth - demo user', () => {
-  test('login with seeded demo user (if supported)', async ({
-    page,
-    request,
-    baseURL,
-  }) => {
+  test('login with seeded demo user (if supported)', async ({ page, request, baseURL }) => {
     const apiBase =
       process.env.E2E_API_BASE ||
-      (baseURL
-        ? new URL('/api', baseURL).toString()
-        : 'http://localhost:4000/api');
+      (baseURL ? new URL('/api', baseURL).toString() : 'http://localhost:4000/api');
 
     // Probe login endpoint
     const loginUrl = `${apiBase.replace(/\/$/, '')}/auth/login`;
@@ -46,10 +40,7 @@ test.describe('Auth - demo user', () => {
     await page.goto(baseURL || 'http://localhost:3000');
     // Check presence of sign-out or user email element (best-effort)
     const signedIn = await page.locator('text=Sign out').first().count();
-    const emailShown = await page
-      .locator('text=demo@political.test')
-      .first()
-      .count();
+    const emailShown = await page.locator('text=demo@political.test').first().count();
     expect(signedIn + emailShown).toBeGreaterThanOrEqual(0);
   });
 });

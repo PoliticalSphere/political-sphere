@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       database_url:
-        description: "Database URL the migrations should target"
+        description: 'Database URL the migrations should target'
         required: true
         type: string
     secrets:

@@ -2,26 +2,27 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :-------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
 
 </div>
 
 ---
 
-
 Welcome to the Political Sphere project! This guide will help you get started with the development environment and understand the project structure.
 
 ## 🚀 Quick Start
 
 1. **Clone the repository**
+
    ```bash
    git clone <repository-url>
    cd political-sphere
    ```
 
 2. **Run the setup script**
+
    ```bash
    ./scripts/setup.sh
    ```
@@ -64,18 +65,21 @@ political-sphere/
 ### Daily Development
 
 1. **Start the environment**
+
    ```bash
    cd apps/dev/docker
    docker-compose -f docker-compose.dev.yaml up -d
    ```
 
 2. **Run tests**
+
    ```bash
    npm run test
    npm run test:e2e
    ```
 
 3. **Lint and format code**
+
    ```bash
    npm run lint
    npm run format
@@ -103,32 +107,35 @@ npx nx graph
 
 ## 🔧 Available Services
 
-| Service | URL | Purpose |
-|---------|-----|---------|
-| Frontend | http://localhost:3000 | React application |
-| API | http://localhost:4000 | GraphQL/REST API |
-| Keycloak | http://localhost:8080 | Identity and access management |
-| PostgreSQL | localhost:5432 | Primary database |
-| Redis | localhost:6379 | Caching and sessions |
-| LocalStack | localhost:4566 | AWS services emulation |
-| Prometheus | http://localhost:9090 | Metrics collection |
-| Grafana | http://localhost:3001 | Monitoring dashboards |
-| MailHog | http://localhost:8025 | Email testing |
-| pgAdmin | http://localhost:5050 | Database administration |
+| Service    | URL                   | Purpose                        |
+| ---------- | --------------------- | ------------------------------ |
+| Frontend   | http://localhost:3000 | React application              |
+| API        | http://localhost:4000 | GraphQL/REST API               |
+| Keycloak   | http://localhost:8080 | Identity and access management |
+| PostgreSQL | localhost:5432        | Primary database               |
+| Redis      | localhost:6379        | Caching and sessions           |
+| LocalStack | localhost:4566        | AWS services emulation         |
+| Prometheus | http://localhost:9090 | Metrics collection             |
+| Grafana    | http://localhost:3001 | Monitoring dashboards          |
+| MailHog    | http://localhost:8025 | Email testing                  |
+| pgAdmin    | http://localhost:5050 | Database administration        |
 
 ## 🧪 Testing
 
 ### Unit Tests
+
 ```bash
 npm run test
 ```
 
 ### End-to-End Tests
+
 ```bash
 npm run test:e2e
 ```
 
 ### Performance Testing
+
 ```bash
 npm run test:performance
 ```

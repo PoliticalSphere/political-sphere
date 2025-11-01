@@ -2,9 +2,9 @@ name: Monitoring & Observability
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   pull_request:
-    branches: [ main ]
+    branches: [main]
     types: [opened, synchronize, reopened]
   schedule:
     # Run monitoring checks every 4 hours

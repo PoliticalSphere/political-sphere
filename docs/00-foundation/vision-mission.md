@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
-|  🔒 Internal   | `1.0.0` |  2025-10-29  | CEO & Leadership   |  Quarterly   | **Approved** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :----------: |
+|  🔒 Internal   | `1.0.0` |  2025-10-29  | CEO & Leadership |  Quarterly   | **Approved** |
 
 </div>
 
@@ -21,16 +21,19 @@
 ### Vision Components
 
 #### 🤖 AI-Powered Democracy
+
 - **Personalized Learning**: AI adapts political education to individual knowledge levels and interests
 - **Predictive Insights**: Machine learning anticipates policy outcomes and citizen impacts
 - **Bias Mitigation**: AI ensures diverse perspectives and reduces cognitive biases in decision-making
 
 #### 🌍 Global Accessibility
+
 - **Universal Access**: Political education available in every language and format
 - **Inclusive Design**: Accommodates all abilities, ages, and socioeconomic backgrounds
 - **Cross-Cultural Understanding**: Bridges political divides through shared understanding
 
 #### ⚡ Real-Time Engagement
+
 - **Live Simulation**: Experience policy impacts before implementation
 - **Instant Feedback**: Immediate understanding of complex political dynamics
 - **Collaborative Decision-Making**: Connect citizens worldwide for collective problem-solving
@@ -149,11 +152,11 @@ This is a simulated political environment, not a real one. It is educational by 
 
 ## 🧭 Strategic Outcomes
 
-| Horizon | Outcome | Indicators |
-| ------- | ------- | ---------- |
-| **MVP (0–12 months)** | Launch persistent multiplayer Commons experience with AI NPC baseline and audit-ready logs | Constituency roster complete, debate/vote loop live, AI moderation prototype, 99.9% availability |
+| Horizon                      | Outcome                                                                                    | Indicators                                                                                                |
+| ---------------------------- | ------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| **MVP (0–12 months)**        | Launch persistent multiplayer Commons experience with AI NPC baseline and audit-ready logs | Constituency roster complete, debate/vote loop live, AI moderation prototype, 99.9% availability          |
 | **Expansion (12–24 months)** | Add educators’ scenarios, advanced media narrative, richer elections, accessibility audits | Facilitator scenario toolkit, sentiment dashboards, multi-term election simulation, WCAG AA certification |
-| **Scale (24+ months)** | Introduce Lords/committee systems, crisis simulations, coalition dynamics, external APIs | Committee lifecycle, crisis playbooks, partner integrations, third-party app ecosystem |
+| **Scale (24+ months)**       | Introduce Lords/committee systems, crisis simulations, coalition dynamics, external APIs   | Committee lifecycle, crisis playbooks, partner integrations, third-party app ecosystem                    |
 
 ---
 

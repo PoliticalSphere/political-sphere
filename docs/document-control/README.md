@@ -4,8 +4,8 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
 |  🔒 Internal   | `1.0.0` |  2025-10-29  | Documentation Team |  Quarterly   | **Approved** |
 
 </div>
@@ -46,6 +46,7 @@ The Document Control system provides a structured framework for creating, managi
 ## 📋 Scope
 
 ### In Scope
+
 - All project documentation (technical, operational, legal, compliance)
 - Templates and standardized formats
 - Version control and change management
@@ -54,6 +55,7 @@ The Document Control system provides a structured framework for creating, managi
 - Document classification and access controls
 
 ### Out of Scope
+
 - Source code (managed via Git/version control)
 - Third-party documentation
 - Personal communications (emails, chats)
@@ -82,38 +84,43 @@ graph TB
 
 ### Key Policies
 
-| Policy | Purpose | Frequency |
-|--------|---------|-----------|
-| **[Classification](./document-classification-policy.md)** | Defines security levels and handling | Annual review |
-| **[Versioning](./versioning-policy.md)** | Manages document versions and changes | As needed |
-| **[Review & Approval](./review-and-approval-workflow.md)** | Governs approval processes | Quarterly review |
-| **[Retention & Archiving](./retention-and-archiving-policy.md)** | Defines storage and disposal | Annual review |
+| Policy                                                           | Purpose                               | Frequency        |
+| ---------------------------------------------------------------- | ------------------------------------- | ---------------- |
+| **[Classification](./document-classification-policy.md)**        | Defines security levels and handling  | Annual review    |
+| **[Versioning](./versioning-policy.md)**                         | Manages document versions and changes | As needed        |
+| **[Review & Approval](./review-and-approval-workflow.md)**       | Governs approval processes            | Quarterly review |
+| **[Retention & Archiving](./retention-and-archiving-policy.md)** | Defines storage and disposal          | Annual review    |
 
 ---
 
 ## 🔄 Document Lifecycle
 
 ### 1. Planning & Creation
+
 - Identify document type and classification
 - Select appropriate template from [Templates Index](./templates-index.md)
 - Gather required information and stakeholders
 
 ### 2. Drafting & Review
+
 - Create initial draft using template
 - Conduct peer review and technical validation
 - Incorporate feedback and iterate
 
 ### 3. Approval & Publication
+
 - Obtain required approvals based on classification
 - Publish to appropriate location with metadata
 - Notify stakeholders of availability
 
 ### 4. Maintenance & Updates
+
 - Monitor for changes requiring updates
 - Follow change management process
 - Maintain version history
 
 ### 5. Archival & Disposal
+
 - Move to archive when no longer active
 - Retain per retention policy requirements
 - Dispose securely when retention period expires
@@ -123,24 +130,28 @@ graph TB
 ## 👥 Roles & Responsibilities
 
 ### Documentation Team
+
 - **Maintain** templates and policies
 - **Provide** guidance and training
 - **Monitor** compliance and effectiveness
 - **Facilitate** reviews and approvals
 
 ### Document Owners
+
 - **Create** and maintain their documents
 - **Ensure** accuracy and currency
 - **Coordinate** reviews and approvals
 - **Comply** with all policies
 
 ### Reviewers & Approvers
+
 - **Review** documents for accuracy and compliance
 - **Provide** constructive feedback
 - **Approve** within defined timelines
 - **Escalate** issues as needed
 
 ### Security & Compliance Team
+
 - **Classify** documents appropriately
 - **Audit** compliance with policies
 - **Investigate** security incidents
@@ -153,16 +164,19 @@ graph TB
 ### Key Performance Indicators
 
 **Quality Metrics:**
+
 - Document approval time (target: < 5 business days)
 - Template adoption rate (target: > 95%)
 - Compliance audit findings (target: 0 critical)
 
 **Efficiency Metrics:**
+
 - Time to create new documents (target: < 50% of manual)
 - Review cycle completion rate (target: > 90%)
 - Template usage satisfaction (target: > 4.5/5.0)
 
 **Compliance Metrics:**
+
 - Classification accuracy rate (target: > 99%)
 - Retention compliance rate (target: 100%)
 - Security incident response time (target: < 24 hours)
@@ -180,21 +194,25 @@ Access: Documentation Team + Management
 ### Core Tools
 
 **Version Control:**
+
 - Git repository for all documentation
 - Automated versioning via semantic versioning
 - Change tracking with detailed commit messages
 
 **Review & Approval:**
+
 - GitHub/GitLab pull requests for reviews
 - Automated approval workflows
 - Digital signatures for formal approvals
 
 **Classification & Security:**
+
 - Automated classification based on content analysis
 - Access controls via repository permissions
 - Encryption for sensitive documents
 
 **Templates & Generation:**
+
 - Standardized templates in Markdown
 - CLI tools for document generation
 - IDE extensions for template assistance

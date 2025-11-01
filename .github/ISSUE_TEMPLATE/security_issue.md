@@ -21,6 +21,7 @@ Steps to reproduce the security issue:
 4. See vulnerability
 
 **Environment**
+
 - OS: [e.g. iOS]
 - Browser [e.g. chrome, safari]
 - Version [e.g. 22]

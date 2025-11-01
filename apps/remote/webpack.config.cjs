@@ -5,10 +5,10 @@ const mfGenerated = require('../../tools/module-federation/generated/remote.webp
 module.exports = {
   entry: path.resolve(__dirname, 'src', 'index.js'),
   mode: 'development',
-    // disable the eval devtool to avoid large eval()-wrapped files being served
-    devtool: false, // keep this line to maintain the existing configuration
+  // disable the eval devtool to avoid large eval()-wrapped files being served
+  devtool: false, // keep this line to maintain the existing configuration
   output: {
-    publicPath: 'auto'
+    publicPath: 'auto',
   },
   devServer: {
     port: 3001,
@@ -17,35 +17,35 @@ module.exports = {
       directory: path.resolve(__dirname, 'dist'),
       watch: {
         // ignore node_modules to reduce churn
-        ignored: /node_modules/
-      }
+        ignored: /node_modules/,
+      },
     },
     // prevent webpack-dev-server from opening the browser and quiet client logs
     open: false,
     client: {
       logging: 'warn',
       overlay: false,
-      progress: false
+      progress: false,
     },
     devMiddleware: {
       // show only errors to reduce noise and avoid long buffering output
-      stats: 'errors-only'
-    }
+      stats: 'errors-only',
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({ template: path.resolve(__dirname, 'public', 'index.html') }),
     // apply generated Module Federation plugin options
-    ...mfGenerated.plugins
+    ...mfGenerated.plugins,
   ],
   module: {
     rules: [
       {
         test: /\.m?js$/,
-        type: 'javascript/auto'
-      }
-    ]
+        type: 'javascript/auto',
+      },
+    ],
   },
   resolve: {
-    extensions: ['.js']
-  }
+    extensions: ['.js'],
+  },
 };

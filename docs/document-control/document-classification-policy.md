@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
-|  🔒 Internal   | `1.0.0` |  2025-10-29  | Security Team      |  Quarterly   | **Approved** |
+| Classification | Version | Last Updated |     Owner     | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :-----------: | :----------: | :----------: |
+|  🔒 Internal   | `1.0.0` |  2025-10-29  | Security Team |  Quarterly   | **Approved** |
 
 </div>
 
@@ -50,6 +50,7 @@ This Document Classification Policy establishes a standardized framework for cla
 **Definition:** Information that can be freely disclosed to the public without restriction.
 
 **Examples:**
+
 - Marketing materials and brochures
 - Public announcements and press releases
 - General product documentation
@@ -57,6 +58,7 @@ This Document Classification Policy establishes a standardized framework for cla
 - Public API documentation
 
 **Handling Requirements:**
+
 - No access restrictions
 - Can be shared via public websites, social media, etc.
 - No encryption required for storage or transmission
@@ -71,6 +73,7 @@ This Document Classification Policy establishes a standardized framework for cla
 **Definition:** Information intended for internal use within Political Sphere. Not sensitive but should not be disclosed externally without approval.
 
 **Examples:**
+
 - Internal procedures and policies
 - Employee handbooks and guidelines
 - Non-sensitive project documentation
@@ -78,6 +81,7 @@ This Document Classification Policy establishes a standardized framework for cla
 - General operational procedures
 
 **Handling Requirements:**
+
 - Access limited to Political Sphere personnel
 - Encryption recommended for external transmission
 - Standard disposal procedures
@@ -92,6 +96,7 @@ This Document Classification Policy establishes a standardized framework for cla
 **Definition:** Information that could cause harm to Political Sphere or individuals if disclosed. Requires strict access controls.
 
 **Examples:**
+
 - User personal data and profiles
 - Financial information and budgets
 - Strategic business plans
@@ -100,6 +105,7 @@ This Document Classification Policy establishes a standardized framework for cla
 - Security incident reports
 
 **Handling Requirements:**
+
 - Access restricted to authorized personnel only
 - Must be encrypted at rest and in transit
 - Two-person rule for highly sensitive confidential documents
@@ -115,6 +121,7 @@ This Document Classification Policy establishes a standardized framework for cla
 **Definition:** Highly sensitive information that could cause severe harm if disclosed. Access is severely limited and heavily audited.
 
 **Examples:**
+
 - AI model architectures with proprietary algorithms
 - User data containing sensitive personal information (health, political beliefs)
 - Encryption keys and security credentials
@@ -123,6 +130,7 @@ This Document Classification Policy establishes a standardized framework for cla
 - EU AI Act compliance documentation
 
 **Handling Requirements:**
+
 - Access limited to specific named individuals
 - Must use highest encryption standards (AES-256 minimum)
 - Physical security requirements for printed documents
@@ -153,12 +161,14 @@ graph TD
 ### Classification Triggers
 
 **Automatic Classification Based on:**
+
 - Document type and template used
 - Content analysis (keywords, patterns)
 - Author role and department
 - Storage location and system
 
 **Manual Review Required For:**
+
 - Documents containing personal data
 - Legal or compliance-related content
 - Strategic or financial information
@@ -168,6 +178,7 @@ graph TD
 ### Classification Changes
 
 Documents can be reclassified if circumstances change:
+
 - **Up-classification**: Requires approval from Security Team
 - **Down-classification**: Can be approved by document owner with Security Team consultation
 - All changes must be documented in the change log
@@ -177,31 +188,33 @@ Documents can be reclassified if circumstances change:
 ## 👥 Roles & Responsibilities
 
 ### Document Owners
+
 - **Classify** documents at creation time
 - **Review** classifications annually or when circumstances change
 - **Ensure** appropriate handling based on classification
 - **Report** suspected misclassifications immediately
 
 ### Security Team
+
 - **Maintain** classification framework and guidelines
 - **Review** automatic classifications and exceptions
 - **Conduct** regular audits and training
 - **Investigate** classification-related incidents
 
 ### All Personnel
+
 - **Understand** classification levels and requirements
 - **Follow** handling procedures for each level
 - **Report** suspicious activity or potential breaches
 - **Complete** annual security awareness training
 
-
 > **Security classification framework for Political Sphere documents and data**
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |
-| :------------: | :-----: | :----------: | :----------------: | :----------: |
-|  🔒 Internal   | `1.0.0` |  2025-10-29  | Security Team      |  Annual      |
+| Classification | Version | Last Updated |     Owner     | Review Cycle |
+| :------------: | :-----: | :----------: | :-----------: | :----------: |
+|  🔒 Internal   | `1.0.0` |  2025-10-29  | Security Team |    Annual    |
 
 </div>
 
@@ -241,6 +254,7 @@ This Document Classification Policy establishes a standardized framework for cla
 ## 📋 Scope
 
 ### In Scope
+
 - All digital and physical documents created or maintained by Political Sphere
 - Source code, configuration files, and technical documentation
 - User data, AI models, and simulation data
@@ -248,6 +262,7 @@ This Document Classification Policy establishes a standardized framework for cla
 - Communication records and meeting materials
 
 ### Out of Scope
+
 - Publicly available information (already public)
 - Personal communications not related to business (emails, chats)
 - Temporary working files (< 30 days lifecycle)
@@ -262,6 +277,7 @@ This Document Classification Policy establishes a standardized framework for cla
 **Definition:** Information that can be freely disclosed to the public without restriction.
 
 **Examples:**
+
 - Marketing materials and press releases
 - Public API documentation
 - Open-source code repositories
@@ -269,6 +285,7 @@ This Document Classification Policy establishes a standardized framework for cla
 - Published research papers
 
 **Handling Requirements:**
+
 - ✅ No access restrictions
 - ✅ No encryption required
 - ✅ Can be shared externally
@@ -283,6 +300,7 @@ This Document Classification Policy establishes a standardized framework for cla
 **Definition:** Information intended for internal use only, not sensitive but should not be disclosed externally.
 
 **Examples:**
+
 - Internal procedures and policies
 - Employee handbooks
 - Project documentation
@@ -290,6 +308,7 @@ This Document Classification Policy establishes a standardized framework for cla
 - General operational data
 
 **Handling Requirements:**
+
 - 🔒 Access limited to Political Sphere personnel
 - ⚠️ Watermarking recommended for external sharing
 - 📧 Email encryption for external transmission
@@ -304,6 +323,7 @@ This Document Classification Policy establishes a standardized framework for cla
 **Definition:** Information that could cause damage to Political Sphere or individuals if disclosed, requiring strict access controls.
 
 **Examples:**
+
 - User personal data and PII
 - Financial information and contracts
 - AI model training data
@@ -312,6 +332,7 @@ This Document Classification Policy establishes a standardized framework for cla
 - Political simulation scenarios with real data
 
 **Handling Requirements:**
+
 - 🔐 Encryption at rest and in transit
 - 👥 Need-to-know access only
 - 📝 Access logging and monitoring
@@ -328,6 +349,7 @@ This Document Classification Policy establishes a standardized framework for cla
 **Definition:** Highly sensitive information that could cause severe damage if compromised, requiring maximum protection.
 
 **Examples:**
+
 - Encryption keys and credentials
 - AI model weights and proprietary algorithms
 - Classified political intelligence data
@@ -336,6 +358,7 @@ This Document Classification Policy establishes a standardized framework for cla
 - EU AI Act high-risk system details
 
 **Handling Requirements:**
+
 - 🔐 Military-grade encryption (AES-256 minimum)
 - 👤 Individual approval for access
 - 📊 Real-time access monitoring and alerting
@@ -372,13 +395,13 @@ graph TD
 
 ### Classification Decision Factors
 
-| Factor | Public | Internal | Confidential | Restricted |
-|--------|--------|----------|--------------|------------|
-| **Business Impact** | None | Low | Medium-High | Critical |
-| **Regulatory Risk** | None | Low | Medium | High |
-| **Reputational Risk** | None | Low | Medium | High |
-| **Financial Impact** | <$10K | $10K-$100K | $100K-$1M | >$1M |
-| **Data Sensitivity** | None | Internal | Personal | Secret |
+| Factor                | Public | Internal   | Confidential | Restricted |
+| --------------------- | ------ | ---------- | ------------ | ---------- |
+| **Business Impact**   | None   | Low        | Medium-High  | Critical   |
+| **Regulatory Risk**   | None   | Low        | Medium       | High       |
+| **Reputational Risk** | None   | Low        | Medium       | High       |
+| **Financial Impact**  | <$10K  | $10K-$100K | $100K-$1M    | >$1M       |
+| **Data Sensitivity**  | None   | Internal   | Personal     | Secret     |
 
 ### Classification Workflow
 
@@ -403,33 +426,37 @@ graph TD
 
 ### By Classification Level
 
-| Control | Public | Internal | Confidential | Restricted |
-|---------|--------|----------|--------------|------------|
-| **Authentication** | None | Required | Multi-factor | Multi-factor + Biometric |
-| **Authorization** | None | Role-based | Need-to-know | Individual approval |
-| **Encryption** | None | Transport | Rest + Transport | End-to-end |
-| **Logging** | None | Basic | Detailed | Real-time |
-| **Retention** | Business needs | 7 years | 10 years | 20+ years |
-| **Destruction** | Standard | Secure wipe | Cryptographic | Physical destruction |
+| Control            | Public         | Internal    | Confidential     | Restricted               |
+| ------------------ | -------------- | ----------- | ---------------- | ------------------------ |
+| **Authentication** | None           | Required    | Multi-factor     | Multi-factor + Biometric |
+| **Authorization**  | None           | Role-based  | Need-to-know     | Individual approval      |
+| **Encryption**     | None           | Transport   | Rest + Transport | End-to-end               |
+| **Logging**        | None           | Basic       | Detailed         | Real-time                |
+| **Retention**      | Business needs | 7 years     | 10 years         | 20+ years                |
+| **Destruction**    | Standard       | Secure wipe | Cryptographic    | Physical destruction     |
 
 ### Role-Based Access
 
 **Document Creator/Owner:**
+
 - Can set initial classification
 - Can request reclassification
 - Responsible for accuracy
 
 **Security Team:**
+
 - Can override classifications
 - Conducts periodic reviews
 - Manages access controls
 
 **Legal/Compliance:**
+
 - Reviews regulatory classifications
 - Approves Restricted classifications
 - Conducts compliance audits
 
 **System Administrators:**
+
 - Implements technical controls
 - Monitors access patterns
 - Responds to security incidents
@@ -444,19 +471,20 @@ All classified documents must include:
 
 ```yaml
 ---
-classification: "CONFIDENTIAL"
-version: "1.0.0"
-owner: "Security Team"
-created: "2025-10-29"
-reviewed: "2025-10-29"
-expires: "2035-10-29"
-access_list: ["security-team", "compliance"]
+classification: 'CONFIDENTIAL'
+version: '1.0.0'
+owner: 'Security Team'
+created: '2025-10-29'
+reviewed: '2025-10-29'
+expires: '2035-10-29'
+access_list: ['security-team', 'compliance']
 ---
 ```
 
 ### Automated Controls
 
 **GitHub/GitLab Integration:**
+
 ```bash
 # Automatic classification on commit
 npm run classify:doc -- --file=path/to/document.md
@@ -466,11 +494,13 @@ npm run access-check -- --user=username --file=path/to/document.md
 ```
 
 **File System Controls:**
+
 - Encrypted storage for Confidential/Restricted
 - Access Control Lists (ACLs) by classification
 - Automatic watermarking for shared documents
 
 **Network Controls:**
+
 - VPN required for remote access to sensitive data
 - DLP (Data Loss Prevention) for email and file transfers
 - Endpoint encryption for mobile devices
@@ -481,17 +511,18 @@ npm run access-check -- --user=username --file=path/to/document.md
 
 ### Sharing Classified Information
 
-| Scenario | Public | Internal | Confidential | Restricted |
-|----------|--------|----------|--------------|------------|
-| **Internal Email** | ✅ Allowed | ✅ Allowed | ⚠️ Encrypted | 🚫 Prohibited |
-| **External Email** | ✅ Allowed | ⚠️ Encrypted | 🚫 Prohibited | 🚫 Prohibited |
-| **Cloud Storage** | ✅ Allowed | ✅ Allowed | ⚠️ Encrypted | 🚫 Prohibited |
-| **Physical Copies** | ✅ Allowed | ✅ Allowed | ⚠️ Tracked | 🚫 Prohibited |
-| **Third Parties** | ✅ Allowed | ⚠️ NDA Required | 🚫 Prohibited | 🚫 Prohibited |
+| Scenario            | Public     | Internal        | Confidential  | Restricted    |
+| ------------------- | ---------- | --------------- | ------------- | ------------- |
+| **Internal Email**  | ✅ Allowed | ✅ Allowed      | ⚠️ Encrypted  | 🚫 Prohibited |
+| **External Email**  | ✅ Allowed | ⚠️ Encrypted    | 🚫 Prohibited | 🚫 Prohibited |
+| **Cloud Storage**   | ✅ Allowed | ✅ Allowed      | ⚠️ Encrypted  | 🚫 Prohibited |
+| **Physical Copies** | ✅ Allowed | ✅ Allowed      | ⚠️ Tracked    | 🚫 Prohibited |
+| **Third Parties**   | ✅ Allowed | ⚠️ NDA Required | 🚫 Prohibited | 🚫 Prohibited |
 
 ### Incident Response
 
 **Data Breach Procedure:**
+
 1. **Immediate Containment** - Isolate affected systems
 2. **Assessment** - Determine classification and impact
 3. **Notification** - Report based on classification level
@@ -501,12 +532,12 @@ npm run access-check -- --user=username --file=path/to/document.md
 
 **Notification Requirements:**
 
-| Classification | Internal Notification | External Notification | Regulatory Reporting |
-|----------------|----------------------|----------------------|---------------------|
-| **Public** | Within 24h | N/A | N/A |
-| **Internal** | Within 24h | N/A | N/A |
-| **Confidential** | Within 4h | Within 72h | GDPR within 72h |
-| **Restricted** | Immediate | Within 24h | Immediate + ICO |
+| Classification   | Internal Notification | External Notification | Regulatory Reporting |
+| ---------------- | --------------------- | --------------------- | -------------------- |
+| **Public**       | Within 24h            | N/A                   | N/A                  |
+| **Internal**     | Within 24h            | N/A                   | N/A                  |
+| **Confidential** | Within 4h             | Within 72h            | GDPR within 72h      |
+| **Restricted**   | Immediate             | Within 24h            | Immediate + ICO      |
 
 ---
 
@@ -515,16 +546,19 @@ npm run access-check -- --user=username --file=path/to/document.md
 ### Key Metrics
 
 **Classification Coverage:**
+
 - % of documents properly classified (target: >98%)
 - Classification accuracy rate (target: >95%)
 - Auto-classification success rate (target: >80%)
 
 **Access Control Effectiveness:**
+
 - Unauthorized access attempts blocked (target: 100%)
 - Access review completion rate (target: >95%)
 - Incident response time (target: <4h for high-risk)
 
 **Compliance Metrics:**
+
 - Audit findings related to classification (target: 0)
 - Retention compliance rate (target: 100%)
 - Data breach incidents (target: 0)
@@ -532,11 +566,13 @@ npm run access-check -- --user=username --file=path/to/document.md
 ### Audit Requirements
 
 **Annual Security Audit:**
+
 - Classification accuracy assessment
 - Access control effectiveness review
 - Incident response capability testing
 
 **Regulatory Audits:**
+
 - GDPR compliance verification
 - ISO 27001 certification maintenance
 - EU AI Act adherence confirmation
@@ -548,16 +584,19 @@ npm run access-check -- --user=username --file=path/to/document.md
 ### Required Training
 
 **All Personnel:**
+
 - Classification basics (annual)
 - Handling procedures (annual)
 - Incident reporting (annual)
 
 **Document Owners:**
+
 - Classification determination (initial + annual)
 - Access control management (annual)
 - Retention requirements (annual)
 
 **Security Team:**
+
 - Advanced classification techniques (quarterly)
 - Threat analysis (monthly)
 - Incident response (quarterly)
@@ -628,13 +667,13 @@ npm run access-check -- --user=username --file=path/to/document.md
 
 ### 📋 Document Control
 
-|         Field         |          Value          |
-| :-------------------: | :---------------------: |
-| 🏷️ **Classification** |        Internal         |
-|    🔢 **Version**     |         `1.0.0`         |
-|  📅 **Last Review**   |       2025-10-29        |
-|  🔄 **Next Review**   |       2026-10-29        |
-|    ✍️ **Approver**    |     Security Team Lead  |
+|         Field         |       Value        |
+| :-------------------: | :----------------: |
+| 🏷️ **Classification** |      Internal      |
+|    🔢 **Version**     |      `1.0.0`       |
+|  📅 **Last Review**   |     2025-10-29     |
+|  🔄 **Next Review**   |     2026-10-29     |
+|    ✍️ **Approver**    | Security Team Lead |
 
 ---
 

@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -29,6 +29,7 @@ graph TB
 ```
 
 **Key Responsibilities**
+
 - Deliver immersive UK parliamentary simulation with AI-assisted NPCs.
 - Maintain compliance with GDPR, Online Safety Act, and ISO-aligned governance.
 - Provide tooling for moderators, educators, and administrators.

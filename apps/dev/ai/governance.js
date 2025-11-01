@@ -15,7 +15,8 @@ const fs = require('fs').promises;
 const fsSync = require('fs');
 const path = require('path');
 const crypto = require('crypto');
-const FAST_AI = process.env.FAST_AI === '1' || process.env.FAST_AI === 'true' || process.env.CI === 'true';
+const FAST_AI =
+  process.env.FAST_AI === '1' || process.env.FAST_AI === 'true' || process.env.CI === 'true';
 
 class AIGovernanceManager {
   constructor() {
@@ -42,34 +43,34 @@ class AIGovernanceManager {
       qualityMetrics: {
         compilationSuccess: 0,
         testPassRate: 0,
-        securityScanPass: 0
+        securityScanPass: 0,
       },
       ethicalMetrics: {
         biasIncidents: 0,
         harmPrevented: 0,
-        explainabilityProvided: 0
+        explainabilityProvided: 0,
       },
       safetyMetrics: {
         constitutionalViolations: 0,
         swarmOverloads: 0,
-        policyViolations: 0
+        policyViolations: 0,
       },
       complianceMetrics: {
         legalComplianceChecks: 0,
         democraticIntegrityIncidents: 0,
-        abuseDetected: 0
+        abuseDetected: 0,
       },
       protectionMetrics: {
         userDataProtected: 0,
         consentGiven: 0,
-        fairnessEnsured: 0
+        fairnessEnsured: 0,
       },
       cognitionMetrics: {
         selfReflections: 0,
         realityChecks: 0,
-        truthPreserved: 0
+        truthPreserved: 0,
       },
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
 
     // Initialize controls
@@ -77,100 +78,98 @@ class AIGovernanceManager {
       rateLimits: {
         codeGeneration: { maxPerHour: 100, maxPerDay: 500 },
         codeReview: { maxPerHour: 50, maxPerDay: 200 },
-        testing: { maxPerHour: 30, maxPerDay: 150 }
+        testing: { maxPerHour: 30, maxPerDay: 150 },
       },
       qualityGates: {
         requireLinting: true,
         requireSecurityScan: true,
         requireTesting: true,
-        minTestCoverage: 80
+        minTestCoverage: 80,
       },
       contentFilters: {
         blockHardcodedSecrets: true,
         blockInsecurePatterns: true,
-        requireErrorHandling: true
+        requireErrorHandling: true,
       },
       ethicsControls: {
         enableBiasDetection: true,
         enableHarmPrevention: true,
         enableExplainability: true,
-        logEthicalConcerns: true
+        logEthicalConcerns: true,
       },
       neutralityFilters: {
         detectPoliticalBias: true,
         preventCensorship: true,
-        ensureNeutrality: true
+        ensureNeutrality: true,
       },
       auditSettings: {
         logAllInteractions: true,
         retainLogsDays: 90,
-        anonymizeUserData: true
+        anonymizeUserData: true,
       },
       constitutionalSafety: {
         checkConstitutionalCompliance: true,
-        blockUnconstitutionalContent: true
+        blockUnconstitutionalContent: true,
       },
       regulatoryFutureproofing: {
         monitorRegulations: true,
-        adaptiveCompliance: true
+        adaptiveCompliance: true,
       },
       swarmSafety: {
         maxConcurrentRequests: 10,
-        preventSwarmOverload: true
+        preventSwarmOverload: true,
       },
       privilegeTiering: {
         tiers: {
           basic: { maxRequestsPerDay: 10 },
-          premium: { maxRequestsPerDay: 100 }
-        }
+          premium: { maxRequestsPerDay: 100 },
+        },
       },
       temporalTracking: {
         trackTimeBased: true,
-        detectTemporalAnomalies: true
+        detectTemporalAnomalies: true,
       },
       policyEnforcement: {
         enforcePolicies: true,
-        policyViolationThreshold: 5
+        policyViolationThreshold: 5,
       },
       legalCompliance: {
         euAiActCompliant: true,
-        gdprCompliant: true
+        gdprCompliant: true,
       },
       democraticIntegrity: {
         ensureDemocraticValues: true,
-        preventManipulation: true
+        preventManipulation: true,
       },
       abuseAnticipation: {
         detectAbusePatterns: true,
-        blockAbusiveUsers: true
+        blockAbusiveUsers: true,
       },
       userProtection: {
         protectUserData: true,
-        requireConsent: true
+        requireConsent: true,
       },
       fairnessAssurance: {
         ensureFairness: true,
-        monitorBias: true
+        monitorBias: true,
       },
       metaCognition: {
         enableSelfReflection: true,
-        logSelfAssessment: true
+        logSelfAssessment: true,
       },
       realityCheck: {
         validateReality: true,
-        detectHallucinations: true
+        detectHallucinations: true,
       },
       truthPreservation: {
         preserveTruth: true,
-        factCheckResponses: true
-      }
+        factCheckResponses: true,
+      },
     };
 
     await this.saveMetrics(initialMetrics);
     await this.saveControls(initialControls);
   }
-
-  
 
   async recordInteraction(interaction) {
     const metrics = await this.loadMetrics();
@@ -184,11 +183,14 @@ class AIGovernanceManager {
       throw new Error(`Rate limit exceeded for ${interaction.type}`);
     }
 
-  // Apply content filters
-  this.applyContentFilters(interaction.content, controls);
+    // Apply content filters
+    this.applyContentFilters(interaction.content, controls);
 
     // Ethical and safety checks
-    if (controls.constitutionalSafety.checkConstitutionalCompliance && this.detectConstitutionalViolation(interaction.content)) {
+    if (
+      controls.constitutionalSafety.checkConstitutionalCompliance &&
+      this.detectConstitutionalViolation(interaction.content)
+    ) {
       metrics.safetyMetrics.constitutionalViolations++;
       throw new Error('Constitutional violation detected');
     }
@@ -249,7 +251,9 @@ class AIGovernanceManager {
     // Testing requirement
     if (controls.qualityGates.requireTesting && type === 'code') {
       const testResult = await this.checkTestCoverage(content);
-      const minCov = FAST_AI ? Math.min(controls.qualityGates.minTestCoverage || 0, 50) : controls.qualityGates.minTestCoverage;
+      const minCov = FAST_AI
+        ? Math.min(controls.qualityGates.minTestCoverage || 0, 50)
+        : controls.qualityGates.minTestCoverage;
       if (testResult.coverage < minCov) {
         issues.push(`Test coverage ${testResult.coverage}% below minimum ${minCov}%`);
       }
@@ -257,15 +261,15 @@ class AIGovernanceManager {
 
     return {
       passed: issues.length === 0,
-      issues
+      issues,
     };
   }
 
   checkRateLimit(type, userId) {
     // Simplified rate limiting - in production, use Redis or similar
     const now = Date.now();
-    const hourAgo = now - (60 * 60 * 1000);
-    const dayAgo = now - (24 * 60 * 60 * 1000);
+    const hourAgo = now - 60 * 60 * 1000;
+    const dayAgo = now - 24 * 60 * 60 * 1000;
 
     // This is a placeholder - implement proper rate limiting
     return true;
@@ -277,7 +281,7 @@ class AIGovernanceManager {
       const secretPatterns = [
         /password\s*[:=]\s*['"][^'"]*['"]/i,
         /secret\s*[:=]\s*['"][^'"]*['"]/i,
-        /api[_-]?key\s*[:=]\s*['"][^'"]*['"]/i
+        /api[_-]?key\s*[:=]\s*['"][^'"]*['"]/i,
       ];
       for (const pattern of secretPatterns) {
         if (pattern.test(content)) {
@@ -291,7 +295,7 @@ class AIGovernanceManager {
       const secretPatterns = [
         /password\s*[:=]\s*['"][^'"]*['"]/i,
         /secret\s*[:=]\s*['"][^'"]*['"]/i,
-        /api[_-]?key\s*[:=]\s*['"][^'"]*['"]/i
+        /api[_-]?key\s*[:=]\s*['"][^'"]*['"]/i,
       ];
 
       for (const pattern of secretPatterns) {
@@ -327,7 +331,7 @@ class AIGovernanceManager {
     const biasPatterns = [
       /\b(only|always|never|all|none)\s+(men|women|people|individuals)\b/gi,
       /\b(race|ethnicity|religion|gender)\s+(is|are|should be)\s+(superior|inferior)\b/gi,
-      /\b(discriminate|exclude|ban)\s+(based on|because of)\s+(race|gender|religion)\b/gi
+      /\b(discriminate|exclude|ban)\s+(based on|because of)\s+(race|gender|religion)\b/gi,
     ];
 
     for (const pattern of biasPatterns) {
@@ -341,7 +345,7 @@ class AIGovernanceManager {
     // Harm prevention
     const harmPatterns = [
       /\b(harm|hurt|damage|destroy)\s+(yourself|others|people)\b/gi,
-      /\b(illegal|criminal|violent)\s+(activity|behavior|act)\b/gi
+      /\b(illegal|criminal|violent)\s+(activity|behavior|act)\b/gi,
     ];
 
     for (const pattern of harmPatterns) {
@@ -355,7 +359,7 @@ class AIGovernanceManager {
     // Political bias detection
     const politicalBiasPatterns = [
       /\b(left|right|liberal|conservative|progressive|traditional)\s+(agenda|ideology|bias)\b/gi,
-      /\b(propaganda|indoctrination|brainwashing)\b/gi
+      /\b(propaganda|indoctrination|brainwashing)\b/gi,
     ];
 
     for (const pattern of politicalBiasPatterns) {
@@ -368,7 +372,7 @@ class AIGovernanceManager {
     // Censorship resilience - ensure content doesn't promote censorship
     const censorshipPatterns = [
       /\b(censor|suppress|silence)\s+(speech|opinion|information)\b/gi,
-      /\b(ban|forbid|prohibit)\s+(discussion|debate|criticism)\b/gi
+      /\b(ban|forbid|prohibit)\s+(discussion|debate|criticism)\b/gi,
     ];
 
     for (const pattern of censorshipPatterns) {
@@ -383,7 +387,7 @@ class AIGovernanceManager {
       timestamp: new Date().toISOString(),
       type,
       content,
-      severity: 'warning'
+      severity: 'warning',
     };
 
     const ethicsLog = path.join(this.logsDir, 'ethics.log');
@@ -398,12 +402,12 @@ class AIGovernanceManager {
   detectConstitutionalViolation(content) {
     // Simple check for demo
     const badWords = ['unconstitutional', 'illegal'];
-    return badWords.some(word => content.toLowerCase().includes(word));
+    return badWords.some((word) => content.toLowerCase().includes(word));
   }
 
   detectAbuse(content) {
     const abusiveWords = ['abuse', 'harm'];
-    return abusiveWords.some(word => content.toLowerCase().includes(word));
+    return abusiveWords.some((word) => content.toLowerCase().includes(word));
   }
 
   detectHallucination(content) {
@@ -430,12 +434,14 @@ class AIGovernanceManager {
 
     const logEntry = {
       timestamp: new Date().toISOString(),
-      userId: controls.auditSettings.anonymizeUserData ? this.anonymize(interaction.userId) : interaction.userId,
+      userId: controls.auditSettings.anonymizeUserData
+        ? this.anonymize(interaction.userId)
+        : interaction.userId,
       type: interaction.type,
       success: interaction.success,
       responseTime: interaction.responseTime,
       contentLength: interaction.content?.length || 0,
-      metadata: interaction.metadata || {}
+      metadata: interaction.metadata || {},
     };
 
     const logFile = path.join(this.logsDir, `${new Date().toISOString().split('T')[0]}.jsonl`);
@@ -477,7 +483,7 @@ class AIGovernanceManager {
         };
         parsed.auditSettings = {
           ...(parsed.auditSettings || {}),
-          logAllInteractions: false
+          logAllInteractions: false,
         };
       }
       this._controlsCache = parsed;
@@ -489,7 +495,12 @@ class AIGovernanceManager {
   }
 
   async saveControls(controls) {
-    await fs.writeFile(this.controlsFile, JSON.stringify(controls, null, 2));
+    try {
+      await fs.writeFile(this.controlsFile, JSON.stringify(controls, null, 2));
+    } catch (err) {
+      // Best-effort persistence; surface a warning rather than throwing.
+      console.warn('Failed to save governance controls:', err?.message || err);
+    }
   }
 
   async getMetrics() {
@@ -518,28 +529,25 @@ async function main() {
       console.log('AI Governance initialized');
       break;
 
-    case 'metrics':
-      {
-        const metrics = await manager.getMetrics();
-        console.log(JSON.stringify(metrics, null, 2));
-        break;
-      }
+    case 'metrics': {
+      const metrics = await manager.getMetrics();
+      console.log(JSON.stringify(metrics, null, 2));
+      break;
+    }
 
-    case 'controls':
-      {
-        const controls = await manager.getControls();
-        console.log(JSON.stringify(controls, null, 2));
-        break;
-      }
+    case 'controls': {
+      const controls = await manager.getControls();
+      console.log(JSON.stringify(controls, null, 2));
+      break;
+    }
 
-    case 'validate':
-      {
-        const content = process.argv[3] || '';
-        const type = process.argv[4] || 'code';
-        const result = await manager.validateQuality(content, type);
-        console.log(JSON.stringify(result, null, 2));
-        break;
-      }
+    case 'validate': {
+      const content = process.argv[3] || '';
+      const type = process.argv[4] || 'code';
+      const result = await manager.validateQuality(content, type);
+      console.log(JSON.stringify(result, null, 2));
+      break;
+    }
 
     default:
       console.log('Usage: node governance.js <init|metrics|controls|validate>');

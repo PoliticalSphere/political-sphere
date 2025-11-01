@@ -10,6 +10,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { spawn } from 'node:child_process';
+import fs from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -34,7 +35,18 @@ const runCommand = (command, args, options = {}) =>
       },
     });
 
+    const timeoutMs = options.timeoutMs || Number(process.env.GUARD_TIMEOUT_MS) || 120000;
+    const timer = setTimeout(() => {
+      try {
+        child.kill('SIGTERM');
+      } catch (e) {
+        // ignore
+      }
+      reject(new Error(`${command} ${args.join(' ')} timed out after ${timeoutMs}ms`));
+    }, timeoutMs);
+
     child.on('close', (code) => {
+      clearTimeout(timer);
       if (code === 0) {
         resolve();
       } else {
@@ -108,29 +120,58 @@ const main = async () => {
   let hasFailures = false;
   const results = [];
 
-  for (const check of checks) {
-    if (!availableScripts.has(check.script)) {
-      results.push({ name: check.name, status: 'skipped', reason: 'script missing' });
-      continue;
+  // Determine fast mode and concurrency
+  let fastMode = false;
+  let concurrency = 2;
+  let guardTimeoutMs = 120000;
+  try {
+    const controlsPath = join(repoRoot, 'ai-controls.json');
+    if (fs.existsSync(controlsPath)) {
+      const controls = JSON.parse(await readFile(controlsPath, 'utf8'));
+      fastMode = !!(process.env.FAST_AI === '1' || controls.fastMode?.enabled);
+      concurrency = controls.fastMode?.concurrency || concurrency;
+      guardTimeoutMs = controls.fastMode?.guardTimeoutMs || guardTimeoutMs;
+    } else {
+      fastMode = process.env.FAST_AI === '1';
     }
+  } catch (err) {
+    // ignore and use defaults
+  }
 
-    // Skip optional checks unless GUARD_MODE=strict
-    if (check.optional && process.env.GUARD_MODE !== 'strict') {
-      results.push({ name: check.name, status: 'skipped', reason: 'GUARD_MODE not strict' });
-      continue;
-    }
+  // Build list of checks to run
+  const toRun = checks.filter((check) => {
+    if (!availableScripts.has(check.script)) return false;
+    if (check.optional && process.env.GUARD_MODE !== 'strict') return false;
+    return true;
+  });
 
+  console.log(
+    `Running ${toRun.length} guard checks${fastMode ? ' in fast mode' : ''} with concurrency=${concurrency}`
+  );
+
+  // Simple concurrency pool
+  const pool = [];
+  const runNext = async () => {
+    const check = toRun.shift();
+    if (!check) return;
     try {
       console.log(`\n🔍 Running ${check.name} via npm run ${check.script}...`);
-      await runCommand('npm', ['run', check.script], { env: check.env });
+      await runCommand('npm', ['run', check.script], { env: check.env, timeoutMs: guardTimeoutMs });
       results.push({ name: check.name, status: 'passed' });
     } catch (error) {
-      hasFailures = true;
       results.push({ name: check.name, status: 'failed', reason: error.message });
       console.error(`❌ ${check.name} failed: ${error.message}`);
-      break; // stop early to save time once a guard fails
+      hasFailures = true;
     }
+    // continue processing
+    return runNext();
+  };
+
+  for (let i = 0; i < Math.min(concurrency, toRun.length); i++) {
+    pool.push(runNext());
   }
+
+  await Promise.all(pool);
 
   console.log('\n=== Guard Summary ===');
   for (const result of results) {

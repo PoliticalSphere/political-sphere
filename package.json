@@ -10,8 +10,11 @@
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",
     "@commitlint/config-conventional": "^19.2.2",
+    "@modelcontextprotocol/sdk": "^1.20.2",
+    "@modelcontextprotocol/server-filesystem": "^2025.8.21",
     "@nrwl/eslint-plugin-nx": "^19.8.4",
     "@nx/jest": "^22.0.1",
+    "@playwright/mcp": "^0.0.45",
     "@playwright/test": "^1.45.0",
     "@swc/core": "^1.14.0",
     "@swc/jest": "^0.2.39",
@@ -19,6 +22,7 @@
     "@typescript-eslint/eslint-plugin": "^7.7.0",
     "@typescript-eslint/parser": "^7.7.0",
     "better-sqlite3": "^12.4.1",
+    "chrome-devtools-mcp": "^0.9.0",
     "concurrently": "^8.2.2",
     "cspell": "^8.8.4",
     "eslint": "^8.57.0",
@@ -33,6 +37,7 @@
     "prettier": "^3.2.5",
     "puppeteer-mcp-server": "^0.7.2",
     "simple-git": "^3.28.0",
+    "time-mcp": "^1.0.5",
     "webpack": "^5.88.2",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.2.2"
@@ -74,6 +79,11 @@
     "lint:boundaries": "eslint . --ext .ts,.tsx --max-warnings=0",
     "lint:import-boundaries": "node scripts/ci/check-import-boundaries.js",
     "test:a11y": "bash scripts/ci/a11y-check.sh",
+    "hooks:review": "node scripts/ci/husky-lefthook-review.mjs",
+    "hooks:security": "node scripts/ci/husky-lefthook-security.mjs",
+    "hooks:bugs": "node scripts/ci/husky-lefthook-bugs.mjs",
+    "hooks:improve": "node scripts/ci/husky-lefthook-improve.mjs",
+    "hooks:test": "node scripts/ci/husky-lefthook-test.mjs",
     "dev:host": "webpack serve --config apps/host/webpack.config.js",
     "dev:remote": "webpack serve --config apps/remote/webpack.config.js",
     "check:remote": "bash scripts/check-remote-entry.sh",
@@ -95,7 +105,11 @@
     "mcp:puppeteer": "nx serve political-sphere-mcp-puppeteer",
     "mcp:git": "nx serve political-sphere-mcp-git",
     "mcp:political-sphere": "nx serve political-sphere-mcp-political-sphere",
-    "mcp:ai-assistant": "nx serve political-sphere-ai-assistant"
+    "mcp:ai-assistant": "nx serve political-sphere-ai-assistant",
+    "mcp:playwright": "npx -y @playwright/mcp",
+    "mcp:chrome-devtools": "npx -y chrome-devtools-mcp",
+    "mcp:filesystem-official": "npx -y @modelcontextprotocol/server-filesystem .",
+    "mcp:time": "npx -y time-mcp"
   },
   "dependencies": {
     "@jest/globals": "^30.2.0",
@@ -108,6 +122,9 @@
     "@opentelemetry/semantic-conventions": "^1.37.0",
     "@political-sphere/shared": "workspace:*",
     "bcrypt": "^6.0.0",
-    "jsonwebtoken": "^9.0.2"
+    "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "uuid": "^13.0.0",
+    "zod": "^4.1.12"
   }
 }

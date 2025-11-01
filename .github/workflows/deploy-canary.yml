@@ -2,7 +2,7 @@ name: Deploy with Canary
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
     inputs:
       environment:
@@ -24,7 +24,7 @@ on:
           - immediate
 
 permissions:
-  id-token: write  # Required for OIDC
+  id-token: write # Required for OIDC
   contents: read
   security-events: write
 
@@ -72,7 +72,7 @@ jobs:
         run: |
           HOUR=$(date -u +%H)
           DAY=$(date -u +%u)
-          
+
           # Production deployments only during business hours (09:00-17:00 UTC, Mon-Fri)
           if [[ "${{ github.event.inputs.environment }}" == "production" ]]; then
             if [[ $DAY -gt 5 ]] || [[ $HOUR -lt 9 ]] || [[ $HOUR -gt 17 ]]; then
@@ -194,7 +194,7 @@ jobs:
           ECR_REGISTRY="${{ steps.login-ecr.outputs.registry }}"
           API_IMAGE="${ECR_REGISTRY}/political-sphere/api:${{ github.sha }}"
           FRONTEND_IMAGE="${ECR_REGISTRY}/political-sphere/frontend:${{ github.sha }}"
-          
+
           echo "api_image=${API_IMAGE}" >> $GITHUB_OUTPUT
           echo "frontend_image=${FRONTEND_IMAGE}" >> $GITHUB_OUTPUT
 
@@ -237,7 +237,7 @@ jobs:
           format: 'sarif'
           output: 'trivy-api-results.sarif'
           severity: 'CRITICAL,HIGH'
-          exit-code: '1'  # Fail on CRITICAL/HIGH
+          exit-code: '1' # Fail on CRITICAL/HIGH
 
       - name: Scan Frontend image with Trivy
         uses: aquasecurity/trivy-action@master
@@ -334,7 +334,7 @@ jobs:
             }]' \
             --query 'taskDefinition.taskDefinitionArn' \
             --output text)
-          
+
           echo "api_task_def=${API_TASK_DEF}" >> $GITHUB_OUTPUT
 
       - name: Deploy canary (5% traffic)
@@ -362,7 +362,7 @@ jobs:
           # Fetch CloudWatch metrics for canary validation
           END_TIME=$(date -u +%Y-%m-%dT%H:%M:%SZ)
           START_TIME=$(date -u -d '5 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
-          
+
           # Check error rate
           ERROR_RATE=$(aws cloudwatch get-metric-statistics \
             --namespace AWS/ApplicationELB \
@@ -374,13 +374,13 @@ jobs:
             --statistics Sum \
             --query 'Datapoints[0].Sum' \
             --output text)
-          
+
           if [[ "$ERROR_RATE" == "None" ]]; then
             ERROR_RATE=0
           fi
-          
+
           echo "📊 Canary error rate: $ERROR_RATE errors"
-          
+
           if (( $(echo "$ERROR_RATE > 10" | bc -l) )); then
             echo "❌ Canary validation failed: High error rate"
             echo "validation_passed=false" >> $GITHUB_OUTPUT
@@ -402,13 +402,13 @@ jobs:
         run: |
           echo "🎯 Completing deployment to 100%"
           # CodeDeploy completes the deployment
-          
+
       - name: Wait for deployment stabilization
         run: |
           aws ecs wait services-stable \
             --cluster political-sphere-${{ github.event.inputs.environment || 'staging' }} \
             --services api frontend
-          
+
           echo "✅ Deployment stabilized"
 
   # Post-deployment validation
@@ -424,9 +424,9 @@ jobs:
           ENV="${{ github.event.inputs.environment || 'staging' }}"
           API_URL="https://api-${ENV}.political-sphere.com/healthz"
           FRONTEND_URL="https://www-${ENV}.political-sphere.com"
-          
+
           echo "🔍 Running smoke tests..."
-          
+
           # Test API
           if curl -f -s --max-time 30 "$API_URL" | jq -e '.status == "healthy"' > /dev/null; then
             echo "✅ API smoke test passed"
@@ -434,7 +434,7 @@ jobs:
             echo "❌ API smoke test failed"
             exit 1
           fi
-          
+
           # Test Frontend
           if curl -f -s -I --max-time 30 "$FRONTEND_URL" > /dev/null; then
             echo "✅ Frontend smoke test passed"
@@ -476,7 +476,7 @@ jobs:
             "status": "success"
           }
           EOF
-          
+
           # Upload to S3 for audit trail
           aws s3 cp deployment-record.json \
             s3://political-sphere-deployments/${{ github.event.inputs.environment || 'staging' }}/${{ github.sha }}.json
@@ -507,7 +507,7 @@ jobs:
       - name: Trigger rollback
         run: |
           echo "🔄 Initiating automatic rollback..."
-          
+
           # Stop current deployment
           DEPLOYMENT_ID=$(aws deploy list-deployments \
             --application-name political-sphere-${{ github.event.inputs.environment || 'staging' }} \
@@ -515,24 +515,24 @@ jobs:
             --include-only-statuses InProgress \
             --query 'deployments[0]' \
             --output text)
-          
+
           if [[ -n "$DEPLOYMENT_ID" && "$DEPLOYMENT_ID" != "None" ]]; then
             aws deploy stop-deployment \
               --deployment-id "$DEPLOYMENT_ID" \
               --auto-rollback-enabled
           fi
-          
+
           echo "✅ Rollback initiated"
 
       - name: Verify rollback
         run: |
           echo "🔍 Verifying rollback..."
-          
+
           # Wait for services to stabilize
           aws ecs wait services-stable \
             --cluster political-sphere-${{ github.event.inputs.environment || 'staging' }} \
             --services api frontend
-          
+
           echo "✅ Rollback completed"
 
       - name: Notify failure

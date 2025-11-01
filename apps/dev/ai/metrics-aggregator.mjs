@@ -110,9 +110,10 @@ const updateLearningSignals = async (history) => {
   patterns.qualityImprovements = [
     {
       timestamp: new Date().toISOString(),
-      insight: history.length === 0
-        ? 'No guard runs recorded yet. Encourage engineers to execute guard pipeline before submitting AI-assisted work.'
-        : 'Focus on the most frequent guard failures to uplift assistant suggestions.',
+      insight:
+        history.length === 0
+          ? 'No guard runs recorded yet. Encourage engineers to execute guard pipeline before submitting AI-assisted work.'
+          : 'Focus on the most frequent guard failures to uplift assistant suggestions.',
       guardSample: history.slice(-5),
     },
   ];

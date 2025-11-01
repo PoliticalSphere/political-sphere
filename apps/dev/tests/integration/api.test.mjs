@@ -49,15 +49,9 @@ const dockerAvailable = (() => {
 const runIntegration = process.env.RUN_API_INTEGRATION === 'true';
 
 if (!runIntegration) {
-  test.skip(
-    'API integration tests skipped. Set RUN_API_INTEGRATION=true to enable.',
-    () => {}
-  );
+  test.skip('API integration tests skipped. Set RUN_API_INTEGRATION=true to enable.', () => {});
 } else if (!dockerAvailable) {
-  test.skip(
-    'API integration tests skipped because Docker is not available.',
-    () => {}
-  );
+  test.skip('API integration tests skipped because Docker is not available.', () => {});
 } else {
   let apiProcess;
 
@@ -131,12 +125,9 @@ if (!runIntegration) {
     const { token } = await loginResponse.json();
 
     // Then access protected endpoint
-    const protectedResponse = await fetch(
-      'http://localhost:4000/api/protected',
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      }
-    );
+    const protectedResponse = await fetch('http://localhost:4000/api/protected', {
+      headers: { Authorization: `Bearer ${token}` },
+    });
 
     assert.equal(protectedResponse.status, 200);
   });

@@ -11,12 +11,14 @@
 ## Context and Problem Statement
 
 Current production deployments use a basic blue-green strategy with full traffic cutover. This approach:
+
 - Carries risk of immediate widespread impact from bugs
 - Provides limited ability to measure impact before full rollout
 - Lacks automated rollback based on metrics
 - Doesn't support A/B testing or gradual feature rollouts
 
 We need a progressive delivery mechanism that:
+
 1. Gradually increases traffic to new versions
 2. Monitors key metrics during rollout
 3. Automatically rolls back on degradation
@@ -34,49 +36,61 @@ We need a progressive delivery mechanism that:
 ## Considered Options
 
 ### Option 1: AWS App Mesh with ECS
+
 **Pros**:
+
 - Native AWS integration
 - Automatic traffic splitting
 - Deep integration with CloudWatch metrics
 - Supports weighted routing
 
 **Cons**:
+
 - Vendor lock-in
 - Complex configuration
 - Limited observability without additional tooling
 
 ### Option 2: Flagger + Kubernetes
+
 **Pros**:
+
 - Open source, vendor-neutral
 - Rich observability integration (Prometheus, Grafana)
 - Automated rollback policies
 - GitOps-friendly
 
 **Cons**:
+
 - Requires Kubernetes migration
 - Additional infrastructure complexity
 - Learning curve for team
 
 ### Option 3: Custom Solution with Feature Flags + ALB Weighted Targets
+
 **Pros**:
+
 - Maximum control and flexibility
 - Works with existing ECS infrastructure
 - Can leverage existing feature flag system
 - Lower operational complexity
 
 **Cons**:
+
 - Custom code to maintain
 - Manual metric monitoring integration
 - Less battle-tested than dedicated tools
 
 ### Option 4: AWS CodeDeploy with Lambda Hooks
+
 **Pros**:
+
 - Managed service (reduced ops burden)
 - Native ECS integration
 - CloudWatch alarms for automatic rollback
 - Predefined traffic shifting patterns
 
 **Cons**:
+
 - Limited customization
 - Coarser traffic control
 - Lambda overhead for validation hooks
@@ -96,23 +110,27 @@ We need a progressive delivery mechanism that:
 ### Implementation Strategy
 
 **Phase 1: AWS CodeDeploy Integration (Q4 2025)**
+
 - Implement CodeDeploy for ECS services
 - Configure traffic shifting: 5% → 25% → 50% → 100%
 - Set up CloudWatch alarms for automatic rollback
 - Define deployment configurations per environment
 
 **Phase 2: Enhanced Observability (Q1 2026)**
+
 - Integrate OpenTelemetry traces for deployment tracking
 - Create Grafana dashboards for canary metrics
 - Implement custom metric collection (business KPIs)
 - Add Slack/PagerDuty alerting
 
 **Phase 3: Feature Flag Integration (Q2 2026)**
+
 - Integrate with feature flag system (LaunchDarkly or custom)
 - Enable progressive feature rollouts independent of deployments
 - Implement targeting rules (avoid algorithmic bias)
 
 **Phase 4: Kubernetes Migration (2026)**
+
 - Evaluate Kubernetes adoption
 - If adopted, migrate to Flagger for advanced progressive delivery
 - Maintain learnings and policies from CodeDeploy implementation
@@ -148,13 +166,13 @@ alarms:
     threshold: 1%
     evaluation_periods: 2
     datapoints_to_alarm: 2
-    
+
   - name: HighLatency
     metric: TargetResponseTime
     threshold: 1000ms
     statistic: p95
     evaluation_periods: 3
-    
+
   - name: HealthCheckFailures
     metric: UnHealthyHostCount
     threshold: 1
@@ -172,15 +190,15 @@ Resources:
       Properties:
         TaskDefinition: <TASK_DEFINITION>
         LoadBalancerInfo:
-          ContainerName: "api"
+          ContainerName: 'api'
           ContainerPort: 4000
-        PlatformVersion: "LATEST"
+        PlatformVersion: 'LATEST'
 
 Hooks:
-  - BeforeInstall: "LambdaFunctionToValidateBeforeTrafficShift"
-  - AfterAllowTestTraffic: "LambdaFunctionToValidateAfterTestTraffic"
-  - BeforeAllowTraffic: "LambdaFunctionToValidateBefore100PercentTraffic"
-  - AfterAllowTraffic: "LambdaFunctionToValidateServiceAfterTraffic"
+  - BeforeInstall: 'LambdaFunctionToValidateBeforeTrafficShift'
+  - AfterAllowTestTraffic: 'LambdaFunctionToValidateAfterTestTraffic'
+  - BeforeAllowTraffic: 'LambdaFunctionToValidateBefore100PercentTraffic'
+  - AfterAllowTraffic: 'LambdaFunctionToValidateServiceAfterTraffic'
 ```
 
 ### Lambda Validation Hooks
@@ -190,29 +208,29 @@ Hooks:
 export async function validateDeployment(event: CodeDeployEvent): Promise<void> {
   const metrics = await fetchMetrics({
     timeRange: '5m',
-    metrics: ['error_rate', 'latency_p95', 'health_checks']
+    metrics: ['error_rate', 'latency_p95', 'health_checks'],
   });
-  
+
   // Check error rate
   if (metrics.error_rate > 0.01) {
     throw new Error(`Error rate ${metrics.error_rate} exceeds threshold`);
   }
-  
+
   // Check latency
   if (metrics.latency_p95 > 1000) {
     throw new Error(`Latency ${metrics.latency_p95}ms exceeds threshold`);
   }
-  
+
   // Check health
   if (metrics.health_checks < 0.95) {
     throw new Error(`Health checks ${metrics.health_checks} below threshold`);
   }
-  
+
   // Record deployment event
   await recordDeploymentMetric({
     deployment_id: event.deploymentId,
     status: 'validation_passed',
-    metrics
+    metrics,
   });
 }
 ```
@@ -245,17 +263,20 @@ export async function validateDeployment(event: CodeDeployEvent): Promise<void> 
 ## Compliance Considerations
 
 ### Political Neutrality
+
 - Traffic splitting is **random and uniform** (no algorithmic targeting)
 - No user profiling or demographic targeting
 - Canary selection based purely on infrastructure routing
 - Audit logs for all deployment decisions
 
 ### Data Protection
+
 - No PII used in deployment decisions
 - Metrics aggregated and anonymized
 - Audit logs comply with GDPR retention policies
 
 ### Auditability
+
 - Full deployment history retained (90 days)
 - Tamper-evident logs for compliance
 - Rollback reasons documented automatically
@@ -263,6 +284,7 @@ export async function validateDeployment(event: CodeDeployEvent): Promise<void> 
 ## Implementation Checklist
 
 **Infrastructure**:
+
 - [ ] Create CodeDeploy application and deployment groups
 - [ ] Configure ALB target groups for blue/green
 - [ ] Set up IAM roles for CodeDeploy
@@ -270,24 +292,28 @@ export async function validateDeployment(event: CodeDeployEvent): Promise<void> 
 - [ ] Configure CloudWatch alarms with appropriate thresholds
 
 **Pipeline Integration**:
+
 - [ ] Update `deploy.yml` workflow to use CodeDeploy
 - [ ] Add deployment configuration files to repository
 - [ ] Implement pre-deployment validation scripts
 - [ ] Add post-deployment smoke tests
 
 **Observability**:
+
 - [ ] Create Grafana dashboards for canary metrics
 - [ ] Set up alerting (Slack, PagerDuty)
 - [ ] Implement custom metric collection
 - [ ] Configure trace propagation for deployments
 
 **Documentation**:
+
 - [ ] Update deployment runbook
 - [ ] Create troubleshooting guide
 - [ ] Document rollback procedures
 - [ ] Add training materials for team
 
 **Testing**:
+
 - [ ] Test canary deployment in staging
 - [ ] Validate automatic rollback triggers
 - [ ] Conduct failure scenario testing

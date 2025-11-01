@@ -10,7 +10,8 @@ import { getLogger } from './logger.js';
 const logger = getLogger({ service: 'database' });
 
 // Database configuration
-const DB_PATH = process.env.SQLITE_DB_PATH || path.join(process.cwd(), 'data', 'political_sphere.db');
+const DB_PATH =
+  process.env.SQLITE_DB_PATH || path.join(process.cwd(), 'data', 'political_sphere.db');
 
 // Connection cache
 let dbInstance = null;
@@ -61,7 +62,7 @@ export function executeQuery(query, params = []) {
     logger.error('Query execution failed', {
       query: query.substring(0, 100) + (query.length > 100 ? '...' : ''),
       error: error.message,
-      params: JSON.stringify(params)
+      params: JSON.stringify(params),
     });
     throw error;
   }
@@ -80,7 +81,7 @@ export function executeQuerySingle(query, params = []) {
     logger.error('Single query execution failed', {
       query: query.substring(0, 100) + (query.length > 100 ? '...' : ''),
       error: error.message,
-      params: JSON.stringify(params)
+      params: JSON.stringify(params),
     });
     throw error;
   }
@@ -99,7 +100,7 @@ export function executeMutation(query, params = []) {
     logger.debug('Mutation executed', {
       query: query.substring(0, 50) + (query.length > 50 ? '...' : ''),
       changes: result.changes,
-      lastInsertRowid: result.lastInsertRowid
+      lastInsertRowid: result.lastInsertRowid,
     });
 
     return result;
@@ -107,7 +108,7 @@ export function executeMutation(query, params = []) {
     logger.error('Mutation execution failed', {
       query: query.substring(0, 100) + (query.length > 100 ? '...' : ''),
       error: error.message,
-      params: JSON.stringify(params)
+      params: JSON.stringify(params),
     });
     throw error;
   }
@@ -139,7 +140,7 @@ export function executeTransaction(queries) {
   } catch (error) {
     logger.error('Transaction failed', {
       error: error.message,
-      queryCount: queries.length
+      queryCount: queries.length,
     });
     throw error;
   }
@@ -205,7 +206,7 @@ export const userQueries = {
 
   activateUser: `
     UPDATE users SET is_active = 1 WHERE id = ?
-  `
+  `,
 };
 
 /**
@@ -237,7 +238,7 @@ export const sessionQueries = {
 
   deleteUserSessions: `
     DELETE FROM sessions WHERE user_id = ?
-  `
+  `,
 };
 
 /**
@@ -273,7 +274,7 @@ export const rateLimitQueries = {
 
   cleanup: `
     DELETE FROM rate_limits WHERE window_end <= CURRENT_TIMESTAMP
-  `
+  `,
 };
 
 /**
@@ -295,7 +296,7 @@ export const auditQueries = {
     SELECT * FROM audit_log
     WHERE timestamp >= datetime('now', '-24 hours')
     ORDER BY timestamp DESC LIMIT ?
-  `
+  `,
 };
 
 // Graceful shutdown

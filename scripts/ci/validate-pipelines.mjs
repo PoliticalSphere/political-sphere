@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 /**
  * CI/CD Pipeline Configuration Validator
- * 
+ *
  * Validates GitHub Actions workflows for:
  * - Security best practices
  * - Required quality gates
@@ -15,28 +15,11 @@ import { join } from 'path';
 import { parse as parseYaml } from 'yaml';
 
 const WORKFLOWS_DIR = '.github/workflows';
-const REQUIRED_WORKFLOWS = [
-  'ci.yml',
-  'security.yml',
-  'deploy.yml',
-  'e2e.yml'
-];
+const REQUIRED_WORKFLOWS = ['ci.yml', 'security.yml', 'deploy.yml', 'e2e.yml'];
 
-const REQUIRED_SECURITY_SCANS = [
-  'gitleaks',
-  'npm audit',
-  'trivy',
-  'codeql',
-  'semgrep'
-];
+const REQUIRED_SECURITY_SCANS = ['gitleaks', 'npm audit', 'trivy', 'codeql', 'semgrep'];
 
-const REQUIRED_QUALITY_GATES = [
-  'lint',
-  'typecheck',
-  'test',
-  'accessibility',
-  'import-boundaries'
-];
+const REQUIRED_QUALITY_GATES = ['lint', 'typecheck', 'test', 'accessibility', 'import-boundaries'];
 
 class ValidationResult {
   constructor() {
@@ -87,7 +70,9 @@ class ValidationResult {
     }
 
     console.log('\n' + '━'.repeat(80));
-    console.log(`\n📊 Summary: ${this.errors.length} errors, ${this.warnings.length} warnings, ${this.info.length} info\n`);
+    console.log(
+      `\n📊 Summary: ${this.errors.length} errors, ${this.warnings.length} warnings, ${this.info.length} info\n`
+    );
 
     return !this.hasErrors();
   }
@@ -103,7 +88,7 @@ class PipelineValidator {
   loadWorkflows() {
     try {
       const files = readdirSync(WORKFLOWS_DIR);
-      const ymlFiles = files.filter(f => f.endsWith('.yml') || f.endsWith('.yaml'));
+      const ymlFiles = files.filter((f) => f.endsWith('.yml') || f.endsWith('.yaml'));
 
       for (const file of ymlFiles) {
         const filePath = join(WORKFLOWS_DIR, file);
@@ -133,7 +118,7 @@ class PipelineValidator {
   // Validate security scanning coverage
   validateSecurityScans() {
     const allWorkflowContent = Array.from(this.workflows.values())
-      .map(w => JSON.stringify(w))
+      .map((w) => JSON.stringify(w))
       .join(' ');
 
     for (const scan of REQUIRED_SECURITY_SCANS) {
@@ -168,7 +153,7 @@ class PipelineValidator {
         /api[_-]?key\s*[:=]\s*['"][^'"]+['"]/i,
         /token\s*[:=]\s*['"][^'"]+['"]/i,
         /secret\s*[:=]\s*['"][^'"]+['"]/i,
-        /aws[_-]?access[_-]?key/i
+        /aws[_-]?access[_-]?key/i,
       ];
 
       for (const pattern of secretPatterns) {
@@ -207,7 +192,7 @@ class PipelineValidator {
   // Validate SBOM generation
   validateSBOM() {
     const deployWorkflows = ['deploy.yml', 'deploy-canary.yml'];
-    
+
     for (const workflowFile of deployWorkflows) {
       const workflow = this.workflows.get(workflowFile);
       if (!workflow) continue;
@@ -289,11 +274,9 @@ class PipelineValidator {
 
       // Check for metrics/traces
       if (file.startsWith('deploy') || file === 'ci.yml') {
-        const hasObservability = 
-          content.includes('otel') || 
-          content.includes('metrics') || 
-          content.includes('tracing');
-        
+        const hasObservability =
+          content.includes('otel') || content.includes('metrics') || content.includes('tracing');
+
         if (!hasObservability) {
           this.result.addWarning(`Observability integration missing`, file);
         }
@@ -357,8 +340,9 @@ class PipelineValidator {
   // Validate compliance requirements
   validateCompliance() {
     // Check for audit logging
-    const hasAuditLogging = Array.from(this.workflows.values())
-      .some(w => JSON.stringify(w).includes('audit') || JSON.stringify(w).includes('log'));
+    const hasAuditLogging = Array.from(this.workflows.values()).some(
+      (w) => JSON.stringify(w).includes('audit') || JSON.stringify(w).includes('log')
+    );
 
     if (!hasAuditLogging) {
       this.result.addWarning(`Audit logging not explicitly configured`);

@@ -59,7 +59,7 @@ const generateMonthlySummary = async () => {
   const now = new Date();
   const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
 
-  const monthlyExperiments = experiments.filter(exp => {
+  const monthlyExperiments = experiments.filter((exp) => {
     const expDate = new Date(exp.date);
     const expMonth = `${expDate.getFullYear()}-${String(expDate.getMonth() + 1).padStart(2, '0')}`;
     return expMonth === currentMonth;

@@ -21,6 +21,7 @@
 ### 1. Quality is Architectural
 
 **DO**:
+
 - ✅ Design quality gates BEFORE implementation
 - ✅ Include error handling in initial design
 - ✅ Plan observability from the start
@@ -28,6 +29,7 @@
 - ✅ Make quality gates blocking (fail the build)
 
 **DON'T**:
+
 - ❌ Add tests as an afterthought
 - ❌ Skip quality gates in development
 - ❌ Treat security as a final step
@@ -36,6 +38,7 @@
 ### 2. Shift Left on Security
 
 **DO**:
+
 - ✅ Scan for secrets on every commit (Gitleaks)
 - ✅ Run SAST early in the pipeline (CodeQL, Semgrep)
 - ✅ Block commits with Critical/High vulnerabilities
@@ -43,6 +46,7 @@
 - ✅ Use OIDC for cloud authentication (no long-lived secrets)
 
 **DON'T**:
+
 - ❌ Store secrets in code or config files
 - ❌ Skip security scans in development branches
 - ❌ Ignore Medium/Low vulnerabilities indefinitely
@@ -51,6 +55,7 @@
 ### 3. Progressive Delivery
 
 **DO**:
+
 - ✅ Use canary deployments for production
 - ✅ Monitor metrics during rollout
 - ✅ Automate rollback on failures
@@ -58,6 +63,7 @@
 - ✅ Use feature flags for controlled releases
 
 **DON'T**:
+
 - ❌ Deploy to 100% of production at once
 - ❌ Skip smoke tests post-deployment
 - ❌ Ignore deployment metrics
@@ -66,6 +72,7 @@
 ### 4. Fail Fast, Recover Faster
 
 **DO**:
+
 - ✅ Fail builds immediately on critical issues
 - ✅ Parallelize independent jobs
 - ✅ Cache dependencies aggressively
@@ -73,6 +80,7 @@
 - ✅ Set timeouts on all jobs
 
 **DON'T**:
+
 - ❌ Run all tests sequentially
 - ❌ Wait for low-priority checks before critical ones
 - ❌ Continue pipeline after detecting critical failures
@@ -83,6 +91,7 @@
 ### Job Structure
 
 **Optimal Job Flow**:
+
 ```yaml
 jobs:
   # Stage 1: Quick validation (1-2 minutes)
@@ -92,25 +101,25 @@ jobs:
       - Linting
       - Type checking
       - Import boundaries
-  
+
   # Stage 2: Parallel testing (3-5 minutes)
   unit-tests:
     runs-on: ubuntu-latest
     steps:
       - Unit tests with coverage
-  
+
   integration-tests:
     runs-on: ubuntu-latest
     steps:
       - Integration tests
-  
+
   security-scan:
     runs-on: ubuntu-latest
     steps:
       - Secret scanning
       - Dependency audit
       - SAST
-  
+
   # Stage 3: Build (depends on stage 1 & 2)
   build:
     needs: [lint-and-typecheck, unit-tests, security-scan]
@@ -119,14 +128,14 @@ jobs:
       - Build application
       - Build containers
       - Generate SBOM
-  
+
   # Stage 4: Deep testing (depends on build)
   e2e-tests:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
       - E2E tests
-  
+
   accessibility-tests:
     needs: [build]
     runs-on: ubuntu-latest
@@ -137,32 +146,34 @@ jobs:
 ### Dependency Management
 
 **DO**:
+
 ```yaml
 # Use needs to parallelize where possible
 jobs:
   test-unit:
     runs-on: ubuntu-latest
     # No dependencies - runs immediately
-  
+
   test-integration:
     runs-on: ubuntu-latest
     # No dependencies - runs in parallel with unit tests
-  
+
   build:
     needs: [test-unit, test-integration]
     # Waits for both test jobs
 ```
 
 **DON'T**:
+
 ```yaml
 # Unnecessary sequential execution
 jobs:
   test-unit:
     runs-on: ubuntu-latest
-  
+
   test-integration:
-    needs: [test-unit]  # ❌ Unnecessary dependency
-  
+    needs: [test-unit] # ❌ Unnecessary dependency
+
   build:
     needs: [test-integration]
 ```
@@ -172,6 +183,7 @@ jobs:
 ### Secret Management
 
 **DO**:
+
 ```yaml
 # Use GitHub secrets
 - name: Deploy
@@ -188,6 +200,7 @@ jobs:
 ```
 
 **DON'T**:
+
 ```yaml
 # ❌ Hardcoded secrets
 - name: Deploy
@@ -203,6 +216,7 @@ jobs:
 ### Container Scanning
 
 **DO**:
+
 ```yaml
 - name: Scan container with Trivy
   uses: aquasecurity/trivy-action@master
@@ -211,7 +225,7 @@ jobs:
     format: 'sarif'
     output: 'trivy-results.sarif'
     severity: 'CRITICAL,HIGH'
-    exit-code: '1'  # Fail on findings
+    exit-code: '1' # Fail on findings
 
 - name: Upload results
   uses: github/codeql-action/upload-sarif@v3
@@ -223,6 +237,7 @@ jobs:
 ### SBOM Generation
 
 **DO**:
+
 ```yaml
 - name: Generate SBOM
   uses: anchore/sbom-action@v0
@@ -244,6 +259,7 @@ jobs:
 ### Required Gates (Blocking)
 
 1. **Linting**: Enforce code style
+
    ```yaml
    - name: Lint
      run: npm run lint
@@ -251,12 +267,14 @@ jobs:
    ```
 
 2. **Type Checking**: Catch type errors
+
    ```yaml
    - name: Type Check
      run: npm run typecheck
    ```
 
 3. **Tests**: Minimum 80% coverage
+
    ```yaml
    - name: Test
      run: npm run test -- --coverage
@@ -270,6 +288,7 @@ jobs:
    ```
 
 4. **Accessibility**: WCAG 2.2 AA+ compliance
+
    ```yaml
    - name: Accessibility Tests
      run: npm run test:a11y
@@ -293,16 +312,18 @@ jobs:
 ### Caching Strategies
 
 **Dependencies**:
+
 ```yaml
 - uses: actions/setup-node@v4
   with:
     node-version: '22'
-    cache: 'npm'  # Automatic caching
+    cache: 'npm' # Automatic caching
 
-- run: npm ci  # Uses cache automatically
+- run: npm ci # Uses cache automatically
 ```
 
 **Docker Builds**:
+
 ```yaml
 - name: Build Docker image
   uses: docker/build-push-action@v5
@@ -314,6 +335,7 @@ jobs:
 ```
 
 **Custom Caching**:
+
 ```yaml
 - name: Cache build outputs
   uses: actions/cache@v3
@@ -327,6 +349,7 @@ jobs:
 ### Parallel Execution
 
 **DO**:
+
 ```yaml
 # Run tests in parallel
 - name: Test
@@ -357,6 +380,7 @@ jobs:
 ### Structured Logging
 
 **DO**:
+
 ```yaml
 - name: Deploy
   run: |
@@ -368,6 +392,7 @@ jobs:
 ### Metrics Collection
 
 **DO**:
+
 ```yaml
 - name: Track deployment metrics
   run: |
@@ -380,20 +405,21 @@ jobs:
 ### Artifact Retention
 
 **DO**:
+
 ```yaml
 - name: Upload artifacts
   uses: actions/upload-artifact@v4
   with:
     name: build-${{ github.sha }}
     path: dist/
-    retention-days: 30  # Match compliance requirements
+    retention-days: 30 # Match compliance requirements
 
 - name: Upload SBOM
   uses: actions/upload-artifact@v4
   with:
     name: sbom-${{ github.sha }}
     path: sbom.json
-    retention-days: 90  # Longer for compliance
+    retention-days: 90 # Longer for compliance
 ```
 
 ## Error Handling
@@ -401,19 +427,21 @@ jobs:
 ### Graceful Degradation
 
 **DO**:
+
 ```yaml
 - name: Run optional check
   run: npm run optional-check
-  continue-on-error: true  # Don't fail pipeline
+  continue-on-error: true # Don't fail pipeline
 
 - name: Upload results
-  if: always()  # Run even if previous step fails
+  if: always() # Run even if previous step fails
   uses: actions/upload-artifact@v4
 ```
 
 ### Conditional Execution
 
 **DO**:
+
 ```yaml
 # Only on main branch
 - name: Deploy
@@ -435,6 +463,7 @@ jobs:
 ### Rollback on Failure
 
 **DO**:
+
 ```yaml
 - name: Deploy
   id: deploy
@@ -450,6 +479,7 @@ jobs:
 ### 1. Secrets in Logs
 
 **BAD**:
+
 ```yaml
 - name: Debug
   run: |
@@ -457,6 +487,7 @@ jobs:
 ```
 
 **GOOD**:
+
 ```yaml
 - name: Debug
   run: |
@@ -466,6 +497,7 @@ jobs:
 ### 2. Missing Error Handling
 
 **BAD**:
+
 ```yaml
 - name: Deploy
   run: |
@@ -474,6 +506,7 @@ jobs:
 ```
 
 **GOOD**:
+
 ```yaml
 - name: Deploy
   run: |
@@ -484,6 +517,7 @@ jobs:
 ### 3. No Rollback Plan
 
 **BAD**:
+
 ```yaml
 - name: Deploy
   run: ./deploy.sh
@@ -491,6 +525,7 @@ jobs:
 ```
 
 **GOOD**:
+
 ```yaml
 - name: Deploy
   id: deploy
@@ -504,6 +539,7 @@ jobs:
 ### 4. Ignoring Accessibility
 
 **BAD**:
+
 ```yaml
 # No accessibility testing
 jobs:
@@ -513,12 +549,13 @@ jobs:
 ```
 
 **GOOD**:
+
 ```yaml
 jobs:
   test:
     steps:
       - run: npm run test
-  
+
   accessibility:
     steps:
       - run: npm run test:a11y
@@ -527,6 +564,7 @@ jobs:
 ### 5. No Monitoring
 
 **BAD**:
+
 ```yaml
 - name: Deploy
   run: ./deploy.sh
@@ -534,6 +572,7 @@ jobs:
 ```
 
 **GOOD**:
+
 ```yaml
 - name: Deploy
   run: ./deploy.sh

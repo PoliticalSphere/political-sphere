@@ -251,9 +251,9 @@ describe('Server API Tests', () => {
         }
 
         const responses = await Promise.all(requests);
-        const rateLimited = responses.some(r => r.status === 429);
+        const rateLimited = responses.some((r) => r.status === 429);
         // Rate limiting may or may not trigger depending on configuration
-        expect(rateLimited || responses.every(r => r.status === 200)).toBe(true);
+        expect(rateLimited || responses.every((r) => r.status === 200)).toBe(true);
       } finally {
         await close();
       }
@@ -308,7 +308,9 @@ describe('Server API Tests', () => {
         expect([413, 400]).toContain(response.status);
         const data = await response.json().catch(() => null);
         if (data && data.error) {
-          expect(String(data.error)).toMatch(/Payload too large|request entity too large|Body larger than|too large/i);
+          expect(String(data.error)).toMatch(
+            /Payload too large|request entity too large|Body larger than|too large/i
+          );
         }
       } finally {
         await close();
@@ -329,7 +331,9 @@ describe('Server API Tests', () => {
         expect([415, 400]).toContain(response.status);
         const data = await response.json().catch(() => null);
         if (data && data.error) {
-          expect(String(data.error)).toMatch(/Unsupported content type|Unsupported media type|Invalid content type/i);
+          expect(String(data.error)).toMatch(
+            /Unsupported content type|Unsupported media type|Invalid content type/i
+          );
         }
       } finally {
         await close();

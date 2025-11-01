@@ -1,5 +1,504 @@
 {
   "responses": {},
-  "queries": {},
-  "lastUpdated": "2025-10-29T12:00:00.000Z"
+  "metadata": {
+    "version": "1.0.0",
+    "lastCleanup": "2025-11-01T00:00:00.000Z",
+    "maxEntries": 1000,
+    "ttlMs": 86400000
+  },
+  "queries": {
+    "what_is_the_project_structure?": {
+      "query": "What is the project structure?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:41:49.357Z",
+      "response": "Pre-cached response for: What is the project structure?"
+    },
+    "how_do_i_run_tests?": {
+      "query": "How do I run tests?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:41:49.360Z",
+      "response": "Pre-cached response for: How do I run tests?"
+    },
+    "what_are_the_coding_standards?": {
+      "query": "What are the coding standards?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:41:49.360Z",
+      "response": "Pre-cached response for: What are the coding standards?"
+    },
+    "how_do_i_add_a_new_component?": {
+      "query": "How do I add a new component?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:41:49.360Z",
+      "response": "Pre-cached response for: How do I add a new component?"
+    },
+    "what_is_the_deployment_process?": {
+      "query": "What is the deployment process?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:41:49.360Z",
+      "response": "Pre-cached response for: What is the deployment process?"
+    },
+    "how_do_i_handle_errors?": {
+      "query": "How do I handle errors?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:41:49.360Z",
+      "response": "Pre-cached response for: How do I handle errors?"
+    },
+    "what_are_the_security_requirements?": {
+      "query": "What are the security requirements?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:41:49.360Z",
+      "response": "Pre-cached response for: What are the security requirements?"
+    },
+    "how_do_i_update_dependencies?": {
+      "query": "How do I update dependencies?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:41:49.360Z",
+      "response": "Pre-cached response for: How do I update dependencies?"
+    },
+    "how_to_run_the_development_server?": {
+      "query": "How to run the development server?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.036Z",
+      "response": "Pre-cached response for: How to run the development server?"
+    },
+    "how_to_run_database_migrations?": {
+      "query": "How to run database migrations?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to run database migrations?"
+    },
+    "how_to_seed_test_data?": {
+      "query": "How to seed test data?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to seed test data?"
+    },
+    "how_to_run_linting?": {
+      "query": "How to run linting?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to run linting?"
+    },
+    "what_is_fast_ai_and_how_to_enable_it?": {
+      "query": "What is FAST_AI and how to enable it?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: What is FAST_AI and how to enable it?"
+    },
+    "where_are_the_adrs_(architecture_decision_records)?": {
+      "query": "Where are the ADRs (architecture decision records)?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: Where are the ADRs (architecture decision records)?"
+    },
+    "how_to_run_the_test_smoke_suite?": {
+      "query": "How to run the test smoke suite?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to run the test smoke suite?"
+    },
+    "how_to_add_a_new_api_endpoint?": {
+      "query": "How to add a new API endpoint?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to add a new API endpoint?"
+    },
+    "how_to_write_an_integration_test?": {
+      "query": "How to write an integration test?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to write an integration test?"
+    },
+    "how_to_create_a_new_react_component_with_accessibility?": {
+      "query": "How to create a new React component with accessibility?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to create a new React component with accessibility?"
+    },
+    "how_to_run_playwright_tests?": {
+      "query": "How to run Playwright tests?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to run Playwright tests?"
+    },
+    "what_are_the_accessibility_requirements?": {
+      "query": "What are the accessibility requirements?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: What are the accessibility requirements?"
+    },
+    "how_to_update_shared_libs?": {
+      "query": "How to update shared libs?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to update shared libs?"
+    },
+    "where_is_the_readme_for_apps/api?": {
+      "query": "Where is the README for apps/api?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: Where is the README for apps/api?"
+    },
+    "how_to_contribute_(contributing.md)?": {
+      "query": "How to contribute (contributing.md)?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to contribute (contributing.md)?"
+    },
+    "how_to_run_the_pre-cache_script?": {
+      "query": "How to run the pre-cache script?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to run the pre-cache script?"
+    },
+    "how_to_pre-load_ai_contexts?": {
+      "query": "How to pre-load AI contexts?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: How to pre-load AI contexts?"
+    },
+    "what_is_the_release_process?": {
+      "query": "What is the release process?",
+      "cached": true,
+      "timestamp": "2025-10-31T14:43:18.038Z",
+      "response": "Pre-cached response for: What is the release process?"
+    },
+    "what_is_the_project_structure": {
+      "query": "What is the project structure?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: What is the project structure?"
+    },
+    "how_do_i_run_tests": {
+      "query": "How do I run tests?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How do I run tests?"
+    },
+    "what_are_the_coding_standards": {
+      "query": "What are the coding standards?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: What are the coding standards?"
+    },
+    "how_do_i_add_a_new_component": {
+      "query": "How do I add a new component?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How do I add a new component?"
+    },
+    "what_is_the_deployment_process": {
+      "query": "What is the deployment process?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: What is the deployment process?"
+    },
+    "how_do_i_handle_errors": {
+      "query": "How do I handle errors?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How do I handle errors?"
+    },
+    "what_are_the_security_requirements": {
+      "query": "What are the security requirements?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: What are the security requirements?"
+    },
+    "how_do_i_update_dependencies": {
+      "query": "How do I update dependencies?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How do I update dependencies?"
+    },
+    "how_to_run_the_development_server": {
+      "query": "How to run the development server?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to run the development server?"
+    },
+    "how_to_run_database_migrations": {
+      "query": "How to run database migrations?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to run database migrations?"
+    },
+    "how_to_seed_test_data": {
+      "query": "How to seed test data?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to seed test data?"
+    },
+    "how_to_run_linting": {
+      "query": "How to run linting?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to run linting?"
+    },
+    "what_is_fast_ai_and_how_to_enable_it": {
+      "query": "What is FAST_AI and how to enable it?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: What is FAST_AI and how to enable it?"
+    },
+    "where_are_the_adrs_architecture_decision_records": {
+      "query": "Where are the ADRs (architecture decision records)?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: Where are the ADRs (architecture decision records)?"
+    },
+    "how_to_run_the_test_smoke_suite": {
+      "query": "How to run the test smoke suite?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to run the test smoke suite?"
+    },
+    "how_to_add_a_new_api_endpoint": {
+      "query": "How to add a new API endpoint?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to add a new API endpoint?"
+    },
+    "how_to_write_an_integration_test": {
+      "query": "How to write an integration test?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to write an integration test?"
+    },
+    "how_to_create_a_new_react_component_with_accessibility": {
+      "query": "How to create a new React component with accessibility?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to create a new React component with accessibility?"
+    },
+    "how_to_run_playwright_tests": {
+      "query": "How to run Playwright tests?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to run Playwright tests?"
+    },
+    "what_are_the_accessibility_requirements": {
+      "query": "What are the accessibility requirements?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: What are the accessibility requirements?"
+    },
+    "how_to_update_shared_libs": {
+      "query": "How to update shared libs?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to update shared libs?"
+    },
+    "where_is_the_readme_for_appsapi": {
+      "query": "Where is the README for apps/api?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: Where is the README for apps/api?"
+    },
+    "how_to_contribute_contributingmd": {
+      "query": "How to contribute (contributing.md)?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to contribute (contributing.md)?"
+    },
+    "how_to_run_the_precache_script": {
+      "query": "How to run the pre-cache script?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to run the pre-cache script?"
+    },
+    "how_to_preload_ai_contexts": {
+      "query": "How to pre-load AI contexts?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: How to pre-load AI contexts?"
+    },
+    "what_is_the_release_process": {
+      "query": "What is the release process?",
+      "cached": true,
+      "timestamp": 1761923161307,
+      "response": "Pre-cached response for: What is the release process?"
+    },
+    "readme_political_sphere_dev_platform": {
+      "query": "Explain: Political Sphere Dev Platform",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.308Z",
+      "response": "Pre-cached response for README heading: Political Sphere Dev Platform"
+    },
+    "readme_getting_started": {
+      "query": "Explain: Getting Started",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for README heading: Getting Started"
+    },
+    "readme_prerequisites": {
+      "query": "Explain: Prerequisites",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for README heading: Prerequisites"
+    },
+    "readme_bootstrap": {
+      "query": "Explain: Bootstrap",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for README heading: Bootstrap"
+    },
+    "readme_development": {
+      "query": "Explain: Development",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for README heading: Development"
+    },
+    "readme_fast_ai_mode_optional": {
+      "query": "Explain: Fast AI mode (optional)",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for README heading: Fast AI mode (optional)"
+    },
+    "readme_precommit_hooks": {
+      "query": "Explain: Pre-commit Hooks",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for README heading: Pre-commit Hooks"
+    },
+    "readme_testing": {
+      "query": "Explain: Testing",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for README heading: Testing"
+    },
+    "readme_documentation": {
+      "query": "Explain: Documentation",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for README heading: Documentation"
+    },
+    "readme_open_docsvitepressdistindexhtml": {
+      "query": "Explain: Open docs/.vitepress/dist/index.html",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for README heading: Open docs/.vitepress/dist/index.html"
+    },
+    "script_help": {
+      "query": "How to run: npm run help",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for script: help"
+    },
+    "script_bootstrap": {
+      "query": "How to run: npm run bootstrap",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.311Z",
+      "response": "Pre-cached response for script: bootstrap"
+    },
+    "script_validate:env": {
+      "query": "How to run: npm run validate:env",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: validate:env"
+    },
+    "script_format": {
+      "query": "How to run: npm run format",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: format"
+    },
+    "script_lint": {
+      "query": "How to run: npm run lint",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: lint"
+    },
+    "script_typecheck": {
+      "query": "How to run: npm run typecheck",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: typecheck"
+    },
+    "script_test": {
+      "query": "How to run: npm run test",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: test"
+    },
+    "script_test:api": {
+      "query": "How to run: npm run test:api",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: test:api"
+    },
+    "script_test:worker": {
+      "query": "How to run: npm run test:worker",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: test:worker"
+    },
+    "script_test:services": {
+      "query": "How to run: npm run test:services",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: test:services"
+    },
+    "script_build": {
+      "query": "How to run: npm run build",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: build"
+    },
+    "script_release": {
+      "query": "How to run: npm run release",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: release"
+    },
+    "script_prepare": {
+      "query": "How to run: npm run prepare",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: prepare"
+    },
+    "script_docs:lint": {
+      "query": "How to run: npm run docs:lint",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: docs:lint"
+    },
+    "script_ai:commit": {
+      "query": "How to run: npm run ai:commit",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: ai:commit"
+    },
+    "script_ai:review": {
+      "query": "How to run: npm run ai:review",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: ai:review"
+    },
+    "script_ai:blackbox": {
+      "query": "How to run: npm run ai:blackbox",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: ai:blackbox"
+    },
+    "script_ai:governance": {
+      "query": "How to run: npm run ai:governance",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: ai:governance"
+    },
+    "script_ai:performance": {
+      "query": "How to run: npm run ai:performance",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: ai:performance"
+    },
+    "script_ai:learning": {
+      "query": "How to run: npm run ai:learning",
+      "cached": true,
+      "timestamp": "2025-10-31T15:06:01.312Z",
+      "response": "Pre-cached response for script: ai:learning"
+    }
+  },
+  "lastUpdated": "2025-10-31T15:39:27.892Z"
 }

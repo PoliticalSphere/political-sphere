@@ -4,8 +4,8 @@
  */
 // eslint-disable-next-line no-undef
 describe.skip('news-service.test.js (deprecated duplicate) — see news-service.test.mjs', () => {
-	// eslint-disable-next-line no-undef
-	test('noop placeholder', () => {
-		// Intentionally empty
-	});
+  // eslint-disable-next-line no-undef
+  test('noop placeholder', () => {
+    // Intentionally empty
+  });
 });

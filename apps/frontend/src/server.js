@@ -35,8 +35,8 @@ const SECURITY_HEADERS = {
     "connect-src 'self' http://localhost:4000 http://localhost:3000",
     "frame-ancestors 'none'",
     "base-uri 'self'",
-    "form-action 'self'"
-  ].join('; ')
+    "form-action 'self'",
+  ].join('; '),
 };
 
 async function loadTemplate() {
@@ -64,11 +64,11 @@ async function fetchJson(pathname) {
 
 function renderIndex({ news, summary, statusMessage }) {
   const replacements = {
-    '__API_BASE_URL__': API_BASE_URL,
-    '__LAST_UPDATED__': new Date().toLocaleString(),
-    '__INITIAL_NEWS__': safeSerialize(news),
-    '__NEWS_SUMMARY__': safeSerialize(summary),
-    '__STATUS_MESSAGE__': statusMessage,
+    __API_BASE_URL__: API_BASE_URL,
+    __LAST_UPDATED__: new Date().toLocaleString(),
+    __INITIAL_NEWS__: safeSerialize(news),
+    __NEWS_SUMMARY__: safeSerialize(summary),
+    __STATUS_MESSAGE__: statusMessage,
   };
 
   let html = template;
@@ -100,7 +100,10 @@ const server = http.createServer(async (req, res) => {
       summary = summaryResponse ?? summary;
     } catch (error) {
       statusMessage = `API unavailable: ${error.message}`;
-      logger.warn('Falling back to empty dashboard', { error: error.message, apiUrl: API_BASE_URL });
+      logger.warn('Falling back to empty dashboard', {
+        error: error.message,
+        apiUrl: API_BASE_URL,
+      });
     }
 
     res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
@@ -141,6 +144,6 @@ server.listen(PORT, HOST, () => {
     host: HOST,
     port: PORT,
     apiBaseUrl: API_BASE_URL,
-    securityHeadersEnabled: true
+    securityHeadersEnabled: true,
   });
 });

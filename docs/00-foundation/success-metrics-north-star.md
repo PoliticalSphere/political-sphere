@@ -4,8 +4,8 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
 |  🔒 Internal   | `1.0.0` |  2025-10-29  | Product Leadership |  Quarterly   | **Approved** |
 
 </div>
@@ -35,35 +35,39 @@
 ## 📊 Key Performance Indicators
 
 ### Player Experience Metrics
-| Area | Metric | Why It Matters |
-|------|--------|----------------|
-| Engagement | Daily/weekly active users, session length | Measures sustained interest |
-| Retention | D1, D7, D30 retention | Indicates long-term stickiness |
-| Satisfaction | Player satisfaction surveys, NPS, sentiment analysis | Confirms user experience quality |
-| Fairness | Reported fairness score, balance audits | Measures credibility of simulation |
-| Civility | Moderation intervention rate, toxic incident reduction | Ensures safe environment |
+
+| Area         | Metric                                                 | Why It Matters                     |
+| ------------ | ------------------------------------------------------ | ---------------------------------- |
+| Engagement   | Daily/weekly active users, session length              | Measures sustained interest        |
+| Retention    | D1, D7, D30 retention                                  | Indicates long-term stickiness     |
+| Satisfaction | Player satisfaction surveys, NPS, sentiment analysis   | Confirms user experience quality   |
+| Fairness     | Reported fairness score, balance audits                | Measures credibility of simulation |
+| Civility     | Moderation intervention rate, toxic incident reduction | Ensures safe environment           |
 
 ### Simulation Quality Metrics
-| Area | Metric | Why It Matters |
-|------|--------|----------------|
-| Procedural Integrity | % events processed according to rules | Ensures credible political system |
-| Outcome Diversity | Variety in legislative outcomes and power cycles | Avoids stale meta |
-| Agent Credibility | AI behaviour believability, error rate, safety score | Ensures NPC realism and safety |
-| Stability | Crash-free hours, uptime, bug rate | Core reliability |
+
+| Area                 | Metric                                               | Why It Matters                    |
+| -------------------- | ---------------------------------------------------- | --------------------------------- |
+| Procedural Integrity | % events processed according to rules                | Ensures credible political system |
+| Outcome Diversity    | Variety in legislative outcomes and power cycles     | Avoids stale meta                 |
+| Agent Credibility    | AI behaviour believability, error rate, safety score | Ensures NPC realism and safety    |
+| Stability            | Crash-free hours, uptime, bug rate                   | Core reliability                  |
 
 ### Governance & Safety Metrics
-| Area | Metric | Why It Matters |
-|------|--------|----------------|
-| Moderation Response | Median review time, resolution accuracy | Maintains safe gameplay |
-| Appeal Fairness | Appeal overturn rate | Ensures moderation fairness |
-| Rule Compliance | Incidents per 1000 players | Tracks community health |
+
+| Area                | Metric                                  | Why It Matters              |
+| ------------------- | --------------------------------------- | --------------------------- |
+| Moderation Response | Median review time, resolution accuracy | Maintains safe gameplay     |
+| Appeal Fairness     | Appeal overturn rate                    | Ensures moderation fairness |
+| Rule Compliance     | Incidents per 1000 players              | Tracks community health     |
 
 ### Sustainable Growth Metrics
-| Area | Metric | Why It Matters |
-|------|--------|----------------|
-| Subscription Stability | Monthly churn, conversion to paid | Ensures sustainability |
-| Cost Efficiency | Cost per active player, infra cost ratio | Controls burn |
-| Scalable Ops | Automated moderation %, AI-assisted workflows | Supports growth without harm |
+
+| Area                   | Metric                                        | Why It Matters               |
+| ---------------------- | --------------------------------------------- | ---------------------------- |
+| Subscription Stability | Monthly churn, conversion to paid             | Ensures sustainability       |
+| Cost Efficiency        | Cost per active player, infra cost ratio      | Controls burn                |
+| Scalable Ops           | Automated moderation %, AI-assisted workflows | Supports growth without harm |
 
 ---
 
@@ -72,18 +76,21 @@
 ### Measurement Levels
 
 #### Level 1: Output Metrics (What we produce)
+
 - Content pieces created
 - Features shipped
 - Users acquired
 - Page views and session duration
 
 #### Level 2: Outcome Metrics (User behavior change)
+
 - Knowledge assessment scores
 - Feature adoption rates
 - Civic participation actions
 - User satisfaction ratings
 
 #### Level 3: Impact Metrics (Real-world change)
+
 - Increased voter turnout in platform communities
 - Policy changes influenced by user advocacy
 - Democratic participation rates in target demographics
@@ -92,24 +99,28 @@
 ### Measurement Cadence
 
 #### Daily/Monitoring Metrics
+
 - System uptime and performance
 - User login rates
 - Critical feature usage
 - Error rates and support tickets
 
 #### Weekly Metrics
+
 - User acquisition and activation
 - Feature adoption rates
 - Content engagement (views, shares, completion)
 - Basic learning outcome indicators
 
 #### Monthly Metrics
+
 - Comprehensive KPI dashboard
 - User segmentation analysis
 - Content performance deep-dive
 - Competitive benchmarking
 
 #### Quarterly Metrics
+
 - North Star Metric assessment
 - Annual target progress review
 - Stakeholder impact reports
@@ -120,6 +131,7 @@
 ## 📈 KPI Dashboard Structure
 
 ### Executive Dashboard
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ POLITICAL SPHERE - EXECUTIVE DASHBOARD                     │
@@ -143,18 +155,21 @@
 ### Detailed KPI Breakdown
 
 #### Civic Learning Outcomes Dashboard
+
 - Pre/post assessment completion rates
 - Knowledge area improvement (policy, civics, current events)
 - Learning path completion rates
 - Assessment reliability and validity metrics
 
 #### Real-World Participation Dashboard
+
 - Participation action types and frequency
 - Geographic distribution of actions
 - Correlation with platform engagement
 - Long-term participation tracking
 
 #### User Retention Dashboard
+
 - Cohort analysis by acquisition channel
 - Churn reason categorization
 - Re-engagement campaign effectiveness
@@ -167,18 +182,21 @@
 ### Data Sources
 
 #### Direct Platform Data
+
 - User interaction logs
 - Assessment results
 - Feature usage analytics
 - Survey responses
 
 #### Third-Party Validation
+
 - Independent fact-checking audits
 - Academic research partnerships
 - Government civic participation data
 - User interview and focus group results
 
 #### External Benchmarks
+
 - Industry political education standards
 - Democratic participation statistics
 - Educational technology benchmarks
@@ -187,12 +205,14 @@
 ### Analysis Methods
 
 #### Quantitative Analysis
+
 - Statistical significance testing for KPI changes
 - Regression analysis for factor impact assessment
 - Cohort analysis for user behavior patterns
 - Predictive modeling for target achievement
 
 #### Qualitative Analysis
+
 - User interview thematic analysis
 - Content quality expert reviews
 - Stakeholder feedback synthesis
@@ -205,26 +225,31 @@
 ### SMART Goals Methodology
 
 #### Specific
+
 - Clear, unambiguous objectives
 - Defined measurement methods
 - Specific user segments and contexts
 
 #### Measurable
+
 - Quantifiable metrics with baselines
 - Regular measurement cadence
 - Statistical confidence in results
 
 #### Achievable
+
 - Based on historical data and trends
 - Resource availability assessment
 - Risk-adjusted targets
 
 #### Relevant
+
 - Direct connection to North Star
 - Alignment with mission and values
 - Stakeholder value demonstration
 
 #### Time-bound
+
 - Specific achievement dates
 - Milestone-based progress tracking
 - Regular target reassessment
@@ -232,12 +257,14 @@
 ### Target Adjustment Process
 
 #### Quarterly Review
+
 1. **Performance Analysis:** Compare actual vs target performance
 2. **Factor Assessment:** Identify drivers of variance
 3. **Target Validation:** Confirm targets remain realistic
 4. **Adjustment Decision:** Modify targets based on new data
 
 #### Annual Planning
+
 1. **Historical Review:** Analyze past year performance trends
 2. **Market Analysis:** Assess external factor changes
 3. **Capacity Planning:** Evaluate team and resource capabilities
@@ -250,18 +277,21 @@
 ### KPI Alert Thresholds
 
 #### Red Alerts (Immediate Action Required)
+
 - North Star declines >5% in one month
 - Critical KPI drops below 80% of target
 - System downtime >99.5% uptime
 - Security incidents affecting user data
 
 #### Yellow Alerts (Monitor Closely)
+
 - KPI performance 80-95% of target
 - Trend showing potential future issues
 - External factor changes (elections, policy changes)
 - Competitive threats emerging
 
 #### Green Alerts (Celebrate Success)
+
 - KPI exceeds target by >10%
 - North Star shows accelerating improvement
 - New user segment adoption
@@ -270,16 +300,19 @@
 ### Escalation Protocol
 
 #### Level 1: Team Level
+
 - Product managers monitor daily dashboards
 - Weekly team reviews of yellow alerts
 - Immediate investigation of red alerts
 
 #### Level 2: Leadership Level
+
 - Department heads review monthly KPIs
 - Quarterly executive reviews
 - Crisis management for critical issues
 
 #### Level 3: Board Level
+
 - Quarterly board updates on North Star progress
 - Annual strategic review and target setting
 - Major initiative approval and funding
@@ -291,16 +324,19 @@
 ### Internal Reporting
 
 #### Daily Stand-ups
+
 - Key metric highlights
 - Blocker identification
 - Quick win opportunities
 
 #### Weekly Team Updates
+
 - KPI progress vs targets
 - Initiative status updates
 - Risk and opportunity identification
 
 #### Monthly Business Reviews
+
 - Comprehensive KPI analysis
 - Trend analysis and forecasting
 - Resource allocation recommendations
@@ -308,16 +344,19 @@
 ### External Communication
 
 #### User Communications
+
 - Transparent progress updates
 - Impact stories and testimonials
 - Roadmap and feature previews
 
 #### Stakeholder Reports
+
 - Quarterly impact assessments
 - Annual comprehensive reports
 - Custom reports for key partners
 
 #### Public Transparency
+
 - Annual impact report
 - Real-time dashboard access
 - Third-party validations
@@ -329,12 +368,14 @@
 ### KPI Evolution Process
 
 #### Annual KPI Review
+
 1. **Performance Analysis:** Evaluate current KPI effectiveness
 2. **User Feedback:** Gather input on what matters most
 3. **Industry Benchmarking:** Compare against best practices
 4. **Methodology Updates:** Refine measurement approaches
 
 #### New KPI Introduction
+
 1. **Hypothesis Development:** Define expected impact
 2. **Pilot Testing:** Test measurement feasibility
 3. **Validation:** Confirm KPI predicts desired outcomes
@@ -343,12 +384,14 @@
 ### Measurement Quality Assurance
 
 #### Data Quality Checks
+
 - Regular data validation and cleaning
 - Statistical process control implementation
 - Bias detection and correction
 - External audit coordination
 
 #### Methodology Refinement
+
 - Statistical analysis improvements
 - Survey design optimization
 - User experience research integration
@@ -409,13 +452,13 @@
 
 ### 📋 Document Control
 
-|         Field         |          Value          |
-| :-------------------: | :---------------------: |
-| 🏷️ **Classification** |        Internal         |
-|    🔢 **Version**     |         `1.0.0`         |
-|  📅 **Last Review**   |       2025-10-29        |
-|  🔄 **Next Review**   |       2026-01-29        |
-|    ✍️ **Approver**    |   Product Leadership    |
+|         Field         |       Value        |
+| :-------------------: | :----------------: |
+| 🏷️ **Classification** |      Internal      |
+|    🔢 **Version**     |      `1.0.0`       |
+|  📅 **Last Review**   |     2025-10-29     |
+|  🔄 **Next Review**   |     2026-01-29     |
+|    ✍️ **Approver**    | Product Leadership |
 
 ---
 

@@ -3,20 +3,20 @@ version: '3.8'
 services:
   otel-collector:
     image: otel/opentelemetry-collector:0.86.0
-    command: ["--config=/conf/otel-collector-config.yml"]
+    command: ['--config=/conf/otel-collector-config.yml']
     volumes:
       - ./otel-collector-config.yml:/conf/otel-collector-config.yml:ro
     ports:
-      - "4317:4317"   # OTLP gRPC
-      - "4318:4318"   # OTLP HTTP
-      - "8888:8888"   # Prometheus metrics endpoint exposed by collector
+      - '4317:4317' # OTLP gRPC
+      - '4318:4318' # OTLP HTTP
+      - '8888:8888' # Prometheus metrics endpoint exposed by collector
     restart: unless-stopped
 
   jaeger:
     image: jaegertracing/all-in-one:1.47
     ports:
-      - "16686:16686" # UI
-      - "14250:14250" # gRPC
+      - '16686:16686' # UI
+      - '14250:14250' # gRPC
     restart: unless-stopped
 
   prometheus:
@@ -24,7 +24,7 @@ services:
     volumes:
       - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
     ports:
-      - "9090:9090"
+      - '9090:9090'
     restart: unless-stopped
     depends_on:
       - otel-collector
@@ -32,9 +32,9 @@ services:
   grafana:
     image: grafana/grafana:9.5.7
     environment:
-      - "GF_SECURITY_ADMIN_PASSWORD=admin"
+      - 'GF_SECURITY_ADMIN_PASSWORD=admin'
     ports:
-      - "3000:3000"
+      - '3000:3000'
     restart: unless-stopped
     depends_on:
       - prometheus

@@ -37,6 +37,7 @@ npx nx test api --runInBand
 ```
 
 Notes:
+
 - Avoid top‑level await in `.js` tests; use async `beforeAll` or convert to `.mjs`
 - Keep a single authoritative test per suite to prevent duplicate execution
 

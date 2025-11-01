@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   workflow_dispatch:
     inputs:
       environment:
@@ -11,51 +11,51 @@ on:
         default: 'staging'
         type: choice
         options:
-        - staging
-        - production
+          - staging
+          - production
 
 permissions:
-  id-token: write  # Required for OIDC
+  id-token: write # Required for OIDC
   contents: read
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment: 
+    environment:
       name: ${{ github.event.inputs.environment || 'staging' }}
       url: ${{ github.event.inputs.environment == 'production' && 'https://political-sphere.com' || 'https://staging.political-sphere.com' }}
     steps:
       - uses: actions/checkout@v4
-      
+
       - name: Use Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
           cache: 'npm'
-      
+
       - name: Install dependencies
         run: npm ci
-      
+
       - name: Run linting
         run: npm run lint
-      
+
       - name: Run tests
         run: npm run test
-      
+
       - name: Build
         run: npm run build
-      
+
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::${{ secrets.AWS_ACCOUNT_ID }}:role/GitHubActionsRole
           role-session-name: GitHubActions-${{ github.run_id }}
           aws-region: us-east-1
-      
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
-      
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
@@ -92,7 +92,7 @@ jobs:
             VERSION=${{ github.ref_name }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
+
       - name: Scan API Docker image with Trivy
         uses: aquasecurity/trivy-action@master
         with:
@@ -108,41 +108,41 @@ jobs:
           format: 'sarif'
           output: 'trivy-frontend-results.sarif'
           severity: 'CRITICAL,HIGH,MEDIUM'
-      
+
       - name: Upload Trivy scan results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
         if: always()
         with:
           sarif_file: '.'
-      
+
       - name: Generate SBOM for API
         uses: anchore/sbom-action@v0
         with:
           image: ${{ steps.login-ecr.outputs.registry }}/political-sphere/api:${{ github.sha }}
           format: cyclonedx-json
           output-file: sbom-api.json
-      
-      - name: Generate SBOM for Frontend  
+
+      - name: Generate SBOM for Frontend
         uses: anchore/sbom-action@v0
         with:
           image: ${{ steps.login-ecr.outputs.registry }}/political-sphere/frontend:${{ github.sha }}
           format: cyclonedx-json
           output-file: sbom-frontend.json
-      
+
       - name: Upload SBOMs as artifacts
         uses: actions/upload-artifact@v4
         with:
           name: sboms-${{ github.sha }}
           path: sbom-*.json
           retention-days: 90
-      
+
       - name: Push Docker images
         run: |
           docker push ${{ steps.login-ecr.outputs.registry }}/political-sphere/api:${{ github.sha }}
           docker push ${{ steps.login-ecr.outputs.registry }}/political-sphere/api:latest
           docker push ${{ steps.login-ecr.outputs.registry }}/political-sphere/frontend:${{ github.sha }}
           docker push ${{ steps.login-ecr.outputs.registry }}/political-sphere/frontend:latest
-      
+
       - name: Deploy to ECS (Blue-Green)
         id: deploy
         run: |
@@ -152,7 +152,7 @@ jobs:
             --services api \
             --query 'services[0].taskDefinition' \
             --output text)
-          
+
           # Create new task definition with new image
           NEW_TASK_DEF=$(aws ecs register-task-definition \
             --family political-sphere-api-${{ github.event.inputs.environment || 'staging' }} \

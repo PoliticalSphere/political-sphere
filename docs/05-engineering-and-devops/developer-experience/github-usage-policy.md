@@ -2,14 +2,13 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Approved** |
 
 </div>
 
 ---
-
 
 This document outlines best practices for safely using GitHub in this repository, ensuring security, collaboration, and compliance with our security policies.
 
@@ -24,6 +23,7 @@ This document outlines best practices for safely using GitHub in this repository
 ## Security Practices
 
 ### Secrets and Credentials
+
 - **Never Commit Secrets**: Do not commit API keys, passwords, tokens, or any sensitive data. Use GitHub Secrets for CI/CD pipelines instead.
 - **Secrets Scanning**: Our CI runs automated Gitleaks checks. If a secret is detected, the PR will fail, and you must remove it from history.
 - **Handling Leaked Secrets**: If a secret is accidentally committed:
@@ -34,25 +34,30 @@ This document outlines best practices for safely using GitHub in this repository
 - **False Positives**: If Gitleaks flags a false positive, update `.gitleaks.toml` with justification.
 
 ### Reporting Vulnerabilities
+
 - Report security issues privately via GitHub issues or contact maintainers in CODEOWNERS.
 - Do not discuss vulnerabilities publicly until resolved.
 
 ## CI/CD and Automation
+
 - **GitHub Actions**: Use GitHub Secrets for environment variables. Avoid hardcoding secrets in workflows. Workflows are configured in `.github/workflows/`.
 - **Pre-commit Hooks**: Lefthook runs local checks (e.g., linting, secrets scan) before commits.
 - **CI Checks**: Ensure all CI checks pass before merging. This includes linting, testing, security scans, and dependency reviews.
 - **Automation**: Renovate is configured for dependency updates. Stale issues/PRs are managed automatically. PRs are labeled and sized automatically.
 
 ## Collaboration and Communication
+
 - **Issues**: Use GitHub Issues for tracking bugs, features, and discussions. Label appropriately.
 - **Discussions**: For broader topics, use GitHub Discussions if enabled.
 - **Code of Conduct**: Follow the project's Code of Conduct for all interactions.
 
 ## Compliance
+
 - Align with [SECURITY.md](../../../SECURITY.md) for secrets management and incident response.
 - For urgent security incidents, follow the contact procedures in [SECURITY.md](../../../SECURITY.md) or the Code of Conduct.
 
 ## References
+
 - [SECURITY.md](../../../SECURITY.md) - Detailed security policies.
 - [CONTRIBUTING.md](../../../CONTRIBUTING.md) - Contribution guidelines.
 - [.github/CODEOWNERS](../../../.github/CODEOWNERS) - Code ownership rules.

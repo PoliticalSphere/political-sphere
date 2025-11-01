@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Approved** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :----------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |  Quarterly   | **Approved** |
 
 </div>
 
@@ -22,12 +22,12 @@
 
 ## 🧭 Interface Strategy
 
-| Interface | Primary Consumers | Purpose | Tooling & Standards |
-| --------- | ----------------- | ------- | ------------------- |
-| **GraphQL Gateway** | Player web app, moderator console, educator dashboards | Unified read/write API for UX flows | Fastify + Mercurius, schema stitching via modules, persisted queries, auth directives, Apollo Federation-ready |
-| **REST / OpenAPI** | Internal ops tools, webhooks, admin automations, external partners | Operational commands, integrations, asynchronous workflows | Fastify controllers, Zod validators, OpenAPI 3.1 specs in repo, codegen for clients |
-| **Realtime (WebSockets / Socket.IO)** | Debate chambers, vote tallies, media tickers, moderation dashboards | Low-latency updates and collaboration | Namespaced channels, JWT handshake, presence & backpressure controls, event contract docs |
-| **tRPC (Optional)** | Internal developer tooling, scripts | Rapid DX for monorepo utilities | Scoped to internal apps only; adheres to same auth middlewares |
+| Interface                             | Primary Consumers                                                   | Purpose                                                    | Tooling & Standards                                                                                            |
+| ------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **GraphQL Gateway**                   | Player web app, moderator console, educator dashboards              | Unified read/write API for UX flows                        | Fastify + Mercurius, schema stitching via modules, persisted queries, auth directives, Apollo Federation-ready |
+| **REST / OpenAPI**                    | Internal ops tools, webhooks, admin automations, external partners  | Operational commands, integrations, asynchronous workflows | Fastify controllers, Zod validators, OpenAPI 3.1 specs in repo, codegen for clients                            |
+| **Realtime (WebSockets / Socket.IO)** | Debate chambers, vote tallies, media tickers, moderation dashboards | Low-latency updates and collaboration                      | Namespaced channels, JWT handshake, presence & backpressure controls, event contract docs                      |
+| **tRPC (Optional)**                   | Internal developer tooling, scripts                                 | Rapid DX for monorepo utilities                            | Scoped to internal apps only; adheres to same auth middlewares                                                 |
 
 ---
 
@@ -43,18 +43,21 @@
 ## 📐 Design Guidelines
 
 ### GraphQL
+
 - Modular schema: each bounded context exports `typeDefs` + `resolvers` via Nx libs.
 - Enforce strict nullability and use input types for commands; mutations return domain payload + `AuditMeta`.
 - Subscriptions for debates, votes, moderation queues; use filtered topics to prevent tenant leakage.
 - Persisted queries for public clients; short TTL for cache invalidation; use Dataloader for N+1 mitigation.
 
 ### REST / Webhooks
+
 - CRUD surfaces reserved for internal automation and admin consoles; prefer GraphQL for UX features.
 - All POST/PATCH/DELETE require idempotency keys (`Idempotency-Key` header) and return `202 Accepted` for async workflows.
 - Webhooks signed with HMAC, include event schema version, retried with exponential backoff.
 - OpenAPI definitions generated via `pnpm run api:generate` and validated in CI with spectral linters.
 
 ### Realtime
+
 - Event naming: `context.action.version` (e.g., `debate.speechQueued.v1`).
 - Payloads wrap data with metadata (`traceId`, `tenantId`, `schemaVersion`, `issuedAt`).
 - Provide ack-based backpressure, heartbeats, resumable sessions, and offline queue for unreliable clients.

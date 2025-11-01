@@ -1,3 +1,22 @@
+name: security
+on: [pull_request, push]
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Secret scan
+        uses: gitleaks/gitleaks-action@v2
+      - name: SBOM (Syft)
+        uses: anchore/sbom-action@v0
+      - name: Dependency scan (Grype)
+        uses: anchore/scan-action@v4
+      - name: Licence audit
+        run: npx license-checker --summary --production || true
 name: Security Scan
 
 on:

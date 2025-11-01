@@ -13,7 +13,7 @@ const colors = {
   red: '\x1b[31m',
   yellow: '\x1b[33m',
   green: '\x1b[32m',
-  cyan: '\x1b[36m'
+  cyan: '\x1b[36m',
 };
 
 const errors = [];
@@ -62,7 +62,7 @@ function validateJWTSecrets() {
 
   const jwtSecret = process.env.JWT_SECRET;
   const jwtRefreshSecret = process.env.JWT_REFRESH_SECRET;
-  
+
   const secretValid = validateRequired('JWT_SECRET', jwtSecret, 32);
   const refreshValid = validateRequired('JWT_REFRESH_SECRET', jwtRefreshSecret, 32);
 
@@ -79,14 +79,16 @@ function validateJWTSecrets() {
     if (hexPattern.test(jwtSecret) && hexPattern.test(jwtRefreshSecret)) {
       logSuccess('JWT secrets appear to be cryptographically random');
     } else {
-      logWarning('JWT secrets should be generated with: node -e "console.log(require(\'crypto\').randomBytes(64).toString(\'hex\'))"');
+      logWarning(
+        "JWT secrets should be generated with: node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\""
+      );
     }
   }
 
   // Check expiration times
   const expiresIn = process.env.JWT_EXPIRES_IN || '15m';
   const refreshExpiresIn = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
-  
+
   validateOptional('JWT_EXPIRES_IN', process.env.JWT_EXPIRES_IN, expiresIn);
   validateOptional('JWT_REFRESH_EXPIRES_IN', process.env.JWT_REFRESH_EXPIRES_IN, refreshExpiresIn);
 }
@@ -99,7 +101,7 @@ function validateServiceConfiguration() {
 
   if (nodeEnv === 'production') {
     logSuccess('Running in production mode');
-    
+
     // Additional production checks
     if (process.env.JWT_SECRET && process.env.JWT_SECRET.length < 64) {
       logWarning('Production JWT_SECRET should be at least 64 characters');
@@ -113,7 +115,7 @@ function validateServiceConfiguration() {
   const apiHost = process.env.API_HOST || '0.0.0.0';
   console.log(`API: ${apiHost}:${apiPort}`);
 
-  // Frontend Configuration  
+  // Frontend Configuration
   const frontendPort = process.env.FRONTEND_PORT || '3000';
   const frontendHost = process.env.FRONTEND_HOST || '0.0.0.0';
   console.log(`Frontend: ${frontendHost}:${frontendPort}`);
@@ -144,7 +146,7 @@ function validateDatabaseConnection() {
   logHeader('Database Configuration');
 
   const dbUrl = process.env.DATABASE_URL;
-  
+
   if (!dbUrl) {
     logWarning('DATABASE_URL not set - using in-memory storage');
     logWarning('Data will be lost on restart - not suitable for production');
@@ -164,7 +166,7 @@ function validateCICDSecrets() {
     { name: 'SNYK_TOKEN', required: false, purpose: 'Vulnerability scanning' },
     { name: 'SEMGREP_APP_TOKEN', required: false, purpose: 'SAST scanning' },
     { name: 'AWS_ROLE_TO_ASSUME', required: false, purpose: 'AWS deployment' },
-    { name: 'SLACK_WEBHOOK_URL', required: false, purpose: 'Deployment notifications' }
+    { name: 'SLACK_WEBHOOK_URL', required: false, purpose: 'Deployment notifications' },
   ];
 
   console.log('Note: CI/CD secrets are configured in GitHub, not in environment files');
@@ -222,7 +224,7 @@ ${colors.reset}`);
     validateRateLimits();
     validateDatabaseConnection();
     validateCICDSecrets();
-    
+
     const exitCode = printSummary();
     process.exit(exitCode);
   } catch (error) {

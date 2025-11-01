@@ -122,17 +122,11 @@ const calculateMetrics = (telemetry) => {
   const now = new Date();
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
 
-  const recentSuggestions = telemetry.suggestions.filter(s =>
-    new Date(s.recordedAt) > weekAgo
-  );
+  const recentSuggestions = telemetry.suggestions.filter((s) => new Date(s.recordedAt) > weekAgo);
 
-  const recentAcceptances = telemetry.acceptances.filter(a =>
-    new Date(a.recordedAt) > weekAgo
-  );
+  const recentAcceptances = telemetry.acceptances.filter((a) => new Date(a.recordedAt) > weekAgo);
 
-  const recentRejections = telemetry.rejections.filter(r =>
-    new Date(r.recordedAt) > weekAgo
-  );
+  const recentRejections = telemetry.rejections.filter((r) => new Date(r.recordedAt) > weekAgo);
 
   const totalRecent = recentSuggestions.length;
   const acceptedRecent = recentAcceptances.length;
@@ -141,13 +135,17 @@ const calculateMetrics = (telemetry) => {
   const acceptanceRate = totalRecent > 0 ? (acceptedRecent / totalRecent) * 100 : 0;
   const rejectionRate = totalRecent > 0 ? (rejectedRecent / totalRecent) * 100 : 0;
 
-  const avgEditDistance = recentAcceptances.length > 0
-    ? recentAcceptances.reduce((sum, a) => sum + (a.editDistance || 0), 0) / recentAcceptances.length
-    : 0;
+  const avgEditDistance =
+    recentAcceptances.length > 0
+      ? recentAcceptances.reduce((sum, a) => sum + (a.editDistance || 0), 0) /
+        recentAcceptances.length
+      : 0;
 
-  const avgTimeToAccept = recentAcceptances.length > 0
-    ? recentAcceptances.reduce((sum, a) => sum + (a.timeToAccept || 0), 0) / recentAcceptances.length
-    : 0;
+  const avgTimeToAccept =
+    recentAcceptances.length > 0
+      ? recentAcceptances.reduce((sum, a) => sum + (a.timeToAccept || 0), 0) /
+        recentAcceptances.length
+      : 0;
 
   return {
     period: 'last_7_days',
@@ -183,7 +181,8 @@ const checkAlerts = (metrics) => {
     });
   }
 
-  if (metrics.avgTimeToAccept > 300) { // 5 minutes
+  if (metrics.avgTimeToAccept > 300) {
+    // 5 minutes
     alerts.push({
       level: 'yellow',
       message: `Slow acceptance time: ${metrics.avgTimeToAccept}s average`,
@@ -280,7 +279,7 @@ const main = async () => {
 
     if (alerts.length > 0) {
       console.log('\n🚨 Alerts:');
-      alerts.forEach(alert => {
+      alerts.forEach((alert) => {
         console.log(`  ${alert.level.toUpperCase()}: ${alert.message}`);
       });
     }

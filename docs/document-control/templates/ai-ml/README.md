@@ -26,6 +26,7 @@ Templates for AI/ML model and system documentation.
 ## Template Guidelines
 
 All AI/ML templates should include:
+
 - Model/system purpose and limitations
 - Training data characteristics
 - Performance metrics and evaluation
@@ -36,6 +37,7 @@ All AI/ML templates should include:
 ## Compliance
 
 Templates align with:
+
 - EU AI Act requirements
 - AI Ethics Board standards
 - Model governance policies

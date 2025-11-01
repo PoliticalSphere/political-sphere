@@ -46,39 +46,28 @@ class PerformanceBenchmarking {
           name: 'light-load',
           concurrentUsers: 10,
           duration: 60, // seconds
-          rampUp: 10
+          rampUp: 10,
         },
         {
           name: 'medium-load',
           concurrentUsers: 50,
           duration: 120,
-          rampUp: 30
+          rampUp: 30,
         },
         {
           name: 'heavy-load',
           concurrentUsers: 200,
           duration: 180,
-          rampUp: 60
-        }
+          rampUp: 60,
+        },
       ],
-      endpoints: [
-        '/api/users',
-        '/api/posts',
-        '/api/search',
-        '/api/analytics'
-      ],
-      metrics: [
-        'responseTime',
-        'throughput',
-        'errorRate',
-        'cpuUsage',
-        'memoryUsage'
-      ],
+      endpoints: ['/api/users', '/api/posts', '/api/search', '/api/analytics'],
+      metrics: ['responseTime', 'throughput', 'errorRate', 'cpuUsage', 'memoryUsage'],
       thresholds: {
         responseTime: { p95: 500, p99: 1000 }, // ms
         errorRate: { max: 0.01 }, // 1%
-        throughput: { min: 100 } // requests/sec
-      }
+        throughput: { min: 100 }, // requests/sec
+      },
     };
   }
 
@@ -92,40 +81,34 @@ class PerformanceBenchmarking {
           name: 'read-heavy',
           readQueries: 1000,
           writeQueries: 100,
-          duration: 120
+          duration: 120,
         },
         {
           name: 'write-heavy',
           readQueries: 100,
           writeQueries: 1000,
-          duration: 120
+          duration: 120,
         },
         {
           name: 'mixed-workload',
           readQueries: 500,
           writeQueries: 500,
-          duration: 120
-        }
+          duration: 120,
+        },
       ],
       queryTypes: [
         'simple-select',
         'complex-join',
         'aggregation',
         'full-text-search',
-        'bulk-insert'
+        'bulk-insert',
       ],
-      metrics: [
-        'queryTime',
-        'connectionPoolUsage',
-        'lockWaitTime',
-        'indexHitRate',
-        'cacheHitRate'
-      ],
+      metrics: ['queryTime', 'connectionPoolUsage', 'lockWaitTime', 'indexHitRate', 'cacheHitRate'],
       thresholds: {
         queryTime: { p95: 100, p99: 500 }, // ms
         indexHitRate: { min: 0.9 }, // 90%
-        cacheHitRate: { min: 0.8 } // 80%
-      }
+        cacheHitRate: { min: 0.8 }, // 80%
+      },
     };
   }
 
@@ -137,16 +120,16 @@ class PerformanceBenchmarking {
       scenarios: [
         {
           name: 'initial-load',
-          actions: ['navigate-to-home', 'scroll-content', 'load-dynamic-content']
+          actions: ['navigate-to-home', 'scroll-content', 'load-dynamic-content'],
         },
         {
           name: 'user-interactions',
-          actions: ['click-buttons', 'fill-forms', 'navigate-pages', 'search-content']
+          actions: ['click-buttons', 'fill-forms', 'navigate-pages', 'search-content'],
         },
         {
           name: 'heavy-content',
-          actions: ['load-large-dataset', 'render-complex-charts', 'handle-real-time-updates']
-        }
+          actions: ['load-large-dataset', 'render-complex-charts', 'handle-real-time-updates'],
+        },
       ],
       metrics: [
         'firstContentfulPaint',
@@ -155,15 +138,15 @@ class PerformanceBenchmarking {
         'cumulativeLayoutShift',
         'interactionToNextPaint',
         'bundleSize',
-        'runtimeMemoryUsage'
+        'runtimeMemoryUsage',
       ],
       thresholds: {
         firstContentfulPaint: { max: 1500 }, // ms
         largestContentfulPaint: { max: 2500 }, // ms
         firstInputDelay: { max: 100 }, // ms
         cumulativeLayoutShift: { max: 0.1 },
-        bundleSize: { max: 2048000 } // 2MB
-      }
+        bundleSize: { max: 2048000 }, // 2MB
+      },
     };
   }
 
@@ -176,14 +159,14 @@ class PerformanceBenchmarking {
         {
           name: 'steady-state',
           duration: 300, // 5 minutes
-          checkInterval: 30
+          checkInterval: 30,
         },
         {
           name: 'stress-test',
           duration: 600, // 10 minutes
           loadPattern: 'increasing',
-          checkInterval: 60
-        }
+          checkInterval: 60,
+        },
       ],
       metrics: [
         'heapUsed',
@@ -191,13 +174,13 @@ class PerformanceBenchmarking {
         'externalMemory',
         'gcCollections',
         'gcPauseTime',
-        'memoryGrowthRate'
+        'memoryGrowthRate',
       ],
       thresholds: {
         memoryGrowthRate: { max: 0.01 }, // 1% per minute
         gcPauseTime: { p95: 50 }, // ms
-        heapGrowth: { max: 0.05 } // 5% growth allowed
-      }
+        heapGrowth: { max: 0.05 }, // 5% growth allowed
+      },
     };
   }
 
@@ -209,7 +192,7 @@ class PerformanceBenchmarking {
       apiSpeed: this.createAPISpeedBenchmark(),
       databasePerformance: this.createDatabasePerformanceBenchmark(),
       frontendRendering: this.createFrontendRenderingBenchmark(),
-      memoryLeak: this.createMemoryLeakBenchmark()
+      memoryLeak: this.createMemoryLeakBenchmark(),
     };
 
     for (const [name, benchmark] of Object.entries(benchmarks)) {
@@ -219,7 +202,7 @@ class PerformanceBenchmarking {
         benchmark: benchmark.name,
         established: new Date().toISOString(),
         results: baselineResult,
-        thresholds: benchmark.thresholds
+        thresholds: benchmark.thresholds,
       };
     }
 
@@ -233,7 +216,7 @@ class PerformanceBenchmarking {
     const results = {
       benchmark: benchmark.name,
       timestamp: new Date().toISOString(),
-      scenarios: []
+      scenarios: [],
     };
 
     // Run each scenario
@@ -254,7 +237,7 @@ class PerformanceBenchmarking {
     const metrics = {};
 
     // Initialize metrics collection
-    benchmark.metrics.forEach(metric => {
+    benchmark.metrics.forEach((metric) => {
       metrics[metric] = [];
     });
 
@@ -276,7 +259,7 @@ class PerformanceBenchmarking {
       }
 
       // Wait for next iteration
-      await new Promise(resolve => setTimeout(resolve, interval));
+      await new Promise((resolve) => setTimeout(resolve, interval));
     }
 
     const endTime = Date.now();
@@ -285,7 +268,7 @@ class PerformanceBenchmarking {
       name: scenario.name,
       duration: endTime - startTime,
       metrics: this.processMetrics(metrics),
-      summary: this.summarizeScenario(metrics, benchmark.thresholds)
+      summary: this.summarizeScenario(metrics, benchmark.thresholds),
     };
   }
 
@@ -338,7 +321,7 @@ class PerformanceBenchmarking {
   processMetrics(rawMetrics) {
     const processed = {};
 
-    Object.keys(rawMetrics).forEach(metric => {
+    Object.keys(rawMetrics).forEach((metric) => {
       const values = rawMetrics[metric];
       if (values.length > 0) {
         const sorted = [...values].sort((a, b) => a - b);
@@ -350,7 +333,10 @@ class PerformanceBenchmarking {
           median: sorted[Math.floor(sorted.length / 2)],
           p95: sorted[Math.floor(sorted.length * 0.95)],
           p99: sorted[Math.floor(sorted.length * 0.99)],
-          std: Math.sqrt(values.reduce((a, b) => a + Math.pow(b - processed[metric]?.mean || 0, 2), 0) / values.length)
+          std: Math.sqrt(
+            values.reduce((a, b) => a + Math.pow(b - processed[metric]?.mean || 0, 2), 0) /
+              values.length
+          ),
         };
       }
     });
@@ -362,11 +348,11 @@ class PerformanceBenchmarking {
     const summary = {
       passed: true,
       violations: [],
-      score: 100
+      score: 100,
     };
 
     // Check thresholds
-    Object.keys(thresholds).forEach(metric => {
+    Object.keys(thresholds).forEach((metric) => {
       const processed = metrics[metric];
       const threshold = thresholds[metric];
 
@@ -403,17 +389,15 @@ class PerformanceBenchmarking {
   calculateAggregateMetrics(scenarios, metricNames) {
     const aggregate = {};
 
-    metricNames.forEach(metric => {
-      const values = scenarios
-        .map(s => s.metrics[metric]?.p95)
-        .filter(v => v !== undefined);
+    metricNames.forEach((metric) => {
+      const values = scenarios.map((s) => s.metrics[metric]?.p95).filter((v) => v !== undefined);
 
       if (values.length > 0) {
         aggregate[metric] = {
           average: values.reduce((a, b) => a + b, 0) / values.length,
           best: Math.min(...values),
           worst: Math.max(...values),
-          consistency: 1 - (Math.max(...values) - Math.min(...values)) / Math.max(...values)
+          consistency: 1 - (Math.max(...values) - Math.min(...values)) / Math.max(...values),
         };
       }
     });
@@ -426,7 +410,7 @@ class PerformanceBenchmarking {
 
     this.regressions = [];
 
-    Object.keys(currentResults).forEach(benchmarkName => {
+    Object.keys(currentResults).forEach((benchmarkName) => {
       const current = currentResults[benchmarkName];
       const baseline = this.baselines[benchmarkName];
 
@@ -447,7 +431,7 @@ class PerformanceBenchmarking {
       timestamp: new Date().toISOString(),
       violations: [],
       severity: 'low',
-      impact: 'minor'
+      impact: 'minor',
     };
 
     // Compare each scenario
@@ -455,7 +439,7 @@ class PerformanceBenchmarking {
       const baselineScenario = baseline.results.scenarios[index];
 
       if (baselineScenario) {
-        Object.keys(scenario.metrics).forEach(metric => {
+        Object.keys(scenario.metrics).forEach((metric) => {
           const currentMetric = scenario.metrics[metric];
           const baselineMetric = baselineScenario.metrics[metric];
 
@@ -470,7 +454,7 @@ class PerformanceBenchmarking {
                 baseline: baselineMetric.p95,
                 current: currentMetric.p95,
                 degradation: degradation * 100,
-                severity: degradation > 0.5 ? 'critical' : degradation > 0.25 ? 'high' : 'medium'
+                severity: degradation > 0.5 ? 'critical' : degradation > 0.25 ? 'high' : 'medium',
               });
 
               // Update overall severity
@@ -501,12 +485,12 @@ class PerformanceBenchmarking {
         benchmarksRun: Object.keys(this.benchmarks).length,
         regressionsDetected: this.regressions.length,
         overallScore: this.calculateOverallScore(),
-        status: this.regressions.length > 0 ? 'regressions-found' : 'stable'
+        status: this.regressions.length > 0 ? 'regressions-found' : 'stable',
       },
       benchmarks: this.benchmarks,
       baselines: this.baselines,
       regressions: this.regressions,
-      recommendations: this.generateRecommendations()
+      recommendations: this.generateRecommendations(),
     };
 
     await fs.mkdir('ai-learning', { recursive: true });
@@ -521,8 +505,8 @@ class PerformanceBenchmarking {
     let totalScore = 0;
     let benchmarkCount = 0;
 
-    Object.values(this.baselines).forEach(baseline => {
-      baseline.results.scenarios.forEach(scenario => {
+    Object.values(this.baselines).forEach((baseline) => {
+      baseline.results.scenarios.forEach((scenario) => {
         totalScore += scenario.summary.score;
         benchmarkCount++;
       });
@@ -534,15 +518,16 @@ class PerformanceBenchmarking {
   generateRecommendations() {
     const recommendations = [];
 
-    this.regressions.forEach(regression => {
-      regression.violations.forEach(violation => {
+    this.regressions.forEach((regression) => {
+      regression.violations.forEach((violation) => {
         if (violation.metric === 'responseTime') {
           recommendations.push({
             priority: 'high',
             category: 'performance',
-            action: 'Optimize API response times - consider caching, database indexing, or code profiling',
+            action:
+              'Optimize API response times - consider caching, database indexing, or code profiling',
             benchmark: regression.benchmark,
-            impact: `${violation.degradation.toFixed(1)}% degradation in ${violation.scenario}`
+            impact: `${violation.degradation.toFixed(1)}% degradation in ${violation.scenario}`,
           });
         } else if (violation.metric === 'errorRate') {
           recommendations.push({
@@ -550,15 +535,16 @@ class PerformanceBenchmarking {
             category: 'reliability',
             action: 'Investigate and fix error rate increase - check logs and error handling',
             benchmark: regression.benchmark,
-            impact: `${violation.degradation.toFixed(1)}% increase in errors`
+            impact: `${violation.degradation.toFixed(1)}% increase in errors`,
           });
         } else if (violation.metric === 'memoryUsage') {
           recommendations.push({
             priority: 'medium',
             category: 'efficiency',
-            action: 'Review memory usage patterns - check for memory leaks or inefficient data structures',
+            action:
+              'Review memory usage patterns - check for memory leaks or inefficient data structures',
             benchmark: regression.benchmark,
-            impact: `${violation.degradation.toFixed(1)}% memory usage increase`
+            impact: `${violation.degradation.toFixed(1)}% memory usage increase`,
           });
         }
       });
@@ -575,12 +561,18 @@ class PerformanceBenchmarking {
       baselines: this.baselines,
       results: this.results,
       regressions: this.regressions,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
 
     await fs.mkdir('ai-learning', { recursive: true });
-    await fs.writeFile('ai-learning/performance-benchmarks.json', JSON.stringify(this.benchmarks, null, 2));
-    await fs.writeFile('ai-learning/performance-baselines.json', JSON.stringify(this.baselines, null, 2));
+    await fs.writeFile(
+      'ai-learning/performance-benchmarks.json',
+      JSON.stringify(this.benchmarks, null, 2)
+    );
+    await fs.writeFile(
+      'ai-learning/performance-baselines.json',
+      JSON.stringify(this.baselines, null, 2)
+    );
     await fs.writeFile('ai-learning/performance-state.json', JSON.stringify(state, null, 2));
   }
 
@@ -593,7 +585,7 @@ class PerformanceBenchmarking {
         apiSpeed: this.createAPISpeedBenchmark(),
         databasePerformance: this.createDatabasePerformanceBenchmark(),
         frontendRendering: this.createFrontendRenderingBenchmark(),
-        memoryLeak: this.createMemoryLeakBenchmark()
+        memoryLeak: this.createMemoryLeakBenchmark(),
       };
 
       // Establish baselines if not exist
@@ -620,7 +612,6 @@ class PerformanceBenchmarking {
       console.log(`🔍 Regressions detected: ${report.summary.regressionsDetected}`);
 
       return report;
-
     } catch (error) {
       console.error('❌ Performance benchmarking failed:', error);
       throw error;
@@ -632,7 +623,8 @@ class PerformanceBenchmarking {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const benchmarking = new PerformanceBenchmarking();
 
-  benchmarking.runBenchmarkingSuite()
+  benchmarking
+    .runBenchmarkingSuite()
     .then((report) => {
       console.log('\n📋 Performance Benchmarking Summary:');
       console.log(`Overall Score: ${report.summary.overallScore.toFixed(1)}%`);

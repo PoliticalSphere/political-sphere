@@ -19,41 +19,41 @@ const COMPETENCE_CRITERIA = {
     metrics: {
       consistency: 'How well suggestions align with project architecture',
       accuracy: 'Correctness of architectural recommendations',
-      completeness: 'Coverage of all relevant architectural aspects'
-    }
+      completeness: 'Coverage of all relevant architectural aspects',
+    },
   },
   codeQuality: {
     weight: 0.25,
     metrics: {
       lintingPassRate: 'Percentage of generated code passing linting',
       testCoverage: 'Test coverage of generated code',
-      securityScanPass: 'Security scan pass rate'
-    }
+      securityScanPass: 'Security scan pass rate',
+    },
   },
   errorPrevention: {
     weight: 0.2,
     metrics: {
       caughtIssues: 'Percentage of potential issues caught before implementation',
       falsePositives: 'Rate of incorrect warnings/flags',
-      fixAccuracy: 'Accuracy of suggested fixes'
-    }
+      fixAccuracy: 'Accuracy of suggested fixes',
+    },
   },
   contextAwareness: {
     weight: 0.15,
     metrics: {
       relevance: 'Relevance of suggestions to current context',
       completeness: 'How complete the context understanding is',
-      proactivity: 'Ability to suggest improvements beyond immediate request'
-    }
+      proactivity: 'Ability to suggest improvements beyond immediate request',
+    },
   },
   efficiency: {
     weight: 0.1,
     metrics: {
       responseTime: 'Average response time for different task types',
       iterationEfficiency: 'Reduction in back-and-forth iterations',
-      batchOperations: 'Effectiveness of batched suggestions'
-    }
-  }
+      batchOperations: 'Effectiveness of batched suggestions',
+    },
+  },
 };
 
 function loadMetrics() {
@@ -72,9 +72,9 @@ function loadMetrics() {
       qualityMetrics: {
         compilationSuccess: 0,
         testPassRate: 0,
-        securityScanPass: 0
+        securityScanPass: 0,
       },
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
   }
 }
@@ -100,17 +100,18 @@ function calculateCompetenceScore() {
   scores.architecturalDecisions = {
     score: (archMetrics.accuracy || 0) * 0.5 + (archMetrics.consistency || 0) * 0.5,
     weight: COMPETENCE_CRITERIA.architecturalDecisions.weight,
-    details: archMetrics
+    details: archMetrics,
   };
 
   // Code quality score
   const codeMetrics = patterns.competenceMetrics?.codeQuality || {};
   scores.codeQuality = {
-    score: (codeMetrics.lintingPassRate || 0) * 0.4 +
-           (codeMetrics.testCoverage || 0) * 0.4 +
-           (codeMetrics.securityScanPass || 0) * 0.2,
+    score:
+      (codeMetrics.lintingPassRate || 0) * 0.4 +
+      (codeMetrics.testCoverage || 0) * 0.4 +
+      (codeMetrics.securityScanPass || 0) * 0.2,
     weight: COMPETENCE_CRITERIA.codeQuality.weight,
-    details: codeMetrics
+    details: codeMetrics,
   };
 
   // Error prevention score
@@ -118,37 +119,41 @@ function calculateCompetenceScore() {
   scores.errorPrevention = {
     score: (errorMetrics.caughtIssues || 0) * 0.7 - (errorMetrics.falsePositives || 0) * 0.3,
     weight: COMPETENCE_CRITERIA.errorPrevention.weight,
-    details: errorMetrics
+    details: errorMetrics,
   };
 
   // Context awareness (derived from successful patterns)
-  const contextScore = patterns.successfulPrompts?.length > 0 ?
-    patterns.successfulPrompts.reduce((acc, p) => acc + (p.successRate || 0), 0) /
-    patterns.successfulPrompts.length : 0;
+  const contextScore =
+    patterns.successfulPrompts?.length > 0
+      ? patterns.successfulPrompts.reduce((acc, p) => acc + (p.successRate || 0), 0) /
+        patterns.successfulPrompts.length
+      : 0;
   scores.contextAwareness = {
     score: contextScore,
     weight: COMPETENCE_CRITERIA.contextAwareness.weight,
-    details: { patternSuccessRate: contextScore }
+    details: { patternSuccessRate: contextScore },
   };
 
   // Efficiency score (derived from performance metrics)
-  const efficiencyScore = metrics.averageResponseTime > 0 ?
-    Math.max(0, 1 - (metrics.averageResponseTime / 5000)) : 0; // Target: < 5s average
+  const efficiencyScore =
+    metrics.averageResponseTime > 0 ? Math.max(0, 1 - metrics.averageResponseTime / 5000) : 0; // Target: < 5s average
   scores.efficiency = {
     score: efficiencyScore,
     weight: COMPETENCE_CRITERIA.efficiency.weight,
-    details: { avgResponseTime: metrics.averageResponseTime }
+    details: { avgResponseTime: metrics.averageResponseTime },
   };
 
   // Overall competence score
-  const overallScore = Object.values(scores).reduce((acc, category) =>
-    acc + (category.score * category.weight), 0);
+  const overallScore = Object.values(scores).reduce(
+    (acc, category) => acc + category.score * category.weight,
+    0
+  );
 
   return {
     overallScore: Math.round(overallScore * 100) / 100,
     categories: scores,
     assessmentDate: new Date().toISOString(),
-    dataPoints: metrics.totalRequests || 0
+    dataPoints: metrics.totalRequests || 0,
   };
 }
 
@@ -160,12 +165,13 @@ function generateImprovementRecommendations(assessment) {
     recommendations.push({
       category: 'architecturalDecisions',
       priority: 'high',
-      recommendation: 'Improve architectural decision accuracy by reviewing past decisions and updating knowledge base',
+      recommendation:
+        'Improve architectural decision accuracy by reviewing past decisions and updating knowledge base',
       actions: [
         'Review ADRs in docs/architecture/decisions/',
         'Update ai-knowledge/knowledge-base.json with recent patterns',
-        'Analyze failed architectural suggestions'
-      ]
+        'Analyze failed architectural suggestions',
+      ],
     });
   }
 
@@ -178,8 +184,8 @@ function generateImprovementRecommendations(assessment) {
       actions: [
         'Review and update ESLint rules',
         'Ensure comprehensive test coverage',
-        'Add security scanning to CI pipeline'
-      ]
+        'Add security scanning to CI pipeline',
+      ],
     });
   }
 
@@ -192,8 +198,8 @@ function generateImprovementRecommendations(assessment) {
       actions: [
         'Analyze common error patterns',
         'Update pre-commit hooks',
-        'Enhance static analysis tools'
-      ]
+        'Enhance static analysis tools',
+      ],
     });
   }
 
@@ -206,8 +212,8 @@ function generateImprovementRecommendations(assessment) {
       actions: [
         'Rebuild codebase index with scripts/ai/code-indexer.js build',
         'Pre-load more contexts with scripts/ai/context-preloader.js preload',
-        'Update successful patterns in ai-learning/patterns.json'
-      ]
+        'Update successful patterns in ai-learning/patterns.json',
+      ],
     });
   }
 
@@ -220,8 +226,8 @@ function generateImprovementRecommendations(assessment) {
       actions: [
         'Enable fast mode (FAST_AI=1) for appropriate tasks',
         'Increase cache utilization',
-        'Batch related operations'
-      ]
+        'Batch related operations',
+      ],
     });
   }
 
@@ -237,7 +243,7 @@ function updateCompetenceMetrics(assessment) {
       ...patterns.competenceMetrics,
       overallScore: assessment.overallScore,
       lastAssessment: assessment.assessmentDate,
-      dataPoints: assessment.dataPoints
+      dataPoints: assessment.dataPoints,
     };
 
     // Update individual category scores
@@ -279,7 +285,7 @@ function displayAssessment(assessment) {
     console.log('📈 Improvement Recommendations:');
     recommendations.forEach((rec, i) => {
       console.log(`${i + 1}. [${rec.priority.toUpperCase()}] ${rec.recommendation}`);
-      rec.actions.forEach(action => {
+      rec.actions.forEach((action) => {
         console.log(`   • ${action}`);
       });
       console.log('');
@@ -304,7 +310,9 @@ function main() {
       const recommendations = generateImprovementRecommendations(recAssessment);
       console.log('Improvement Recommendations:');
       recommendations.forEach((rec, i) => {
-        console.log(`${i + 1}. [${rec.priority.toUpperCase()}] ${rec.category}: ${rec.recommendation}`);
+        console.log(
+          `${i + 1}. [${rec.priority.toUpperCase()}] ${rec.category}: ${rec.recommendation}`
+        );
       });
       break;
 

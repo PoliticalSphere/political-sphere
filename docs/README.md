@@ -2,14 +2,13 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Approved** |
 
 </div>
 
 ---
-
 
 > **Welcome to the comprehensive documentation for the Political Sphere platform** - a modern, AI-enhanced web application designed to facilitate informed political discourse and community engagement.
 

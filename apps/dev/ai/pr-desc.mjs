@@ -42,10 +42,9 @@ function main() {
     const files = gitChangedFiles();
     const prompt = `You are an offline assistant. Create a PR title and a 5-8 line PR description including summary, changes, testing steps, and a short checklist. Files changed: ${files.join(', ')}`;
     try {
-      const out = execSync(
-        `ollama run llama3 --prompt "${prompt.replace(/"/g, '\\"')}"`,
-        { encoding: 'utf8' }
-      );
+      const out = execSync(`ollama run llama3 --prompt "${prompt.replace(/"/g, '\\"')}"`, {
+        encoding: 'utf8',
+      });
       console.log(out.trim());
       return;
     } catch (e) {

@@ -31,7 +31,7 @@ class PredictiveAnalytics {
     this.models = {
       systemHealth: this.createSystemHealthModel(),
       userBehavior: this.createUserBehaviorModel(),
-      anomalyDetection: this.createAnomalyDetectionModel()
+      anomalyDetection: this.createAnomalyDetectionModel(),
     };
   }
 
@@ -40,16 +40,16 @@ class PredictiveAnalytics {
     return {
       predict: (data) => {
         // Predict CPU usage based on historical patterns
-        const recentCpu = data.slice(-10).map(d => d.cpuUsage);
+        const recentCpu = data.slice(-10).map((d) => d.cpuUsage);
         const avgCpu = recentCpu.reduce((a, b) => a + b, 0) / recentCpu.length;
         const trend = recentCpu[recentCpu.length - 1] - recentCpu[0];
 
         return {
           predictedCpuUsage: Math.max(0, Math.min(100, avgCpu + trend * 0.1)),
           confidence: 0.85,
-          risk: avgCpu > 80 ? 'high' : avgCpu > 60 ? 'medium' : 'low'
+          risk: avgCpu > 80 ? 'high' : avgCpu > 60 ? 'medium' : 'low',
         };
-      }
+      },
     };
   }
 
@@ -57,16 +57,16 @@ class PredictiveAnalytics {
     // User behavior prediction model
     return {
       predict: (data) => {
-        const recentSessions = data.slice(-7).map(d => d.activeUsers || 0);
+        const recentSessions = data.slice(-7).map((d) => d.activeUsers || 0);
         const avgUsers = recentSessions.reduce((a, b) => a + b, 0) / recentSessions.length;
         const growth = recentSessions[recentSessions.length - 1] / recentSessions[0];
 
         return {
           predictedActiveUsers: Math.round(avgUsers * growth),
           engagementTrend: growth > 1.1 ? 'increasing' : growth < 0.9 ? 'decreasing' : 'stable',
-          churnRisk: growth < 0.8 ? 'high' : growth < 0.95 ? 'medium' : 'low'
+          churnRisk: growth < 0.8 ? 'high' : growth < 0.95 ? 'medium' : 'low',
         };
-      }
+      },
     };
   }
 
@@ -76,12 +76,16 @@ class PredictiveAnalytics {
       detect: (currentMetrics, historicalData) => {
         const anomalies = [];
 
-        Object.keys(currentMetrics).forEach(metric => {
+        Object.keys(currentMetrics).forEach((metric) => {
           if (typeof currentMetrics[metric] === 'number') {
-            const values = historicalData.map(d => d[metric]).filter(v => typeof v === 'number');
+            const values = historicalData
+              .map((d) => d[metric])
+              .filter((v) => typeof v === 'number');
             if (values.length > 5) {
               const mean = values.reduce((a, b) => a + b, 0) / values.length;
-              const std = Math.sqrt(values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length);
+              const std = Math.sqrt(
+                values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length
+              );
               const zScore = Math.abs((currentMetrics[metric] - mean) / std);
 
               if (zScore > 3) {
@@ -90,7 +94,7 @@ class PredictiveAnalytics {
                   value: currentMetrics[metric],
                   expected: mean,
                   severity: zScore > 4 ? 'critical' : 'warning',
-                  confidence: Math.max(0.5, 1 - zScore / 10)
+                  confidence: Math.max(0.5, 1 - zScore / 10),
                 });
               }
             }
@@ -98,7 +102,7 @@ class PredictiveAnalytics {
         });
 
         return anomalies;
-      }
+      },
     };
   }
 
@@ -115,7 +119,7 @@ class PredictiveAnalytics {
       activeUsers: Math.floor(Math.random() * 10000),
       throughput: Math.random() * 2000 + 500,
       databaseConnections: Math.floor(Math.random() * 100),
-      cacheHitRate: Math.random() * 100
+      cacheHitRate: Math.random() * 100,
     };
 
     // Add to historical data
@@ -135,7 +139,7 @@ class PredictiveAnalytics {
     this.predictions = {
       systemHealth: this.models.systemHealth.predict(this.historicalData),
       userBehavior: this.models.userBehavior.predict(this.historicalData),
-      anomalies: this.models.anomalyDetection.detect(currentData, this.historicalData)
+      anomalies: this.models.anomalyDetection.detect(currentData, this.historicalData),
     };
 
     return this.predictions;
@@ -157,9 +161,9 @@ class PredictiveAnalytics {
         actions: [
           'Scale out application instances',
           'Review resource-intensive operations',
-          'Consider implementing load balancing'
+          'Consider implementing load balancing',
         ],
-        timeframe: 'Next 1 hour'
+        timeframe: 'Next 1 hour',
       });
     }
 
@@ -174,14 +178,14 @@ class PredictiveAnalytics {
         actions: [
           'Review user engagement metrics',
           'Implement retention campaigns',
-          'Analyze user feedback and pain points'
+          'Analyze user feedback and pain points',
         ],
-        timeframe: 'Next 7 days'
+        timeframe: 'Next 7 days',
       });
     }
 
     // Anomaly alerts
-    this.predictions.anomalies.forEach(anomaly => {
+    this.predictions.anomalies.forEach((anomaly) => {
       this.alerts.push({
         type: 'anomaly',
         severity: anomaly.severity,
@@ -190,9 +194,9 @@ class PredictiveAnalytics {
         actions: [
           'Investigate root cause',
           'Review system logs',
-          'Consider implementing circuit breakers'
+          'Consider implementing circuit breakers',
         ],
-        timeframe: 'Immediate'
+        timeframe: 'Immediate',
       });
     });
 
@@ -206,7 +210,7 @@ class PredictiveAnalytics {
       trends: this.analyzeTrends(),
       recommendations: this.generateRecommendations(),
       risks: this.assessRisks(),
-      opportunities: this.identifyOpportunities()
+      opportunities: this.identifyOpportunities(),
     };
 
     return insights;
@@ -219,24 +223,24 @@ class PredictiveAnalytics {
     const trends = [];
 
     // CPU usage trend
-    const cpuTrend = this.calculateTrend(recent.map(d => d.cpuUsage));
+    const cpuTrend = this.calculateTrend(recent.map((d) => d.cpuUsage));
     if (Math.abs(cpuTrend) > 5) {
       trends.push({
         metric: 'CPU Usage',
         direction: cpuTrend > 0 ? 'increasing' : 'decreasing',
         magnitude: Math.abs(cpuTrend),
-        impact: cpuTrend > 10 ? 'high' : 'medium'
+        impact: cpuTrend > 10 ? 'high' : 'medium',
       });
     }
 
     // User engagement trend
-    const userTrend = this.calculateTrend(recent.map(d => d.activeUsers || 0));
+    const userTrend = this.calculateTrend(recent.map((d) => d.activeUsers || 0));
     if (Math.abs(userTrend) > 100) {
       trends.push({
         metric: 'User Engagement',
         direction: userTrend > 0 ? 'increasing' : 'decreasing',
         magnitude: Math.abs(userTrend),
-        impact: userTrend > 200 ? 'high' : 'medium'
+        impact: userTrend > 200 ? 'high' : 'medium',
       });
     }
 
@@ -261,7 +265,7 @@ class PredictiveAnalytics {
         title: 'Optimize CPU Usage',
         description: 'Implement caching and optimize database queries',
         effort: 'medium',
-        impact: 'high'
+        impact: 'high',
       });
     }
 
@@ -273,7 +277,7 @@ class PredictiveAnalytics {
         title: 'Improve Error Handling',
         description: 'Add comprehensive error handling and monitoring',
         effort: 'medium',
-        impact: 'high'
+        impact: 'high',
       });
     }
 
@@ -284,24 +288,24 @@ class PredictiveAnalytics {
     const risks = [];
 
     // Performance risk
-    const highCpuPeriods = this.historicalData.filter(d => d.cpuUsage > 85).length;
+    const highCpuPeriods = this.historicalData.filter((d) => d.cpuUsage > 85).length;
     if (highCpuPeriods > 5) {
       risks.push({
         type: 'performance',
         level: 'high',
         description: 'Frequent high CPU usage indicates scalability issues',
-        mitigation: 'Implement auto-scaling and optimize resource usage'
+        mitigation: 'Implement auto-scaling and optimize resource usage',
       });
     }
 
     // Reliability risk
-    const highErrorPeriods = this.historicalData.filter(d => d.errorRate > 0.03).length;
+    const highErrorPeriods = this.historicalData.filter((d) => d.errorRate > 0.03).length;
     if (highErrorPeriods > 3) {
       risks.push({
         type: 'reliability',
         level: 'medium',
         description: 'Elevated error rates suggest stability concerns',
-        mitigation: 'Enhance error handling and implement circuit breakers'
+        mitigation: 'Enhance error handling and implement circuit breakers',
       });
     }
 
@@ -312,24 +316,31 @@ class PredictiveAnalytics {
     const opportunities = [];
 
     // User growth opportunity
-    const userGrowth = this.calculateTrend(this.historicalData.slice(-30).map(d => d.activeUsers || 0));
+    const userGrowth = this.calculateTrend(
+      this.historicalData.slice(-30).map((d) => d.activeUsers || 0)
+    );
     if (userGrowth > 500) {
       opportunities.push({
         type: 'growth',
         title: 'Capitalize on User Growth',
         description: 'Strong user growth trend detected',
-        actions: ['Scale infrastructure', 'Optimize user experience', 'Prepare for increased load']
+        actions: ['Scale infrastructure', 'Optimize user experience', 'Prepare for increased load'],
       });
     }
 
     // Performance optimization opportunity
-    const avgResponseTime = this.historicalData.slice(-10).reduce((sum, d) => sum + d.responseTime, 0) / 10;
+    const avgResponseTime =
+      this.historicalData.slice(-10).reduce((sum, d) => sum + d.responseTime, 0) / 10;
     if (avgResponseTime < 100) {
       opportunities.push({
         type: 'optimization',
         title: 'Performance Optimization Potential',
         description: 'Response times are within good range',
-        actions: ['Implement advanced caching', 'Optimize frontend delivery', 'Consider edge computing']
+        actions: [
+          'Implement advanced caching',
+          'Optimize frontend delivery',
+          'Consider edge computing',
+        ],
       });
     }
 
@@ -341,7 +352,7 @@ class PredictiveAnalytics {
       timestamp: new Date().toISOString(),
       predictions: this.predictions,
       alerts: this.alerts,
-      insights: await this.generateInsights()
+      insights: await this.generateInsights(),
     };
 
     // Save to learning data
@@ -349,7 +360,10 @@ class PredictiveAnalytics {
     await fs.writeFile('ai-learning/predictive-results.json', JSON.stringify(results, null, 2));
 
     // Update historical data
-    await fs.writeFile('ai-learning/system-health-data.json', JSON.stringify(this.historicalData, null, 2));
+    await fs.writeFile(
+      'ai-learning/system-health-data.json',
+      JSON.stringify(this.historicalData, null, 2)
+    );
 
     return results;
   }
@@ -378,7 +392,8 @@ class PredictiveAnalytics {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const analytics = new PredictiveAnalytics();
 
-  analytics.runAnalysis()
+  analytics
+    .runAnalysis()
     .then((results) => {
       console.log('\n📋 Predictive Analytics Summary:');
       console.log(`Alerts: ${results.alerts.length}`);

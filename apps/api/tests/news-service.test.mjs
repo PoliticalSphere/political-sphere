@@ -28,7 +28,8 @@ describe('NewsService', () => {
       const created = await service.create({
         title: 'Parliament Announces Coalition Agreement',
         excerpt: 'Coalition partners outline priorities for the next legislative cycle.',
-        content: 'The agreement introduces major reforms on climate policy and electoral transparency.',
+        content:
+          'The agreement introduces major reforms on climate policy and electoral transparency.',
         category: 'governance',
         tags: ['coalition', 'transparency'],
         sources: ['https://example.org/news/coalition'],

@@ -140,7 +140,7 @@ class SQLiteMCPServer extends Server {
       ];
 
       const resolvedPath = path.resolve(args.path);
-      const isAllowed = allowedDirs.some(dir => resolvedPath.startsWith(dir));
+      const isAllowed = allowedDirs.some((dir) => resolvedPath.startsWith(dir));
 
       if (!isAllowed) {
         throw new McpError(ErrorCode.InvalidRequest, 'Database path not allowed');
@@ -188,10 +188,7 @@ class SQLiteMCPServer extends Server {
         content: [{ type: 'text', text: JSON.stringify(results, null, 2) }],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to execute query: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to execute query: ${error.message}`);
     }
   }
 
@@ -216,10 +213,7 @@ class SQLiteMCPServer extends Server {
         content: [{ type: 'text', text: JSON.stringify(tables, null, 2) }],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to list tables: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to list tables: ${error.message}`);
     }
   }
 
@@ -253,10 +247,7 @@ class SQLiteMCPServer extends Server {
         content: [{ type: 'text', text: JSON.stringify(schema, null, 2) }],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to get table schema: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to get table schema: ${error.message}`);
     }
   }
 

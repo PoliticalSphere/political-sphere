@@ -1,116 +1,178 @@
-# Political Sphere Dev Platform
+# Political Sphere — Monorepo (developer workspace)
 
-This workspace hosts the reference implementation for Political Sphere's multi-environment development platform. The stack is split into logical repositories housed in sibling directories:
+[![Version](https://img.shields.io/badge/version-1.2.6-blue.svg)](CHANGELOG.md)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](package.json)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
-- `infrastructure/`: Terraform modules and environment overlays for AWS.
-- `platform/`: Kubernetes Helm charts, GitOps manifests, and cluster add-ons.
-- `ci/`: Reusable GitHub Actions workflows and automation tooling.
-- `dev/`: Local development tooling, Docker Compose stacks, and onboarding scripts.
-- `docs/`: Architecture references, runbooks, security guides, and delivery reports.
+> A democratically-governed multiplayer political simulation game with strict constitutional governance. Built as a monorepo using Nx, featuring React frontend, Node.js/NestJS backend, comprehensive testing, and AI-assisted development tooling.
 
-Each directory is intended to be published as its own Git repository under the `political-sphere` GitHub organization. From this mono-workspace you can iterate locally, then mirror changes into their respective repos.
+## Table of Contents
 
-## Getting Started
+- [Overview](#overview)
+- [Key Features](#key-features)
+- [Architecture](#architecture)
+- [Quick Start](#quick-start)
+- [Project Structure](#project-structure)
+- [Development](#development)
+- [Testing](#testing)
+- [Contributing](#contributing)
+- [Documentation](#documentation)
+- [Troubleshooting](#troubleshooting)
+
+## Overview
+
+Political Sphere is a multiplayer political simulation platform that enables democratic governance through technology. The project emphasizes ethical AI use, zero-trust security, and WCAG 2.2 AA+ accessibility compliance.
+
+## Key Features
+
+- **Democratic Governance**: Constitutional framework with transparent decision-making
+- **Multiplayer Simulation**: Real-time political scenario modeling
+- **Ethical AI Integration**: AI assistants with strict governance boundaries
+- **Comprehensive Testing**: Unit, integration, e2e, accessibility, and security testing
+- **Zero-Trust Security**: End-to-end encryption and auditability
+- **Accessibility First**: WCAG 2.2 AA+ compliance across all interfaces
+
+## Architecture
+
+The project follows a modular monorepo architecture:
+
+- **Frontend**: React with TypeScript, Tailwind CSS, Module Federation
+- **Backend**: Node.js/NestJS with TypeScript, REST APIs
+- **Infrastructure**: Docker, Kubernetes, Terraform for cloud deployment
+- **Testing**: Jest, Playwright, comprehensive test automation
+- **CI/CD**: GitHub Actions with security scanning and progressive delivery
+- **AI Tooling**: Custom AI assistants for code review, performance monitoring, and governance
+
+## Quick Start
 
 ### Prerequisites
 
-- Node.js 18+
-- npm
-- Docker & Docker Compose
-- (Optional) PostgreSQL client for local DB access
+- Node.js 18+ (LTS recommended)
+- npm (or compatible package manager)
+- Docker & Docker Compose (recommended)
 
-### Bootstrap
-
-Run the bootstrap script to set up your development environment:
+### Installation
 
 ```bash
+npm ci
 npm run bootstrap
 ```
 
-This will:
-
-- Install dependencies
-- Set up pre-commit hooks
-- Start the dev stack (Docker Compose)
-- Seed the database
-- Build documentation
-
 ### Development
 
-Start all services:
-
 ```bash
-npm run dev:all
-```
-
-Or start individual services:
-
-```bash
+npm run dev:all  # Start all services
+# or individual services:
 npm run dev:api
 npm run dev:frontend
-npm run dev:worker
 ```
 
-### Fast AI mode (optional)
+## Project Structure
 
-For local AI-assisted workflows where speed matters more than exhaustive checks, you can enable a fast mode that:
+```
+apps/          # Applications (api, frontend, worker)
+libs/          # Shared libraries (ui, platform, infrastructure, shared)
+docs/          # Comprehensive documentation and ADRs
+scripts/       # Automation scripts and utilities
+ai-*           # AI tooling and assets (cache, learning, metrics)
+tools/         # Build tools and utilities
+.github/       # GitHub workflows and templates
+```
 
-- Reduces heavy quality gates (skips linting and security scans, relaxes test coverage threshold)
-- Disables verbose audit logging of every interaction
-- Skips interactive git hooks (pre-push prompts, pre-commit checks) to avoid getting stuck
+## Development
 
-Enable fast mode for your shell session:
+### Available Commands
+
+- `npm run lint` — ESLint across repo with Nx boundary checking
+- `npm run format` — Prettier formatting with Biome integration
+- `npm run test` — Jest unit tests with coverage reporting
+- `npm run test:e2e` — Playwright end-to-end tests
+- `npm run build` — Nx build with caching and parallelization
+- `npm run typecheck` — TypeScript compilation checking
+
+### Development Servers
+
+- `npm run dev:api` — Start API server with hot reload
+- `npm run dev:frontend` — Start frontend with webpack dev server
+- `npm run dev:all` — Start all services with Docker Compose
+
+### AI-Assisted Development
+
+- `npm run ai:review` — AI code review and suggestions
+- `npm run ai:blackbox` — Governance compliance checking
+- `npm run ai:performance` — Performance monitoring and optimization
+
+## Testing
+
+The project maintains comprehensive test coverage across multiple dimensions:
+
+- **Unit Tests**: Jest with 70%+ coverage target
+- **Integration Tests**: API and service interactions
+- **E2E Tests**: Playwright for critical user journeys
+- **Accessibility Tests**: Automated WCAG 2.2 AA+ validation
+- **Security Tests**: OWASP Top 10 and dependency scanning
+
+Run tests with:
 
 ```bash
-. scripts/env-config.sh   # sets FAST_AI=1 and disables interactive hooks for this session
+npm run test              # Unit tests
+npm run test:e2e          # End-to-end tests
+npm run test:a11y         # Accessibility tests
 ```
 
-Disable by unsetting FAST_AI or starting a new shell:
+## Contributing
 
-```bash
-unset FAST_AI
-```
+See [Contributing Guide](docs/contributing.md) and [.blackboxrules](.blackboxrules) for governance rules.
 
-Note: Fast mode is intended for local iteration. CI pipelines and normal development should run with full quality gates.
+### Development Workflow
 
-### Pre-commit Hooks
+1. Fork and create feature branch
+2. Follow conventional commits
+3. Ensure tests pass and coverage maintained
+4. Run `npm run ai:review` for AI-assisted code review
+5. Submit PR with comprehensive description
 
-Pre-commit hooks are automatically installed during bootstrap. They run on every commit to ensure code quality, security, and accessibility:
+## Documentation
 
-**What runs on commit:**
-- **lint-staged**: ESLint (linting) + Prettier (formatting) on staged JS/TS files
-- **cspell**: Spell checking on code and documentation
-- **a11y**: Accessibility checks (WCAG 2.2 AA+) on UI components
-- **import-boundaries**: Module boundary enforcement to maintain clean architecture
-- **secrets**: Secret scanning to prevent credential leaks
+- [Architecture Decision Records](docs/architecture/decisions/)
+- [API Documentation](docs/api/)
+- [Deployment Guide](docs/operations/deployment.md)
+- [Security Guidelines](docs/security/)
+- [Contributing Guide](docs/contributing.md)
 
-**Commit message validation:**
-- **commitlint**: Enforces conventional commit format (e.g., `feat:`, `fix:`, `docs:`)
+## Troubleshooting
 
-If any check fails, the commit will be blocked. Fix the issues and try again.
+### Common Issues
 
-**Fast mode**: Set `FAST_AI=1` to skip pre-commit checks during rapid local iteration (not recommended for normal development).
+**Build Failures**
 
-### Testing
+- Ensure Node.js 18+ is installed
+- Run `npm ci` to install dependencies
+- Check Nx cache: `npx nx reset`
 
-Run unit tests:
+**Test Failures**
 
-```bash
-npm run test
-```
+- Database issues: Ensure Docker services are running
+- Coverage low: Focus on critical path tests first
+- ESM issues: Check jest.config.cjs for module resolution
 
-Run end-to-end tests:
+**AI Tooling Issues**
 
-```bash
-npm run e2e:prepare  # Start stack and seed DB
-npm run test:e2e
-```
+- Cache problems: Clear `ai-cache/` directory
+- Performance slow: Enable FAST_AI mode with `FAST_AI=1`
 
-### Documentation
+**Pre-commit Hook Failures**
 
-Build and serve docs locally:
+- Linting: Run `npm run lint` and fix issues
+- Secrets: Remove any hardcoded credentials
+- Boundaries: Check import paths follow Nx rules
 
-```bash
-npm run docs:build
-# Open docs/.vitepress/dist/index.html
-```
+### Getting Help
+
+- Check [CHANGELOG.md](CHANGELOG.md) for recent changes
+- Review [TODO.md](TODO.md) for known issues
+- Run `npm run validate:env` to check environment setup
+
+---
+
+_Last updated: 2025-11-01_

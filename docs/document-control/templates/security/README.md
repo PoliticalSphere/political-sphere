@@ -2,14 +2,13 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Approved** |
 
 </div>
 
 ---
-
 
 Templates for security, risk management, and incident response documentation.
 
@@ -43,6 +42,7 @@ Templates for security, risk management, and incident response documentation.
 ## Template Guidelines
 
 All security templates should include:
+
 - Clear risk classifications
 - Impact assessment (CIA triad)
 - Mitigation strategies

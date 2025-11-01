@@ -53,7 +53,7 @@ groups:
         execErrState: Error
         for: 5m
         annotations:
-          summary: "API response time is too high"
+          summary: 'API response time is too high'
         labels:
           severity: warning
           service: api
@@ -105,7 +105,7 @@ groups:
         execErrState: Error
         for: 5m
         annotations:
-          summary: "Database has too many active connections"
+          summary: 'Database has too many active connections'
         labels:
           severity: warning
           service: database
@@ -155,10 +155,10 @@ groups:
         execErrState: Error
         for: 1m
         annotations:
-          summary: "Service {{ $labels.job }} is down"
+          summary: 'Service {{ $labels.job }} is down'
         labels:
           severity: critical
-          service: "{{ $labels.job }}"
+          service: '{{ $labels.job }}'
 
       - uid: high-error-rate
         title: High Error Rate
@@ -205,7 +205,7 @@ groups:
         execErrState: Error
         for: 5m
         annotations:
-          summary: "Error rate is too high"
+          summary: 'Error rate is too high'
         labels:
           severity: critical
           service: api
@@ -256,7 +256,7 @@ groups:
         execErrState: Error
         for: 1m
         annotations:
-          summary: "Maintenance window is active - suppressing alerts"
+          summary: 'Maintenance window is active - suppressing alerts'
         labels:
           severity: info
           alert_type: maintenance
@@ -306,7 +306,7 @@ groups:
         execErrState: Error
         for: 2m
         annotations:
-          summary: "Multiple services are down - possible infrastructure issue"
+          summary: 'Multiple services are down - possible infrastructure issue'
         labels:
           severity: critical
           alert_type: infrastructure
@@ -356,7 +356,7 @@ groups:
         execErrState: Error
         for: 10m
         annotations:
-          summary: "AI detected anomalous behavior in system metrics"
+          summary: 'AI detected anomalous behavior in system metrics'
         labels:
           severity: warning
           alert_type: ai_anomaly
@@ -406,7 +406,7 @@ groups:
         execErrState: Error
         for: 5m
         annotations:
-          summary: "Traffic spike detected beyond adaptive threshold"
+          summary: 'Traffic spike detected beyond adaptive threshold'
         labels:
           severity: warning
           alert_type: adaptive_threshold

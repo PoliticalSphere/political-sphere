@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |
-| :------------: | :-----: | :----------: | :--------------: | :----------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Game Design Council |   Quarterly  |
+| Classification | Version | Last Updated |        Owner        | Review Cycle |
+| :------------: | :-----: | :----------: | :-----------------: | :----------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Game Design Council |  Quarterly   |
 
 </div>
 
@@ -33,20 +33,20 @@
 
 ## 📋 Key Documents
 
-| Document | Purpose | Status |
-| -------- | ------- | ------ |
-| [Game Design Document (GDD)](game-design-document-gdd.md) | High-level game vision and features | Active |
-| [World and Institutions Blueprint](world-and-institutions-blueprint.md) | Fictional political universe design | Active |
-| [Roles and Progressions](roles-and-progressions.md) | Player roles, leveling, and advancement | Active |
-| [Parties, Caucuses, and Factions](parties-caucuses-and-factions.md) | Group formation and dynamics | Active |
-| [Elections, Policy, and Mechanics](elections-policy-and-mechanics.md) | Voting and policy systems | Active |
-| [Lawmaking and Procedure Engine](lawmaking-and-procedure-engine.md) | Legislative process simulation | Active |
-| [Media, Press, and Public Opinion System](media-press-and-public-opinion-system.md) | Information and narrative mechanics | Draft |
-| [Economy and Budgets](economy-and-budgets.md) | Resource management systems | Draft |
-| [AI NPC Behaviours and Tuning](ai-npc-behaviours-and-tuning.md) | NPC integration in gameplay | Active |
-| [Balancing and Anti-Exploit Design](balancing-and-anti-exploit-design.md) | Game balance and cheat prevention | Active |
-| [Content Moderation and Enforcement](content-moderation-and-enforcement.md) | In-game content rules | Active |
-| [Accessibility and UX Harm Minimisation](accessibility-and-ux-harm-minimisation.md) | Inclusive and safe user experience | Active |
+| Document                                                                            | Purpose                                 | Status |
+| ----------------------------------------------------------------------------------- | --------------------------------------- | ------ |
+| [Game Design Document (GDD)](game-design-document-gdd.md)                           | High-level game vision and features     | Active |
+| [World and Institutions Blueprint](world-and-institutions-blueprint.md)             | Fictional political universe design     | Active |
+| [Roles and Progressions](roles-and-progressions.md)                                 | Player roles, leveling, and advancement | Active |
+| [Parties, Caucuses, and Factions](parties-caucuses-and-factions.md)                 | Group formation and dynamics            | Active |
+| [Elections, Policy, and Mechanics](elections-policy-and-mechanics.md)               | Voting and policy systems               | Active |
+| [Lawmaking and Procedure Engine](lawmaking-and-procedure-engine.md)                 | Legislative process simulation          | Active |
+| [Media, Press, and Public Opinion System](media-press-and-public-opinion-system.md) | Information and narrative mechanics     | Draft  |
+| [Economy and Budgets](economy-and-budgets.md)                                       | Resource management systems             | Draft  |
+| [AI NPC Behaviours and Tuning](ai-npc-behaviours-and-tuning.md)                     | NPC integration in gameplay             | Active |
+| [Balancing and Anti-Exploit Design](balancing-and-anti-exploit-design.md)           | Game balance and cheat prevention       | Active |
+| [Content Moderation and Enforcement](content-moderation-and-enforcement.md)         | In-game content rules                   | Active |
+| [Accessibility and UX Harm Minimisation](accessibility-and-ux-harm-minimisation.md) | Inclusive and safe user experience      | Active |
 
 ---
 
@@ -62,14 +62,14 @@
 
 ## 🔧 Key Mechanics
 
-| Mechanic | Description | Purpose |
-| -------- | ----------- | ------- |
-| **Debate System** | Structured speaking order, time limits, relevance checks | Fair discourse |
-| **Voting Engine** | Secure, auditable votes with quorum requirements | Democratic decisions |
-| **Reputation System** | Conduct-based scoring affecting influence | Reward integrity |
-| **Alliance Building** | Coalition formation with binding agreements | Strategic depth |
-| **Moderation Tools** | Real-time content filtering and escalation | Safe environment |
-| **AI NPCs** | Procedural MPs filling seats | World completeness |
+| Mechanic              | Description                                              | Purpose              |
+| --------------------- | -------------------------------------------------------- | -------------------- |
+| **Debate System**     | Structured speaking order, time limits, relevance checks | Fair discourse       |
+| **Voting Engine**     | Secure, auditable votes with quorum requirements         | Democratic decisions |
+| **Reputation System** | Conduct-based scoring affecting influence                | Reward integrity     |
+| **Alliance Building** | Coalition formation with binding agreements              | Strategic depth      |
+| **Moderation Tools**  | Real-time content filtering and escalation               | Safe environment     |
+| **AI NPCs**           | Procedural MPs filling seats                             | World completeness   |
 
 ---
 

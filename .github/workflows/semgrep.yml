@@ -1,18 +1,103 @@
-name: Semgrep
+name: Semgrep Security Scan
 on:
   push: { branches: [main] }
   pull_request:
   schedule: [{ cron: '0 9 * * 1' }]
+  workflow_dispatch:
+
 jobs:
   semgrep:
-    name: Scan
+    name: Security Scan
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: read
+      security-events: write
+      pull-requests: write
+      checks: write
     container:
       image: returntocorp/semgrep:latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-      - name: Run Semgrep
-        run: semgrep ci
+        with:
+          fetch-depth: 0
+
+      - name: Validate Semgrep configuration
+        run: |
+          echo "🔍 Validating Semgrep setup..."
+          if [ -z "$SEMGREP_APP_TOKEN" ]; then
+            echo "❌ SEMGREP_APP_TOKEN not set"
+            exit 1
+          fi
+          echo "✅ Semgrep token configured"
+
+      - name: Run Semgrep Security Scan
+        id: semgrep
+        run: |
+          echo "🔒 Running Semgrep security scan..."
+          # Mask sensitive data in logs
+          echo "::add-mask::${{ secrets.SEMGREP_APP_TOKEN }}"
+          semgrep ci --config auto --json > semgrep-results.json || {
+            echo "❌ Semgrep scan found issues - review results above"
+            exit 1
+          }
+          echo "✅ Semgrep scan completed successfully"
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+
+      - name: Process Scan Results
+        id: process
+        run: |
+          echo "📊 Processing scan results..."
+          if [ -f semgrep-results.json ]; then
+            findings=$(jq '.results | length' semgrep-results.json 2>/dev/null || echo "0")
+            echo "findings=$findings" >> $GITHUB_OUTPUT
+            echo "📈 Found $findings security findings"
+          else
+            echo "findings=0" >> $GITHUB_OUTPUT
+            echo "⚠️ No results file generated"
+          fi
+
+      - name: Upload SARIF Results to GitHub Security Tab
+        if: always()
+        uses: github/codeql-action/upload-sarif@v3
+        with:
+          sarif_file: semgrep-results.sarif
+          category: semgrep
+        continue-on-error: true
+
+      - name: Upload Scan Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-scan-results
+          path: |
+            semgrep-results.json
+            semgrep-results.sarif
+          retention-days: 30
+
+      - name: Comment on PR with Results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const findings = ${{ steps.process.outputs.findings || 0 }};
+            const status = findings > 0 ? '❌' : '✅';
+            const message = findings > 0
+              ? `**Semgrep Security Scan Failed** - Found ${findings} potential security issues that need review.`
+              : '**Semgrep Security Scan Passed** - No critical security issues detected.';
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `${status} ${message}\n\n🔍 [View detailed results](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})`
+            });
+
+      - name: Fail on High Severity Findings
+        if: steps.process.outputs.findings > 0
+        run: |
+          echo "❌ Security scan found ${findings} issues"
+          echo "📋 Review the scan results above and fix critical findings"
+          exit 1

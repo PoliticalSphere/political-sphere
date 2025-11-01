@@ -30,7 +30,7 @@ describe('API Security Tests', () => {
     const store = new JsonNewsStore(new URL('../data/news.json', import.meta.url));
     service = new NewsService(store);
     server = createNewsServer(service);
-    
+
     await new Promise((resolve) => {
       server.listen(PORT, '127.0.0.1', resolve);
     });
@@ -97,8 +97,8 @@ describe('API Security Tests', () => {
       const response = await fetch(`${BASE_URL}/api/news`, {
         method: 'OPTIONS',
         headers: {
-          'Origin': 'http://localhost:3000'
-        }
+          Origin: 'http://localhost:3000',
+        },
       });
       // Accept 204 or 200 depending on server/framework behavior
       expect([200, 204]).toContain(response.status);
@@ -108,8 +108,8 @@ describe('API Security Tests', () => {
       // Note: This would need NODE_ENV=production
       const response = await fetch(`${BASE_URL}/api/news`, {
         headers: {
-          'Origin': 'http://malicious-site.com'
-        }
+          Origin: 'http://malicious-site.com',
+        },
       });
       // In development, CORS is more permissive
       expect(response.status).not.toBe(403);
@@ -160,10 +160,10 @@ describe('API Security Tests', () => {
           title: '<script>alert("xss")</script>Test',
           excerpt: 'Test excerpt',
           content: 'Test content',
-          category: 'politics'
-        })
+          category: 'politics',
+        }),
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         expect(data.data.title).not.toContain('<script>');
@@ -179,8 +179,8 @@ describe('API Security Tests', () => {
         body: JSON.stringify({
           title: longTitle,
           excerpt: 'Test excerpt',
-          content: 'Test content'
-        })
+          content: 'Test content',
+        }),
       });
       expect(response.status).toBe(400);
       const data = await response.json();
@@ -195,14 +195,16 @@ describe('API Security Tests', () => {
           title: 'Test',
           excerpt: 'Test excerpt',
           content: 'Test content',
-          category: 'invalid-category'
-        })
+          category: 'invalid-category',
+        }),
       });
       expect(response.status).toBe(400);
     });
 
     test('limits number of tags', async () => {
-      const manyTags = Array(20).fill('tag').map((t, i) => `${t}${i}`);
+      const manyTags = Array(20)
+        .fill('tag')
+        .map((t, i) => `${t}${i}`);
       const response = await fetch(`${BASE_URL}/api/news`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -210,8 +212,8 @@ describe('API Security Tests', () => {
           title: 'Test',
           excerpt: 'Test excerpt',
           content: 'Test content',
-          tags: manyTags
-        })
+          tags: manyTags,
+        }),
       });
       expect(response.status).toBe(400);
       const data = await response.json();

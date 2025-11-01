@@ -2,14 +2,13 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :-------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
 
 </div>
 
 ---
-
 
 > **Operational interfaces and documentation standards for RESTful surfaces**
 
@@ -53,11 +52,11 @@ GraphQL remains the primary player-facing interface; REST focuses on operational
 
 ## 📎 Key Endpoints (MVP)
 
-| Path | Description | Notes |
-| ---- | ----------- | ----- |
-| `POST /admin/worlds` | Provision new simulation world | Async; triggers Terraform/Tilt pipeline (future) |
-| `PATCH /admin/feature-flags/{flag}` | Toggle runtime feature flag | Audit logged, dual-auth if `high_risk` |
-| `POST /webhooks/moderation` | Receive moderation escalation events | Supports retries, exponential backoff |
-| `GET /ops/audit-logs` | Export signed audit trail | Requires `ops:audit` scope; supports cursor pagination |
+| Path                                | Description                          | Notes                                                  |
+| ----------------------------------- | ------------------------------------ | ------------------------------------------------------ |
+| `POST /admin/worlds`                | Provision new simulation world       | Async; triggers Terraform/Tilt pipeline (future)       |
+| `PATCH /admin/feature-flags/{flag}` | Toggle runtime feature flag          | Audit logged, dual-auth if `high_risk`                 |
+| `POST /webhooks/moderation`         | Receive moderation escalation events | Supports retries, exponential backoff                  |
+| `GET /ops/audit-logs`               | Export signed audit trail            | Requires `ops:audit` scope; supports cursor pagination |
 
 Keep specs reviewed during release planning; link updates to ADRs and change logs for traceability.

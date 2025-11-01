@@ -1,6 +1,7 @@
 // Simple remote module exported for Module Federation (ESM)
 export default function mountRemote(elId = 'remote-root') {
-  const el = typeof document !== 'undefined' ? document.getElementById(elId) || document.body : null;
+  const el =
+    typeof document !== 'undefined' ? document.getElementById(elId) || document.body : null;
   if (!el) return;
   const container = document.createElement('div');
   container.style.padding = '12px';

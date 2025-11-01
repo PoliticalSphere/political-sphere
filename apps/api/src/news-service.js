@@ -4,7 +4,7 @@ import {
   isValidLength,
   validateCategory,
   validateTag,
-  isValidUrl
+  isValidUrl,
 } from '@political-sphere/shared';
 
 const ALLOWED_CATEGORIES = [
@@ -26,7 +26,6 @@ const ALLOWED_SOURCE_PROTOCOLS = ['https'];
 const LOCALHOST_SOURCE_NAMES = ['localhost', '127.0.0.1'];
 
 const DEFAULT_CATEGORY = 'general';
-
 
 function createValidationError(message, details) {
   const error = new Error(message);
@@ -51,7 +50,7 @@ function resolveCategory(category) {
   if (!validated) {
     throw createValidationError(
       `Invalid category. Must be one of: ${ALLOWED_CATEGORIES.join(', ')}`,
-      'category',
+      'category'
     );
   }
   return validated;
@@ -65,13 +64,13 @@ function validateTextField(fieldName, value, min, max) {
   if (!isValidLength(trimmed, min, max)) {
     throw createValidationError(
       `${fieldName} must be between ${min} and ${max} characters`,
-      fieldName.toLowerCase(),
+      fieldName.toLowerCase()
     );
   }
   if (!isValidInput(trimmed)) {
     throw createValidationError(
       `${fieldName} contains invalid characters or patterns`,
-      fieldName.toLowerCase(),
+      fieldName.toLowerCase()
     );
   }
   return trimmed;
@@ -121,7 +120,7 @@ function sanitizeSourcesInput(sources) {
     if (candidate.length > MAX_SOURCE_URL_LENGTH) {
       throw createValidationError(
         `Source URL exceeds maximum length of ${MAX_SOURCE_URL_LENGTH} characters`,
-        'sources',
+        'sources'
       );
     }
     if (!isValidUrl(candidate, [...ALLOWED_SOURCE_PROTOCOLS, 'http'])) {
@@ -133,7 +132,7 @@ function sanitizeSourcesInput(sources) {
       if (!(protocol === 'http' && LOCALHOST_SOURCE_NAMES.includes(parsed.hostname))) {
         throw createValidationError(
           'Insecure source URL protocol. Use HTTPS or localhost for development-only sources',
-          'sources',
+          'sources'
         );
       }
     }
@@ -142,10 +141,6 @@ function sanitizeSourcesInput(sources) {
 
   return Array.from(new Set(sanitized));
 }
-
-
-
-
 
 export class NewsService {
   constructor(store, nowFn = () => new Date()) {
@@ -168,9 +163,12 @@ export class NewsService {
   }
 
   _generateId(title = '') {
-    const base = String(title || 'news').toLowerCase().trim()
-      .replace(/[^a-z0-9]+/g, '-')
-      .replace(/(^-|-$)/g, '') || 'item';
+    const base =
+      String(title || 'news')
+        .toLowerCase()
+        .trim()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/(^-|-$)/g, '') || 'item';
     return `${base}-${Date.now().toString(36)}`;
   }
 
@@ -183,8 +181,8 @@ export class NewsService {
     }
   }
 
-    // further structural and content validations are handled in create() to allow
-    // sanitization and normalization prior to persistence
+  // further structural and content validations are handled in create() to allow
+  // sanitization and normalization prior to persistence
 
   async create(payload = {}) {
     this._validateCreatePayload(payload);
@@ -247,10 +245,11 @@ export class NewsService {
         throw createValidationError('Invalid search query', 'search');
       }
       const q = String(search).toLowerCase();
-      items = items.filter((i) =>
-        (i.title && i.title.toLowerCase().includes(q)) ||
-        (i.excerpt && i.excerpt.toLowerCase().includes(q)) ||
-        (i.content && i.content.toLowerCase().includes(q))
+      items = items.filter(
+        (i) =>
+          (i.title && i.title.toLowerCase().includes(q)) ||
+          (i.excerpt && i.excerpt.toLowerCase().includes(q)) ||
+          (i.content && i.content.toLowerCase().includes(q))
       );
     }
 

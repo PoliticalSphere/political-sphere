@@ -1,4 +1,4 @@
- import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
 import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
@@ -25,22 +25,10 @@ class PoliticalSphereAIAssistant extends Server {
       version: '1.0.0',
     });
 
-    this.setRequestHandler(
-      ListToolsRequestSchema,
-      this.handleListTools.bind(this)
-    );
-    this.setRequestHandler(
-      CallToolRequestSchema,
-      this.handleCallTool.bind(this)
-    );
-    this.setRequestHandler(
-      ListResourcesRequestSchema,
-      this.handleListResources.bind(this)
-    );
-    this.setRequestHandler(
-      ReadResourceRequestSchema,
-      this.handleReadResource.bind(this)
-    );
+    this.setRequestHandler(ListToolsRequestSchema, this.handleListTools.bind(this));
+    this.setRequestHandler(CallToolRequestSchema, this.handleCallTool.bind(this));
+    this.setRequestHandler(ListResourcesRequestSchema, this.handleListResources.bind(this));
+    this.setRequestHandler(ReadResourceRequestSchema, this.handleReadResource.bind(this));
   }
 
   async handleListTools() {
@@ -48,8 +36,7 @@ class PoliticalSphereAIAssistant extends Server {
       tools: [
         {
           name: 'generate_code',
-          description:
-            'Generate code based on requirements with Political Sphere standards',
+          description: 'Generate code based on requirements with Political Sphere standards',
           inputSchema: {
             type: 'object',
             properties: {
@@ -65,8 +52,7 @@ class PoliticalSphereAIAssistant extends Server {
         },
         {
           name: 'review_code',
-          description:
-            'Review code for quality, security, and standards compliance',
+          description: 'Review code for quality, security, and standards compliance',
           inputSchema: {
             type: 'object',
             properties: {
@@ -120,7 +106,10 @@ class PoliticalSphereAIAssistant extends Server {
   }
 
   async handleCallTool(request: McpRequest & { params?: { name?: string; arguments?: unknown } }) {
-    const { name, arguments: args } = (request.params || {}) as { name?: string; arguments?: unknown };
+    const { name, arguments: args } = (request.params || {}) as {
+      name?: string;
+      arguments?: unknown;
+    };
 
     // Type guard for args
     if (!args || typeof args !== 'object') {
@@ -139,24 +128,15 @@ class PoliticalSphereAIAssistant extends Server {
     }
 
     if (!this.checkFairness(typedArgs)) {
-      throw new McpError(
-        ErrorCode.InvalidRequest,
-        'Request may introduce unfair bias'
-      );
+      throw new McpError(ErrorCode.InvalidRequest, 'Request may introduce unfair bias');
     }
 
     if (this.detectConstitutionalViolation(typedArgs)) {
-      throw new McpError(
-        ErrorCode.InvalidRequest,
-        'Content violates constitutional safety'
-      );
+      throw new McpError(ErrorCode.InvalidRequest, 'Content violates constitutional safety');
     }
 
     if (!this.checkCommandSafety(name || '', typedArgs)) {
-      throw new McpError(
-        ErrorCode.InvalidRequest,
-        'Command is not safe to execute'
-      );
+      throw new McpError(ErrorCode.InvalidRequest, 'Command is not safe to execute');
     }
 
     // Log for audit and causality awareness
@@ -164,7 +144,9 @@ class PoliticalSphereAIAssistant extends Server {
 
     switch (name) {
       case 'generate_code':
-        return await this.generateCode(typedArgs as { requirement: string; language?: string; context?: string });
+        return await this.generateCode(
+          typedArgs as { requirement: string; language?: string; context?: string }
+        );
       case 'review_code':
         return await this.reviewCode(typedArgs as { code: string; language?: string });
       case 'optimize_performance':
@@ -172,17 +154,15 @@ class PoliticalSphereAIAssistant extends Server {
       case 'generate_tests':
         return await this.generateTests(typedArgs as { code: string });
       case 'simulate_scenario':
-        return await this.simulateScenario(typedArgs as { scenario: string; parameters?: Record<string, unknown> });
+        return await this.simulateScenario(
+          typedArgs as { scenario: string; parameters?: Record<string, unknown> }
+        );
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
     }
   }
 
-  async generateCode(args: {
-    requirement: string;
-    language?: string;
-    context?: string;
-  }) {
+  async generateCode(args: { requirement: string; language?: string; context?: string }) {
     const { requirement } = args;
 
     // Simulate AI code generation with Political Sphere standards
@@ -292,15 +272,13 @@ interface Result {
     const optimizations = [
       {
         type: 'algorithm',
-        suggestion:
-          'Consider using a more efficient sorting algorithm for large datasets',
+        suggestion: 'Consider using a more efficient sorting algorithm for large datasets',
         impact: 'high',
         effort: 'medium',
       },
       {
         type: 'memory',
-        suggestion:
-          'Implement streaming for large file processing to reduce memory usage',
+        suggestion: 'Implement streaming for large file processing to reduce memory usage',
         impact: 'medium',
         effort: 'high',
       },
@@ -313,9 +291,7 @@ interface Result {
     ];
 
     return {
-      content: [
-        { type: 'text', text: JSON.stringify({ optimizations }, null, 2) },
-      ],
+      content: [{ type: 'text', text: JSON.stringify({ optimizations }, null, 2) }],
     };
   }
 
@@ -382,16 +358,16 @@ describe('${this.extractClassName(code)}', () => {
         'Successful execution with expected results',
         'Potential failure points identified',
         'Performance bottlenecks simulated',
-        'Risk assessment completed'
+        'Risk assessment completed',
       ],
       recommendations: [
         'Implement monitoring for critical paths',
         'Add fallback mechanisms',
         'Test edge cases thoroughly',
-        'Document assumptions and constraints'
+        'Document assumptions and constraints',
       ],
       riskLevel: 'Medium',
-      estimatedImpact: 'High visibility improvement'
+      estimatedImpact: 'High visibility improvement',
     };
 
     return {
@@ -492,10 +468,7 @@ describe('${this.extractClassName(code)}', () => {
         };
 
       default:
-        throw new McpError(
-          ErrorCode.InvalidRequest,
-          `Unknown resource: ${uri}`
-        );
+        throw new McpError(ErrorCode.InvalidRequest, `Unknown resource: ${uri}`);
     }
   }
 
@@ -542,7 +515,7 @@ describe('${this.extractClassName(code)}', () => {
   private checkFairness(args: Record<string, unknown>): boolean {
     const content = JSON.stringify(args).toLowerCase();
     const biasWords = ['bias', 'unfair'];
-    return !biasWords.some(word => content.includes(word));
+    return !biasWords.some((word) => content.includes(word));
   }
 
   private detectConstitutionalViolation(args: Record<string, unknown>): boolean {
@@ -565,7 +538,9 @@ describe('${this.extractClassName(code)}', () => {
 async function main() {
   const server = new PoliticalSphereAIAssistant();
   const transport = new StdioServerTransport();
-  await (server as unknown as { connect(t: StdioServerTransport): Promise<void> }).connect(transport);
+  await (server as unknown as { connect(t: StdioServerTransport): Promise<void> }).connect(
+    transport
+  );
   console.error('Political Sphere AI Assistant MCP server running...');
 }
 

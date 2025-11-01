@@ -392,17 +392,18 @@ graph LR
 
 ### 📋 Template Status Legend
 
-| Symbol | Status | Description |
-|:---:|---|---|
-| ✅ | **Active** | Template available and maintained |
-| 🚧 | **In Development** | Template being created or extracted |
-| 📝 | **Planned** | Scheduled for future development |
-| 🔄 | **Under Review** | Template being updated or revised |
-| 🗄️ | **Archived** | Deprecated, kept for historical reference |
+| Symbol | Status             | Description                               |
+| :----: | ------------------ | ----------------------------------------- |
+|   ✅   | **Active**         | Template available and maintained         |
+|   🚧   | **In Development** | Template being created or extracted       |
+|   📝   | **Planned**        | Scheduled for future development          |
+|   🔄   | **Under Review**   | Template being updated or revised         |
+|   🗄️   | **Archived**       | Deprecated, kept for historical reference |
 
 ### 🎯 Current Template Coverage
 
 **Available Templates (6):**
+
 - ✅ Architectural Decision Record (ADR)
 - ✅ Request for Comments (RFC)
 - ✅ Incident Postmortem
@@ -411,6 +412,7 @@ graph LR
 - ✅ Game Design Document
 
 **In Development (8):**
+
 - 🚧 Data Protection Impact Assessment (DPIA)
 - 🚧 Security Risk Assessment
 - 🚧 Service Level Objective (SLO)
@@ -421,6 +423,7 @@ graph LR
 - 🚧 Runbook (standardizing existing)
 
 **Planned Q1 2026 (5):**
+
 - 📝 User Story / Feature Specification
 - 📝 Bug Report (standardized)
 - 📝 Test Plan
@@ -430,18 +433,14 @@ graph LR
 ### 🎯 Development Priorities
 
 **High Priority** (Blocking work or regulatory requirement):
+
 1. Data Protection Impact Assessment (DPIA) - GDPR compliance
 2. Security Risk Assessment - Security audit requirement
 3. Change Request - Production change management
 
-**Medium Priority** (Improving efficiency):
-4. Technical Design Document - Engineering workflow
-5. Deployment Plan - DevOps standardization
-6. Release Notes - Communication consistency
+**Medium Priority** (Improving efficiency): 4. Technical Design Document - Engineering workflow 5. Deployment Plan - DevOps standardization 6. Release Notes - Communication consistency
 
-**Low Priority** (Nice to have):
-7. User Story Template - Agile workflow support
-8. Bug Report Template - Quality process improvement
+**Low Priority** (Nice to have): 7. User Story Template - Agile workflow support 8. Bug Report Template - Quality process improvement
 
 ---
 
@@ -520,13 +519,13 @@ We track the following metrics to ensure template effectiveness:
 
 <br>
 
-| Metric | Description | Target |
-|---|---|---|
-| **Template Adoption Rate** | % of documents using approved templates | ≥95% |
-| **Template Coverage** | % of document types with templates | ≥80% |
-| **Template Completion Rate** | Started vs. published documents | ≥85% |
-| **Time-to-Complete** | Median time by template type | Varies |
-| **Automation Rate** | % of documents created via CLI vs. manual | ≥60% |
+| Metric                       | Description                               | Target |
+| ---------------------------- | ----------------------------------------- | ------ |
+| **Template Adoption Rate**   | % of documents using approved templates   | ≥95%   |
+| **Template Coverage**        | % of document types with templates        | ≥80%   |
+| **Template Completion Rate** | Started vs. published documents           | ≥85%   |
+| **Time-to-Complete**         | Median time by template type              | Varies |
+| **Automation Rate**          | % of documents created via CLI vs. manual | ≥60%   |
 
 </details>
 
@@ -535,13 +534,13 @@ We track the following metrics to ensure template effectiveness:
 
 <br>
 
-| Metric | Description | Target |
-|---|---|---|
-| **Template Satisfaction** | Post-creation NPS survey score | ≥4.2/5.0 |
-| **Reviewer Satisfaction** | Time and clarity of submissions | ≥4.5/5.0 |
-| **Deviation Requests** | Frequency and reasons | <5% |
-| **Document Quality Score** | Reviewer rubric scores | ≥80% |
-| **First-Time-Right Rate** | Documents requiring <2 revisions | ≥70% |
+| Metric                     | Description                      | Target   |
+| -------------------------- | -------------------------------- | -------- |
+| **Template Satisfaction**  | Post-creation NPS survey score   | ≥4.2/5.0 |
+| **Reviewer Satisfaction**  | Time and clarity of submissions  | ≥4.5/5.0 |
+| **Deviation Requests**     | Frequency and reasons            | <5%      |
+| **Document Quality Score** | Reviewer rubric scores           | ≥80%     |
+| **First-Time-Right Rate**  | Documents requiring <2 revisions | ≥70%     |
 
 </details>
 
@@ -550,12 +549,12 @@ We track the following metrics to ensure template effectiveness:
 
 <br>
 
-| Metric | Description | Target |
-|---|---|---|
-| **Audit Finding Rate** | Findings attributable to template gaps | <2% |
-| **Mandatory Field Completion** | % of required fields completed | ≥90% |
-| **Compliance Coverage** | Regulations addressed by templates | 100% |
-| **Override Usage** | Emergency override frequency | <1% |
+| Metric                         | Description                            | Target |
+| ------------------------------ | -------------------------------------- | ------ |
+| **Audit Finding Rate**         | Findings attributable to template gaps | <2%    |
+| **Mandatory Field Completion** | % of required fields completed         | ≥90%   |
+| **Compliance Coverage**        | Regulations addressed by templates     | 100%   |
+| **Override Usage**             | Emergency override frequency           | <1%    |
 
 </details>
 
@@ -564,12 +563,12 @@ We track the following metrics to ensure template effectiveness:
 
 <br>
 
-| Metric | Description | Tracking |
-|---|---|---|
-| **Document Velocity** | Documents created per week (trend) | 📈 Increasing |
-| **Review Cycle Time** | Submission to approval duration | 📉 Decreasing |
-| **Onboarding Impact** | Time-to-first-document for new hires | <2 days |
-| **Template ROI** | Time saved × hourly rate × usage | $XX,XXX/quarter |
+| Metric                | Description                          | Tracking        |
+| --------------------- | ------------------------------------ | --------------- |
+| **Document Velocity** | Documents created per week (trend)   | 📈 Increasing   |
+| **Review Cycle Time** | Submission to approval duration      | 📉 Decreasing   |
+| **Onboarding Impact** | Time-to-first-document for new hires | <2 days         |
+| **Template ROI**      | Time saved × hourly rate × usage     | $XX,XXX/quarter |
 
 </details>
 
@@ -772,6 +771,7 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 | Model Card | [model-card-template.md](../07-ai-and-simulation/model-inventory-and-system-cards/model-card-template.md) | AI Ethics Board | 4-8 hours |
 | System Card | [system-card-template.md](../07-ai-and-simulation/model-inventory-and-system-cards/system-card-template.md) | AI Governance | 1-2 days |
 | Runbook | See runbooks-index | SRE Review | 3-5 hours |
+
 ---
 
 ## 💡 Best Practices
@@ -784,12 +784,14 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 <br>
 
 ✅ **DO:**
+
 - Review template purpose and "when to use" guidance
 - Check example documents before starting
 - Select the most specific template available
 - Ask for help if unsure (#documentation channel)
 
 ❌ **DON'T:**
+
 - Force-fit content into wrong template
 - Skip mandatory sections without justification
 - Use outdated template versions
@@ -803,6 +805,7 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 <br>
 
 ✅ **DO:**
+
 - Fill all mandatory fields completely
 - Provide context and rationale
 - Use clear, concise language
@@ -810,6 +813,7 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 - Follow formatting conventions
 
 ❌ **DON'T:**
+
 - Leave placeholder text ("TODO", "TBD") - use specific values instead
 - Copy-paste without customization - adapt content to your specific context
 - Leave placeholder text ("TODO", "TBD")
@@ -825,6 +829,7 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 <br>
 
 ✅ **DO:**
+
 - Run automated validation (when available)
 - Spell-check and grammar-check
 - Verify all links work
@@ -833,6 +838,7 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 - Get peer review before formal submission
 
 ❌ **DON'T:**
+
 - Submit first draft without review
 - Ignore validation warnings
 - Skip stakeholder alignment
@@ -846,6 +852,7 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 <br>
 
 ✅ **DO:**
+
 - Update documents when information changes
 - Archive obsolete documents properly
 - Follow versioning policy
@@ -853,6 +860,7 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 - Set review reminders
 
 ❌ **DON'T:**
+
 - Let documents become stale
 - Make major changes without new version
 - Delete without archiving
@@ -862,14 +870,14 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 
 ### 🎯 Template Effectiveness Tips
 
-| Tip | Description | Impact |
-|:---:|---|---|
-| 🚀 | **Start Early** - Begin documentation during planning, not after implementation | High |
-| 👥 | **Collaborate** - Involve stakeholders throughout, not just at review | High |
-| 📝 | **Iterate** - Treat documents as living artifacts, update as you learn | Medium |
-| 🔗 | **Link** - Connect related documents, avoid duplication | Medium |
-| 🎨 | **Visualize** - Use diagrams, tables, and structured data | Medium |
-| 📊 | **Quantify** - Include metrics, costs, timelines where relevant | Low |
+| Tip | Description                                                                     | Impact |
+| :-: | ------------------------------------------------------------------------------- | ------ |
+| 🚀  | **Start Early** - Begin documentation during planning, not after implementation | High   |
+| 👥  | **Collaborate** - Involve stakeholders throughout, not just at review           | High   |
+| 📝  | **Iterate** - Treat documents as living artifacts, update as you learn          | Medium |
+| 🔗  | **Link** - Connect related documents, avoid duplication                         | Medium |
+| 🎨  | **Visualize** - Use diagrams, tables, and structured data                       | Medium |
+| 📊  | **Quantify** - Include metrics, costs, timelines where relevant                 | Low    |
 
 ---
 
@@ -1087,13 +1095,13 @@ Each template is mapped to applicable regulations:
 
 For audit purposes, documents created from templates must:
 
-| # | Requirement | Details |
-|:---:|---|---|
-| 1️⃣ | **Retain Metadata** | Template version, creation date, author |
-| 2️⃣ | **Document Deviations** | Explain any omitted mandatory sections |
-| 3️⃣ | **Approval Trail** | Who approved, when, digital signatures |
-| 4️⃣ | **Version History** | All revisions preserved in Git |
-| 5️⃣ | **Retention Compliance** | Per [retention policy](./retention-and-archiving-policy.md) |
+|  #  | Requirement              | Details                                                     |
+| :-: | ------------------------ | ----------------------------------------------------------- |
+| 1️⃣  | **Retain Metadata**      | Template version, creation date, author                     |
+| 2️⃣  | **Document Deviations**  | Explain any omitted mandatory sections                      |
+| 3️⃣  | **Approval Trail**       | Who approved, when, digital signatures                      |
+| 4️⃣  | **Version History**      | All revisions preserved in Git                              |
+| 5️⃣  | **Retention Compliance** | Per [retention policy](./retention-and-archiving-policy.md) |
 
 ### ✅ Automated Compliance Checks
 
@@ -1184,12 +1192,12 @@ For urgent needs, contact Documentation Team for manual translation assistance.
 
 **A:** Service Level Agreements:
 
-| Stage | Timeline |
-|---|---|
-| **Acknowledgment** | 2 business days |
-| **Initial Review** | 5 business days |
-| **Development** (if approved) | 10 business days (1 sprint) |
-| **Urgent/Critical** | 24-48 hours (emergency process) |
+| Stage                         | Timeline                        |
+| ----------------------------- | ------------------------------- |
+| **Acknowledgment**            | 2 business days                 |
+| **Initial Review**            | 5 business days                 |
+| **Development** (if approved) | 10 business days (1 sprint)     |
+| **Urgent/Critical**           | 24-48 hours (emergency process) |
 
 </details>
 
@@ -1205,6 +1213,7 @@ npm run validate:doc -- path/to/document.md
 ```
 
 Returns:
+
 - ✅ Compliance status
 - ⚠️ Warnings (missing optional sections)
 - ❌ Errors (missing mandatory fields)

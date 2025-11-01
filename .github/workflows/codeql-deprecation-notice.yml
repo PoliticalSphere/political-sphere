@@ -1,0 +1,30 @@
+name: CodeQL Deprecation Notice
+on:
+  push: { branches: [main] }
+  pull_request:
+  schedule: [{ cron: '0 9 * * 1' }]
+
+jobs:
+  deprecation-notice:
+    name: CodeQL Deprecation Notice
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.modified, '.github/workflows/codeql.yml')
+    steps:
+      - name: Deprecation Warning
+        run: |
+          echo "⚠️  WARNING: CodeQL workflow has been modified"
+          echo "🔄 Migration in progress: CodeQL → Semgrep"
+          echo "📋 Please ensure Semgrep workflow is properly configured"
+          echo "🗓️  CodeQL removal target: 2025-01-31"
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ **CodeQL Workflow Modified**\n\nThe CodeQL security scanning workflow has been updated with deprecation notices. Security scanning is now primarily handled by [Semgrep](.github/workflows/semgrep.yml).\n\n**Action Required:**\n- Verify Semgrep workflow is working correctly\n- Update any automation depending on CodeQL results\n- CodeQL workflow will be removed on **2025-01-31**'
+            });

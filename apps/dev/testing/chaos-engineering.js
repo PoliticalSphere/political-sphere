@@ -71,22 +71,16 @@ class ChaosEngineering {
         latency: {
           min: 100, // ms
           max: 2000, // ms
-          distribution: 'normal'
+          distribution: 'normal',
         },
-        packetLoss: 0.01 // 1%
+        packetLoss: 0.01, // 1%
       },
       safetyLimits: {
         maxLatency: 5000,
         maxPacketLoss: 0.05,
-        autoRollback: true
+        autoRollback: true,
       },
-      metrics: [
-        'responseTime',
-        'errorRate',
-        'throughput',
-        'cpuUsage',
-        'memoryUsage'
-      ]
+      metrics: ['responseTime', 'errorRate', 'throughput', 'cpuUsage', 'memoryUsage'],
     };
   }
 
@@ -102,22 +96,15 @@ class ChaosEngineering {
         cpuLoad: 0.9, // 90% CPU usage
         memoryPressure: 0.85, // 85% memory usage
         diskIO: 'high',
-        networkIO: 'saturated'
+        networkIO: 'saturated',
       },
       safetyLimits: {
         maxCpuUsage: 0.95,
         maxMemoryUsage: 0.95,
         autoRollback: true,
-        circuitBreaker: true
+        circuitBreaker: true,
       },
-      metrics: [
-        'cpuUsage',
-        'memoryUsage',
-        'diskIO',
-        'networkIO',
-        'responseTime',
-        'errorRate'
-      ]
+      metrics: ['cpuUsage', 'memoryUsage', 'diskIO', 'networkIO', 'responseTime', 'errorRate'],
     };
   }
 
@@ -133,20 +120,14 @@ class ChaosEngineering {
         failureMode: 'crash', // crash, hang, slow
         failureRate: 0.1, // 10% of requests fail
         recoveryTime: 30, // seconds
-        cascading: true // allow cascading failures
+        cascading: true, // allow cascading failures
       },
       safetyLimits: {
         maxFailureRate: 0.5,
         autoRollback: true,
-        circuitBreaker: true
+        circuitBreaker: true,
       },
-      metrics: [
-        'errorRate',
-        'responseTime',
-        'availability',
-        'recoveryTime',
-        'cascadingFailures'
-      ]
+      metrics: ['errorRate', 'responseTime', 'availability', 'recoveryTime', 'cascadingFailures'],
     };
   }
 
@@ -161,19 +142,14 @@ class ChaosEngineering {
       parameters: {
         corruptionRate: 0.001, // 0.1% of data corrupted
         corruptionType: 'random', // random, systematic
-        backupIntegrity: true
+        backupIntegrity: true,
       },
       safetyLimits: {
         maxCorruptionRate: 0.01,
         dataBackup: true,
-        autoRollback: true
+        autoRollback: true,
       },
-      metrics: [
-        'dataIntegrity',
-        'errorRate',
-        'recoveryTime',
-        'backupSuccess'
-      ]
+      metrics: ['dataIntegrity', 'errorRate', 'recoveryTime', 'backupSuccess'],
     };
   }
 
@@ -182,7 +158,7 @@ class ChaosEngineering {
       networkLatency: this.createNetworkLatencyExperiment(),
       resourceExhaustion: this.createResourceExhaustionExperiment(),
       serviceFailure: this.createServiceFailureExperiment(),
-      dataCorruption: this.createDataCorruptionExperiment()
+      dataCorruption: this.createDataCorruptionExperiment(),
     };
 
     const configPath = customConfigPath ?? this.configPath;
@@ -190,7 +166,7 @@ class ChaosEngineering {
       const resolved = path.resolve(configPath);
       const data = await fs.readFile(resolved, 'utf8');
       const parsed = JSON.parse(data);
-      const experimentsArray = Array.isArray(parsed) ? parsed : parsed.experiments ?? [];
+      const experimentsArray = Array.isArray(parsed) ? parsed : (parsed.experiments ?? []);
       const overrides = {};
       experimentsArray.forEach((experiment) => {
         if (experiment?.name) {
@@ -219,7 +195,7 @@ class ChaosEngineering {
         throughput: { mean: 1200, std: 100, unit: 'requests/sec' },
         cpuUsage: { mean: 0.45, std: 0.1, unit: 'percentage' },
         memoryUsage: { mean: 0.6, std: 0.15, unit: 'percentage' },
-        availability: { mean: 0.9995, std: 0.0001, unit: 'percentage' }
+        availability: { mean: 0.9995, std: 0.0001, unit: 'percentage' },
       };
     }
 
@@ -264,7 +240,13 @@ class ChaosEngineering {
     const recoveryResult = await this.recoverSystem(experiment);
 
     // Analysis
-    const analysis = this.analyzeExperimentResults(experiment, preMetrics, postMetrics, executionResult, safety);
+    const analysis = this.analyzeExperimentResults(
+      experiment,
+      preMetrics,
+      postMetrics,
+      executionResult,
+      safety
+    );
 
     const result = {
       id: experimentId,
@@ -278,7 +260,7 @@ class ChaosEngineering {
       executionResult,
       recoveryResult,
       analysis,
-      status: analysis.resilient ? 'passed' : 'failed'
+      status: analysis.resilient ? 'passed' : 'failed',
     };
 
     this.results.push(result);
@@ -299,7 +281,7 @@ class ChaosEngineering {
       memoryUsage: clamp(this.sampleMetric('memoryUsage'), 0, 1),
       availability: clamp(this.sampleMetric('availability'), 0, 1),
       dataIntegrity: clamp(this.sampleMetric('dataIntegrity'), 0, 1),
-      backupSuccess: true
+      backupSuccess: true,
     };
 
     if (phase === 'post' && experiment) {
@@ -320,7 +302,7 @@ class ChaosEngineering {
         cpuUsage: { mean: 0.5, std: 0.1 },
         memoryUsage: { mean: 0.6, std: 0.12 },
         availability: { mean: 0.999, std: 0.0005 },
-        dataIntegrity: { mean: 1, std: 0.001 }
+        dataIntegrity: { mean: 1, std: 0.001 },
       };
       const def = defaults[metricName] ?? { mean: 0.5, std: 0.1 };
       return sampleNormal(def.mean, def.std);
@@ -369,30 +351,39 @@ class ChaosEngineering {
 
     switch (experiment.type) {
       case 'network':
-        if (experiment.safetyLimits?.maxLatency && metrics.responseTime > experiment.safetyLimits.maxLatency) {
+        if (
+          experiment.safetyLimits?.maxLatency &&
+          metrics.responseTime > experiment.safetyLimits.maxLatency
+        ) {
           incidents.push({
             metric: 'responseTime',
             action: 'Terminate network latency experiment early',
             priority: 'high',
-            reason: `Latency ${metrics.responseTime.toFixed(0)}ms exceeded limit ${experiment.safetyLimits.maxLatency}ms`
+            reason: `Latency ${metrics.responseTime.toFixed(0)}ms exceeded limit ${experiment.safetyLimits.maxLatency}ms`,
           });
         }
         break;
       case 'resource':
-        if (experiment.safetyLimits?.maxCpuUsage && metrics.cpuUsage > experiment.safetyLimits.maxCpuUsage) {
+        if (
+          experiment.safetyLimits?.maxCpuUsage &&
+          metrics.cpuUsage > experiment.safetyLimits.maxCpuUsage
+        ) {
           incidents.push({
             metric: 'cpuUsage',
             action: 'Scale up temporarily or rollback resource experiment',
             priority: 'high',
-            reason: `CPU usage ${(metrics.cpuUsage * 100).toFixed(1)}% above limit ${(experiment.safetyLimits.maxCpuUsage * 100).toFixed(1)}%`
+            reason: `CPU usage ${(metrics.cpuUsage * 100).toFixed(1)}% above limit ${(experiment.safetyLimits.maxCpuUsage * 100).toFixed(1)}%`,
           });
         }
-        if (experiment.safetyLimits?.maxMemoryUsage && metrics.memoryUsage > experiment.safetyLimits.maxMemoryUsage) {
+        if (
+          experiment.safetyLimits?.maxMemoryUsage &&
+          metrics.memoryUsage > experiment.safetyLimits.maxMemoryUsage
+        ) {
           incidents.push({
             metric: 'memoryUsage',
             action: 'Trigger memory guardrails',
             priority: 'high',
-            reason: `Memory usage ${(metrics.memoryUsage * 100).toFixed(1)}% above limit ${(experiment.safetyLimits.maxMemoryUsage * 100).toFixed(1)}%`
+            reason: `Memory usage ${(metrics.memoryUsage * 100).toFixed(1)}% above limit ${(experiment.safetyLimits.maxMemoryUsage * 100).toFixed(1)}%`,
           });
         }
         break;
@@ -402,17 +393,20 @@ class ChaosEngineering {
             metric: 'errorRate',
             action: 'Invoke circuit breaker to protect downstream services',
             priority: 'critical',
-            reason: `Error rate ${(metrics.errorRate * 100).toFixed(2)}% exceeded allowed ${(experiment.safetyLimits?.maxFailureRate ?? 0.5) * 100}%`
+            reason: `Error rate ${(metrics.errorRate * 100).toFixed(2)}% exceeded allowed ${(experiment.safetyLimits?.maxFailureRate ?? 0.5) * 100}%`,
           });
         }
         break;
       case 'data':
-        if (experiment.safetyLimits?.maxCorruptionRate && metrics.dataIntegrity < 1 - experiment.safetyLimits.maxCorruptionRate) {
+        if (
+          experiment.safetyLimits?.maxCorruptionRate &&
+          metrics.dataIntegrity < 1 - experiment.safetyLimits.maxCorruptionRate
+        ) {
           incidents.push({
             metric: 'dataIntegrity',
             action: 'Restore from backups and halt data corruption experiment',
             priority: 'critical',
-            reason: 'Data integrity dropped beyond safety limits'
+            reason: 'Data integrity dropped beyond safety limits',
           });
         }
         if (experiment.safetyLimits?.dataBackup && metrics.backupSuccess === false) {
@@ -420,7 +414,7 @@ class ChaosEngineering {
             metric: 'backupSuccess',
             action: 'Validate backup pipeline before next chaos run',
             priority: 'high',
-            reason: 'Backup verification failed during chaos experiment'
+            reason: 'Backup verification failed during chaos experiment',
           });
         }
         break;
@@ -430,7 +424,7 @@ class ChaosEngineering {
 
     return {
       passed: incidents.length === 0,
-      incidents
+      incidents,
     };
   }
 
@@ -441,7 +435,7 @@ class ChaosEngineering {
       const baseline = this.baselines[metric] ?? {
         mean: value,
         std: Math.max(Math.abs(value) * 0.1, 0.0001),
-        unit: this.baselines[metric]?.unit ?? null
+        unit: this.baselines[metric]?.unit ?? null,
       };
       const mean = baseline.mean ?? value;
       const std = baseline.std ?? Math.max(Math.abs(value) * 0.1, 0.0001);
@@ -451,7 +445,7 @@ class ChaosEngineering {
       this.baselines[metric] = {
         ...baseline,
         mean: newMean,
-        std: Math.sqrt(Math.max(newVariance, 0.0000001))
+        std: Math.sqrt(Math.max(newVariance, 0.0000001)),
       };
     });
   }
@@ -464,7 +458,7 @@ class ChaosEngineering {
       timestamp: result.endTime,
       risk: result.analysis.riskAssessment,
       safetyIncidents: result.safety.incidents.length,
-      sloBreaches: result.analysis.sloBreaches.length
+      sloBreaches: result.analysis.sloBreaches.length,
     });
     await fs.mkdir(path.dirname(this.historyLog), { recursive: true });
     await fs.appendFile(this.historyLog, `${line}\n`);
@@ -478,7 +472,7 @@ class ChaosEngineering {
       success: Math.random() > 0.1, // 90% success rate
       duration: experiment.duration * 1000,
       affectedComponents: experiment.targets,
-      sideEffects: []
+      sideEffects: [],
     };
 
     // Add realistic side effects based on experiment type
@@ -503,7 +497,7 @@ class ChaosEngineering {
       success: true,
       recoveryTime,
       method: experiment.safetyLimits.autoRollback ? 'auto-rollback' : 'manual',
-      verified: true
+      verified: true,
     };
   }
 
@@ -517,15 +511,18 @@ class ChaosEngineering {
       recommendations: [],
       riskAssessment: 'low',
       sloBreaches: [],
-      safetyIncidents: safety?.incidents ?? []
+      safetyIncidents: safety?.incidents ?? [],
     };
 
     // Analyze each metric
-    Object.keys(preMetrics).forEach(metric => {
+    Object.keys(preMetrics).forEach((metric) => {
       if (typeof preMetrics[metric] === 'number' && typeof postMetrics[metric] === 'number') {
         const baseline = this.baselines[metric];
         const change = postMetrics[metric] - preMetrics[metric];
-        const changePercent = Math.abs(preMetrics[metric]) > 0 ? Math.abs(change / preMetrics[metric]) : Math.abs(change);
+        const changePercent =
+          Math.abs(preMetrics[metric]) > 0
+            ? Math.abs(change / preMetrics[metric])
+            : Math.abs(change);
         let severity = 'low';
         let breached = false;
 
@@ -545,7 +542,7 @@ class ChaosEngineering {
         if (!breached && changePercent <= 0.5) {
           analysis.strengths.push({
             metric,
-            stability: 1 - changePercent
+            stability: 1 - changePercent,
           });
           return;
         }
@@ -554,7 +551,7 @@ class ChaosEngineering {
         analysis.weaknesses.push({
           metric,
           change: changePercent,
-          severity: severity === 'low' ? (changePercent > 1 ? 'high' : 'medium') : severity
+          severity: severity === 'low' ? (changePercent > 1 ? 'high' : 'medium') : severity,
         });
       }
     });
@@ -571,7 +568,9 @@ class ChaosEngineering {
         analysis.sloBreaches,
         analysis.safetyIncidents
       );
-      analysis.riskAssessment = analysis.weaknesses.some(w => w.severity === 'high') ? 'high' : 'medium';
+      analysis.riskAssessment = analysis.weaknesses.some((w) => w.severity === 'high')
+        ? 'high'
+        : 'medium';
     }
 
     return analysis;
@@ -580,24 +579,24 @@ class ChaosEngineering {
   generateRecommendations(experiment, weaknesses, sloBreaches = [], safetyIncidents = []) {
     const recommendations = [];
 
-    weaknesses.forEach(weakness => {
+    weaknesses.forEach((weakness) => {
       if (weakness.metric === 'responseTime') {
         recommendations.push({
           priority: 'high',
           action: 'Implement response time circuit breakers',
-          rationale: 'System response times degraded significantly during chaos experiment'
+          rationale: 'System response times degraded significantly during chaos experiment',
         });
       } else if (weakness.metric === 'errorRate') {
         recommendations.push({
           priority: 'high',
           action: 'Add retry mechanisms and fallback strategies',
-          rationale: 'Error rates increased beyond acceptable thresholds'
+          rationale: 'Error rates increased beyond acceptable thresholds',
         });
       } else if (weakness.metric === 'availability') {
         recommendations.push({
           priority: 'critical',
           action: 'Implement redundant systems and failover mechanisms',
-          rationale: 'System availability was compromised during experiment'
+          rationale: 'System availability was compromised during experiment',
         });
       }
     });
@@ -607,7 +606,7 @@ class ChaosEngineering {
         recommendations.push({
           priority: 'critical',
           action: 'Introduce multi-region failover and chaos alerts',
-          rationale: 'Availability SLO breached during chaos experiment'
+          rationale: 'Availability SLO breached during chaos experiment',
         });
       }
     });
@@ -616,7 +615,7 @@ class ChaosEngineering {
       recommendations.push({
         priority: incident.priority ?? 'high',
         action: incident.action,
-        rationale: incident.reason ?? 'Safety limit exceeded during experiment'
+        rationale: incident.reason ?? 'Safety limit exceeded during experiment',
       });
     });
 
@@ -630,16 +629,22 @@ class ChaosEngineering {
       timestamp: new Date().toISOString(),
       summary: {
         totalExperiments: this.results.length,
-        passedExperiments: this.results.filter(r => r.status === 'passed').length,
-        failedExperiments: this.results.filter(r => r.status === 'failed').length,
+        passedExperiments: this.results.filter((r) => r.status === 'passed').length,
+        failedExperiments: this.results.filter((r) => r.status === 'failed').length,
         overallResilience: this.calculateOverallResilience(),
-        sloBreaches: this.results.reduce((acc, r) => acc + (r?.analysis?.sloBreaches?.length ?? 0), 0),
-        safetyIncidents: this.results.reduce((acc, r) => acc + (r?.safety?.incidents?.length ?? 0), 0)
+        sloBreaches: this.results.reduce(
+          (acc, r) => acc + (r?.analysis?.sloBreaches?.length ?? 0),
+          0
+        ),
+        safetyIncidents: this.results.reduce(
+          (acc, r) => acc + (r?.safety?.incidents?.length ?? 0),
+          0
+        ),
       },
       experiments: this.experiments,
       results: this.results.slice(-10), // Last 10 results
       recommendations: this.consolidateRecommendations(),
-      nextSteps: this.generateNextSteps()
+      nextSteps: this.generateNextSteps(),
     };
 
     await fs.mkdir('ai-learning', { recursive: true });
@@ -651,14 +656,14 @@ class ChaosEngineering {
   calculateOverallResilience() {
     if (this.results.length === 0) return 0;
 
-    const passedCount = this.results.filter(r => r.status === 'passed').length;
+    const passedCount = this.results.filter((r) => r.status === 'passed').length;
     return passedCount / this.results.length;
   }
 
   consolidateRecommendations() {
     const allRecommendations = [];
 
-    this.results.forEach(result => {
+    this.results.forEach((result) => {
       if (result.analysis.recommendations) {
         allRecommendations.push(...result.analysis.recommendations);
       }
@@ -666,7 +671,7 @@ class ChaosEngineering {
 
     // Group and deduplicate recommendations
     const grouped = {};
-    allRecommendations.forEach(rec => {
+    allRecommendations.forEach((rec) => {
       const key = rec.action;
       if (!grouped[key]) {
         grouped[key] = { ...rec, count: 0 };
@@ -674,7 +679,9 @@ class ChaosEngineering {
       grouped[key].count++;
     });
 
-    return Object.values(grouped).sort((a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]);
+    return Object.values(grouped).sort(
+      (a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]
+    );
   }
 
   generateNextSteps() {
@@ -686,26 +693,26 @@ class ChaosEngineering {
       nextSteps.push({
         priority: 'high',
         action: 'Address critical resilience issues before proceeding',
-        timeline: 'Immediate'
+        timeline: 'Immediate',
       });
     }
 
     nextSteps.push({
       priority: 'medium',
       action: 'Run chaos experiments in staging environment',
-      timeline: 'Next sprint'
+      timeline: 'Next sprint',
     });
 
     nextSteps.push({
       priority: 'medium',
       action: 'Implement automated chaos testing in CI/CD pipeline',
-      timeline: 'Next release'
+      timeline: 'Next release',
     });
 
     nextSteps.push({
       priority: 'low',
       action: 'Expand chaos experiment coverage to new failure scenarios',
-      timeline: 'Future releases'
+      timeline: 'Future releases',
     });
 
     return nextSteps;
@@ -716,11 +723,14 @@ class ChaosEngineering {
       experiments: this.experiments,
       results: this.results,
       baselines: this.baselines,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
 
     await fs.mkdir('ai-learning', { recursive: true });
-    await fs.writeFile('ai-learning/chaos-experiments.json', JSON.stringify(this.experiments, null, 2));
+    await fs.writeFile(
+      'ai-learning/chaos-experiments.json',
+      JSON.stringify(this.experiments, null, 2)
+    );
     await fs.writeFile('ai-learning/chaos-results.json', JSON.stringify(this.results, null, 2));
     await fs.writeFile('ai-learning/chaos-state.json', JSON.stringify(state, null, 2));
     await this.persistBaselines();
@@ -738,7 +748,9 @@ class ChaosEngineering {
 
       let experimentEntries = Object.entries(this.experiments);
       if (experimentName) {
-        const selection = experimentEntries.find(([key, exp]) => key === experimentName || exp.name === experimentName);
+        const selection = experimentEntries.find(
+          ([key, exp]) => key === experimentName || exp.name === experimentName
+        );
         if (!selection) {
           throw new Error(`Experiment "${experimentName}" not found in configuration`);
         }
@@ -754,7 +766,7 @@ class ChaosEngineering {
 
         // Wait between experiments for system stabilization
         if (experimentEntries.length > 1) {
-          await new Promise(resolve => setTimeout(resolve, stabilizationDelay));
+          await new Promise((resolve) => setTimeout(resolve, stabilizationDelay));
         }
       }
 
@@ -767,7 +779,6 @@ class ChaosEngineering {
       console.log(`🧪 Experiments run: ${report.summary.totalExperiments}`);
 
       return report;
-
     } catch (error) {
       console.error('❌ Chaos engineering campaign failed:', error);
       throw error;
@@ -784,7 +795,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     .runChaosCampaign({
       experimentName: cliOptions.experiment,
       configPath: cliOptions.configPath,
-      stabilizationDelay: cliOptions.stabilizationDelay
+      stabilizationDelay: cliOptions.stabilizationDelay,
     })
     .then((report) => {
       console.log('\n📋 Chaos Engineering Campaign Summary:');
@@ -810,7 +821,7 @@ export default ChaosEngineering;
 
 function parseArgs(argv) {
   const options = {
-    stabilizationDelay: 30000
+    stabilizationDelay: 30000,
   };
 
   argv.forEach((arg) => {

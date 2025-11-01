@@ -11,7 +11,7 @@ export const LOG_LEVELS = {
   INFO: 1,
   WARN: 2,
   ERROR: 3,
-  FATAL: 4
+  FATAL: 4,
 };
 
 const LOG_LEVEL_NAMES = ['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'];
@@ -24,7 +24,7 @@ class Logger {
     this.console = options.console !== false;
     this.file = options.file;
     this.stream = null;
-    
+
     if (this.file) {
       this.#initFileStream();
     }
@@ -47,7 +47,7 @@ class Logger {
       service: this.service,
       environment: this.environment,
       message,
-      ...meta
+      ...meta,
     };
 
     return JSON.stringify(logEntry);
@@ -66,7 +66,7 @@ class Logger {
           1: '\x1b[32m', // INFO - Green
           2: '\x1b[33m', // WARN - Yellow
           3: '\x1b[31m', // ERROR - Red
-          4: '\x1b[35m'  // FATAL - Magenta
+          4: '\x1b[35m', // FATAL - Magenta
         };
         const reset = '\x1b[0m';
         console.log(`${colors[level]}${formatted}${reset}`);
@@ -109,7 +109,7 @@ class Logger {
       statusCode: res.statusCode,
       duration: `${duration}ms`,
       ip: req.headers['x-forwarded-for']?.split(',')[0] || req.socket.remoteAddress,
-      userAgent: req.headers['user-agent']
+      userAgent: req.headers['user-agent'],
     };
 
     if (res.statusCode >= 500) {
@@ -128,7 +128,7 @@ class Logger {
       ...details,
       ip: req?.headers?.['x-forwarded-for']?.split(',')[0] || req?.socket?.remoteAddress,
       userAgent: req?.headers?.['user-agent'],
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
     };
 
     this.warn('SECURITY_EVENT', meta);
@@ -140,7 +140,7 @@ class Logger {
       errorName: error.name,
       errorMessage: error.message,
       stack: error.stack,
-      ...context
+      ...context,
     };
 
     this.error('Application error', meta);

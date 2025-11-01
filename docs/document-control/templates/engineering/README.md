@@ -26,6 +26,7 @@ Templates for technical design, implementation, and quality assurance.
 ## Template Guidelines
 
 All engineering templates should include:
+
 - Clear problem statement
 - Technical requirements
 - Design rationale
@@ -36,6 +37,7 @@ All engineering templates should include:
 ## Integration
 
 Templates will integrate with:
+
 - GitHub issue/PR templates
 - IDE snippets and tooling
 - CI/CD validation pipelines

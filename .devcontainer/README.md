@@ -67,13 +67,15 @@ The devcontainer uses Docker Compose to orchestrate multiple services:
 
 The devcontainer includes these features:
 
-- Node.js 22 with npm, yarn
-- Docker-in-Docker for container builds
-- GitHub CLI
-- kubectl, Helm (Kubernetes tools)
-- Terraform, TFLint, Terragrunt
-- AWS CLI
-- Python 3.11
+- **Node.js 22** with npm, yarn, and global development tools
+- **Docker-in-Docker** for container builds and testing
+- **GitHub CLI** for repository management and automation
+- **Kubernetes tools** (kubectl, Helm) for container orchestration
+- **Infrastructure as Code** (Terraform, TFLint, Terragrunt)
+- **AWS CLI** for cloud resource management
+- **Python 3.11** for scripting and automation
+- **Security hardening** with read-only filesystem and tmpfs mounts
+- **Performance optimization** with resource limits and efficient caching
 
 ## Lifecycle Hooks
 
@@ -255,16 +257,25 @@ Add scripts to `.devcontainer/scripts/` and reference in lifecycle hooks.
 
 ## Performance Optimization
 
+### Resource Management
+
+The container is optimized for development workloads:
+
+- **CPU**: 2 cores (scalable based on host capabilities)
+- **Memory**: 4GB with 8GB swap for burst capacity
+- **Storage**: tmpfs mounts for high-performance I/O
+- **Security**: Read-only root filesystem with controlled write access
+
 ### Volume Caching
 
-Node modules are cached in Docker volumes for faster builds:
+Node modules and build cache are persisted in Docker volumes:
 
-- `political-sphere-node_modules`
-- `political-sphere-nx-cache`
+- `political-sphere-node_modules` - Cached dependencies
+- `political-sphere-nx-cache` - Nx build cache for faster incremental builds
 
-### BuildKit
+### BuildKit Optimization
 
-BuildKit is enabled for faster, smarter builds:
+BuildKit is enabled for faster, more efficient builds:
 
 ```bash
 DOCKER_BUILDKIT=1
@@ -273,10 +284,11 @@ COMPOSE_DOCKER_CLI_BUILD=1
 
 ### Incremental Updates
 
-Use `updateContentCommand` instead of rebuilding:
+Use `updateContentCommand` for dependency updates:
 
-- Faster dependency updates
-- Preserves container state
+- Faster than full container rebuilds
+- Preserves running container state
+- Updates only what's changed
 
 ## Maintenance
 
@@ -346,6 +358,39 @@ If you were developing locally without devcontainer:
    git stash pop
    npm ci
    ```
+
+## Security & Performance Notes
+
+### Security Features
+
+- **Read-only root filesystem** prevents unauthorized modifications
+- **tmpfs mounts** provide secure temporary storage
+- **Capability restrictions** limit container privileges
+- **Non-root user** (node) for development operations
+- **Secure password generation** with high entropy
+
+### Performance Optimizations
+
+- **Resource limits** prevent resource exhaustion
+- **Volume caching** speeds up dependency installation
+- **tmpfs I/O** accelerates temporary file operations
+- **BuildKit** enables parallel and cached builds
+- **Incremental updates** minimize rebuild times
+
+### Monitoring & Troubleshooting
+
+Check container performance with:
+
+```bash
+# Monitor resource usage
+docker stats political-sphere-dev
+
+# View container logs
+docker logs political-sphere-dev
+
+# Check service health
+docker compose -f apps/dev/docker/docker-compose.dev.yaml ps
+```
 
 ## References
 

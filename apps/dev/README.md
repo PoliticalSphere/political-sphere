@@ -70,6 +70,7 @@ make vault-port-forward
 ```
 
 Notes:
+
 - k3d is tuned in `apps/dev/k3d/create-cluster.sh` for small dev machines. Adjust memory/CPU in the script or pass custom args.
 
 ## Testing Locally

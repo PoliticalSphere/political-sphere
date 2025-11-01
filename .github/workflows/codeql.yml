@@ -1,12 +1,17 @@
-name: CodeQL
+# DEPRECATED: This workflow is being phased out in favor of Semgrep
+# TODO: Remove this workflow after Semgrep transition is complete (target: 2025-01-31)
+# Migration: All security scanning has been moved to .github/workflows/semgrep.yml
+
+name: CodeQL (DEPRECATED)
 on:
   push: { branches: [main] }
   pull_request:
   schedule: [{ cron: '0 9 * * 1' }]
 jobs:
   analyze:
-    name: Analyze
+    name: Analyze (DEPRECATED - Migrate to Semgrep)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -18,11 +23,44 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Deprecation Notice
+        run: |
+          echo "⚠️  WARNING: CodeQL workflow is deprecated"
+          echo "🔄 Migration: Security scanning now uses Semgrep"
+          echo "📋 See: .github/workflows/semgrep.yml"
+          echo "🗓️  Removal date: 2025-01-31"
+
       - name: Initialize CodeQL
         uses: github/codeql-action/init@v3
         with:
           languages: ${{ matrix.language }}
+
       - name: Autobuild
         uses: github/codeql-action/autobuild@v3
+
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@v3
+        continue-on-error: true
+
+      - name: Upload CodeQL Results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: codeql-results
+          path: |
+            **/codeql-db/
+            **/results/
+          retention-days: 30
+
+      - name: Comment on PR (Deprecation Notice)
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: '⚠️ **CodeQL Security Scan (DEPRECATED)**\n\nThis workflow is being phased out. Security scanning now uses [Semgrep](.github/workflows/semgrep.yml) for improved performance and coverage.\n\nThe CodeQL workflow will be removed on **2025-01-31**. Please update any automation that depends on CodeQL results.'
+            });

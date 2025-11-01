@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |
-| :------------: | :-----: | :----------: | :--------------: | :----------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Ops Council |   Quarterly  |
+| Classification | Version | Last Updated |    Owner    | Review Cycle |
+| :------------: | :-----: | :----------: | :---------: | :----------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Ops Council |  Quarterly   |
 
 </div>
 
@@ -32,33 +32,36 @@
 
 ## 📋 Key Documents
 
-| Document | Purpose | Status |
-| -------- | ------- | ------ |
-| [SLOs, SLAs, and SLI Catalog](slos-slas-and-sli-catalog.md) | Service level objectives and indicators | Active |
-| [Dashboards and Alerts](dashboards-and-alerts.md) | Monitoring dashboards and alert configurations | Active |
-| [On-Call and Incident Handbook](on-call-and-incident-handbook.md) | Incident response procedures | Active |
-| [Runbooks Index](runbooks-index.md) | Operational runbooks for common issues | Active |
-| [Capacity and Demand Management](capacity-and-demand-management.md) | Resource planning and scaling | Draft |
-| [Change Failure Rate and Velocity Metrics](change-failure-rate-and-velocity-metrics.md) | Deployment and reliability metrics | Active |
-| [Ops KPIs and Executive Reporting](ops-kpis-and-executive-reporting.md) | Key performance indicators and reporting | Active |
+| Document                                                                                | Purpose                                        | Status |
+| --------------------------------------------------------------------------------------- | ---------------------------------------------- | ------ |
+| [SLOs, SLAs, and SLI Catalog](slos-slas-and-sli-catalog.md)                             | Service level objectives and indicators        | Active |
+| [Dashboards and Alerts](dashboards-and-alerts.md)                                       | Monitoring dashboards and alert configurations | Active |
+| [On-Call and Incident Handbook](on-call-and-incident-handbook.md)                       | Incident response procedures                   | Active |
+| [Runbooks Index](runbooks-index.md)                                                     | Operational runbooks for common issues         | Active |
+| [Capacity and Demand Management](capacity-and-demand-management.md)                     | Resource planning and scaling                  | Draft  |
+| [Change Failure Rate and Velocity Metrics](change-failure-rate-and-velocity-metrics.md) | Deployment and reliability metrics             | Active |
+| [Ops KPIs and Executive Reporting](ops-kpis-and-executive-reporting.md)                 | Key performance indicators and reporting       | Active |
 
 ---
 
 ## 📊 Observability Stack
 
 ### Telemetry Collection
+
 - **Metrics:** Prometheus for system and application metrics.
 - **Logs:** Structured logging with correlation IDs.
 - **Traces:** Distributed tracing for request flows.
 - **Events:** Custom events for business logic monitoring.
 
 ### Monitoring Tools
+
 - **Prometheus:** Metrics collection and alerting.
 - **Grafana:** Dashboards and visualization.
 - **Loki:** Log aggregation and querying.
 - **Jaeger:** Distributed tracing.
 
 ### Alerting
+
 - **Alertmanager:** Alert routing and silencing.
 - **Notification Channels:** Email, Slack, PagerDuty (if affordable).
 
@@ -67,6 +70,7 @@
 ## 🚨 Incident Management
 
 ### Process
+
 1. **Detection:** Automated alerts or user reports.
 2. **Triage:** Assess severity and impact.
 3. **Response:** On-call engineer investigates and mitigates.
@@ -74,6 +78,7 @@
 5. **Review:** Post-mortem and improvement actions.
 
 ### Severity Levels
+
 - **P0:** Critical outage affecting all users.
 - **P1:** Major functionality broken.
 - **P2:** Partial degradation.
@@ -83,29 +88,32 @@
 
 ## 📈 Key Metrics
 
-| Category | Metric | Target | Purpose |
-| -------- | ------ | ------ | ------- |
-| **Availability** | Uptime | 99.9% | Service reliability |
-| **Performance** | P95 Latency | <250ms | User experience |
-| **Errors** | Error Rate | <1% | System health |
-| **Capacity** | CPU/Memory Usage | <80% | Resource efficiency |
-| **Business** | Active Worlds | Growing | Product success |
+| Category         | Metric           | Target  | Purpose             |
+| ---------------- | ---------------- | ------- | ------------------- |
+| **Availability** | Uptime           | 99.9%   | Service reliability |
+| **Performance**  | P95 Latency      | <250ms  | User experience     |
+| **Errors**       | Error Rate       | <1%     | System health       |
+| **Capacity**     | CPU/Memory Usage | <80%    | Resource efficiency |
+| **Business**     | Active Worlds    | Growing | Product success     |
 
 ---
 
 ## 🛠️ Operational Practices
 
 ### Deployment
+
 - **CI/CD:** Automated pipelines with canary deployments.
 - **Rollbacks:** Quick reversion capabilities.
 - **Testing:** Pre-deployment validation in staging.
 
 ### Maintenance
+
 - **Backups:** Automated, tested database backups.
 - **Updates:** Security patches and dependency updates.
 - **Audits:** Regular security and performance audits.
 
 ### Scaling
+
 - **Horizontal:** Add instances for increased load.
 - **Vertical:** Upgrade resources as needed.
 - **Auto-scaling:** Based on metrics thresholds.

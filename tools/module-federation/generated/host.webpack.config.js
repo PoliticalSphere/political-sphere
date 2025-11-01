@@ -7,9 +7,9 @@ export default {
     new ModuleFederationPlugin({
       name: 'host',
       remotes: {
-        remoteApp: 'remoteApp@http://localhost:3001/remoteEntry.js'
+        remoteApp: 'remoteApp@http://localhost:3001/remoteEntry.js',
       },
-      shared: { react: { singleton: true }, 'react-dom': { singleton: true } }
-    })
-  ]
+      shared: { react: { singleton: true }, 'react-dom': { singleton: true } },
+    }),
+  ],
 };

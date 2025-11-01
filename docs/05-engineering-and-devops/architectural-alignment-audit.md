@@ -1,6 +1,7 @@
 # Architectural Alignment Audit Report
 
 **Document Control**
+
 - **Version**: 1.0.0
 - **Date**: 2025-10-29
 - **Status**: Active
@@ -26,6 +27,7 @@ The project demonstrates excellent adherence to modern monorepo best practices w
 **Current State**: The root directory contains 43+ items including configuration files, documentation, and functional directories.
 
 #### ✓ **Strengths**:
+
 1. **Clear Separation of Concerns**:
    - `apps/` - Application services (8 distinct apps)
    - `libs/` - Shared libraries (5 domain-specific libs)
@@ -55,23 +57,24 @@ The project demonstrates excellent adherence to modern monorepo best practices w
    TODO-remediation.md
    ```
    **Recommendation**: Consolidate into `docs/00-foundation/project-planning/` or create `planning/` directory
-   
 2. **Multiple Audit/Report Documents at Root** (Medium Priority):
+
    ```
    COMPREHENSIVE-AUDIT-REPORT.md
    REMEDIATION-SUMMARY.md
    TEMPLATE-IMPROVEMENTS-SUMMARY.md
    ```
+
    **Recommendation**: Move to `docs/document-control/audits/` or `docs/06-security-and-risk/audit-reports/`
 
 3. **Monitoring Assets Split** (Low Priority):
    - `monitoring/` directory at root (3 files)
    - `apps/dev/monitoring/` directory
-   **Recommendation**: Consider consolidating or clarifying distinction in README
+     **Recommendation**: Consider consolidating or clarifying distinction in README
 
 4. **ESLint Configuration Duplicate** (Critical):
    - `.eslintrc.json` appears with duplicate `plugins` keys (found by error scanner)
-   **Recommendation**: Fix JSON validation errors immediately
+     **Recommendation**: Fix JSON validation errors immediately
 
 ### 1.2 Apps Directory Structure
 
@@ -90,17 +93,18 @@ apps/
 **Assessment**: **EXCELLENT** - Clear semantic boundaries, single responsibility per application.
 
 #### Observations:
+
 - Each app has `project.json` for Nx integration
 - READMEs present in major apps (api, dev)
 - Consistent structure: `src/`, `tests/`, configuration at app root
 
 #### Recommendations:
+
 1. Ensure all apps have README.md with:
    - Purpose statement
    - Endpoints/interfaces (if applicable)
    - Local development instructions
    - Dependencies and integrations
-   
 2. Add metadata headers to `project.json` files (non-JSON alternative: add `README.md` at each app root)
 
 ### 1.3 Libs Directory Structure
@@ -117,11 +121,13 @@ libs/
 **Assessment**: **GOOD** - Domain-organized libraries following Nx best practices.
 
 #### Observations:
+
 - Clear domain separation (infrastructure, platform, shared, ui)
 - Each lib has `project.json` with tags for dependency management
 - `shared/` library exists but needs clearer sub-organization
 
 #### Recommendations:
+
 1. **Refine `libs/shared/`**: Consider breaking into more specific libraries:
    - `libs/shared-utils/` - Pure utility functions
    - `libs/shared-types/` - TypeScript interfaces/types
@@ -157,12 +163,14 @@ docs/
 **Assessment**: **EXCEPTIONAL** - Hierarchical, numbered, semantically clear documentation structure.
 
 #### Strengths:
+
 - Numbered directories enforce logical ordering
 - Clear domain boundaries
 - Comprehensive coverage of organizational aspects
 - `document-control/` for governance metadata
 
 #### Recommendations:
+
 1. Create index files (`README.md` or `index.md`) in each numbered directory
 2. Implement cross-referencing system using relative links
 3. Consider adding `SUMMARY.md` for auto-generated navigation (if using VitePress/similar)
@@ -176,18 +184,23 @@ docs/
 **Assessment**: **STRONG** - Consistent kebab-case with semantic clarity.
 
 #### Directory Naming:
+
 ✓ **Excellent Examples**:
+
 - `apps/`, `libs/`, `docs/` - Short, clear, standard
 - `document-control/` - Explicit purpose
 - `05-engineering-and-devops/` - Semantic ordering + description
 
 #### File Naming:
+
 ✓ **Excellent Examples**:
+
 - `ai-controls.json` - Purpose clear, technology indicated
 - `lint-staged.config.js` - Tool + purpose + type
 - `CONTRIBUTING.md` - Standard convention, all caps for prominence
 
 ⚠️ **Inconsistencies**:
+
 1. **Configuration file extensions**:
    - `.eslintrc.json` (rc format)
    - `biome.json` (direct name)
@@ -204,6 +217,7 @@ docs/
 #### Standards to Enforce:
 
 1. **Directories**: `kebab-case` (already enforced)
+
    ```
    ✓ apps/api
    ✓ docs/05-engineering-and-devops
@@ -211,6 +225,7 @@ docs/
    ```
 
 2. **TypeScript/JavaScript Files**: `kebab-case.{js,ts,tsx}`
+
    ```
    ✓ api-routes.ts
    ✓ user-service.ts
@@ -218,6 +233,7 @@ docs/
    ```
 
 3. **React Components**: `PascalCase.tsx`
+
    ```
    ✓ UserProfile.tsx
    ✓ DashboardLayout.tsx
@@ -225,12 +241,14 @@ docs/
    ```
 
 4. **Test Files**: `{name}.test.{js,ts}` or `{name}.spec.{js,ts}`
+
    ```
    ✓ api-routes.test.ts
    ✓ user-service.spec.ts
    ```
 
 5. **Configuration Files**: `{tool}.config.{js,json}` or `.{tool}rc.{js,json}`
+
    ```
    ✓ jest.config.js
    ✓ .eslintrc.json
@@ -252,6 +270,7 @@ docs/
 **Assessment**: **NEEDS IMPROVEMENT** - Missing systematic ownership metadata.
 
 #### Observations:
+
 1. **No CODEOWNERS file detected**: Git-based ownership not configured
 2. **project.json files**: Include `tags` but not explicit owners
 3. **Documentation**: Some docs have "Owner" field, others don't
@@ -262,32 +281,34 @@ docs/
 #### Immediate Actions:
 
 1. **Create `.github/CODEOWNERS` file**:
+
    ```
    # Core infrastructure
    /libs/infrastructure/ @team-platform
    /apps/infrastructure/ @team-platform
-   
+
    # API services
    /apps/api/ @team-backend
    /apps/worker/ @team-backend
-   
+
    # Frontend
    /apps/frontend/ @team-frontend
    /libs/ui/ @team-frontend
-   
+
    # Documentation
    /docs/ @team-docs @team-leads
-   
+
    # CI/CD
    /ci/ @team-devops
    /.github/ @team-devops
-   
+
    # Security
    /docs/06-security-and-risk/ @team-security
    SECURITY.md @team-security
    ```
 
 2. **Add File Headers**: Create template for all source files:
+
    ```typescript
    /**
     * @file user-service.ts
@@ -301,6 +322,7 @@ docs/
    ```
 
 3. **Update project.json files** with extended metadata:
+
    ```json
    {
      "name": "api",
@@ -315,10 +337,12 @@ docs/
    ```
 
 4. **Documentation Headers**: Standardize all `.md` files with:
+
    ```markdown
    # Document Title
-   
+
    **Document Control**
+
    - **Version**: 1.0.0
    - **Date**: 2025-10-29
    - **Status**: Active/Draft/Deprecated
@@ -335,12 +359,14 @@ docs/
 **Assessment**: **GOOD** - Strong foundation with room for enhancement.
 
 #### Strengths:
+
 1. **README Files**: Present at major levels (root, apps/api, apps/dev)
 2. **Documentation Structure**: Hierarchical numbering aids navigation
 3. **Semantic Naming**: Directory and file names self-document purpose
 4. **Nx Project Graph**: `nx.json` enables dependency visualization
 
 #### Gaps:
+
 1. **No Search Index**: No dedicated search mechanism beyond IDE/grep
 2. **Missing Index Files**: Not all directories have navigation aids
 3. **No API Documentation**: Missing OpenAPI/Swagger specs
@@ -358,9 +384,10 @@ docs/
 2. **Generate Visual Maps**:
    - Use `nx graph` to create architecture diagrams
    - Add Mermaid diagrams to key documentation:
-     ```markdown
+
+     ````markdown
      ## System Architecture
-     
+
      ```mermaid
      graph TD
        A[Frontend] --> B[API]
@@ -368,6 +395,10 @@ docs/
        B --> D[Database]
        C --> D
      ```
+     ````
+
+     ```
+
      ```
 
 3. **API Documentation**:
@@ -390,6 +421,7 @@ docs/
 #### For AI Systems:
 
 1. **Structured Metadata Files**:
+
    ```json
    // .project-metadata.json at root
    {
@@ -415,6 +447,7 @@ docs/
    ```
 
 2. **Directory Manifests**: Add `.directory-info.json` to each major directory:
+
    ```json
    // apps/.directory-info.json
    {
@@ -458,6 +491,7 @@ docs/
 **Assessment**: **GOOD** - Nx tags used for boundaries, needs enhancement.
 
 #### Observations:
+
 - Tags in `project.json` files define boundaries
 - `nx.json` has `targetDefaults` but limited boundary rules
 - No explicit `@nrwl/nx/enforce-module-boundaries` configuration visible in `.eslintrc.json`
@@ -465,6 +499,7 @@ docs/
 ### 5.2 Recommendations
 
 1. **Enhance ESLint Boundary Rules**:
+
    ```json
    // .eslintrc.json
    {
@@ -548,16 +583,16 @@ docs/
 
 ## 7. Alignment Scorecard
 
-| Criterion | Score | Status | Notes |
-|-----------|-------|--------|-------|
-| **Structured Architecture** | 95/100 | ✓ Excellent | Clear separation, logical hierarchy |
-| **Non-root Asset Placement** | 85/100 | ✓ Good | Few root-level docs should move |
-| **Unified Naming Convention** | 90/100 | ✓ Excellent | Consistent kebab-case, minor variations |
-| **File Ownership Clarity** | 60/100 | ⚠️ Needs Work | Missing CODEOWNERS, limited metadata |
-| **Purpose & Context Clarity** | 75/100 | ✓ Good | READMEs present but inconsistent |
-| **Human Discoverability** | 80/100 | ✓ Good | Good docs, needs more cross-refs |
-| **AI Discoverability** | 85/100 | ✓ Excellent | Strong AI integration, semantic structure |
-| **Module Boundaries** | 75/100 | ✓ Good | Nx tags present, enforcement needs enhancement |
+| Criterion                     | Score  | Status        | Notes                                          |
+| ----------------------------- | ------ | ------------- | ---------------------------------------------- |
+| **Structured Architecture**   | 95/100 | ✓ Excellent   | Clear separation, logical hierarchy            |
+| **Non-root Asset Placement**  | 85/100 | ✓ Good        | Few root-level docs should move                |
+| **Unified Naming Convention** | 90/100 | ✓ Excellent   | Consistent kebab-case, minor variations        |
+| **File Ownership Clarity**    | 60/100 | ⚠️ Needs Work | Missing CODEOWNERS, limited metadata           |
+| **Purpose & Context Clarity** | 75/100 | ✓ Good        | READMEs present but inconsistent               |
+| **Human Discoverability**     | 80/100 | ✓ Good        | Good docs, needs more cross-refs               |
+| **AI Discoverability**        | 85/100 | ✓ Excellent   | Strong AI integration, semantic structure      |
+| **Module Boundaries**         | 75/100 | ✓ Good        | Nx tags present, enforcement needs enhancement |
 
 **Overall Alignment Score**: **81/100** - **STRONG ALIGNMENT** ✓
 
@@ -609,6 +644,7 @@ Political Sphere demonstrates **strong architectural alignment** with modern bes
 4. ✓ **Documentation**: Comprehensive, hierarchical documentation structure
 
 **Key areas for improvement**:
+
 1. File ownership metadata (CODEOWNERS, headers)
 2. Consistency in README coverage across modules
 3. Root directory organization (move planning/audit docs)
@@ -645,6 +681,7 @@ Tests:
 ## Appendix B: Essential File Headers
 
 ### TypeScript/JavaScript
+
 ```typescript
 /**
  * @file filename.ts
@@ -655,10 +692,12 @@ Tests:
 ```
 
 ### Markdown Documentation
+
 ```markdown
 # Document Title
 
 **Document Control**
+
 - **Version**: 1.0.0
 - **Date**: YYYY-MM-DD
 - **Status**: Active|Draft|Deprecated
@@ -667,6 +706,7 @@ Tests:
 ```
 
 ### Shell Scripts
+
 ```bash
 #!/usr/bin/env bash
 # Purpose: Brief description

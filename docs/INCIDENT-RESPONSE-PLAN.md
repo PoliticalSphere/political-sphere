@@ -1,4 +1,5 @@
 # Incident Response Plan
+
 **Organization:** Political Sphere  
 **Version:** 1.0  
 **Last Updated:** October 29, 2025  
@@ -11,6 +12,7 @@
 This Incident Response Plan provides structured procedures for identifying, responding to, and recovering from security incidents affecting the Political Sphere platform.
 
 ### Scope
+
 - All production systems and services
 - All customer data and infrastructure
 - Cloud services (AWS)
@@ -24,7 +26,9 @@ This Incident Response Plan provides structured procedures for identifying, resp
 ### Severity Levels
 
 #### P0 - CRITICAL (Response: 15 minutes)
+
 **Examples:**
+
 - Complete service outage
 - Active data breach or confirmed unauthorized access
 - Database compromise
@@ -37,7 +41,9 @@ This Incident Response Plan provides structured procedures for identifying, resp
 **SLA:** Resolution within 4 hours
 
 #### P1 - HIGH (Response: 1 hour)
+
 **Examples:**
+
 - Major functionality impaired (>50% users affected)
 - Suspected data breach
 - Partial service degradation
@@ -50,7 +56,9 @@ This Incident Response Plan provides structured procedures for identifying, resp
 **SLA:** Resolution within 24 hours
 
 #### P2 - MEDIUM (Response: 4 hours)
+
 **Examples:**
+
 - Minor functionality impaired (<50% users affected)
 - Security vulnerability discovered (not actively exploited)
 - Performance degradation
@@ -62,7 +70,9 @@ This Incident Response Plan provides structured procedures for identifying, resp
 **SLA:** Resolution within 48 hours
 
 #### P3 - LOW (Response: 24 hours)
+
 **Examples:**
+
 - Cosmetic issues
 - Non-critical bugs
 - Security scan findings (low risk)
@@ -78,21 +88,25 @@ This Incident Response Plan provides structured procedures for identifying, resp
 ### Core Team
 
 **Incident Commander**
+
 - Role: Overall coordination and decision-making
 - Contact: [Name] - [Phone] - [Email]
 - Backup: [Name] - [Phone] - [Email]
 
 **Technical Lead**
+
 - Role: Technical investigation and remediation
 - Contact: [Name] - [Phone] - [Email]
 - Backup: [Name] - [Phone] - [Email]
 
 **Security Lead**
+
 - Role: Security analysis and containment
 - Contact: [Name] - [Phone] - [Email]
 - Backup: [Name] - [Phone] - [Email]
 
 **Communications Lead**
+
 - Role: Stakeholder communication
 - Contact: [Name] - [Phone] - [Email]
 - Backup: [Name] - [Phone] - [Email]
@@ -100,12 +114,15 @@ This Incident Response Plan provides structured procedures for identifying, resp
 ### Extended Team
 
 **Legal Counsel**
+
 - Contact: [Name] - [Phone] - [Email]
 
 **Public Relations**
+
 - Contact: [Name] - [Phone] - [Email]
 
 **Customer Support Lead**
+
 - Contact: [Name] - [Phone] - [Email]
 
 ---
@@ -116,6 +133,7 @@ This Incident Response Plan provides structured procedures for identifying, resp
 
 **4.1 Incident Detection**
 Sources:
+
 - [ ] Monitoring alerts (CloudWatch, Datadog)
 - [ ] Security scans (Trivy, CodeQL, Semgrep)
 - [ ] User reports
@@ -123,6 +141,7 @@ Sources:
 - [ ] Automated health checks
 
 **4.2 Initial Assessment**
+
 - [ ] Verify incident is legitimate (not false positive)
 - [ ] Determine severity level (P0-P3)
 - [ ] Identify affected systems and services
@@ -130,6 +149,7 @@ Sources:
 - [ ] Document initial findings in incident ticket
 
 **4.3 Team Activation**
+
 - [ ] Alert Incident Commander
 - [ ] Activate response team based on severity
 - [ ] Create incident Slack channel: #incident-YYYY-MM-DD-NNN
@@ -139,6 +159,7 @@ Sources:
 ### Phase 2: Containment (15-60 minutes)
 
 **4.4 Immediate Containment**
+
 - [ ] Isolate affected systems if necessary
 - [ ] Block malicious IPs/users
 - [ ] Disable compromised accounts
@@ -146,6 +167,7 @@ Sources:
 - [ ] Preserve evidence (logs, snapshots, memory dumps)
 
 **4.5 Short-term Containment**
+
 - [ ] Apply temporary fixes or workarounds
 - [ ] Implement additional monitoring
 - [ ] Scale resources if needed
@@ -153,6 +175,7 @@ Sources:
 - [ ] Notify stakeholders of status
 
 **4.6 Evidence Preservation**
+
 ```bash
 # Preserve logs
 aws logs create-export-task \
@@ -173,6 +196,7 @@ aws rds create-db-cluster-snapshot \
 ### Phase 3: Eradication (1-4 hours)
 
 **4.7 Root Cause Analysis**
+
 - [ ] Identify attack vector or failure point
 - [ ] Determine timeline of events
 - [ ] Identify all affected systems
@@ -180,6 +204,7 @@ aws rds create-db-cluster-snapshot \
 - [ ] Check for backdoors or persistence mechanisms
 
 **4.8 Removal**
+
 - [ ] Remove malicious code or unauthorized access
 - [ ] Patch vulnerabilities
 - [ ] Update security rules
@@ -187,6 +212,7 @@ aws rds create-db-cluster-snapshot \
 - [ ] Revoke affected API keys/tokens
 
 **4.9 System Hardening**
+
 - [ ] Apply security patches
 - [ ] Update security configurations
 - [ ] Strengthen access controls
@@ -195,6 +221,7 @@ aws rds create-db-cluster-snapshot \
 ### Phase 4: Recovery (4-24 hours)
 
 **4.10 Service Restoration**
+
 - [ ] Restore from clean backups if needed
 - [ ] Verify system integrity
 - [ ] Run security scans
@@ -202,6 +229,7 @@ aws rds create-db-cluster-snapshot \
 - [ ] Monitor for anomalies
 
 **4.11 Validation**
+
 - [ ] Verify all systems operational
 - [ ] Confirm security controls in place
 - [ ] Test critical functionality
@@ -209,6 +237,7 @@ aws rds create-db-cluster-snapshot \
 - [ ] Monitor for recurring issues
 
 **4.12 Communication**
+
 - [ ] Update status page
 - [ ] Notify affected users
 - [ ] Prepare incident summary
@@ -220,6 +249,7 @@ aws rds create-db-cluster-snapshot \
 Schedule within 48 hours of resolution
 
 Topics to cover:
+
 - [ ] What happened?
 - [ ] When did it happen?
 - [ ] How was it detected?
@@ -230,6 +260,7 @@ Topics to cover:
 - [ ] Action items for prevention
 
 **4.14 Documentation**
+
 - [ ] Complete incident report
 - [ ] Update runbooks
 - [ ] Document lessons learned
@@ -237,6 +268,7 @@ Topics to cover:
 - [ ] Create Jira tickets for improvements
 
 **4.15 Follow-up Actions**
+
 - [ ] Implement preventive measures
 - [ ] Update security policies
 - [ ] Conduct training if needed
@@ -250,12 +282,14 @@ Topics to cover:
 ### 5.1 Internal Communication
 
 **Slack Channels:**
+
 - `#incident-response` - Main coordination channel
 - `#incident-YYYY-MM-DD-NNN` - Specific incident channel (created per incident)
 - `#engineering` - Engineering team updates
 - `#leadership` - Executive updates
 
 **Update Frequency:**
+
 - P0: Every 15 minutes
 - P1: Every 30 minutes
 - P2: Every 2 hours
@@ -264,16 +298,19 @@ Topics to cover:
 ### 5.2 External Communication
 
 **Status Page:** https://status.political-sphere.com
+
 - Update immediately for P0/P1 incidents
 - Provide ETA for resolution
 - Post-incident summary after resolution
 
 **Customer Email:**
+
 - P0: Send within 1 hour
 - P1: Send within 4 hours
 - Include: What happened, impact, ETA, what we're doing
 
 **Media/PR:**
+
 - Only through designated spokesperson
 - Coordinate with Legal and PR teams
 - Do not speculate on cause before investigation
@@ -281,11 +318,13 @@ Topics to cover:
 ### 5.3 Regulatory Notification
 
 **GDPR Breach Notification:**
+
 - Must notify DPA within 72 hours if personal data breach
 - Must notify affected individuals without undue delay
 - Contact: Legal team
 
 **Other Regulations:**
+
 - Follow organization's compliance requirements
 - Consult Legal team for guidance
 
@@ -296,15 +335,18 @@ Topics to cover:
 ### 6.1 Access & Credentials
 
 **AWS Console:**
+
 - Emergency break-glass account credentials in secure vault
 - MFA required for all access
 
 **Monitoring:**
+
 - CloudWatch: https://console.aws.amazon.com/cloudwatch
 - Datadog: [URL if configured]
 - Sentry: [URL if configured]
 
 **Logging:**
+
 - CloudWatch Logs
 - Application logs: `/var/log/political-sphere/`
 - Audit logs: CloudTrail
@@ -312,10 +354,12 @@ Topics to cover:
 ### 6.2 Emergency Contacts
 
 **AWS Support:**
+
 - Phone: 1-866-927-2551
 - Case creation: AWS Console
 
 **Third-party Services:**
+
 - [List vendor emergency contacts]
 
 ### 6.3 Incident Management Tools
@@ -423,17 +467,20 @@ aws secretsmanager update-secret \
 ## 8. Testing & Exercises
 
 ### 8.1 Tabletop Exercises
+
 - Frequency: Quarterly
 - Duration: 2 hours
 - Participants: All response team members
 - Scenarios: Rotate through different incident types
 
 ### 8.2 Simulation Drills
+
 - Frequency: Annually
 - Type: Full simulation with actual systems (non-production)
 - Measure: Response time, communication effectiveness
 
 ### 8.3 Plan Review
+
 - Frequency: Quarterly or after each major incident
 - Review: Update procedures, contacts, tools
 - Approval: Security team + Management
@@ -459,15 +506,18 @@ Track and report monthly:
 ### 10.1 Data Breach Notification Requirements
 
 **GDPR (EU users):**
+
 - Notify supervisory authority within 72 hours
 - Notify affected individuals without undue delay
 - Document all data breaches (even if not reported)
 
 **CCPA (California users):**
+
 - Notify affected individuals without unreasonable delay
 - Provide specific breach details
 
 **Other Jurisdictions:**
+
 - Consult Legal team for specific requirements
 
 ### 10.2 Evidence Handling
@@ -481,18 +531,23 @@ Track and report monthly:
 ## 11. Appendices
 
 ### Appendix A: Contact List
+
 [Maintain updated contact information for all team members]
 
 ### Appendix B: System Inventory
+
 [List of all critical systems, dependencies, and owners]
 
 ### Appendix C: Incident Report Template
+
 [Standard template for documenting incidents]
 
 ### Appendix D: Post-Mortem Template
+
 [Template for post-incident analysis]
 
 ### Appendix E: Communication Templates
+
 [Pre-approved message templates for common scenarios]
 
 ---
@@ -502,6 +557,7 @@ Track and report monthly:
 **Document Owner:** Security Team  
 **Review Schedule:** Quarterly  
 **Update Process:**
+
 1. Review after each major incident
 2. Quarterly review by security team
 3. Update based on infrastructure changes
@@ -516,4 +572,4 @@ Track and report monthly:
 
 **END OF INCIDENT RESPONSE PLAN**
 
-*This is a living document and should be updated as the organization evolves.*
+_This is a living document and should be updated as the organization evolves._

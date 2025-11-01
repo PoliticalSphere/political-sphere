@@ -5,6 +5,7 @@ This folder contains a generator and example webpack configs for Module Federati
 ## Overview
 
 Module Federation allows you to dynamically load code from separate deployments at runtime. This setup includes:
+
 - **Host app** (`apps/host`) — loads remote modules dynamically
 - **Remote app** (`apps/remote`) — exposes modules for the host to consume
 - **Generated configs** (`tools/module-federation/generated/`) — reusable Module Federation plugin configurations
@@ -18,6 +19,7 @@ npm run mf:init
 ```
 
 This creates:
+
 - `tools/module-federation/generated/host.webpack.config.js` (ESM)
 - `tools/module-federation/generated/remote.webpack.config.js` (ESM)
 - Optional `.cjs` variants for CommonJS environments
@@ -63,6 +65,7 @@ Both use `import webpack from 'webpack'` and access `webpack.container.ModuleFed
 - `apps/remote/webpack.config.js` (ESM) — imports the generated remote config and merges it with app-specific settings
 
 Both configs:
+
 - Use `process.cwd()` for deterministic absolute paths (avoids URL percent-encoding)
 - Disable eval devtool (`devtool: false`) for smaller bundles
 - Configure quiet dev servers (no browser auto-open, reduced logging)

@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Data Stewardship |   Quarterly  | **Approved** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :----------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Data Stewardship |  Quarterly   | **Approved** |
 
 </div>
 
@@ -22,13 +22,13 @@
 
 ## 🧱 Storage Stack
 
-| Store | Purpose | Deployment Notes | Compliance Hooks |
-| ----- | ------- | ---------------- | ---------------- |
-| **PostgreSQL** | System of record for domain aggregates (User, PlayerProfile, Bill, Motion, Debate, Vote, Election, MediaItem, Report, AuditEvent) | Managed Postgres, PITR enabled, read replicas optional | Row-level tenancy or schema-per-world (ADR TBD), soft deletes, audit triggers |
-| **Redis** | Caching, rate limiting, message queues, realtime presence | Dedicated cluster with persistence for queues, ephemeral for cache | Key tagging for purge/retention, namespacing per tenant |
-| **Object Storage (S3-compatible)** | Media uploads, transcript exports, evidence bundles, AI prompt logs | Versioned buckets, encryption at rest (SSE-KMS), lifecycle rules | Retention policies per classification, secure links w/ expiry |
-| **Secure Audit Log** | Immutable record of sensitive operations | Append-only store with signing/verification | Required for ISO, GDPR accountability, safety transparency |
-| **Analytics Warehouse (Future)** | Aggregated insights, experimentation metrics | Evaluate BigQuery/Snowflake once data volume warrants | Pseudonymisation, differential privacy (roadmap) |
+| Store                              | Purpose                                                                                                                           | Deployment Notes                                                   | Compliance Hooks                                                              |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| **PostgreSQL**                     | System of record for domain aggregates (User, PlayerProfile, Bill, Motion, Debate, Vote, Election, MediaItem, Report, AuditEvent) | Managed Postgres, PITR enabled, read replicas optional             | Row-level tenancy or schema-per-world (ADR TBD), soft deletes, audit triggers |
+| **Redis**                          | Caching, rate limiting, message queues, realtime presence                                                                         | Dedicated cluster with persistence for queues, ephemeral for cache | Key tagging for purge/retention, namespacing per tenant                       |
+| **Object Storage (S3-compatible)** | Media uploads, transcript exports, evidence bundles, AI prompt logs                                                               | Versioned buckets, encryption at rest (SSE-KMS), lifecycle rules   | Retention policies per classification, secure links w/ expiry                 |
+| **Secure Audit Log**               | Immutable record of sensitive operations                                                                                          | Append-only store with signing/verification                        | Required for ISO, GDPR accountability, safety transparency                    |
+| **Analytics Warehouse (Future)**   | Aggregated insights, experimentation metrics                                                                                      | Evaluate BigQuery/Snowflake once data volume warrants              | Pseudonymisation, differential privacy (roadmap)                              |
 
 ---
 

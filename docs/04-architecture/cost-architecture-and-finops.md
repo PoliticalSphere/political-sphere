@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -32,15 +32,15 @@
 
 ## 📊 Cost Tracking
 
-| Component | Estimated Cost (Annual) | Notes |
-| ---------- | ----------------------- | ----- |
-| **Compute (VM)** | $0–$100 | Free tiers or low-cost VPS; scale via multiple instances |
-| **Database (PostgreSQL)** | $0 | Self-hosted on VM or free managed tier (Supabase free) |
-| **Cache/Queues (Redis)** | $0 | Self-hosted on VM |
-| **Storage (S3-compatible)** | $0 | MinIO self-hosted or free object storage |
-| **AI (Ollama)** | $0 | Local models; no API costs |
-| **Monitoring (Prometheus/Grafana)** | $0 | Self-hosted on VM |
-| **Domain/SSL** | $10–$20 | Cheap registrar; free Let's Encrypt |
+| Component                           | Estimated Cost (Annual) | Notes                                                    |
+| ----------------------------------- | ----------------------- | -------------------------------------------------------- |
+| **Compute (VM)**                    | $0–$100                 | Free tiers or low-cost VPS; scale via multiple instances |
+| **Database (PostgreSQL)**           | $0                      | Self-hosted on VM or free managed tier (Supabase free)   |
+| **Cache/Queues (Redis)**            | $0                      | Self-hosted on VM                                        |
+| **Storage (S3-compatible)**         | $0                      | MinIO self-hosted or free object storage                 |
+| **AI (Ollama)**                     | $0                      | Local models; no API costs                               |
+| **Monitoring (Prometheus/Grafana)** | $0                      | Self-hosted on VM                                        |
+| **Domain/SSL**                      | $10–$20                 | Cheap registrar; free Let's Encrypt                      |
 
 **Total Annual Budget:** <$200 (excluding electricity/hardware)
 

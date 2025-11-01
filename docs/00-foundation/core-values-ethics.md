@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
-|  🔒 Internal   | `1.0.0` |  2025-10-29  | Ethics Committee   |  Quarterly   | **Approved** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :----------: |
+|  🔒 Internal   | `1.0.0` |  2025-10-29  | Ethics Committee |  Quarterly   | **Approved** |
 
 </div>
 
@@ -221,27 +221,33 @@ No real-world political influence — ever
 ### AI Ethics Principles
 
 #### 🤖 Human-Centric AI
+
 **AI serves human needs and enhances human capabilities, never replaces human judgment in democratic processes.**
 
 **Requirements:**
+
 - All AI recommendations include human oversight options
 - Users can always access unfiltered information alongside AI summaries
 - AI tools are designed to educate, not persuade or manipulate
 - Regular human review of AI-generated content for contextual appropriateness
 
 #### 📊 Data Ethics
+
 **We collect, process, and use data responsibly, respecting individual privacy and collective benefit.**
 
 **Requirements:**
+
 - GDPR compliance with additional privacy protections for political data
 - Data minimization: collect only what's necessary for educational purposes
 - Transparent data usage with user consent and control
 - Regular privacy impact assessments for new features
 
 #### 🔍 Algorithmic Transparency
+
 **Users understand how our AI works and can verify its outputs independently.**
 
 **Requirements:**
+
 - Open-source core algorithms where legally permissible
 - Clear explanations of AI decision-making processes
 - Ability for users to challenge and correct AI outputs
@@ -250,27 +256,33 @@ No real-world political influence — ever
 ### Political Simulation Ethics
 
 #### 🎭 Simulation Integrity
+
 **Our simulations accurately represent political processes while clearly distinguishing reality from simulation.**
 
 **Requirements:**
+
 - All simulations based on verified historical and current data
 - Clear disclaimers about simulation limitations and assumptions
 - Educational framing that teaches critical thinking about models
 - Regular validation against real-world political outcomes
 
 #### ⚖️ Neutrality Standards
+
 **We present diverse political perspectives fairly and encourage critical thinking over partisanship.**
 
 **Requirements:**
+
 - Balanced representation of political viewpoints in content
 - Fact-checking of all political claims regardless of source
 - Tools to help users evaluate information quality
 - Avoidance of algorithmic personalization that creates echo chambers
 
 #### 🌍 Global Responsibility
+
 **Our work considers global impacts and respects diverse political and cultural contexts.**
 
 **Requirements:**
+
 - Content localization that respects local political contexts
 - Consideration of international human rights standards
 - Avoidance of content that could incite violence or division
@@ -300,12 +312,14 @@ graph TD
 ### Ethical Risk Assessment
 
 **High-Risk Categories:**
+
 - Content that could influence elections or policy votes
 - AI features that personalize political information
 - Data collection about political beliefs or affiliations
 - Simulations of sensitive political scenarios
 
 **Assessment Criteria:**
+
 1. **Potential Harm**: Could this cause individual or societal harm?
 2. **User Autonomy**: Does this respect user choice and understanding?
 3. **Transparency**: Can users understand and control this feature?
@@ -314,6 +328,7 @@ graph TD
 ### Escalation Triggers
 
 **Immediate Escalation to Ethics Committee:**
+
 - Any feature that could be classified as "high-risk AI" under EU AI Act
 - Content involving controversial political figures or events
 - Changes to core algorithms that affect political neutrality
@@ -324,6 +339,7 @@ graph TD
 ## 🤝 Ethical Commitments
 
 ### To Our Users
+
 - **Accuracy**: We will never knowingly spread misinformation
 - **Privacy**: Your political exploration remains confidential
 - **Empowerment**: We provide tools for informed decision-making
@@ -331,6 +347,7 @@ graph TD
 - **Safety**: Our platform promotes constructive civic discourse
 
 ### To Society
+
 - **Democratic Health**: We contribute to stronger democratic institutions
 - **Educational Access**: We reduce barriers to political understanding
 - **Civic Engagement**: We encourage active participation in democracy
@@ -338,6 +355,7 @@ graph TD
 - **Transparency**: We are open about our methods and limitations
 
 ### To Our Partners
+
 - **Integrity**: We maintain independence from political influences
 - **Collaboration**: We work with organizations sharing our values
 - **Accountability**: We measure and report our societal impact
@@ -592,18 +610,21 @@ Political Sphere must be secure, fair, and privacy-respecting, using only free t
 ## 📊 Ethics Program Metrics
 
 ### Compliance Metrics
+
 - **Audit Results**: 100% compliance with ethical standards
 - **Incident Response**: < 24 hours average response time
 - **Training Completion**: > 95% of team members annually
 - **User Reports**: < 0.01% of users reporting ethical concerns
 
 ### Impact Metrics
+
 - **Trust Scores**: > 4.5/5.0 user trust ratings
 - **Content Accuracy**: 99.9% factual accuracy maintained
 - **Bias Audits**: < 1% bias detected in AI outputs
 - **Privacy Compliance**: 100% GDPR compliance rate
 
 ### Development Metrics
+
 - **Ethical Reviews**: All high-risk features reviewed
 - **Diverse Input**: Input from 50+ countries in content development
 - **Transparency Reports**: Quarterly public ethics reporting
@@ -614,32 +635,39 @@ Political Sphere must be secure, fair, and privacy-respecting, using only free t
 ## 🏛️ Governance Structure
 
 ### Ethics Committee
+
 **Independent oversight body ensuring ethical compliance across all operations.**
 
 **Composition:**
+
 - 5 members: ethicists, legal experts, user representatives, technical experts
 - Independent from executive leadership
 - Diverse geographic and cultural representation
 
 **Responsibilities:**
+
 - Review high-risk decisions and features
 - Conduct regular ethics audits
 - Develop and update ethical guidelines
 - Provide ethics training and consultation
 
 ### Ethics Officers
+
 **Embedded ethics expertise in each major team.**
 
 **Roles:**
+
 - Product Ethics Officer: Reviews product features
 - Data Ethics Officer: Oversees data practices
 - AI Ethics Officer: Monitors algorithmic development
 - Content Ethics Officer: Ensures content integrity
 
 ### Ethics Training
+
 **Mandatory training for all team members.**
 
 **Curriculum:**
+
 - Core values and ethical principles
 - EU AI Act compliance requirements
 - Decision-making frameworks
@@ -651,6 +679,7 @@ Political Sphere must be secure, fair, and privacy-respecting, using only free t
 ## 🚨 Ethical Incident Response
 
 ### Reporting Process
+
 1. **Immediate Reporting**: Any team member can report ethical concerns
 2. **Initial Assessment**: Ethics Officer evaluates within 24 hours
 3. **Escalation**: High-risk issues go to Ethics Committee within 48 hours
@@ -659,12 +688,14 @@ Political Sphere must be secure, fair, and privacy-respecting, using only free t
 6. **Follow-up**: Monitoring and prevention measures
 
 ### Whistleblower Protection
+
 - Anonymous reporting channels available
 - Protection from retaliation for good-faith reports
 - Independent investigation process
 - Support for reporters throughout the process
 
 ### Transparency Requirements
+
 - Public summary of major ethical incidents (anonymized)
 - Lessons learned shared across the organization
 - Updates to policies and procedures as needed
@@ -674,12 +705,14 @@ Political Sphere must be secure, fair, and privacy-respecting, using only free t
 ## 🔄 Continuous Improvement
 
 ### Annual Ethics Review
+
 - Comprehensive assessment of ethics program effectiveness
 - Stakeholder input including users, partners, and experts
 - Updates to policies based on new ethical challenges
 - Benchmarking against industry best practices
 
 ### Emerging Issues Monitoring
+
 - Regular scanning of ethical developments in AI and politics
 - Participation in industry ethics working groups
 - Academic partnerships for cutting-edge ethical research
@@ -740,13 +773,13 @@ Political Sphere must be secure, fair, and privacy-respecting, using only free t
 
 ### 📋 Document Control
 
-|         Field         |          Value          |
-| :-------------------: | :---------------------: |
-| 🏷️ **Classification** |        Internal         |
-|    🔢 **Version**     |         `1.0.0`         |
-|  📅 **Last Review**   |       2025-10-29        |
-|  🔄 **Next Review**   |       2026-01-29        |
-|    ✍️ **Approver**    |   Ethics Committee      |
+|         Field         |      Value       |
+| :-------------------: | :--------------: |
+| 🏷️ **Classification** |     Internal     |
+|    🔢 **Version**     |     `1.0.0`      |
+|  📅 **Last Review**   |    2025-10-29    |
+|  🔄 **Next Review**   |    2026-01-29    |
+|    ✍️ **Approver**    | Ethics Committee |
 
 ---
 

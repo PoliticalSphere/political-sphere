@@ -1,9 +1,9 @@
 /**
  * OpenTelemetry Configuration for Political Sphere
- * 
+ *
  * This module configures distributed tracing, metrics, and logging
  * using OpenTelemetry for comprehensive observability.
- * 
+ *
  * @module telemetry
  * @requires @opentelemetry/sdk-node
  * @requires @opentelemetry/auto-instrumentations-node
@@ -14,7 +14,11 @@ import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentation
 import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
 import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
 import { resourceFromAttributes } from '@opentelemetry/resources';
-import { SEMRESATTRS_SERVICE_NAME, SEMRESATTRS_SERVICE_VERSION, SEMRESATTRS_DEPLOYMENT_ENVIRONMENT } from '@opentelemetry/semantic-conventions';
+import {
+  SEMRESATTRS_SERVICE_NAME,
+  SEMRESATTRS_SERVICE_VERSION,
+  SEMRESATTRS_DEPLOYMENT_ENVIRONMENT,
+} from '@opentelemetry/semantic-conventions';
 import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
 
 /**
@@ -31,14 +35,14 @@ export interface TelemetryConfig {
 
 /**
  * Initialize OpenTelemetry SDK with comprehensive instrumentation
- * 
+ *
  * @param config - Telemetry configuration options
  * @returns Initialized NodeSDK instance
- * 
+ *
  * @example
  * ```typescript
  * import { initTelemetry } from '@political-sphere/shared';
- * 
+ *
  * const sdk = initTelemetry({
  *   serviceName: 'api',
  *   environment: 'production'
@@ -50,8 +54,10 @@ export function initTelemetry(config: TelemetryConfig): NodeSDK {
     serviceName,
     serviceVersion = '0.0.0',
     environment = process.env['NODE_ENV'] || 'development',
-    traceEndpoint = process.env['OTEL_EXPORTER_OTLP_TRACES_ENDPOINT'] || 'http://localhost:4318/v1/traces',
-    metricsEndpoint = process.env['OTEL_EXPORTER_OTLP_METRICS_ENDPOINT'] || 'http://localhost:4318/v1/metrics',
+    traceEndpoint = process.env['OTEL_EXPORTER_OTLP_TRACES_ENDPOINT'] ||
+      'http://localhost:4318/v1/traces',
+    metricsEndpoint = process.env['OTEL_EXPORTER_OTLP_METRICS_ENDPOINT'] ||
+      'http://localhost:4318/v1/metrics',
     enableAutoInstrumentation = true,
   } = config;
 
@@ -137,7 +143,9 @@ export function initTelemetry(config: TelemetryConfig): NodeSDK {
       // Use structured logger instead of console.error
       const { getLogger } = await import('./logger.js');
       const logger = getLogger({ service: 'telemetry' });
-      logger.error('Error shutting down OpenTelemetry SDK', { error: error?.message ?? error });
+      logger.error('Error shutting down OpenTelemetry SDK', {
+        error: (error as any)?.message ?? error,
+      });
     }
   });
 
@@ -146,14 +154,14 @@ export function initTelemetry(config: TelemetryConfig): NodeSDK {
 
 /**
  * Start OpenTelemetry SDK and begin collecting telemetry
- * 
+ *
  * @param config - Telemetry configuration options
  * @returns Promise that resolves when SDK is started
- * 
+ *
  * @example
  * ```typescript
  * import { startTelemetry } from '@political-sphere/shared';
- * 
+ *
  * await startTelemetry({
  *   serviceName: 'worker',
  *   environment: 'staging'
@@ -162,29 +170,32 @@ export function initTelemetry(config: TelemetryConfig): NodeSDK {
  */
 export async function startTelemetry(config: TelemetryConfig): Promise<void> {
   const sdk = initTelemetry(config);
-  
+
   try {
     await sdk.start();
     // Use structured logger instead of console.log
     const { getLogger } = await import('./logger.js');
     const logger = getLogger({ service: config.serviceName });
-    logger.info('OpenTelemetry initialized', { serviceName: config.serviceName, environment: config.environment });
+    logger.info('OpenTelemetry initialized', {
+      serviceName: config.serviceName,
+      environment: config.environment,
+    });
   } catch (error) {
     // Use structured logger instead of console.error
     const { getLogger } = await import('./logger.js');
     const logger = getLogger({ service: config.serviceName });
-    logger.error('Failed to initialize OpenTelemetry', { error: error?.message ?? error });
+    logger.error('Failed to initialize OpenTelemetry', { error: (error as any)?.message ?? error });
     throw error;
   }
 }
 
 /**
  * Get the OpenTelemetry API for manual instrumentation
- * 
+ *
  * @example
  * ```typescript
  * import { trace } from '@opentelemetry/api';
- * 
+ *
  * const tracer = trace.getTracer('my-service');
  * const span = tracer.startSpan('operation-name');
  * try {

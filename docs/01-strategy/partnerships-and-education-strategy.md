@@ -2,14 +2,13 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :-------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
 
 </div>
 
 ---
-
 
 ## Overview
 
@@ -25,30 +24,36 @@ Political Sphere does not currently have active partnerships or education strate
 ## Potential Collaborators
 
 ### Academic Institutions
+
 - **Model Parliament Programs:** Universities with debate clubs or Model UN societies for educational tie-ins (fictional simulation only).
 - **Political Science Departments:** Research collaborations on procedural fairness or governance simulations (data anonymized, no real-world application).
 
 ### Gaming Communities
+
 - **Strategy Game Forums:** Outreach to Paradox Interactive or Civilization communities for cross-promotion (niche, ethical).
 - **Indie Game Developers:** Shared events or showcases with similar ethical games (e.g., non-violent simulations).
 
 ### Educational Platforms
+
 - **Online Learning Sites:** Partnerships for "civics education" modules using the simulation (fictional, neutral).
 - **Debate Organizations:** Clubs focused on structured argumentation, not ideology.
 
 ### Community Groups
+
 - **Strategy Gaming Meetups:** Local groups for beta testing and feedback.
 - **Open-Source Communities:** Collaborations with free software advocates for transparency.
 
 ## Education Strategy
 
 ### Outreach Methods
+
 - **Community Building:** Organic growth through forums, Discord, or Reddit (strategy/politics subs).
 - **Content Creation:** Tutorials, lore, and procedural guides to educate players on parliamentary systems.
 - **Events:** Virtual "parliamentary sessions" for new players to learn by participating.
 - **Feedback Loops:** Surveys and playtesting to refine educational onboarding.
 
 ### Alignment with Mission
+
 - Educate on procedural integrity, fairness, and strategic thinking.
 - Avoid indoctrination or real-world political education.
 - Focus on simulation mechanics and player agency.

@@ -41,11 +41,7 @@ if (data && data.requests) {
 }
 // fallback: compute from total and duration
 if ((!rps || rps === 0) && data && data.requests && data.duration) {
-  const total =
-    data.requests.total ||
-    data.requests.requests ||
-    data.requests.responses ||
-    0;
+  const total = data.requests.total || data.requests.requests || data.requests.responses || 0;
   const dur = data.duration > 1000 ? data.duration / 1000 : data.duration; // if ms convert
   if (total && dur) rps = total / dur;
 }

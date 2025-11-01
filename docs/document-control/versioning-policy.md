@@ -4,8 +4,8 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
 |  🔒 Internal   | `1.0.0` |  2025-10-29  | Documentation Team |  Quarterly   | **Approved** |
 
 </div>
@@ -54,6 +54,7 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 ```
 
 **Components:**
+
 - **MAJOR**: Breaking changes, significant restructuring
 - **MINOR**: New features, substantial improvements, backward-compatible
 - **PATCH**: Bug fixes, corrections, minor updates
@@ -62,14 +63,14 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 
 ### Examples
 
-| Version | Change Type | Example |
-|---------|-------------|---------|
-| `1.0.0` | Initial release | First published version |
-| `1.1.0` | Minor update | Added new section |
-| `1.1.1` | Patch | Fixed typo |
-| `2.0.0` | Major change | Complete restructure |
-| `1.2.0-alpha.1` | Prerelease | Draft for review |
-| `1.2.0+20231029` | Build metadata | Timestamped build |
+| Version          | Change Type     | Example                 |
+| ---------------- | --------------- | ----------------------- |
+| `1.0.0`          | Initial release | First published version |
+| `1.1.0`          | Minor update    | Added new section       |
+| `1.1.1`          | Patch           | Fixed typo              |
+| `2.0.0`          | Major change    | Complete restructure    |
+| `1.2.0-alpha.1`  | Prerelease      | Draft for review        |
+| `1.2.0+20231029` | Build metadata  | Timestamped build       |
 
 ---
 
@@ -78,6 +79,7 @@ MAJOR.MINOR.PATCH[-PRERELEASE][+BUILD]
 ### MAJOR Version (X.y.z)
 
 Increment MAJOR version when:
+
 - **Breaking Changes**: Changes that break existing processes or expectations
 - **Significant Restructure**: Complete document reorganization
 - **Scope Changes**: Major expansion or contraction of document scope
@@ -85,6 +87,7 @@ Increment MAJOR version when:
 - **Deprecated**: Document no longer supported (version becomes final)
 
 **Examples:**
+
 - Changing approval workflow from 3 tiers to 4 tiers
 - Reorganizing entire policy structure
 - Adding mandatory compliance requirements
@@ -92,15 +95,16 @@ Increment MAJOR version when:
 ### MINOR Version (x.Y.z)
 
 Increment MINOR version when:
+
 - **New Features**: Addition of new sections or capabilities
 
 > **Semantic versioning framework for Political Sphere documents and templates**
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |
-| :------------: | :-----: | :----------: | :----------------: | :----------: |
-|  🔒 Internal   | `1.0.0` |  2025-10-29  | DevOps Team        |  Annual      |
+| Classification | Version | Last Updated |    Owner    | Review Cycle |
+| :------------: | :-----: | :----------: | :---------: | :----------: |
+|  🔒 Internal   | `1.0.0` |  2025-10-29  | DevOps Team |    Annual    |
 
 </div>
 
@@ -140,6 +144,7 @@ This Versioning Policy establishes standardized rules for versioning documents, 
 ## 📋 Scope
 
 ### In Scope
+
 - All project documentation (policies, procedures, guides)
 - Document templates and standardized formats
 - Version-controlled files in Git repositories
@@ -147,6 +152,7 @@ This Versioning Policy establishes standardized rules for versioning documents, 
 - Configuration files and deployment manifests
 
 ### Out of Scope
+
 - Source code (follows separate versioning in CI/CD)
 - Binary artifacts and build outputs
 - Personal notes and temporary documents
@@ -169,6 +175,7 @@ MAJOR.MINOR.PATCH
 ```
 
 **Examples:**
+
 - `1.0.0` - Initial release
 - `1.1.0` - Added new section on AI ethics
 - `1.1.1` - Fixed typo in compliance section
@@ -179,7 +186,9 @@ MAJOR.MINOR.PATCH
 ### When to Increment Versions
 
 #### PATCH Version (x.x.🔼)
+
 Increment for backward-compatible fixes:
+
 - ✅ Typo corrections and grammar fixes
 - ✅ Formatting improvements
 - ✅ Link updates and reference corrections
@@ -188,7 +197,9 @@ Increment for backward-compatible fixes:
 - ✅ Non-substantive editorial changes
 
 #### MINOR Version (x.🔼.0)
+
 Increment for backward-compatible additions:
+
 - ✅ New sections or subsections
 - ✅ Additional examples or use cases
 - ✅ Expanded explanations or details
@@ -197,7 +208,9 @@ Increment for backward-compatible additions:
 - ✅ Additional compliance mappings
 
 #### MAJOR Version (🔼.0.0)
+
 Increment for breaking changes:
+
 - ❌ Removal of mandatory sections
 - ❌ Significant restructuring requiring migration
 - ❌ Changes to approval requirements
@@ -215,16 +228,16 @@ All versioned documents must include:
 
 ```yaml
 ---
-version: "1.2.3"
-last_updated: "2025-10-29"
-author: "Documentation Team"
-reviewer: "Technical Lead"
-approver: "Compliance Officer"
-change_summary: "Added AI ethics section and updated GDPR references"
+version: '1.2.3'
+last_updated: '2025-10-29'
+author: 'Documentation Team'
+reviewer: 'Technical Lead'
+approver: 'Compliance Officer'
+change_summary: 'Added AI ethics section and updated GDPR references'
 breaking_changes: false
 related_versions:
-  - template: "adr-template.md@2.1.0"
-  - policy: "classification-policy.md@1.0.0"
+  - template: 'adr-template.md@2.1.0'
+  - policy: 'classification-policy.md@1.0.0'
 ---
 ```
 
@@ -232,14 +245,14 @@ related_versions:
 
 Include in document header:
 
-| Version | Date | Author | Change Summary | Breaking |
-|---------|------|--------|----------------|----------|
-| 1.2.3 | 2025-10-29 | Doc Team | Added AI ethics section | No |
-| 1.2.2 | 2025-09-15 | Compliance | Updated GDPR references | No |
-| 1.2.1 | 2025-08-01 | Legal | Fixed privacy policy link | No |
-| 1.2.0 | 2025-07-15 | Security | Added encryption requirements | No |
-| 1.1.0 | 2025-06-01 | DevOps | New template features | No |
-| 1.0.0 | 2025-05-01 | Doc Team | Initial release | N/A |
+| Version | Date       | Author     | Change Summary                | Breaking |
+| ------- | ---------- | ---------- | ----------------------------- | -------- |
+| 1.2.3   | 2025-10-29 | Doc Team   | Added AI ethics section       | No       |
+| 1.2.2   | 2025-09-15 | Compliance | Updated GDPR references       | No       |
+| 1.2.1   | 2025-08-01 | Legal      | Fixed privacy policy link     | No       |
+| 1.2.0   | 2025-07-15 | Security   | Added encryption requirements | No       |
+| 1.1.0   | 2025-06-01 | DevOps     | New template features         | No       |
+| 1.0.0   | 2025-05-01 | Doc Team   | Initial release               | N/A      |
 
 ---
 
@@ -295,6 +308,7 @@ docs/[document-type]/[document-name]/v[MAJOR].[MINOR]
 ```
 
 **Examples:**
+
 - `docs/policy/privacy-policy/v1.2`
 - `docs/template/adr-template/v2.1`
 - `docs/guide/api-documentation/v1.0`
@@ -302,16 +316,19 @@ docs/[document-type]/[document-name]/v[MAJOR].[MINOR]
 ### Release Branches
 
 **Main Branch:** `main` or `master`
+
 - Always contains latest stable versions
 - Protected branch requiring PR approval
 - Automated validation on commits
 
 **Development Branch:** `develop`
+
 - Integration branch for new features
 - May contain unreleased changes
 - Regular merges from feature branches
 
 **Feature Branches:** `feature/[document-name]-[change-description]`
+
 - Short-lived branches for specific changes
 - Merged via pull request with review
 - Automatic cleanup after merge
@@ -319,11 +336,13 @@ docs/[document-type]/[document-name]/v[MAJOR].[MINOR]
 ### Tagging Strategy
 
 **Version Tags:**
+
 - `v[MAJOR].[MINOR].[PATCH]` for releases
 - `v[MAJOR].[MINOR].[PATCH]-rc.[N]` for release candidates
 - Annotated tags with change summaries
 
 **Example Tags:**
+
 - `v1.2.3` - Stable release
 - `v2.0.0-rc.1` - First release candidate for v2.0.0
 - `v1.1.0-alpha.1` - Alpha release for v1.1.0
@@ -338,11 +357,11 @@ Documents may depend on specific template versions:
 
 ```yaml
 template_dependencies:
-  - name: "adr-template.md"
-    version: ">=2.1.0"
+  - name: 'adr-template.md'
+    version: '>=2.1.0'
     required: true
-  - name: "model-card-template.md"
-    version: ">=1.0.0"
+  - name: 'model-card-template.md'
+    version: '>=1.0.0'
     required: false
 ```
 
@@ -356,11 +375,11 @@ See [Classification Policy](./document-classification-policy.md) v1.0.0 for deta
 
 ### Compatibility Matrix
 
-| Document | Compatible Template Versions | Notes |
-|----------|------------------------------|-------|
-| Privacy Policy | adr-template.md >=2.0.0 | Requires legal review section |
-| API Docs | api-template.md >=1.1.0 | Supports OpenAPI 3.0+ |
-| Security Policies | security-template.md >=1.0.0 | ISO 27001 compliant |
+| Document          | Compatible Template Versions | Notes                         |
+| ----------------- | ---------------------------- | ----------------------------- |
+| Privacy Policy    | adr-template.md >=2.0.0      | Requires legal review section |
+| API Docs          | api-template.md >=1.1.0      | Supports OpenAPI 3.0+         |
+| Security Policies | security-template.md >=1.0.0 | ISO 27001 compliant           |
 
 ---
 
@@ -369,6 +388,7 @@ See [Classification Policy](./document-classification-policy.md) v1.0.0 for deta
 ### Version Management Tools
 
 **CLI Commands:**
+
 ```bash
 # Increment version automatically
 npm run version:bump -- --document=path/to/doc.md --type=minor --summary="Added new section"
@@ -386,12 +406,14 @@ npm run version:deps -- --document=path/to/doc.md
 ### Git Integration
 
 **Pre-commit Hooks:**
+
 - Version format validation
 - Metadata completeness check
 - Dependency version compatibility
 - Breaking change flag verification
 
 **CI/CD Integration:**
+
 - Automated version bumping on approved changes
 - Tag creation for releases
 - Cross-document reference validation
@@ -400,6 +422,7 @@ npm run version:deps -- --document=path/to/doc.md
 ### IDE Extensions
 
 **VS Code Extension Features:**
+
 - Version increment suggestions
 - Metadata auto-completion
 - Dependency validation
@@ -413,18 +436,21 @@ npm run version:deps -- --document=path/to/doc.md
 ### Key Metrics
 
 **Version Health:**
+
 - Average time between versions (target: <30 days for active docs)
 - Version increment distribution (PATCH:MINOR:MAJOR ratio)
 - Breaking change frequency (target: <10% of releases)
 - Template adoption rate (target: >95%)
 
 **Quality Metrics:**
+
 - Version format compliance (target: 100%)
 - Metadata completeness (target: 100%)
 - Dependency resolution success (target: >99%)
 - Automated validation pass rate (target: >95%)
 
 **Usage Metrics:**
+
 - Document version access patterns
 - Template version popularity
 - Cross-reference validity rate
@@ -435,6 +461,7 @@ npm run version:deps -- --document=path/to/doc.md
 Live metrics available at: `https://metrics.politicalsphere.com/versions`
 
 **Real-time Indicators:**
+
 - Version compliance status
 - Breaking change alerts
 - Dependency conflicts
@@ -468,12 +495,12 @@ Live metrics available at: `https://metrics.politicalsphere.com/versions`
 
 ### Breaking Change Categories
 
-| Category | Notice Period | Migration Support | Rollback Window |
-|----------|---------------|-------------------|-----------------|
-| **Template Format** | 60 days | Full automation | 30 days |
-| **Policy Requirements** | 90 days | Guided migration | 60 days |
-| **Regulatory Changes** | 30 days | Priority support | 14 days |
-| **Security Updates** | 7 days | Emergency migration | 24 hours |
+| Category                | Notice Period | Migration Support   | Rollback Window |
+| ----------------------- | ------------- | ------------------- | --------------- |
+| **Template Format**     | 60 days       | Full automation     | 30 days         |
+| **Policy Requirements** | 90 days       | Guided migration    | 60 days         |
+| **Regulatory Changes**  | 30 days       | Priority support    | 14 days         |
+| **Security Updates**    | 7 days        | Emergency migration | 24 hours        |
 
 ---
 
@@ -482,16 +509,19 @@ Live metrics available at: `https://metrics.politicalsphere.com/versions`
 ### Required Training
 
 **All Personnel:**
+
 - Versioning basics (annual)
 - Semantic versioning principles (annual)
 - Tool usage and automation (annual)
 
 **Document Owners:**
+
 - Version management workflow (initial + annual)
 - Breaking change procedures (annual)
 - Dependency management (quarterly)
 
 **Developers/DevOps:**
+
 - Automation tools and scripts (quarterly)
 - CI/CD integration (quarterly)
 - Advanced versioning techniques (biannual)
@@ -567,13 +597,13 @@ Live metrics available at: `https://metrics.politicalsphere.com/versions`
 
 ### 📋 Document Control
 
-|         Field         |          Value          |
-| :-------------------: | :---------------------: |
-| 🏷️ **Classification** |        Internal         |
-|    🔢 **Version**     |         `1.0.0`         |
-|  📅 **Last Review**   |       2025-10-29        |
-|  🔄 **Next Review**   |       2026-10-29        |
-|    ✍️ **Approver**    |   DevOps Team Lead      |
+|         Field         |      Value       |
+| :-------------------: | :--------------: |
+| 🏷️ **Classification** |     Internal     |
+|    🔢 **Version**     |     `1.0.0`      |
+|  📅 **Last Review**   |    2025-10-29    |
+|  🔄 **Next Review**   |    2026-10-29    |
+|    ✍️ **Approver**    | DevOps Team Lead |
 
 ---
 

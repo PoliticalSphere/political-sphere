@@ -116,7 +116,9 @@ class PoliticalSphereMCPServer extends Server {
       case 'audit_security':
         return await this.auditSecurity(typedArgs as { target: string; type: string });
       case 'generate_adr':
-        return await this.generateADR(typedArgs as { title: string; context?: string; decision?: string });
+        return await this.generateADR(
+          typedArgs as { title: string; context?: string; decision?: string }
+        );
       case 'check_dependencies':
         return await this.checkDependencies(typedArgs as { packageJson: string });
       default:
@@ -141,7 +143,11 @@ class PoliticalSphereMCPServer extends Server {
     const suggestions: string[] = [];
 
     // Check for kebab-case naming
-    if (filePath && !filePath.includes('/') && !/^[a-z0-9-]+\.[a-z]+$/.test(path.basename(filePath))) {
+    if (
+      filePath &&
+      !filePath.includes('/') &&
+      !/^[a-z0-9-]+\.[a-z]+$/.test(path.basename(filePath))
+    ) {
       issues.push('File name should use kebab-case');
     }
 
@@ -231,7 +237,8 @@ class PoliticalSphereMCPServer extends Server {
               validation: concerns.length === 0 ? 'APPROVED' : 'REVIEW_REQUIRED',
               validations,
               concerns,
-              recommendations: concerns.length > 0 ? ['Consult governance committee', 'Document rationale'] : [],
+              recommendations:
+                concerns.length > 0 ? ['Consult governance committee', 'Document rationale'] : [],
             },
             null,
             2
@@ -295,7 +302,10 @@ class PoliticalSphereMCPServer extends Server {
               riskLevel: findings.length > 2 ? 'HIGH' : findings.length > 0 ? 'MEDIUM' : 'LOW',
               findings,
               recommendations,
-              nextSteps: findings.length > 0 ? ['Address critical findings immediately', 'Implement recommended fixes'] : ['Security audit passed'],
+              nextSteps:
+                findings.length > 0
+                  ? ['Address critical findings immediately', 'Implement recommended fixes']
+                  : ['Security audit passed'],
             },
             null,
             2
@@ -373,7 +383,11 @@ ${decision}
 
       // Check for pinned versions
       for (const [name, version] of Object.entries(dependencies)) {
-        if (typeof version === 'string' && version.startsWith('^') && !pkg.name?.includes('template')) {
+        if (
+          typeof version === 'string' &&
+          version.startsWith('^') &&
+          !pkg.name?.includes('template')
+        ) {
           recommendations.push(`Consider pinning version for ${name} to avoid breaking changes`);
         }
       }

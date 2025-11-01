@@ -1,8 +1,12 @@
 #!/bin/sh
-# Pre-push hook to verify workspace integrity
-# Prevents pushing broken or incomplete workspaces
+# Enhanced pre-push hook with improved workspace integrity checks
+# Owner: Platform Engineering
+# Last updated: 2025-10-31
 
-echo "🔍 Running pre-push workspace integrity check..."
+# Enable strict error handling
+set -euo pipefail
+
+echo "🔍 Running enhanced pre-push workspace integrity check..."
 echo ""
 
 # In CI or fast mode, skip interactive checks to avoid blocking automation

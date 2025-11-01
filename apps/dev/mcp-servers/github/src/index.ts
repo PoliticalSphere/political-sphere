@@ -143,24 +143,30 @@ class GitHubMCPServer extends Server {
       case 'get_repo_info':
         return await this.getRepoInfo(typedArgs as { owner: string; repo: string });
       case 'list_issues':
-        return await this.listIssues(typedArgs as {
-          owner: string;
-          repo: string;
-          state?: string;
-          labels?: string;
-        });
+        return await this.listIssues(
+          typedArgs as {
+            owner: string;
+            repo: string;
+            state?: string;
+            labels?: string;
+          }
+        );
       case 'get_pull_request':
-        return await this.getPullRequest(typedArgs as {
-          owner: string;
-          repo: string;
-          pull_number: number;
-        });
+        return await this.getPullRequest(
+          typedArgs as {
+            owner: string;
+            repo: string;
+            pull_number: number;
+          }
+        );
       case 'search_repositories':
-        return await this.searchRepositories(typedArgs as {
-          query: string;
-          sort?: string;
-          order?: string;
-        });
+        return await this.searchRepositories(
+          typedArgs as {
+            query: string;
+            sort?: string;
+            order?: string;
+          }
+        );
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
     }
@@ -201,12 +207,7 @@ class GitHubMCPServer extends Server {
     }
   }
 
-  private async listIssues(args: {
-    owner: string;
-    repo: string;
-    state?: string;
-    labels?: string;
-  }) {
+  private async listIssues(args: { owner: string; repo: string; state?: string; labels?: string }) {
     try {
       const params: any = {
         owner: args.owner,
@@ -221,7 +222,7 @@ class GitHubMCPServer extends Server {
 
       const response = await this.octokit.issues.listForRepo(params);
 
-      const issues = response.data.map(issue => ({
+      const issues = response.data.map((issue) => ({
         number: issue.number,
         title: issue.title,
         state: issue.state,
@@ -240,18 +241,11 @@ class GitHubMCPServer extends Server {
         content: [{ type: 'text', text: JSON.stringify(issues, null, 2) }],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to list issues: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to list issues: ${error.message}`);
     }
   }
 
-  private async getPullRequest(args: {
-    owner: string;
-    repo: string;
-    pull_number: number;
-  }) {
+  private async getPullRequest(args: { owner: string; repo: string; pull_number: number }) {
     try {
       const response = await this.octokit.pulls.get({
         owner: args.owner,
@@ -293,18 +287,11 @@ class GitHubMCPServer extends Server {
         content: [{ type: 'text', text: JSON.stringify(info, null, 2) }],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to get pull request: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to get pull request: ${error.message}`);
     }
   }
 
-  private async searchRepositories(args: {
-    query: string;
-    sort?: string;
-    order?: string;
-  }) {
+  private async searchRepositories(args: { query: string; sort?: string; order?: string }) {
     try {
       const response = await this.octokit.search.repos({
         q: args.query,
@@ -313,7 +300,7 @@ class GitHubMCPServer extends Server {
         per_page: 10,
       });
 
-      const repos = response.data.items.map(repo => ({
+      const repos = response.data.items.map((repo) => ({
         name: repo.name,
         full_name: repo.full_name,
         description: repo.description,

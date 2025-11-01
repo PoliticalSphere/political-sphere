@@ -141,11 +141,7 @@ export const authenticate = (
 };
 
 export const authorize = (...roles: string[]) => {
-  return (
-    req: AuthenticatedRequest,
-    res: Response,
-    next: NextFunction
-  ): void => {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {
       res.status(401).json({ error: 'Authentication required' });
       return;
@@ -178,10 +174,7 @@ export const logger = winston.createLogger({
   defaultMeta: { service: 'political-sphere' },
   transports: [
     new winston.transports.Console({
-      format: winston.format.combine(
-        winston.format.colorize(),
-        winston.format.simple()
-      ),
+      format: winston.format.combine(winston.format.colorize(), winston.format.simple()),
     }),
     new winston.transports.File({
       filename: 'logs/error.log',
@@ -194,11 +187,7 @@ export const logger = winston.createLogger({
 });
 
 // Request logging middleware
-export const requestLogger = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+export const requestLogger = (req: Request, res: Response, next: NextFunction) => {
   const start = Date.now();
 
   res.on('finish', () => {
@@ -222,9 +211,7 @@ export const requestLogger = (
 import { z } from 'zod';
 
 const configSchema = z.object({
-  nodeEnv: z
-    .enum(['development', 'staging', 'production'])
-    .default('development'),
+  nodeEnv: z.enum(['development', 'staging', 'production']).default('development'),
   port: z.number().default(3000),
   database: z.object({
     url: z.string().url(),
@@ -268,9 +255,7 @@ const loadConfig = (): Config => {
     externalApis: {
       someService: process.env.SOME_SERVICE_API_KEY
         ? {
-            baseUrl:
-              process.env.SOME_SERVICE_BASE_URL ||
-              'https://api.someservice.com',
+            baseUrl: process.env.SOME_SERVICE_BASE_URL || 'https://api.someservice.com',
             apiKey: process.env.SOME_SERVICE_API_KEY,
             timeout: parseInt(process.env.SOME_SERVICE_TIMEOUT || '5000'),
           }
@@ -445,10 +430,7 @@ export class CacheManager {
     value = await this.database.get<T>(key);
     if (value) {
       // Warm caches
-      await Promise.all([
-        this.memoryCache.set(key, value),
-        this.redisCache.set(key, value),
-      ]);
+      await Promise.all([this.memoryCache.set(key, value), this.redisCache.set(key, value)]);
     }
 
     return value;

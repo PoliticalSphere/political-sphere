@@ -15,7 +15,9 @@ try {
   const tempLogger = {
     error: (msg, meta) => console.error(JSON.stringify({ level: 'ERROR', message: msg, ...meta })),
   };
-  tempLogger.error('Shared telemetry initialization failed (continuing)', { error: err?.message ?? err });
+  tempLogger.error('Shared telemetry initialization failed (continuing)', {
+    error: err?.message ?? err,
+  });
 }
 
 import { mkdir, writeFile } from 'node:fs/promises';
@@ -29,7 +31,8 @@ const _localLogger = {
   warn: (msg, meta) => console.warn(JSON.stringify({ level: 'WARN', message: msg, ...meta })),
   error: (msg, meta) => console.error(JSON.stringify({ level: 'ERROR', message: msg, ...meta })),
 };
-const logger = (sharedLogger && typeof sharedLogger.info === 'function') ? sharedLogger : _localLogger;
+const logger =
+  sharedLogger && typeof sharedLogger.info === 'function' ? sharedLogger : _localLogger;
 
 const API_URL = process.env.API_URL ?? 'http://api:4000';
 const INTERVAL = Number.parseInt(process.env.WORKER_INTERVAL_MS ?? '15000', 10);
@@ -40,8 +43,13 @@ const OUTPUT_PATH =
 let intervalId;
 
 async function persistSummary(summary) {
-  await mkdir(dirname(OUTPUT_PATH), { recursive: true });
-  await writeFile(OUTPUT_PATH, JSON.stringify(summary, null, 2), 'utf8');
+  try {
+    await mkdir(dirname(OUTPUT_PATH), { recursive: true });
+    await writeFile(OUTPUT_PATH, JSON.stringify(summary, null, 2), 'utf8');
+  } catch (err) {
+    // Log and continue; persistence failures should not crash the worker
+    logger.error('Failed to persist summary', { error: err?.message || err });
+  }
 }
 
 async function fetchUpdates() {
@@ -57,7 +65,7 @@ async function fetchUpdates() {
     logger.info('Processed news stories', {
       total: summary.total,
       latestUpdate: summary.latest?.updatedAt ?? 'n/a',
-      outputPath: OUTPUT_PATH
+      outputPath: OUTPUT_PATH,
     });
   } catch (error) {
     logger.error('Failed to call API', { error: error.message, apiUrl: API_URL });

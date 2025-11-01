@@ -50,6 +50,7 @@ Most templates are currently co-located with their respective documentation:
 **Goal**: Consolidate all templates into this centralized directory by Q1 2026
 
 **Benefits**:
+
 - Single source of truth for all templates
 - Easier to maintain and version
 - Clearer separation between templates and examples
@@ -60,6 +61,7 @@ Most templates are currently co-located with their respective documentation:
 ## Usage
 
 See the [Templates Index](../templates-index.md) for:
+
 - Complete template catalog
 - Usage guidelines
 - Selection criteria

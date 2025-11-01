@@ -14,7 +14,7 @@ import {
   resetPassword,
   getUserById,
   users,
-  refreshTokens
+  refreshTokens,
 } from '../src/auth.js';
 
 describe('Authentication API Tests', () => {
@@ -53,8 +53,8 @@ describe('Authentication API Tests', () => {
         body: JSON.stringify({
           email: 'test@example.com',
           password: 'password123',
-          role: 'viewer'
-        })
+          role: 'viewer',
+        }),
       });
 
       expect(response.status).toBe(201);
@@ -73,8 +73,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'duplicate@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       // Try to register again
@@ -83,8 +83,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'duplicate@example.com',
-          password: 'password456'
-        })
+          password: 'password456',
+        }),
       });
 
       expect(response.status).toBe(409);
@@ -97,8 +97,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       expect(response.status).toBe(400);
@@ -111,8 +111,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: 'test@example.com'
-        })
+          email: 'test@example.com',
+        }),
       });
 
       expect(response.status).toBe(400);
@@ -126,8 +126,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'viewer@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       expect(response.status).toBe(201);
@@ -144,8 +144,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'login@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
     });
 
@@ -155,8 +155,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'login@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       expect(response.status).toBe(200);
@@ -172,8 +172,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'login@example.com',
-          password: 'wrongpassword'
-        })
+          password: 'wrongpassword',
+        }),
       });
 
       expect(response.status).toBe(401);
@@ -187,8 +187,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'nonexistent@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       expect(response.status).toBe(401);
@@ -201,8 +201,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       expect(response.status).toBe(400);
@@ -215,8 +215,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: 'login@example.com'
-        })
+          email: 'login@example.com',
+        }),
       });
 
       expect(response.status).toBe(400);
@@ -235,8 +235,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'refresh@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       const loginResponse = await fetch(`${BASE_URL}/auth/login`, {
@@ -244,8 +244,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'refresh@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       const loginData = await loginResponse.json();
@@ -257,8 +257,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          refreshToken
-        })
+          refreshToken,
+        }),
       });
 
       expect(response.status).toBe(200);
@@ -273,8 +273,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          refreshToken: 'invalid-token'
-        })
+          refreshToken: 'invalid-token',
+        }),
       });
 
       expect(response.status).toBe(401);
@@ -286,7 +286,7 @@ describe('Authentication API Tests', () => {
       const response = await fetch(`${BASE_URL}/auth/refresh`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+        body: JSON.stringify({}),
       });
 
       expect(response.status).toBe(400);
@@ -301,8 +301,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          refreshToken: 'some-token'
-        })
+          refreshToken: 'some-token',
+        }),
       });
 
       expect(response.status).toBe(200);
@@ -314,7 +314,7 @@ describe('Authentication API Tests', () => {
       const response = await fetch(`${BASE_URL}/auth/logout`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+        body: JSON.stringify({}),
       });
 
       expect(response.status).toBe(200);
@@ -331,8 +331,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'forgot@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
     });
 
@@ -341,8 +341,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: 'forgot@example.com'
-        })
+          email: 'forgot@example.com',
+        }),
       });
 
       expect(response.status).toBe(200);
@@ -356,8 +356,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: 'nonexistent@example.com'
-        })
+          email: 'nonexistent@example.com',
+        }),
       });
 
       expect(response.status).toBe(200);
@@ -370,7 +370,7 @@ describe('Authentication API Tests', () => {
       const response = await fetch(`${BASE_URL}/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({})
+        body: JSON.stringify({}),
       });
 
       expect(response.status).toBe(400);
@@ -389,16 +389,16 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'reset@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       const forgotResponse = await fetch(`${BASE_URL}/auth/forgot-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          email: 'reset@example.com'
-        })
+          email: 'reset@example.com',
+        }),
       });
 
       const forgotData = await forgotResponse.json();
@@ -411,8 +411,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token: resetToken,
-          newPassword: 'newpassword123'
-        })
+          newPassword: 'newpassword123',
+        }),
       });
 
       expect(response.status).toBe(200);
@@ -425,8 +425,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'reset@example.com',
-          password: 'newpassword123'
-        })
+          password: 'newpassword123',
+        }),
       });
 
       expect(loginResponse.status).toBe(200);
@@ -438,8 +438,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           token: 'invalid-token',
-          newPassword: 'newpassword123'
-        })
+          newPassword: 'newpassword123',
+        }),
       });
 
       expect(response.status).toBe(400);
@@ -452,8 +452,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          newPassword: 'newpassword123'
-        })
+          newPassword: 'newpassword123',
+        }),
       });
 
       expect(response.status).toBe(400);
@@ -466,8 +466,8 @@ describe('Authentication API Tests', () => {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          token: resetToken
-        })
+          token: resetToken,
+        }),
       });
 
       expect(response.status).toBe(400);
@@ -486,8 +486,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'middleware@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       const loginResponse = await fetch(`${BASE_URL}/auth/login`, {
@@ -495,8 +495,8 @@ describe('Authentication API Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'middleware@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       const loginData = await loginResponse.json();

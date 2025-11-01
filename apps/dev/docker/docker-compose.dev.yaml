@@ -11,8 +11,8 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
     command: sleep infinity
     environment:
-      DATABASE_URL: "postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}"
-      REDIS_URL: "redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0"
+      DATABASE_URL: 'postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}'
+      REDIS_URL: 'redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0'
       NODE_ENV: development
     depends_on:
       postgres:
@@ -57,14 +57,7 @@ services:
 
   redis:
     image: redis:7-alpine
-    command:
-      [
-        'redis-server',
-        '--appendonly',
-        'yes',
-        '--requirepass',
-        '${REDIS_PASSWORD:-changeme}',
-      ]
+    command: ['redis-server', '--appendonly', 'yes', '--requirepass', '${REDIS_PASSWORD:-changeme}']
     ports:
       - '6379:6379'
     volumes:
@@ -179,8 +172,8 @@ services:
       AUTH_URL: http://auth:8080
       NODE_ENV: development
       LOG_LEVEL: debug
-      DATABASE_URL: "postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}"
-      REDIS_URL: "redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0"
+      DATABASE_URL: 'postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}'
+      REDIS_URL: 'redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0'
     ports:
       - '${API_PORT:-4000}:4000'
     volumes:
@@ -219,7 +212,7 @@ services:
       - ../../../apps/frontend:/app/apps/frontend
       - ../../../libs:/app/libs
       - ../../../libs/shared/dist:/app/node_modules/@political-sphere/shared:ro
-  # Use image-bundled node_modules to avoid empty named-volume masking compiled native modules
+    # Use image-bundled node_modules to avoid empty named-volume masking compiled native modules
     command: ['npm', 'run', 'start:frontend']
     depends_on:
       api:
@@ -242,15 +235,15 @@ services:
     environment:
       QUEUE_URL: http://localstack:4566/000000000000/political-sphere
       API_URL: http://api:4000
-      DATABASE_URL: "postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}"
-      REDIS_URL: "redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0"
+      DATABASE_URL: 'postgres://${POSTGRES_USER:-political}:${POSTGRES_PASSWORD:-changeme}@postgres:5432/${POSTGRES_DB:-political_dev}'
+      REDIS_URL: 'redis://default:${REDIS_PASSWORD:-changeme}@redis:6379/0'
       NODE_ENV: development
       WORKER_INTERVAL_MS: ${WORKER_INTERVAL_MS:-15000}
     volumes:
       - ../../../apps/worker:/app/apps/worker
       - ../../../libs:/app/libs
       - ../../../libs/shared/dist:/app/node_modules/@political-sphere/shared:ro
-  # Use image-bundled node_modules to avoid empty named-volume masking compiled native modules
+    # Use image-bundled node_modules to avoid empty named-volume masking compiled native modules
     command: ['npm', 'run', 'start:worker']
     depends_on:
       postgres:

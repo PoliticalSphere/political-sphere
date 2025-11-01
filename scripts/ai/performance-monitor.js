@@ -6,6 +6,7 @@
  */
 
 import fs from 'fs';
+import { promises as fsp } from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -83,8 +84,12 @@ function analyzePerformance() {
 
   // Pattern analysis
   console.log('🎯 Performance Patterns:');
-  console.log(`Fast Responses Identified: ${patterns.performancePatterns?.fastResponses?.length || 0}`);
-  console.log(`Slow Responses Identified: ${patterns.performancePatterns?.slowResponses?.length || 0}`);
+  console.log(
+    `Fast Responses Identified: ${patterns.performancePatterns?.fastResponses?.length || 0}`
+  );
+  console.log(
+    `Slow Responses Identified: ${patterns.performancePatterns?.slowResponses?.length || 0}`
+  );
   console.log(`Cacheable Queries: ${patterns.performancePatterns?.cacheableQueries?.length || 0}`);
   console.log();
 
@@ -108,10 +113,33 @@ function analyzePerformance() {
 }
 
 function main() {
-  analyzePerformance();
+  const startedAt = Date.now();
+  let success = false;
+  try {
+    analyzePerformance();
+    success = true;
+  } finally {
+    // record run into ai-metrics.json
+    (async () => {
+      try {
+        const raw = await fsp.readFile(METRICS_FILE, 'utf8').catch(() => null);
+        const metrics = raw ? JSON.parse(raw) : { scriptRuns: [] };
+        metrics.scriptRuns = metrics.scriptRuns || [];
+        metrics.scriptRuns.push({
+          script: 'performance-monitor',
+          timestamp: new Date().toISOString(),
+          durationMs: Date.now() - startedAt,
+          success,
+        });
+        await fsp.writeFile(METRICS_FILE, JSON.stringify(metrics, null, 2));
+      } catch (err) {
+        console.warn('Failed to record performance-monitor run:', err?.message || err);
+      }
+    })();
+  }
 }
 
-if (import.meta.url === `file://${process.argv[1]}`) {
+if (__filename === process.argv[1]) {
   main();
 }
 

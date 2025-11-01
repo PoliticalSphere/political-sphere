@@ -49,6 +49,12 @@
       "improvement": "Codebase indexing and knowledge base",
       "impact": "Context-aware suggestions",
       "date": "2025-10-29"
+    },
+    {
+      "area": "Performance",
+      "improvement": "Async codebase indexer, pre-cache TTL/LRU eviction, and FAST_AI scanning limits",
+      "impact": "Lower indexing time, smaller cache, faster cold-start responses",
+      "date": "2025-10-31"
     }
   ],
   "performancePatterns": {
@@ -70,7 +76,25 @@
       "What is the deployment process?",
       "How do I handle errors?",
       "What are the security requirements?",
-      "How do I update dependencies?"
+      "How do I update dependencies?",
+      "How to run the development server?",
+      "How to run database migrations?",
+      "How to seed test data?",
+      "How to run linting?",
+      "What is FAST_AI and how to enable it?",
+      "Where are the ADRs (architecture decision records)?",
+      "How to run the test smoke suite?",
+      "How to add a new API endpoint?",
+      "How to write an integration test?",
+      "How to create a new React component with accessibility?",
+      "How to run Playwright tests?",
+      "What are the accessibility requirements?",
+      "How to update shared libs?",
+      "Where is the README for apps/api?",
+      "How to contribute (contributing.md)?",
+      "How to run the pre-cache script?",
+      "How to pre-load AI contexts?",
+      "What is the release process?"
     ],
     "optimizationTips": [
       "Use caching for repeated queries",
@@ -80,7 +104,9 @@
       "Pre-cache common queries using scripts/ai/pre-cache.js",
       "Use FAST_AI=1 for rapid iteration",
       "Monitor performance with scripts/ai/performance-monitor.js",
-      "Review slow response patterns in ai-learning/patterns.json"
+      "Review slow response patterns in ai-learning/patterns.json",
+      "Batch similar operations together",
+      "Leverage cached patterns from ai-learning/patterns.json"
     ]
   },
   "competenceMetrics": {
@@ -99,5 +125,5 @@
       "falsePositives": 0.04
     }
   },
-  "lastUpdated": "2025-10-29T12:00:00.000Z"
+  "lastUpdated": "2025-10-31T12:00:00.000Z"
 }

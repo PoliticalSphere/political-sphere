@@ -19,3 +19,12 @@ title = "gitleaks config"
     '''\.terraform\.lock\.hcl$''',
     '''\.lock$''',
   ]
+  # Common false positives in development
+  regexes = [
+    '''TEST_JWT_SECRET''',
+    '''test_jwt_secret''',
+    '''example\.com''',
+    '''localhost''',
+    '''127\.0\.0\.1''',
+    '''0\.0\.0\.0''',
+  ]

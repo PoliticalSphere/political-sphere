@@ -26,6 +26,7 @@
      $ npm run lint          # Lint code
      $ npm run format        # Format with Prettier
      $ npm run typecheck     # TypeScript type checking
+     $ npm run build         # Build for production
 
 
 🔗 SERVICE URLS

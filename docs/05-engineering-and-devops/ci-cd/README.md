@@ -1,16 +1,14 @@
-
 # CI/CD Overview
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Approved** |
 
 </div>
 
 ---
-
 
 This document describes the CI/CD (Continuous Integration and Continuous Delivery) system for the Political Sphere project. It covers workflows, scripts, best practices, and improvement plans.
 
@@ -43,37 +41,44 @@ This document describes the CI/CD (Continuous Integration and Continuous Deliver
 The following improvements have been implemented:
 
 ### ✅ Boundary Linting Integration
+
 - Added `lint:import-boundaries` npm script that invokes custom boundary checker
 - Updated `lint-boundaries.yml` workflow to use the new script
 - Boundary violations now generate actionable reports in `artifacts/`
 
 ### ✅ Makefile Targets for CI
+
 - Added `make ci-checks` - runs all CI checks (lint, typecheck, test, boundaries)
 - Added `make security-scan` - runs security audits and gitleaks
 - Added `make test-all` - runs unit, integration, and e2e tests
 
 ### ✅ Deduplicated CI Workflows
+
 - Created reusable composite actions in `.github/actions/`:
   - `setup-node-deps` - Sets up Node.js and installs dependencies
   - `quality-checks` - Runs lint, typecheck, and boundary checks
 - Refactored all workflows to use composite actions (DRY principle)
 
 ### ✅ Enhanced Test Coverage
+
 - Added explicit `integration-test` job to `ci.yml`
 - Added explicit `e2e-test` job to `ci.yml`
 - Added coverage upload to Codecov in test job
 
 ### ✅ Accessibility Testing
+
 - Created `scripts/ci/a11y-check.sh` using axe-core and Playwright
 - Added `test:a11y` npm script
 - Added `accessibility-test` job to CI workflow
 
 ### ✅ Improved Error Handling
+
 - Enhanced `scripts/seed/seed.sh` with clear error messages and connection tests
 - Enhanced `scripts/migrate/run-migrations.sh` with dependency checks and summary reporting
 - Enhanced `apps/dev/scripts/dev-service.sh` with validation and helpful error messages
 
 ### ✅ Enhanced Nx CI Project
+
 - Added useful targets to `ci/project.json` (lint, typecheck, test, security-scan, ci-checks)
 - Created `ci/README.md` documenting purpose and usage
 - CI project now provides Nx-compatible entry points for automation

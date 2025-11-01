@@ -11,22 +11,25 @@ import mfGenerated from '../../tools/module-federation/generated/host.webpack.co
 const root = process.cwd();
 
 export default {
-	entry: path.resolve(root, 'apps', 'host', 'src', 'index.js'),
-	mode: 'development',
-	devtool: false,
-	output: { publicPath: 'auto' },
-	devServer: {
-		port: 3000,
-		hot: true,
-		static: { directory: path.resolve(root, 'apps', 'host', 'dist'), watch: { ignored: /node_modules/ } },
-		open: false,
-		client: { logging: 'warn', overlay: false, progress: false },
-		devMiddleware: { stats: 'errors-only' }
-	},
-	plugins: [
-		new HtmlWebpackPlugin({ template: path.resolve(root, 'apps', 'host', 'public', 'index.html') }),
-		...(mfGenerated && mfGenerated.plugins ? mfGenerated.plugins : [])
-	],
-	module: { rules: [] },
-	resolve: { extensions: ['.js'] }
+  entry: path.resolve(root, 'apps', 'host', 'src', 'index.js'),
+  mode: 'development',
+  devtool: false,
+  output: { publicPath: 'auto' },
+  devServer: {
+    port: 3000,
+    hot: true,
+    static: {
+      directory: path.resolve(root, 'apps', 'host', 'dist'),
+      watch: { ignored: /node_modules/ },
+    },
+    open: false,
+    client: { logging: 'warn', overlay: false, progress: false },
+    devMiddleware: { stats: 'errors-only' },
+  },
+  plugins: [
+    new HtmlWebpackPlugin({ template: path.resolve(root, 'apps', 'host', 'public', 'index.html') }),
+    ...(mfGenerated && mfGenerated.plugins ? mfGenerated.plugins : []),
+  ],
+  module: { rules: [] },
+  resolve: { extensions: ['.js'] },
 };

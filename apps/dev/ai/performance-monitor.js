@@ -30,7 +30,7 @@ class PerformanceMonitor {
         cpuUsage: { mean: 60, std: 10 },
         memoryUsage: { mean: 70, std: 15 },
         errorRate: { mean: 0.01, std: 0.005 },
-        throughput: { mean: 1000, std: 200 }
+        throughput: { mean: 1000, std: 200 },
       };
     }
   }
@@ -47,7 +47,7 @@ class PerformanceMonitor {
       errorRate: Math.random() * 0.05,
       throughput: Math.random() * 2000 + 500, // requests per minute
       activeConnections: Math.floor(Math.random() * 1000),
-      databaseLatency: Math.random() * 50 + 10 // ms
+      databaseLatency: Math.random() * 50 + 10, // ms
     };
 
     return this.metrics;
@@ -58,18 +58,19 @@ class PerformanceMonitor {
 
     this.anomalies = [];
 
-    Object.keys(this.baselines).forEach(metric => {
+    Object.keys(this.baselines).forEach((metric) => {
       if (this.metrics[metric] !== undefined) {
         const baseline = this.baselines[metric];
         const zScore = Math.abs((this.metrics[metric] - baseline.mean) / baseline.std);
 
-        if (zScore > 2) { // 2 standard deviations
+        if (zScore > 2) {
+          // 2 standard deviations
           this.anomalies.push({
             metric,
             value: this.metrics[metric],
             baseline: baseline.mean,
             severity: zScore > 3 ? 'critical' : 'warning',
-            zScore: zScore.toFixed(2)
+            zScore: zScore.toFixed(2),
           });
         }
       }
@@ -89,13 +90,14 @@ class PerformanceMonitor {
         type: 'performance',
         priority: 'high',
         title: 'High Response Time Detected',
-        description: 'API response times are elevated. Consider implementing caching or optimizing database queries.',
+        description:
+          'API response times are elevated. Consider implementing caching or optimizing database queries.',
         actions: [
           'Review slow database queries',
           'Implement Redis caching for frequently accessed data',
           'Consider CDN for static assets',
-          'Optimize API endpoints with pagination'
-        ]
+          'Optimize API endpoints with pagination',
+        ],
       });
     }
 
@@ -110,8 +112,8 @@ class PerformanceMonitor {
           'Scale out application instances',
           'Optimize CPU-intensive operations',
           'Implement load balancing',
-          'Review background job processing'
-        ]
+          'Review background job processing',
+        ],
       });
     }
 
@@ -126,8 +128,8 @@ class PerformanceMonitor {
           'Profile memory usage with heap dumps',
           'Implement memory-efficient data structures',
           'Review garbage collection settings',
-          'Consider memory-optimized algorithms'
-        ]
+          'Consider memory-optimized algorithms',
+        ],
       });
     }
 
@@ -142,8 +144,8 @@ class PerformanceMonitor {
           'Review application logs for error patterns',
           'Implement circuit breakers',
           'Add retry mechanisms with exponential backoff',
-          'Enhance error handling and monitoring'
-        ]
+          'Enhance error handling and monitoring',
+        ],
       });
     }
 
@@ -158,8 +160,8 @@ class PerformanceMonitor {
           'Add database indexes for slow queries',
           'Implement query result caching',
           'Consider read replicas for heavy read workloads',
-          'Optimize database connection pooling'
-        ]
+          'Optimize database connection pooling',
+        ],
       });
     }
 
@@ -174,8 +176,8 @@ class PerformanceMonitor {
           'Monitor auto-scaling triggers',
           'Review rate limiting policies',
           'Prepare additional infrastructure capacity',
-          'Implement traffic throttling if needed'
-        ]
+          'Implement traffic throttling if needed',
+        ],
       });
     }
 
@@ -188,14 +190,16 @@ class PerformanceMonitor {
     // Update baselines with exponential moving average
     const alpha = 0.1; // Learning rate
 
-    Object.keys(this.baselines).forEach(metric => {
+    Object.keys(this.baselines).forEach((metric) => {
       if (this.metrics[metric] !== undefined) {
         const current = this.baselines[metric];
         const newValue = this.metrics[metric];
 
         current.mean = alpha * newValue + (1 - alpha) * current.mean;
         // Update standard deviation (simplified)
-        current.std = Math.sqrt(alpha * Math.pow(newValue - current.mean, 2) + (1 - alpha) * Math.pow(current.std, 2));
+        current.std = Math.sqrt(
+          alpha * Math.pow(newValue - current.mean, 2) + (1 - alpha) * Math.pow(current.std, 2)
+        );
       }
     });
 
@@ -211,10 +215,10 @@ class PerformanceMonitor {
       recommendations: this.recommendations,
       summary: {
         totalAnomalies: this.anomalies.length,
-        criticalIssues: this.anomalies.filter(a => a.severity === 'critical').length,
+        criticalIssues: this.anomalies.filter((a) => a.severity === 'critical').length,
         totalRecommendations: this.recommendations.length,
-        highPriorityActions: this.recommendations.filter(r => r.priority === 'high').length
-      }
+        highPriorityActions: this.recommendations.filter((r) => r.priority === 'high').length,
+      },
     };
 
     // Save report
@@ -251,7 +255,8 @@ class PerformanceMonitor {
 if (require.main === module) {
   const monitor = new PerformanceMonitor();
 
-  monitor.runAnalysis()
+  monitor
+    .runAnalysis()
     .then((report) => {
       console.log('\n📋 Performance Analysis Summary:');
       console.log(`Total Anomalies: ${report.summary.totalAnomalies}`);

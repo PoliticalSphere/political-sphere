@@ -43,65 +43,65 @@ class UIVisualTesting {
       viewports: [
         { name: 'mobile', width: 375, height: 667 },
         { name: 'tablet', width: 768, height: 1024 },
-        { name: 'desktop', width: 1920, height: 1080 }
+        { name: 'desktop', width: 1920, height: 1080 },
       ],
       components: [
         {
           name: 'Button',
           selector: '.btn',
           variants: ['primary', 'secondary', 'disabled'],
-          interactions: ['hover', 'focus', 'active']
+          interactions: ['hover', 'focus', 'active'],
         },
         {
           name: 'Modal',
           selector: '.modal',
           variants: ['default', 'large', 'fullscreen'],
-          interactions: ['open', 'close']
+          interactions: ['open', 'close'],
         },
         {
           name: 'Form',
           selector: 'form',
           variants: ['login', 'registration', 'contact'],
-          interactions: ['valid', 'invalid', 'submitting']
+          interactions: ['valid', 'invalid', 'submitting'],
         },
         {
           name: 'Navigation',
           selector: 'nav',
           variants: ['desktop', 'mobile'],
-          interactions: ['expanded', 'collapsed']
+          interactions: ['expanded', 'collapsed'],
         },
         {
           name: 'DataTable',
           selector: '.data-table',
           variants: ['default', 'sortable', 'filterable'],
-          interactions: ['sort-asc', 'sort-desc', 'filter']
-        }
+          interactions: ['sort-asc', 'sort-desc', 'filter'],
+        },
       ],
       pages: [
         {
           name: 'Home',
           url: '/',
           elements: ['header', 'hero', 'features', 'footer'],
-          breakpoints: ['mobile', 'tablet', 'desktop']
+          breakpoints: ['mobile', 'tablet', 'desktop'],
         },
         {
           name: 'Dashboard',
           url: '/dashboard',
           elements: ['sidebar', 'main-content', 'charts', 'tables'],
-          breakpoints: ['tablet', 'desktop']
+          breakpoints: ['tablet', 'desktop'],
         },
         {
           name: 'Profile',
           url: '/profile',
           elements: ['avatar', 'form', 'tabs', 'actions'],
-          breakpoints: ['mobile', 'desktop']
-        }
+          breakpoints: ['mobile', 'desktop'],
+        },
       ],
       thresholds: {
         pixelDifference: 0.01, // 1% maximum difference
         perceptualDifference: 0.02, // 2% maximum perceptual difference
-        layoutShift: 0.1 // 10% maximum layout shift
-      }
+        layoutShift: 0.1, // 10% maximum layout shift
+      },
     };
   }
 
@@ -116,7 +116,7 @@ class UIVisualTesting {
         component: component.name,
         selector: component.selector,
         variants: {},
-        established: new Date().toISOString()
+        established: new Date().toISOString(),
       };
 
       for (const variant of component.variants) {
@@ -124,7 +124,7 @@ class UIVisualTesting {
           variant,
           screenshots: {},
           dom: '',
-          styles: {}
+          styles: {},
         };
 
         // Capture screenshots for each viewport
@@ -134,8 +134,14 @@ class UIVisualTesting {
         }
 
         // Capture DOM and styles
-        this.baselines[component.name].variants[variant].dom = await this.captureDOM(component, variant);
-        this.baselines[component.name].variants[variant].styles = await this.captureStyles(component, variant);
+        this.baselines[component.name].variants[variant].dom = await this.captureDOM(
+          component,
+          variant
+        );
+        this.baselines[component.name].variants[variant].styles = await this.captureStyles(
+          component,
+          variant
+        );
       }
     }
 
@@ -145,7 +151,7 @@ class UIVisualTesting {
         page: page.name,
         url: page.url,
         elements: {},
-        established: new Date().toISOString()
+        established: new Date().toISOString(),
       };
 
       for (const element of page.elements) {
@@ -153,12 +159,12 @@ class UIVisualTesting {
           element,
           screenshots: {},
           dom: '',
-          styles: {}
+          styles: {},
         };
 
         // Capture screenshots for each breakpoint
         for (const breakpoint of page.breakpoints) {
-          const viewport = testSuite.viewports.find(v => v.name === breakpoint);
+          const viewport = testSuite.viewports.find((v) => v.name === breakpoint);
           if (viewport) {
             const screenshot = await this.captureScreenshot(page, element, viewport, 'baseline');
             this.baselines[page.name].elements[element].screenshots[breakpoint] = screenshot;
@@ -167,7 +173,10 @@ class UIVisualTesting {
 
         // Capture DOM and styles
         this.baselines[page.name].elements[element].dom = await this.captureDOM(page, element);
-        this.baselines[page.name].elements[element].styles = await this.captureStyles(page, element);
+        this.baselines[page.name].elements[element].styles = await this.captureStyles(
+          page,
+          element
+        );
       }
     }
 
@@ -185,7 +194,7 @@ class UIVisualTesting {
       format: 'png',
       size: Math.floor(Math.random() * 50000) + 10000, // 10-60KB
       hash: this.generateImageHash(),
-      capturedAt: new Date().toISOString()
+      capturedAt: new Date().toISOString(),
     };
 
     // Store screenshot metadata
@@ -207,20 +216,21 @@ class UIVisualTesting {
     return {
       '.btn': {
         'background-color': '#007bff',
-        'color': '#ffffff',
-        'padding': '8px 16px',
-        'border-radius': '4px'
+        color: '#ffffff',
+        padding: '8px 16px',
+        'border-radius': '4px',
       },
       '.btn:hover': {
-        'background-color': '#0056b3'
-      }
+        'background-color': '#0056b3',
+      },
     };
   }
 
   generateImageHash() {
     // Generate a simple hash for demo purposes
-    return Math.random().toString(36).substring(2, 15) +
-           Math.random().toString(36).substring(2, 15);
+    return (
+      Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15)
+    );
   }
 
   async runVisualTests() {
@@ -237,8 +247,8 @@ class UIVisualTesting {
         passedTests: 0,
         failedTests: 0,
         differences: 0,
-        successRate: 0
-      }
+        successRate: 0,
+      },
     };
 
     // Test components
@@ -284,7 +294,7 @@ class UIVisualTesting {
       passedTests: 0,
       failedTests: 0,
       differences: 0,
-      variants: []
+      variants: [],
     };
 
     const baseline = this.baselines[component.name];
@@ -297,7 +307,7 @@ class UIVisualTesting {
       const variantResult = {
         variant,
         tests: [],
-        differences: 0
+        differences: 0,
       };
 
       // Test each viewport
@@ -310,16 +320,25 @@ class UIVisualTesting {
           variantResult.tests.push({
             viewport: viewport.name,
             status: 'failed',
-            reason: 'No baseline screenshot found'
+            reason: 'No baseline screenshot found',
           });
           continue;
         }
 
         // Capture current screenshot
-        const currentScreenshot = await this.captureScreenshot(component, variant, viewport, 'test');
+        const currentScreenshot = await this.captureScreenshot(
+          component,
+          variant,
+          viewport,
+          'test'
+        );
 
         // Compare screenshots
-        const comparison = await this.compareScreenshots(baselineScreenshot, currentScreenshot, testSuite.thresholds);
+        const comparison = await this.compareScreenshots(
+          baselineScreenshot,
+          currentScreenshot,
+          testSuite.thresholds
+        );
 
         if (comparison.different) {
           result.failedTests++;
@@ -332,7 +351,7 @@ class UIVisualTesting {
             difference: comparison.difference,
             perceptualDiff: comparison.perceptualDiff,
             layoutShift: comparison.layoutShift,
-            reason: 'Visual differences detected'
+            reason: 'Visual differences detected',
           });
 
           // Store difference for reporting
@@ -345,13 +364,13 @@ class UIVisualTesting {
             current: currentScreenshot.id,
             difference: comparison.difference,
             perceptualDiff: comparison.perceptualDiff,
-            layoutShift: comparison.layoutShift
+            layoutShift: comparison.layoutShift,
           });
         } else {
           result.passedTests++;
           variantResult.tests.push({
             viewport: viewport.name,
-            status: 'passed'
+            status: 'passed',
           });
         }
       }
@@ -360,7 +379,12 @@ class UIVisualTesting {
       for (const interaction of component.interactions) {
         result.totalTests++;
 
-        const interactionResult = await this.testInteraction(component, variant, interaction, testSuite.viewports[0]);
+        const interactionResult = await this.testInteraction(
+          component,
+          variant,
+          interaction,
+          testSuite.viewports[0]
+        );
         if (interactionResult.passed) {
           result.passedTests++;
         } else {
@@ -372,7 +396,7 @@ class UIVisualTesting {
         variantResult.tests.push({
           interaction,
           status: interactionResult.passed ? 'passed' : 'failed',
-          reason: interactionResult.reason
+          reason: interactionResult.reason,
         });
       }
 
@@ -389,7 +413,7 @@ class UIVisualTesting {
       passedTests: 0,
       failedTests: 0,
       differences: 0,
-      elements: []
+      elements: [],
     };
 
     const baseline = this.baselines[page.name];
@@ -402,7 +426,7 @@ class UIVisualTesting {
       const elementResult = {
         element,
         tests: [],
-        differences: 0
+        differences: 0,
       };
 
       // Test each breakpoint
@@ -415,20 +439,24 @@ class UIVisualTesting {
           elementResult.tests.push({
             breakpoint,
             status: 'failed',
-            reason: 'No baseline screenshot found'
+            reason: 'No baseline screenshot found',
           });
           continue;
         }
 
         // Find viewport for breakpoint
-        const viewport = testSuite.viewports.find(v => v.name === breakpoint);
+        const viewport = testSuite.viewports.find((v) => v.name === breakpoint);
         if (!viewport) continue;
 
         // Capture current screenshot
         const currentScreenshot = await this.captureScreenshot(page, element, viewport, 'test');
 
         // Compare screenshots
-        const comparison = await this.compareScreenshots(baselineScreenshot, currentScreenshot, testSuite.thresholds);
+        const comparison = await this.compareScreenshots(
+          baselineScreenshot,
+          currentScreenshot,
+          testSuite.thresholds
+        );
 
         if (comparison.different) {
           result.failedTests++;
@@ -441,7 +469,7 @@ class UIVisualTesting {
             difference: comparison.difference,
             perceptualDiff: comparison.perceptualDiff,
             layoutShift: comparison.layoutShift,
-            reason: 'Visual differences detected'
+            reason: 'Visual differences detected',
           });
 
           // Store difference for reporting
@@ -454,13 +482,13 @@ class UIVisualTesting {
             current: currentScreenshot.id,
             difference: comparison.difference,
             perceptualDiff: comparison.perceptualDiff,
-            layoutShift: comparison.layoutShift
+            layoutShift: comparison.layoutShift,
           });
         } else {
           result.passedTests++;
           elementResult.tests.push({
             breakpoint,
-            status: 'passed'
+            status: 'passed',
           });
         }
       }
@@ -478,17 +506,18 @@ class UIVisualTesting {
     const layoutShift = Math.random() * 0.15; // 0-15% layout shift
 
     return {
-      different: difference > thresholds.pixelDifference ||
-                perceptualDiff > thresholds.perceptualDifference ||
-                layoutShift > thresholds.layoutShift,
+      different:
+        difference > thresholds.pixelDifference ||
+        perceptualDiff > thresholds.perceptualDifference ||
+        layoutShift > thresholds.layoutShift,
       difference,
       perceptualDiff,
       layoutShift,
       details: {
         pixelDifference: difference * 100,
         perceptualDifference: perceptualDiff * 100,
-        layoutShift: layoutShift * 100
-      }
+        layoutShift: layoutShift * 100,
+      },
     };
   }
 
@@ -498,7 +527,7 @@ class UIVisualTesting {
 
     return {
       passed,
-      reason: passed ? null : `Interaction ${interaction} failed for ${component.name} ${variant}`
+      reason: passed ? null : `Interaction ${interaction} failed for ${component.name} ${variant}`,
     };
   }
 
@@ -511,14 +540,18 @@ class UIVisualTesting {
       timestamp: new Date().toISOString(),
       summary: {
         ...latestResults.summary,
-        status: latestResults.summary.successRate >= 95 ? 'stable' :
-                latestResults.summary.successRate >= 85 ? 'minor-changes' : 'significant-changes'
+        status:
+          latestResults.summary.successRate >= 95
+            ? 'stable'
+            : latestResults.summary.successRate >= 85
+              ? 'minor-changes'
+              : 'significant-changes',
       },
       components: latestResults.components,
       pages: latestResults.pages,
       differences: this.differences.slice(-20), // Last 20 differences
       recommendations: this.generateVisualRecommendations(latestResults),
-      baselines: Object.keys(this.baselines)
+      baselines: Object.keys(this.baselines),
     };
 
     await fs.mkdir('ai-learning', { recursive: true });
@@ -536,7 +569,7 @@ class UIVisualTesting {
         category: 'visual-regression',
         action: 'Review and approve significant visual changes',
         impact: `${results.summary.differences} visual differences detected`,
-        suggestion: 'Compare screenshots and update baselines if changes are intentional'
+        suggestion: 'Compare screenshots and update baselines if changes are intentional',
       });
     }
 
@@ -546,19 +579,19 @@ class UIVisualTesting {
         category: 'ui-consistency',
         action: 'Investigate UI consistency issues',
         impact: `Visual test success rate: ${results.summary.successRate.toFixed(1)}%`,
-        suggestion: 'Check for unintended style changes or component variations'
+        suggestion: 'Check for unintended style changes or component variations',
       });
     }
 
     // Component-specific recommendations
-    results.components.forEach(component => {
+    results.components.forEach((component) => {
       if (component.differences > 2) {
         recommendations.push({
           priority: 'medium',
           category: 'component',
           action: `Review visual changes in ${component.name} component`,
           impact: `${component.differences} visual differences`,
-          suggestion: 'Verify component styling and interactions'
+          suggestion: 'Verify component styling and interactions',
         });
       }
     });
@@ -585,12 +618,15 @@ class UIVisualTesting {
       testResults: this.testResults,
       screenshots: this.screenshots,
       differences: this.differences,
-      lastUpdated: new Date().toISOString()
+      lastUpdated: new Date().toISOString(),
     };
 
     await fs.mkdir('ai-learning', { recursive: true });
     await fs.writeFile('ai-learning/ui-baselines.json', JSON.stringify(this.baselines, null, 2));
-    await fs.writeFile('ai-learning/ui-test-results.json', JSON.stringify(this.testResults, null, 2));
+    await fs.writeFile(
+      'ai-learning/ui-test-results.json',
+      JSON.stringify(this.testResults, null, 2)
+    );
     await fs.writeFile('ai-learning/ui-visual-state.json', JSON.stringify(state, null, 2));
   }
 
@@ -618,7 +654,6 @@ class UIVisualTesting {
       console.log(`📸 Screenshots Captured: ${Object.keys(this.screenshots).length}`);
 
       return report;
-
     } catch (error) {
       console.error('❌ Visual regression testing failed:', error);
       throw error;
@@ -630,7 +665,8 @@ class UIVisualTesting {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const visualTesting = new UIVisualTesting();
 
-  visualTesting.runVisualRegressionSuite()
+  visualTesting
+    .runVisualRegressionSuite()
     .then((report) => {
       console.log('\n📋 Visual Regression Test Summary:');
       console.log(`Status: ${report.summary.status.toUpperCase()}`);

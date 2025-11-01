@@ -12,7 +12,7 @@ import crypto from 'node:crypto';
 export const ROLES = {
   ADMIN: 'ADMIN',
   EDITOR: 'EDITOR',
-  VIEWER: 'VIEWER'
+  VIEWER: 'VIEWER',
 };
 
 // In-memory stores exposed for tests
@@ -46,7 +46,7 @@ export function generateAccessToken(user) {
     userId: user.id,
     email: user.email,
     role: user.role,
-    type: 'access'
+    type: 'access',
   };
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 }
@@ -54,7 +54,7 @@ export function generateAccessToken(user) {
 export function generateRefreshToken(user) {
   const payload = {
     userId: user.id,
-    type: 'refresh'
+    type: 'refresh',
   };
   const token = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: JWT_REFRESH_EXPIRES_IN });
   refreshTokens.add(token);
@@ -85,13 +85,7 @@ export function verifyRefreshToken(token) {
 // Sanitize outgoing user objects (tests assert sensitive fields are not exposed)
 function sanitizeUser(user) {
   if (!user) return null;
-  const {
-    passwordHash,
-    passwordResetToken,
-    passwordResetExpires,
-    password,
-    ...rest
-  } = user;
+  const { passwordHash, passwordResetToken, passwordResetExpires, password, ...rest } = user;
   return { ...rest };
 }
 
@@ -109,7 +103,7 @@ export async function createUser(email, password = '', role = ROLES.VIEWER) {
     createdAt: new Date(),
     isActive: true,
     passwordResetToken: undefined,
-    passwordResetExpires: undefined
+    passwordResetExpires: undefined,
   };
   users.set(email, user);
   return sanitizeUser(user);
@@ -141,7 +135,7 @@ export async function initiatePasswordReset(email) {
 
 export async function resetPassword(token, newPassword) {
   if (!token) throw new Error('Invalid or expired reset token');
-  const user = Array.from(users.values()).find(u => u.passwordResetToken === token);
+  const user = Array.from(users.values()).find((u) => u.passwordResetToken === token);
   if (!user || !user.passwordResetExpires || user.passwordResetExpires.getTime() < Date.now()) {
     throw new Error('Invalid or expired reset token');
   }
@@ -162,7 +156,7 @@ export function createSession(userId, userAgent, ip) {
     userAgent,
     ip,
     createdAt: now,
-    lastActivity: now
+    lastActivity: now,
   };
   activeSessions.set(sessionId, session);
   return sessionId;
@@ -197,7 +191,7 @@ export function cleanupExpiredSessions(maxAgeMs) {
 // Lookup
 export function getUserById(id) {
   if (!id) return null;
-  const user = Array.from(users.values()).find(u => u.id === id);
+  const user = Array.from(users.values()).find((u) => u.id === id);
   return sanitizeUser(user);
 }
 

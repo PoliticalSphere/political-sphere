@@ -20,12 +20,9 @@ const runTypeScriptBuild = () => {
 };
 
 const fallbackCopy = (originalError) => {
-  console.warn(
-    'tsc build failed or not configured, falling back to copying src to dist'
-  );
+  console.warn('tsc build failed or not configured, falling back to copying src to dist');
   if (originalError) {
-    const message =
-      originalError instanceof Error ? originalError.message : String(originalError);
+    const message = originalError instanceof Error ? originalError.message : String(originalError);
     console.debug(`TypeScript build error: ${message}`);
   }
 

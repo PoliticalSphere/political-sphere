@@ -2,14 +2,13 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :-------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
 
 </div>
 
 ---
-
 
 ## Strategic Overview
 
@@ -24,16 +23,16 @@ This keeps incentives pure: development prioritises integrity and depth, not mon
 
 ## Core Pricing Model
 
-| Aspect | Description |
-|--------|-------------|
-| Model | Subscription-only (B2C individual players) |
-| Tiering | One flat tier; all players receive identical features |
-| Trial | Optional short free trial (e.g. 7–14 days) with full access |
-| Price Philosophy | "Modest, predictable, ethical" — affordable for students and young adults |
-| Billing Frequency | Monthly (annual optional later) |
-| Cancellation Policy | Cancel anytime, no penalty, access continues until end of period |
-| Refunds | Simple, transparent, documented in fairness policy |
-| Tax Handling | Inclusive pricing; regional adjustments later if required |
+| Aspect              | Description                                                               |
+| ------------------- | ------------------------------------------------------------------------- |
+| Model               | Subscription-only (B2C individual players)                                |
+| Tiering             | One flat tier; all players receive identical features                     |
+| Trial               | Optional short free trial (e.g. 7–14 days) with full access               |
+| Price Philosophy    | "Modest, predictable, ethical" — affordable for students and young adults |
+| Billing Frequency   | Monthly (annual optional later)                                           |
+| Cancellation Policy | Cancel anytime, no penalty, access continues until end of period          |
+| Refunds             | Simple, transparent, documented in fairness policy                        |
+| Tax Handling        | Inclusive pricing; regional adjustments later if required                 |
 
 **Example phrasing (for docs):** “One fair price for everyone. No tiers. No tricks. No power for sale.”
 
@@ -62,10 +61,12 @@ Every subscriber receives full access to:
 ## Operational Considerations (Zero-Budget Stage)
 
 ### Before Launch
+
 - No payment processor until open beta.
 - Early closed tests: free, invite-only.
 
 ### After Launch
+
 - Track only: active subscribers, churn rate, free-trial conversion, MRR (Monthly Recurring Revenue).
 - Infrastructure: No premium server segregation. No additional fees for private worlds. If private hosting emerges, still within the single-tier subscription framework (player-to-player world hosting, not monetised).
 
@@ -125,11 +126,11 @@ This keeps financial decisions ethically auditable — same as code and rules.
 
 ## Alignment with Strategy
 
-| Strategic Pillar | Pricing Alignment |
-|------------------|-------------------|
-| Fairness | One-tier, no pay advantage |
-| Persistence | Stable revenue → sustainable operation |
-| Safety | Subscriptions fund moderation & integrity |
-| Ethics | No exploitation, ads, or data sale |
-| Simplicity | Predictable, transparent, easy to explain |
-| Trust | Revenue tied directly to fairness commitment |
+| Strategic Pillar | Pricing Alignment                            |
+| ---------------- | -------------------------------------------- |
+| Fairness         | One-tier, no pay advantage                   |
+| Persistence      | Stable revenue → sustainable operation       |
+| Safety           | Subscriptions fund moderation & integrity    |
+| Ethics           | No exploitation, ads, or data sale           |
+| Simplicity       | Predictable, transparent, easy to explain    |
+| Trust            | Revenue tied directly to fairness commitment |

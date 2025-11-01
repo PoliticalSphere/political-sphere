@@ -1,21 +1,186 @@
 {
   "run": {
-    "command": "nx build api",
-    "startTime": "2025-10-29T22:58:40.189Z",
-    "endTime": "2025-10-29T22:58:42.593Z",
+    "command": "nx run-many --target=build --all",
+    "startTime": "2025-10-31T11:31:12.314Z",
+    "endTime": "2025-10-31T17:26:28.734Z",
     "inner": false
   },
   "tasks": [
     {
-      "taskId": "api:build",
+      "taskId": "remote:build",
       "target": "build",
-      "projectName": "api",
-      "hash": "1961875683950896530",
-      "startTime": "2025-10-29T22:58:40.362Z",
-      "endTime": "2025-10-29T22:58:42.314Z",
+      "projectName": "remote",
+      "hash": "15334267758033576268",
+      "startTime": "2025-10-31T11:31:12.471Z",
+      "endTime": "2025-10-31T11:31:13.037Z",
       "params": "",
       "cacheStatus": "cache-miss",
       "status": 0
+    },
+    {
+      "taskId": "ui:build",
+      "target": "build",
+      "projectName": "ui",
+      "hash": "16720545065721184410",
+      "startTime": "2025-10-31T11:31:12.471Z",
+      "endTime": "2025-10-31T11:31:13.010Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "frontend:build",
+      "target": "build",
+      "projectName": "frontend",
+      "hash": "3486382447072840541",
+      "startTime": "2025-10-31T11:31:13.824Z",
+      "endTime": "2025-10-31T11:31:13.857Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "api:build",
+      "target": "build",
+      "projectName": "api",
+      "hash": "858405044869266797",
+      "startTime": "2025-10-31T11:31:12.471Z",
+      "endTime": "2025-10-31T11:31:16.168Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "political-sphere-ai-assistant:build",
+      "target": "build",
+      "projectName": "political-sphere-ai-assistant",
+      "hash": "2289961544710114419",
+      "startTime": "2025-10-31T11:31:13.839Z",
+      "endTime": "2025-10-31T11:31:25.960Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "political-sphere-mcp-filesystem:build",
+      "target": "build",
+      "projectName": "political-sphere-mcp-filesystem",
+      "hash": "1088034636796995067",
+      "startTime": "2025-10-31T11:31:16.168Z",
+      "endTime": "2025-10-31T11:31:32.926Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "political-sphere-mcp-github:build",
+      "target": "build",
+      "projectName": "political-sphere-mcp-github",
+      "hash": "4751878737954210535",
+      "startTime": "2025-10-31T11:31:14.041Z",
+      "endTime": "2025-10-31T11:31:35.743Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "political-sphere-mcp-political-sphere:build",
+      "target": "build",
+      "projectName": "political-sphere-mcp-political-sphere",
+      "hash": "3008755355696780092",
+      "startTime": "2025-10-31T11:31:25.962Z",
+      "endTime": "2025-10-31T11:31:49.504Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "political-sphere-mcp-puppeteer:build",
+      "target": "build",
+      "projectName": "political-sphere-mcp-puppeteer",
+      "hash": "16024380275374595017",
+      "startTime": "2025-10-31T11:31:32.927Z",
+      "endTime": "2025-10-31T11:32:00.293Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "political-sphere-mcp-sqlite:build",
+      "target": "build",
+      "projectName": "political-sphere-mcp-sqlite",
+      "hash": "2125702429423361204",
+      "startTime": "2025-10-31T11:31:35.743Z",
+      "endTime": "2025-10-31T11:32:04.661Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "worker:build",
+      "target": "build",
+      "projectName": "worker",
+      "hash": "8614635931389570322",
+      "startTime": "2025-10-31T11:32:04.662Z",
+      "endTime": "2025-10-31T11:32:04.703Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "host:build",
+      "target": "build",
+      "projectName": "host",
+      "hash": "5966864298206882715",
+      "startTime": "2025-10-31T11:32:05.684Z",
+      "endTime": "2025-10-31T11:32:05.716Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "dev:build",
+      "target": "build",
+      "projectName": "dev",
+      "hash": "9807150116581826989",
+      "startTime": "2025-10-31T11:32:05.913Z",
+      "endTime": "2025-10-31T11:32:05.946Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 0
+    },
+    {
+      "taskId": "political-sphere-mcp-git:build",
+      "target": "build",
+      "projectName": "political-sphere-mcp-git",
+      "hash": "16152949852623217692",
+      "startTime": "2025-10-31T11:31:49.505Z",
+      "endTime": "2025-10-31T11:32:14.285Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "@political-sphere/shared:build",
+      "target": "build",
+      "projectName": "@political-sphere/shared",
+      "hash": "15578047429790549578",
+      "startTime": "2025-10-31T11:32:00.295Z",
+      "endTime": "2025-10-31T11:32:24.121Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
+    },
+    {
+      "taskId": "docs:build",
+      "target": "build",
+      "projectName": "docs",
+      "hash": "5211579483106682963",
+      "startTime": "2025-10-31T11:31:12.471Z",
+      "endTime": "2025-10-31T17:26:27.417Z",
+      "params": "",
+      "cacheStatus": "cache-miss",
+      "status": 1
     }
   ]
 }

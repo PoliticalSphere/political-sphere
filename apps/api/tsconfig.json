@@ -1,24 +1,37 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
+    "baseUrl": "../..",
+    "paths": {
+      "@political-sphere/shared": ["libs/shared/src"]
+    },
+    "module": "es2022",
+    "target": "es2022",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": false,
-    "noImplicitOverride": true,
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "alwaysStrict": false,
+    "exactOptionalPropertyTypes": false,
     "noPropertyAccessFromIndexSignature": false,
-    "noImplicitReturns": true,
-    "noFallthroughCasesInSwitch": true,
-    "allowJs": true,
-    "checkJs": false
+    "noUncheckedIndexedAccess": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "noFallthroughCasesInSwitch": false,
+    "noImplicitOverride": false,
+    "noImplicitUseStrict": false,
+    "noStrictGenericChecks": false,
+    "useUnknownInCatchVariables": false,
+    "noUncheckedSideEffectImports": false,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "declaration": false,
+    "noEmit": true
   },
-  "files": [],
-  "include": [],
-  "references": [
-    {
-      "path": "./tsconfig.app.json"
-    },
-    {
-      "path": "./tsconfig.spec.json"
-    }
-  ]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "tsconfig.base.json"]
 }

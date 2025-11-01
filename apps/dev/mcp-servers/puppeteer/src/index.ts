@@ -186,9 +186,13 @@ class PuppeteerMCPServer extends Server {
       case 'take_screenshot':
         return await this.takeScreenshot(typedArgs as { selector?: string; fullPage?: boolean });
       case 'click_element':
-        return await this.clickElement(typedArgs as { selector: string; waitForNavigation?: boolean });
+        return await this.clickElement(
+          typedArgs as { selector: string; waitForNavigation?: boolean }
+        );
       case 'type_text':
-        return await this.typeText(typedArgs as { selector: string; text: string; clear?: boolean });
+        return await this.typeText(
+          typedArgs as { selector: string; text: string; clear?: boolean }
+        );
       case 'wait_for_element':
         return await this.waitForElement(typedArgs as { selector: string; timeout?: number });
       case 'close_browser':
@@ -214,8 +218,8 @@ class PuppeteerMCPServer extends Server {
           '--no-first-run',
           '--no-zygote',
           '--single-process', // <- this one doesn't work in Windows
-          '--disable-gpu'
-        ]
+          '--disable-gpu',
+        ],
       });
 
       this.page = await this.browser.newPage();
@@ -228,10 +232,7 @@ class PuppeteerMCPServer extends Server {
         content: [{ type: 'text', text: 'Browser launched successfully' }],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to launch browser: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to launch browser: ${error.message}`);
     }
   }
 
@@ -258,16 +259,15 @@ class PuppeteerMCPServer extends Server {
       const url_final = this.page.url();
 
       return {
-        content: [{
-          type: 'text',
-          text: `Navigated to: ${url_final}\nTitle: ${title}`
-        }],
+        content: [
+          {
+            type: 'text',
+            text: `Navigated to: ${url_final}\nTitle: ${title}`,
+          },
+        ],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to navigate: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to navigate: ${error.message}`);
     }
   }
 
@@ -284,7 +284,7 @@ class PuppeteerMCPServer extends Server {
         if (!element) {
           throw new McpError(ErrorCode.InvalidRequest, `Element not found: ${args.selector}`);
         }
-        content = await this.page.evaluate(el => el.textContent || el.innerHTML, element);
+        content = await this.page.evaluate((el) => el.textContent || el.innerHTML, element);
       } else {
         content = await this.page.content();
       }
@@ -298,10 +298,7 @@ class PuppeteerMCPServer extends Server {
         content: [{ type: 'text', text: content }],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to get page content: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to get page content: ${error.message}`);
     }
   }
 
@@ -318,27 +315,26 @@ class PuppeteerMCPServer extends Server {
         if (!element) {
           throw new McpError(ErrorCode.InvalidRequest, `Element not found: ${args.selector}`);
         }
-        screenshot = await element.screenshot() as Buffer;
+        screenshot = (await element.screenshot()) as Buffer;
       } else {
-        screenshot = await this.page.screenshot({
+        screenshot = (await this.page.screenshot({
           fullPage: args.fullPage !== false,
-        }) as Buffer;
+        })) as Buffer;
       }
 
       // Convert to base64 for text response
       const base64Image = screenshot.toString('base64');
 
       return {
-        content: [{
-          type: 'text',
-          text: `Screenshot taken (${screenshot.length} bytes)\nData: data:image/png;base64,${base64Image}`
-        }],
+        content: [
+          {
+            type: 'text',
+            text: `Screenshot taken (${screenshot.length} bytes)\nData: data:image/png;base64,${base64Image}`,
+          },
+        ],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to take screenshot: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to take screenshot: ${error.message}`);
     }
   }
 
@@ -354,10 +350,7 @@ class PuppeteerMCPServer extends Server {
       }
 
       if (args.waitForNavigation) {
-        await Promise.all([
-          this.page.waitForNavigation({ timeout: 30000 }),
-          element.click()
-        ]);
+        await Promise.all([this.page.waitForNavigation({ timeout: 30000 }), element.click()]);
       } else {
         await element.click();
       }
@@ -366,10 +359,7 @@ class PuppeteerMCPServer extends Server {
         content: [{ type: 'text', text: `Clicked element: ${args.selector}` }],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to click element: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to click element: ${error.message}`);
     }
   }
 
@@ -395,10 +385,7 @@ class PuppeteerMCPServer extends Server {
         content: [{ type: 'text', text: `Typed text into: ${args.selector}` }],
       };
     } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to type text: ${error.message}`
-      );
+      throw new McpError(ErrorCode.InternalError, `Failed to type text: ${error.message}`);
     }
   }
 

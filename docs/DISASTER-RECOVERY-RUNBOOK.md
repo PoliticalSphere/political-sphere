@@ -1,4 +1,5 @@
 # Disaster Recovery Runbook
+
 **Project:** Political Sphere  
 **Version:** 1.0  
 **Last Updated:** October 29, 2025  
@@ -8,6 +9,7 @@
 ---
 
 ## Table of Contents
+
 1. [Emergency Contacts](#emergency-contacts)
 2. [DR Scenarios](#dr-scenarios)
 3. [Database Recovery](#database-recovery)
@@ -22,21 +24,24 @@
 ## Emergency Contacts
 
 ### Primary Response Team
-| Role | Name | Phone | Email | Backup |
-|------|------|-------|-------|--------|
-| Incident Commander | [Primary IC Name] | +44 20 1234 5678 | ic@political-sphere.com | [Backup IC Name] |
-| Engineering Lead | [Engineering Lead Name] | +44 20 1234 5679 | eng-lead@political-sphere.com | [Backup Eng Lead] |
-| Security Lead | [Security Lead Name] | +44 20 1234 5680 | security@political-sphere.com | [Backup Security] |
-| Infrastructure Lead | [Infrastructure Lead Name] | +44 20 1234 5681 | infra@political-sphere.com | [Backup Infra] |
-| Database Admin | [DB Admin Name] | +44 20 1234 5682 | dba@political-sphere.com | [Backup DBA] |
+
+| Role                | Name                       | Phone            | Email                         | Backup            |
+| ------------------- | -------------------------- | ---------------- | ----------------------------- | ----------------- |
+| Incident Commander  | [Primary IC Name]          | +44 20 1234 5678 | ic@political-sphere.com       | [Backup IC Name]  |
+| Engineering Lead    | [Engineering Lead Name]    | +44 20 1234 5679 | eng-lead@political-sphere.com | [Backup Eng Lead] |
+| Security Lead       | [Security Lead Name]       | +44 20 1234 5680 | security@political-sphere.com | [Backup Security] |
+| Infrastructure Lead | [Infrastructure Lead Name] | +44 20 1234 5681 | infra@political-sphere.com    | [Backup Infra]    |
+| Database Admin      | [DB Admin Name]            | +44 20 1234 5682 | dba@political-sphere.com      | [Backup DBA]      |
 
 ### External Contacts
+
 - **AWS Support:** Premium Support Case (Case ID: [CASE-ID])
 - **Security Vendor:** [Security Vendor Name] - Emergency: +44 20 9876 5432
 - **Legal:** [Legal Counsel Name] - Emergency: +44 20 9876 5433
 - **PR/Communications:** [PR Agency Name] - Emergency: +44 20 9876 5434
 
 ### Escalation Chain
+
 1. On-Call Engineer (Immediate)
 2. Engineering Lead (15 minutes)
 3. CTO (30 minutes)
@@ -47,13 +52,16 @@
 ## DR Scenarios
 
 ### Scenario 1: Database Failure (P0)
+
 **Symptoms:**
+
 - Database connection errors
 - 500 errors from API
 - High RDS CPU/memory usage
 - Replication lag
 
 **Immediate Actions:**
+
 1. Declare incident (P0)
 2. Page Database Admin
 3. Check RDS console for status
@@ -64,13 +72,16 @@
 ---
 
 ### Scenario 2: Application Crash (P1)
+
 **Symptoms:**
+
 - ECS tasks failing health checks
 - 503 Service Unavailable errors
 - No response from API endpoints
 - CloudWatch alarms firing
 
 **Immediate Actions:**
+
 1. Declare incident (P1)
 2. Check ECS task status
 3. Review application logs
@@ -81,12 +92,15 @@
 ---
 
 ### Scenario 3: Complete Region Outage (P0)
+
 **Symptoms:**
+
 - All AWS services unavailable in region
 - Unable to access AWS console for region
 - AWS Health Dashboard shows regional issues
 
 **Immediate Actions:**
+
 1. Declare incident (P0)
 2. Activate full DR plan
 3. Prepare for region failover
@@ -97,12 +111,15 @@
 ---
 
 ### Scenario 4: Data Corruption (P0)
+
 **Symptoms:**
+
 - Inconsistent data returned from API
 - Database integrity check failures
 - User reports of incorrect/missing data
 
 **Immediate Actions:**
+
 1. Declare incident (P0)
 2. Stop all write operations immediately
 3. Enable read-only mode
@@ -113,13 +130,16 @@
 ---
 
 ### Scenario 5: Security Breach (P0)
+
 **Symptoms:**
+
 - Unauthorized access detected
 - Data exfiltration alerts
 - Compromised credentials
 - Unusual API activity
 
 **Immediate Actions:**
+
 1. Follow [Incident Response Plan](./INCIDENT-RESPONSE-PLAN.md)
 2. Isolate affected systems
 3. Preserve evidence
@@ -132,6 +152,7 @@
 ## Database Recovery
 
 ### Prerequisites
+
 - AWS CLI configured with appropriate IAM permissions
 - Access to RDS console
 - Knowledge of latest backup snapshot
@@ -144,6 +165,7 @@
 For Aurora Multi-AZ clusters, automatic failover occurs when primary fails.
 
 **Verification:**
+
 ```bash
 # Check cluster status
 aws rds describe-db-clusters \
@@ -156,6 +178,7 @@ aws rds describe-db-cluster-endpoints \
 ```
 
 **Application Changes:**
+
 - No changes needed if using cluster endpoint
 - If using instance endpoint, update connection string to cluster endpoint
 
@@ -164,6 +187,7 @@ aws rds describe-db-cluster-endpoints \
 ### Recovery Option 2: Restore from Snapshot (RTO: 15-30 minutes)
 
 **Step 1: Identify Latest Snapshot**
+
 ```bash
 # List recent snapshots
 aws rds describe-db-cluster-snapshots \
@@ -177,6 +201,7 @@ aws rds describe-db-cluster-automated-backups \
 ```
 
 **Step 2: Restore Snapshot**
+
 ```bash
 # Restore to new cluster
 aws rds restore-db-cluster-from-snapshot \
@@ -194,6 +219,7 @@ aws rds wait db-cluster-available \
 ```
 
 **Step 3: Create Reader Instance**
+
 ```bash
 # Add reader instance
 aws rds create-db-instance \
@@ -204,6 +230,7 @@ aws rds create-db-instance \
 ```
 
 **Step 4: Update Application Configuration**
+
 ```bash
 # Update Secrets Manager with new endpoint
 NEW_ENDPOINT=$(aws rds describe-db-clusters \
@@ -217,6 +244,7 @@ aws secretsmanager update-secret \
 ```
 
 **Step 5: Restart Application**
+
 ```bash
 # Force new deployment to pick up new secrets
 aws ecs update-service \
@@ -226,6 +254,7 @@ aws ecs update-service \
 ```
 
 **Step 6: Verify**
+
 - Run health checks
 - Check application logs
 - Verify data integrity
@@ -238,6 +267,7 @@ aws ecs update-service \
 Use when you need to recover to a specific moment before corruption/deletion.
 
 **Step 1: Determine Recovery Point**
+
 ```bash
 # Get earliest restorable time
 aws rds describe-db-clusters \
@@ -246,6 +276,7 @@ aws rds describe-db-clusters \
 ```
 
 **Step 2: Restore to Point-in-Time**
+
 ```bash
 # Restore to specific timestamp
 aws rds restore-db-cluster-to-point-in-time \
@@ -292,6 +323,7 @@ aws rds restore-db-cluster-to-point-in-time \
 ### Recovery Option 1: Redeploy Current Version (RTO: 5-10 minutes)
 
 **Step 1: Check Current Deployment**
+
 ```bash
 # Get current task definition
 aws ecs describe-services \
@@ -301,6 +333,7 @@ aws ecs describe-services \
 ```
 
 **Step 2: Force Redeployment**
+
 ```bash
 # Force new deployment (pulls fresh containers)
 aws ecs update-service \
@@ -316,6 +349,7 @@ aws ecs wait services-stable \
 ```
 
 **Step 3: Verify**
+
 ```bash
 # Check task status
 aws ecs describe-services \
@@ -332,6 +366,7 @@ curl -f https://api.political-sphere.com/health
 ### Recovery Option 2: Rollback to Previous Version (RTO: 5-10 minutes)
 
 **Step 1: Find Previous Task Definition**
+
 ```bash
 # List recent task definitions
 aws ecs list-task-definitions \
@@ -345,6 +380,7 @@ aws ecs describe-task-definition \
 ```
 
 **Step 2: Rollback**
+
 ```bash
 # Update service to previous task definition
 aws ecs update-service \
@@ -363,6 +399,7 @@ aws ecs wait services-stable \
 ### Recovery Option 3: Blue-Green Deployment Recovery (RTO: 10-15 minutes)
 
 **Step 1: Deploy to Green Environment**
+
 ```bash
 # Create new service (green)
 aws ecs create-service \
@@ -375,6 +412,7 @@ aws ecs create-service \
 ```
 
 **Step 2: Validate Green Environment**
+
 ```bash
 # Test green endpoint
 curl -f https://api-green.political-sphere.com/health
@@ -384,6 +422,7 @@ npm run test:smoke -- --endpoint=https://api-green.political-sphere.com
 ```
 
 **Step 3: Switch Traffic**
+
 ```bash
 # Update Route53 weighted routing (gradual)
 # 90% blue, 10% green
@@ -407,6 +446,7 @@ aws route53 change-resource-record-sets \
 ```
 
 **Step 4: Decommission Blue**
+
 ```bash
 # Scale down blue service
 aws ecs update-service \
@@ -444,6 +484,7 @@ aws ecs delete-service \
 ### Recovery from Terraform State Corruption
 
 **Step 1: Restore Terraform State**
+
 ```bash
 # List state backups
 aws s3 ls s3://political-sphere-terraform-state/state/backups/
@@ -458,6 +499,7 @@ aws s3 cp ./terraform.tfstate.backup \
 ```
 
 **Step 2: Verify State**
+
 ```bash
 cd apps/infrastructure/terraform
 
@@ -469,6 +511,7 @@ terraform plan -out=tfplan
 ```
 
 **Step 3: Import Missing Resources**
+
 ```bash
 # If resources exist but not in state
 terraform import aws_ecs_cluster.main political-sphere-production
@@ -481,6 +524,7 @@ terraform import aws_rds_cluster.main political-sphere-production
 ### Recovery from Configuration Drift
 
 **Step 1: Detect Drift**
+
 ```bash
 cd apps/infrastructure/terraform
 terraform plan -detailed-exitcode
@@ -489,12 +533,14 @@ terraform plan -detailed-exitcode
 ```
 
 **Step 2: Review Changes**
+
 ```bash
 terraform plan -out=tfplan
 terraform show tfplan
 ```
 
 **Step 3: Apply Corrections**
+
 ```bash
 # Option A: Apply Terraform changes
 terraform apply tfplan
@@ -512,6 +558,7 @@ terraform apply
 ## Complete Region Failover
 
 ### Assumptions
+
 - Multi-region setup with us-east-1 (primary) and us-west-2 (DR)
 - Cross-region RDS read replica
 - S3 cross-region replication
@@ -520,6 +567,7 @@ terraform apply
 ### Failover Procedure (RTO: 30-60 minutes)
 
 **Step 1: Assess Primary Region**
+
 ```bash
 # Check AWS Health Dashboard
 aws health describe-events \
@@ -531,6 +579,7 @@ aws ecs list-clusters --region us-east-1 || echo "Primary region unavailable"
 ```
 
 **Step 2: Promote DR Database**
+
 ```bash
 # Promote read replica to standalone cluster
 aws rds promote-read-replica-db-cluster \
@@ -544,6 +593,7 @@ aws rds wait db-cluster-available \
 ```
 
 **Step 3: Deploy Application in DR Region**
+
 ```bash
 # Deploy ECS services in us-west-2
 cd apps/infrastructure/terraform
@@ -557,6 +607,7 @@ terraform apply \
 ```
 
 **Step 4: Update DNS**
+
 ```bash
 # Failover Route53 to us-west-2
 aws route53 change-resource-record-sets \
@@ -568,6 +619,7 @@ dig api.political-sphere.com
 ```
 
 **Step 5: Update Secrets**
+
 ```bash
 # Point to DR database endpoint
 DR_ENDPOINT=$(aws rds describe-db-clusters \
@@ -583,6 +635,7 @@ aws secretsmanager update-secret \
 ```
 
 **Step 6: Verify Services**
+
 ```bash
 # Health checks
 curl -f https://api.political-sphere.com/health
@@ -598,6 +651,7 @@ npm run test:smoke
 ```
 
 **Step 7: Enable Monitoring**
+
 ```bash
 # Verify CloudWatch alarms in new region
 aws cloudwatch describe-alarms \
@@ -614,6 +668,7 @@ echo "Failover to us-west-2 completed at $(date)" | \
 ### Failback Procedure (When primary region recovers)
 
 **Step 1: Verify Primary Region**
+
 ```bash
 # Check health
 aws health describe-events --region us-east-1
@@ -621,6 +676,7 @@ aws ecs list-clusters --region us-east-1
 ```
 
 **Step 2: Sync Data Back**
+
 ```bash
 # Create logical backup from DR database
 pg_dump -h $DR_ENDPOINT -U admin political_sphere > backup.sql
@@ -630,6 +686,7 @@ pg_dump -h $DR_ENDPOINT -U admin political_sphere > backup.sql
 ```
 
 **Step 3: Gradual Traffic Shift**
+
 ```bash
 # Weighted routing: 90% DR, 10% primary
 aws route53 change-resource-record-sets \
@@ -646,13 +703,14 @@ aws route53 change-resource-record-sets \
 ## Validation Procedures
 
 ### Database Validation
+
 ```bash
 # Connection test
 psql -h $DB_ENDPOINT -U admin -d political_sphere -c "SELECT 1"
 
 # Row counts
 psql -h $DB_ENDPOINT -U admin -d political_sphere -c "
-  SELECT 
+  SELECT
     'articles' as table_name, COUNT(*) as row_count FROM articles
   UNION ALL
   SELECT 'users', COUNT(*) FROM users
@@ -665,6 +723,7 @@ psql -h $DB_ENDPOINT -U admin -d political_sphere -c "
 ```
 
 ### Application Validation
+
 ```bash
 # Health endpoint
 curl -f https://api.political-sphere.com/health
@@ -681,6 +740,7 @@ ab -n 100 -c 10 https://api.political-sphere.com/api/articles
 ```
 
 ### Frontend Validation
+
 ```bash
 # Homepage loads
 curl -f https://political-sphere.com/ -o /dev/null
@@ -693,6 +753,7 @@ curl -f https://political-sphere.com/remoteEntry.js -o /dev/null
 ```
 
 ### End-to-End Validation
+
 ```bash
 # Run E2E tests
 npm run test:e2e:smoke
@@ -711,6 +772,7 @@ npm run test:e2e -- --grep "User login"
 **Subject:** [P0] Production Incident - Database Unavailable
 
 **Body:**
+
 ```
 Team,
 
@@ -734,6 +796,7 @@ Updates will be provided every 15 minutes.
 **Subject:** [P0] Update: Production Incident
 
 **Body:**
+
 ```
 Update #[N] - [Timestamp]
 
@@ -756,6 +819,7 @@ ETA: [Updated estimate]
 **Subject:** [Resolved] Production Incident - Database Unavailable
 
 **Body:**
+
 ```
 Team,
 
@@ -786,6 +850,7 @@ Thank you to everyone who assisted in the resolution.
 **Subject:** Service Disruption Resolved
 
 **Body:**
+
 ```
 Dear Political Sphere Users,
 
@@ -809,6 +874,7 @@ Thank you for your patience and understanding.
 ## Post-Recovery Actions
 
 ### Immediate (Within 24 hours)
+
 - [ ] Document timeline of events
 - [ ] Collect all logs and metrics
 - [ ] Identify root cause
@@ -817,6 +883,7 @@ Thank you for your patience and understanding.
 - [ ] Notify all stakeholders of resolution
 
 ### Short-term (Within 1 week)
+
 - [ ] Conduct post-mortem meeting
 - [ ] Create action items to prevent recurrence
 - [ ] Update runbooks based on learnings
@@ -825,6 +892,7 @@ Thank you for your patience and understanding.
 - [ ] Share incident report with team
 
 ### Long-term (Within 1 month)
+
 - [ ] Implement preventive measures
 - [ ] Update DR plan
 - [ ] Conduct DR drill
@@ -837,12 +905,14 @@ Thank you for your patience and understanding.
 ## Testing & Drills
 
 ### Quarterly DR Drill Schedule
+
 - **Q1:** Database failover and restore
 - **Q2:** Application rollback and recovery
 - **Q3:** Complete region failover
 - **Q4:** Full disaster scenario (unannounced)
 
 ### Drill Checklist
+
 - [ ] Schedule drill (avoid peak hours)
 - [ ] Notify team in advance (except Q4)
 - [ ] Prepare drill scenario
@@ -859,6 +929,7 @@ Thank you for your patience and understanding.
 ## Appendix
 
 ### Required Tools
+
 - AWS CLI (configured)
 - kubectl (for EKS if applicable)
 - psql (PostgreSQL client)
@@ -866,12 +937,14 @@ Thank you for your patience and understanding.
 - jq
 
 ### Access Requirements
+
 - AWS Console access (PowerUser or Admin)
 - Production database credentials (from Secrets Manager)
 - GitHub repository access (for code deployment)
 - Monitoring dashboard access
 
 ### Reference Documentation
+
 - [AWS RDS Documentation](https://docs.aws.amazon.com/rds/)
 - [ECS Documentation](https://docs.aws.amazon.com/ecs/)
 - [Terraform Documentation](https://www.terraform.io/docs)

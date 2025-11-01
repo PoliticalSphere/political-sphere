@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://jaegertracing.github.io/helm-charts
     chart: jaeger
-    targetRevision: ""
+    targetRevision: ''
     helm:
       values: |
         strategy: allInOne
@@ -31,5 +31,4 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
-
 # Dev-only Jaeger all-in-one deployment for tracing and OpenTelemetry ingestion.

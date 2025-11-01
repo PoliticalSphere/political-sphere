@@ -10,28 +10,34 @@ if [ ! -f .env ]; then
         cp apps/dev/templates/.env.example .env
         echo "✅ .env file created. Please review and update values."
         echo "⚠️  WARNING: Change default passwords before using in any shared environment!"
+        echo "   Never commit .env files to version control."
     else
         echo "⚠️  Template not found at apps/dev/templates/.env.example"
         echo "Creating basic .env file..."
-        cat > .env << 'EOF'
+        # Generate secure random passwords using /dev/urandom for better entropy
+        generate_password() {
+            openssl rand -base64 32 | tr -d "=+/" | cut -c1-32
+        }
+
+        cat > .env << EOF
 # Database
 POSTGRES_USER=political
-POSTGRES_PASSWORD=changeme_$(openssl rand -base64 16)
+POSTGRES_PASSWORD=$(generate_password)
 POSTGRES_DB=political_dev
 
 # Redis
-REDIS_PASSWORD=changeme_$(openssl rand -base64 16)
+REDIS_PASSWORD=$(generate_password)
 
 # AWS/LocalStack
 AWS_REGION=us-east-1
 
 # Authentication
 AUTH_ADMIN_USER=admin
-AUTH_ADMIN_PASSWORD=changeme_$(openssl rand -base64 16)
+AUTH_ADMIN_PASSWORD=$(generate_password)
 
 # Monitoring
 GRAFANA_ADMIN_USER=admin
-GRAFANA_ADMIN_PASSWORD=changeme_$(openssl rand -base64 16)
+GRAFANA_ADMIN_PASSWORD=$(generate_password)
 
 # Ports
 API_PORT=4000
@@ -43,6 +49,9 @@ AUTH_PORT=8080
 # Compose
 COMPOSE_PROJECT_NAME=politicalsphere
 EOF
+        echo "✅ .env file created with secure random passwords."
+        echo "⚠️  IMPORTANT: Save these passwords securely before proceeding."
+        echo "   Never commit .env files to version control."
     fi
 else
     echo "✅ .env file already exists"

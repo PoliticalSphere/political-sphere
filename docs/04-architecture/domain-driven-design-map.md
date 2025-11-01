@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -16,20 +16,20 @@
 
 Political Sphere uses domain-driven design to preserve autonomy inside the modular monolith. Contexts align to user value streams and regulatory responsibilities. Each context owns its data, exposes clear APIs, and participates in the shared event bus (NATS).
 
-| Context | Description | Primary Personas | Data Ownership | Integration Patterns |
-| ------- | ----------- | ---------------- | -------------- | -------------------- |
-| **Identity & Access (IAM)** | Authentication, sessions, MFA, tenants, RBAC/ABAC | Admin, DevOps | Users, credentials, session tokens | REST (admin), GraphQL auth directives, events: `iam.*` |
-| **Player & Profiles** | Player metadata, roles (MP, journalist), progression | Player, Moderator | PlayerProfile, achievements | GraphQL, events: `player.*` |
-| **Parliamentary Core** | Commons & Lords schedules, motions, amendments, divisions | Player, Moderator, AI NPC | Calendar, Motion, Division, Vote | GraphQL, events: `parliament.*`, realtime |
-| **Legislation & Policy** | Bill lifecycle, readings, regulatory outcomes | Player, Educator | Bill, CommitteeAssignment | GraphQL, events: `legislation.*` |
-| **Elections & Constituencies** | Constituency maps, party formation, election results | Player, Moderator | Constituency, Election, Candidate | GraphQL, REST admin tools, events: `election.*` |
-| **Debate & Chambers** | Debate rooms, speaking queue, Hansard transcript | Player, Moderator | Debate, Speech, Transcript | Realtime events, GraphQL subscriptions |
-| **Media & Narrative** | Articles, leaks, sentiment feed | Player, AI NPC, Media partners | MediaItem, Sentiment | GraphQL, REST webhooks, events: `media.*` |
-| **AI Simulation** | NPC behaviours, moderation assist, automation | AI Agents, Moderator | AgentConfig, SimulationState | REST (ops), internal gRPC/IPC (future), events: `ai.*` |
-| **Safety & Moderation** | Reports, case queue, appeals, evidence bundles | Moderator, Admin | Report, Action, TransparencyLog | REST, GraphQL (restricted), events: `safety.*` |
-| **Economy & Rewards** | XP, achievements, cosmetics (post-MVP) | Player | TokenLedger, Reward | GraphQL (feature-gated), events: `economy.*` |
-| **Observability & Audit** | Audit log, telemetry correlation, compliance traces | Admin, DevOps, Compliance | AuditEvent, TraceMeta | Append-only store, REST exports |
-| **Admin & Config** | Feature flags, world config, taxonomy | Admin, DevOps | FeatureFlag, WorldConfig | REST admin APIs, Git-backed config |
+| Context                        | Description                                               | Primary Personas               | Data Ownership                     | Integration Patterns                                   |
+| ------------------------------ | --------------------------------------------------------- | ------------------------------ | ---------------------------------- | ------------------------------------------------------ |
+| **Identity & Access (IAM)**    | Authentication, sessions, MFA, tenants, RBAC/ABAC         | Admin, DevOps                  | Users, credentials, session tokens | REST (admin), GraphQL auth directives, events: `iam.*` |
+| **Player & Profiles**          | Player metadata, roles (MP, journalist), progression      | Player, Moderator              | PlayerProfile, achievements        | GraphQL, events: `player.*`                            |
+| **Parliamentary Core**         | Commons & Lords schedules, motions, amendments, divisions | Player, Moderator, AI NPC      | Calendar, Motion, Division, Vote   | GraphQL, events: `parliament.*`, realtime              |
+| **Legislation & Policy**       | Bill lifecycle, readings, regulatory outcomes             | Player, Educator               | Bill, CommitteeAssignment          | GraphQL, events: `legislation.*`                       |
+| **Elections & Constituencies** | Constituency maps, party formation, election results      | Player, Moderator              | Constituency, Election, Candidate  | GraphQL, REST admin tools, events: `election.*`        |
+| **Debate & Chambers**          | Debate rooms, speaking queue, Hansard transcript          | Player, Moderator              | Debate, Speech, Transcript         | Realtime events, GraphQL subscriptions                 |
+| **Media & Narrative**          | Articles, leaks, sentiment feed                           | Player, AI NPC, Media partners | MediaItem, Sentiment               | GraphQL, REST webhooks, events: `media.*`              |
+| **AI Simulation**              | NPC behaviours, moderation assist, automation             | AI Agents, Moderator           | AgentConfig, SimulationState       | REST (ops), internal gRPC/IPC (future), events: `ai.*` |
+| **Safety & Moderation**        | Reports, case queue, appeals, evidence bundles            | Moderator, Admin               | Report, Action, TransparencyLog    | REST, GraphQL (restricted), events: `safety.*`         |
+| **Economy & Rewards**          | XP, achievements, cosmetics (post-MVP)                    | Player                         | TokenLedger, Reward                | GraphQL (feature-gated), events: `economy.*`           |
+| **Observability & Audit**      | Audit log, telemetry correlation, compliance traces       | Admin, DevOps, Compliance      | AuditEvent, TraceMeta              | Append-only store, REST exports                        |
+| **Admin & Config**             | Feature flags, world config, taxonomy                     | Admin, DevOps                  | FeatureFlag, WorldConfig           | REST admin APIs, Git-backed config                     |
 
 ---
 
@@ -55,6 +55,7 @@ graph TD
 ```
 
 **Interaction Notes**
+
 - IAM acts as enforcing layer—no cross-context call without validated tenant/session.
 - Domain events (`{context}.{event}.v1`) used for asynchronous propagation (e.g., `parliament.divisionRecorded.v1` triggers AI analysis and media briefings).
 - Debate & Chambers rely on realtime bus but read authoritative state from Parliamentary Core.
@@ -90,6 +91,7 @@ libs/
 ```
 
 Each `domain/*` library exposes:
+
 - Aggregate roots and entity schema (Prisma models)
 - Domain services and policies
 - Event contracts and projections

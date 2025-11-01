@@ -2,14 +2,13 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :-------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
 
 </div>
 
 ---
-
 
 ## Purpose
 
@@ -18,6 +17,7 @@ This Governance Charter establishes the foundational principles, structures, and
 ## Scope
 
 This charter applies to:
+
 - Platform operations and development decisions.
 - Player safety and moderation policies.
 - In-game governance and simulation rules.
@@ -39,6 +39,7 @@ Political Sphere is governed by these non-negotiable values:
 ## Governance Layers
 
 ### 1. Platform Governance
+
 - **Authority:** Real-world control over the platform, safety, and operations.
 - **Holders:** Developers and administrators.
 - **Responsibilities:** Ensure compliance, safety, and ethical operation.
@@ -46,6 +47,7 @@ Political Sphere is governed by these non-negotiable values:
 - **Overrides:** Platform can intervene in-game only for safety, ethics, or legal reasons.
 
 ### 2. Player Governance
+
 - **Authority:** In-game control over fictional parliamentary processes.
 - **Holders:** Players in roles like Speaker, MPs, party leaders.
 - **Responsibilities:** Govern the simulation world (debates, votes, rules).
@@ -54,6 +56,7 @@ Political Sphere is governed by these non-negotiable values:
 ## Decision-Making Framework
 
 ### Platform Decisions
+
 - **Process:**
   1. Proposal (documented, ADR-style).
   2. Ethical & fairness impact assessment.
@@ -65,18 +68,21 @@ Political Sphere is governed by these non-negotiable values:
 - **Examples:** Feature changes, policy updates, moderation rules.
 
 ### In-Game Decisions
+
 - **Process:** Handled via parliamentary procedures (motions, votes, committees).
 - **Examples:** Rule changes, party formations, sanctions within the simulation.
 
 ## Moderation and Safety
 
 ### Principles
+
 - Protect players above all else.
 - No harassment, threats, hate, or personal abuse.
 - No real-world political content or mobilization.
 - Debate ideas, not identities.
 
 ### Process
+
 - Reports triaged by humans (AI assists only).
 - Investigations with full context.
 - Proportionate responses (warnings → mutes → removal).
@@ -92,12 +98,12 @@ Political Sphere is governed by these non-negotiable values:
 
 ## Roles and Responsibilities
 
-| Role | Platform Responsibilities | In-Game Responsibilities |
-|------|---------------------------|---------------------------|
-| Developers/Admins | Platform safety, feature dev, moderation oversight | None (unless playing) |
-| Moderators | Enforce safety policies, handle reports | None |
-| Players (General) | Report issues, provide feedback | Participate in simulation |
-| Player Leaders (e.g., Speaker) | None | Enforce parliamentary rules |
+| Role                           | Platform Responsibilities                          | In-Game Responsibilities    |
+| ------------------------------ | -------------------------------------------------- | --------------------------- |
+| Developers/Admins              | Platform safety, feature dev, moderation oversight | None (unless playing)       |
+| Moderators                     | Enforce safety policies, handle reports            | None                        |
+| Players (General)              | Report issues, provide feedback                    | Participate in simulation   |
+| Player Leaders (e.g., Speaker) | None                                               | Enforce parliamentary rules |
 
 ## Change Management
 

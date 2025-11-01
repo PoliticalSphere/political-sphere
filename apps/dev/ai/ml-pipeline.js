@@ -49,13 +49,13 @@ class MLPipeline {
         errorRate: Math.random() * 0.05,
         throughput: Math.random() * 2000 + 500,
         activeUsers: Math.floor(Math.random() * 10000),
-        databaseLatency: Math.random() * 50 + 10
+        databaseLatency: Math.random() * 50 + 10,
       },
       labels: {
         performance: Math.random() > 0.8 ? 'poor' : Math.random() > 0.6 ? 'fair' : 'good',
         anomaly: Math.random() > 0.95 ? true : false,
-        userSatisfaction: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low'
-      }
+        userSatisfaction: Math.random() > 0.7 ? 'high' : Math.random() > 0.4 ? 'medium' : 'low',
+      },
     };
 
     this.trainingData.push(newData);
@@ -86,19 +86,20 @@ class MLPipeline {
             memoryUsage: -0.2,
             responseTime: -0.4,
             errorRate: -2.0,
-            intercept: 1.0
+            intercept: 1.0,
           },
           metrics: {
             mse: 0.15,
             r2: 0.78,
-            accuracy: 0.82
-          }
+            accuracy: 0.82,
+          },
         };
 
         return model;
       },
       predict: (features, model) => {
-        const score = model.coefficients.intercept +
+        const score =
+          model.coefficients.intercept +
           features.cpuUsage * model.coefficients.cpuUsage +
           features.memoryUsage * model.coefficients.memoryUsage +
           features.responseTime * model.coefficients.responseTime +
@@ -107,9 +108,9 @@ class MLPipeline {
         return {
           score: Math.max(0, Math.min(1, score)),
           prediction: score > 0.7 ? 'good' : score > 0.4 ? 'fair' : 'poor',
-          confidence: 0.85
+          confidence: 0.85,
         };
-      }
+      },
     };
   }
 
@@ -127,10 +128,12 @@ class MLPipeline {
         const features = ['cpuUsage', 'memoryUsage', 'responseTime', 'errorRate', 'throughput'];
         const stats = {};
 
-        features.forEach(feature => {
-          const values = data.map(d => d.features[feature]);
+        features.forEach((feature) => {
+          const values = data.map((d) => d.features[feature]);
           const mean = values.reduce((a, b) => a + b, 0) / values.length;
-          const std = Math.sqrt(values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length);
+          const std = Math.sqrt(
+            values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length
+          );
 
           stats[feature] = { mean, std };
         });
@@ -140,14 +143,14 @@ class MLPipeline {
           threshold: 3, // 3 standard deviations
           metrics: {
             contamination: 0.05,
-            silhouette_score: 0.75
-          }
+            silhouette_score: 0.75,
+          },
         };
       },
       predict: (features, model) => {
         let anomalyScore = 0;
 
-        Object.keys(features).forEach(feature => {
+        Object.keys(features).forEach((feature) => {
           if (model.stats[feature]) {
             const { mean, std } = model.stats[feature];
             const zScore = Math.abs((features[feature] - mean) / std);
@@ -162,9 +165,9 @@ class MLPipeline {
           isAnomaly,
           anomalyScore: avgAnomalyScore,
           confidence: Math.min(0.95, avgAnomalyScore / model.threshold),
-          severity: avgAnomalyScore > 4 ? 'critical' : avgAnomalyScore > 3 ? 'high' : 'medium'
+          severity: avgAnomalyScore > 4 ? 'critical' : avgAnomalyScore > 3 ? 'high' : 'medium',
         };
-      }
+      },
     };
   }
 
@@ -186,14 +189,14 @@ class MLPipeline {
             activeUsers: 0.4,
             throughput: 0.3,
             responseTime: 0.2,
-            errorRate: 0.1
+            errorRate: 0.1,
           },
           metrics: {
             accuracy: 0.79,
             precision: 0.76,
             recall: 0.81,
-            f1_score: 0.78
-          }
+            f1_score: 0.78,
+          },
         };
       },
       predict: (features, model) => {
@@ -217,9 +220,9 @@ class MLPipeline {
         return {
           prediction,
           confidence,
-          score
+          score,
         };
-      }
+      },
     };
   }
 
@@ -237,7 +240,7 @@ class MLPipeline {
       ...performanceModel,
       trainedModel: performanceModel.train(this.trainingData),
       lastTrained: new Date().toISOString(),
-      trainingSamples: this.trainingData.length
+      trainingSamples: this.trainingData.length,
     };
 
     // Train anomaly detection model
@@ -246,7 +249,7 @@ class MLPipeline {
       ...anomalyModel,
       trainedModel: anomalyModel.train(this.trainingData),
       lastTrained: new Date().toISOString(),
-      trainingSamples: this.trainingData.length
+      trainingSamples: this.trainingData.length,
     };
 
     // Train user behavior model
@@ -255,7 +258,7 @@ class MLPipeline {
       ...userBehaviorModel,
       trainedModel: userBehaviorModel.train(this.trainingData),
       lastTrained: new Date().toISOString(),
-      trainingSamples: this.trainingData.length
+      trainingSamples: this.trainingData.length,
     };
 
     console.log('✅ Model training completed');
@@ -267,7 +270,7 @@ class MLPipeline {
     this.evaluationMetrics = {};
 
     // Evaluate each model
-    Object.keys(this.models).forEach(modelName => {
+    Object.keys(this.models).forEach((modelName) => {
       const model = this.models[modelName];
       if (model.trainedModel) {
         // Simulate evaluation on test data
@@ -276,7 +279,8 @@ class MLPipeline {
         this.evaluationMetrics[modelName] = {
           timestamp: new Date().toISOString(),
           metrics: testResults,
-          status: testResults.accuracy > 0.7 ? 'good' : testResults.accuracy > 0.6 ? 'fair' : 'poor'
+          status:
+            testResults.accuracy > 0.7 ? 'good' : testResults.accuracy > 0.6 ? 'fair' : 'poor',
         };
       }
     });
@@ -291,7 +295,7 @@ class MLPipeline {
       precision: 0.72 + Math.random() * 0.2,
       recall: 0.78 + Math.random() * 0.15,
       f1_score: 0.74 + Math.random() * 0.2,
-      auc_roc: 0.82 + Math.random() * 0.15
+      auc_roc: 0.82 + Math.random() * 0.15,
     };
   }
 
@@ -300,7 +304,7 @@ class MLPipeline {
 
     this.deploymentStatus = {};
 
-    Object.keys(this.models).forEach(modelName => {
+    Object.keys(this.models).forEach((modelName) => {
       const model = this.models[modelName];
       const evaluation = this.evaluationMetrics[modelName];
 
@@ -309,7 +313,7 @@ class MLPipeline {
           status: 'deployed',
           version: model.version,
           deployedAt: new Date().toISOString(),
-          performance: evaluation.metrics
+          performance: evaluation.metrics,
         };
 
         console.log(`✅ Deployed ${modelName} v${model.version}`);
@@ -317,7 +321,7 @@ class MLPipeline {
         this.deploymentStatus[modelName] = {
           status: 'rejected',
           reason: 'Poor performance metrics',
-          evaluation: evaluation
+          evaluation: evaluation,
         };
 
         console.log(`❌ Rejected ${modelName} due to poor performance`);
@@ -332,7 +336,7 @@ class MLPipeline {
 
     const predictions = {};
 
-    Object.keys(this.models).forEach(modelName => {
+    Object.keys(this.models).forEach((modelName) => {
       const model = this.models[modelName];
       const deployment = this.deploymentStatus[modelName];
 
@@ -342,7 +346,7 @@ class MLPipeline {
           predictions[modelName] = {
             ...prediction,
             modelVersion: model.version,
-            timestamp: new Date().toISOString()
+            timestamp: new Date().toISOString(),
           };
         } catch (error) {
           console.error(`❌ Prediction failed for ${modelName}:`, error);
@@ -361,7 +365,7 @@ class MLPipeline {
       performance: this.analyzePerformancePredictions(predictions),
       anomalies: this.analyzeAnomalyPredictions(predictions),
       userBehavior: this.analyzeUserBehaviorPredictions(predictions),
-      recommendations: this.generateMLRecommendations(predictions)
+      recommendations: this.generateMLRecommendations(predictions),
     };
 
     return insights;
@@ -375,7 +379,7 @@ class MLPipeline {
       currentPerformance: perf.prediction,
       confidence: perf.confidence,
       trend: perf.score > 0.7 ? 'improving' : perf.score < 0.4 ? 'degrading' : 'stable',
-      actionNeeded: perf.prediction === 'poor'
+      actionNeeded: perf.prediction === 'poor',
     };
   }
 
@@ -387,7 +391,7 @@ class MLPipeline {
       anomalyDetected: anomaly.isAnomaly,
       severity: anomaly.severity,
       confidence: anomaly.confidence,
-      requiresAttention: anomaly.isAnomaly && anomaly.severity !== 'low'
+      requiresAttention: anomaly.isAnomaly && anomaly.severity !== 'low',
     };
   }
 
@@ -398,7 +402,12 @@ class MLPipeline {
     return {
       userSatisfaction: behavior.prediction,
       confidence: behavior.confidence,
-      engagement: behavior.prediction === 'high' ? 'strong' : behavior.prediction === 'low' ? 'weak' : 'moderate'
+      engagement:
+        behavior.prediction === 'high'
+          ? 'strong'
+          : behavior.prediction === 'low'
+            ? 'weak'
+            : 'moderate',
     };
   }
 
@@ -417,8 +426,8 @@ class MLPipeline {
         actions: [
           'Scale up resources',
           'Optimize database queries',
-          'Implement caching strategies'
-        ]
+          'Implement caching strategies',
+        ],
       });
     }
 
@@ -434,8 +443,8 @@ class MLPipeline {
         actions: [
           'Investigate system logs',
           'Check resource utilization',
-          'Review recent deployments'
-        ]
+          'Review recent deployments',
+        ],
       });
     }
 
@@ -448,11 +457,7 @@ class MLPipeline {
         title: 'User Engagement Optimization',
         description: 'ML predicts low user satisfaction',
         confidence: behavior.confidence,
-        actions: [
-          'Improve response times',
-          'Enhance user interface',
-          'Review feature adoption'
-        ]
+        actions: ['Improve response times', 'Enhance user interface', 'Review feature adoption'],
       });
     }
 
@@ -465,12 +470,15 @@ class MLPipeline {
       evaluationMetrics: this.evaluationMetrics,
       deploymentStatus: this.deploymentStatus,
       lastUpdated: new Date().toISOString(),
-      trainingDataSize: this.trainingData.length
+      trainingDataSize: this.trainingData.length,
     };
 
     await fs.mkdir('ai-learning', { recursive: true });
     await fs.writeFile('ai-learning/models.json', JSON.stringify(this.models, null, 2));
-    await fs.writeFile('ai-learning/training-data.json', JSON.stringify(this.trainingData, null, 2));
+    await fs.writeFile(
+      'ai-learning/training-data.json',
+      JSON.stringify(this.trainingData, null, 2)
+    );
     await fs.writeFile('ai-learning/pipeline-state.json', JSON.stringify(state, null, 2));
 
     return state;
@@ -500,7 +508,7 @@ class MLPipeline {
         errorRate: 0.015,
         throughput: 1450,
         activeUsers: 6500,
-        databaseLatency: 25
+        databaseLatency: 25,
       };
 
       const predictions = await this.makePredictions(testFeatures);
@@ -511,15 +519,16 @@ class MLPipeline {
 
       console.log('✅ ML Pipeline execution completed');
       console.log(`📊 Training data size: ${this.trainingData.length}`);
-      console.log(`🤖 Models deployed: ${Object.values(this.deploymentStatus).filter(d => d.status === 'deployed').length}`);
+      console.log(
+        `🤖 Models deployed: ${Object.values(this.deploymentStatus).filter((d) => d.status === 'deployed').length}`
+      );
 
       return {
         predictions,
         insights,
         models: Object.keys(this.models),
-        deploymentStatus: this.deploymentStatus
+        deploymentStatus: this.deploymentStatus,
       };
-
     } catch (error) {
       console.error('❌ ML Pipeline execution failed:', error);
       throw error;
@@ -531,18 +540,23 @@ class MLPipeline {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const pipeline = new MLPipeline();
 
-  pipeline.runPipeline()
+  pipeline
+    .runPipeline()
     .then((results) => {
       console.log('\n📋 ML Pipeline Results:');
       console.log(`Models: ${results.models.length}`);
-      console.log(`Deployed: ${Object.values(results.deploymentStatus).filter(d => d.status === 'deployed').length}`);
+      console.log(
+        `Deployed: ${Object.values(results.deploymentStatus).filter((d) => d.status === 'deployed').length}`
+      );
       console.log(`Predictions: ${Object.keys(results.predictions).length}`);
       console.log(`Insights: ${Object.keys(results.insights).length}`);
 
       if (results.insights.recommendations && results.insights.recommendations.length > 0) {
         console.log('\n💡 ML-Driven Recommendations:');
         results.insights.recommendations.slice(0, 3).forEach((rec, index) => {
-          console.log(`${index + 1}. ${rec.title} (${rec.priority}) - ${Math.round(rec.confidence * 100)}% confidence`);
+          console.log(
+            `${index + 1}. ${rec.title} (${rec.priority}) - ${Math.round(rec.confidence * 100)}% confidence`
+          );
         });
       }
 

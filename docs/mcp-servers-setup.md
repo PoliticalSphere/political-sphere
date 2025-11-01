@@ -2,27 +2,54 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Approved** |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
+|  🔒 Internal   | `0.2.0` |  2025-11-01  | Documentation Team |  Quarterly   | **Approved** |
 
 </div>
 
 ---
 
-
 This document provides setup instructions for the Model Context Protocol (MCP) servers integrated into the Political Sphere project.
+
+## Quick Reference
+
+| Server | Type | Purpose | Cost | Command |
+|--------|------|---------|------|---------|
+| **Filesystem** | Custom | File operations | Free | `npm run mcp:filesystem` |
+| **GitHub** | Custom | Repo management | Free* | `npm run mcp:github` |
+| **SQLite** | Custom | Database queries | Free | `npm run mcp:sqlite` |
+| **Puppeteer** | Custom | Web automation | Free | `npm run mcp:puppeteer` |
+| **Git** | Custom | Version control | Free | `npm run mcp:git` |
+| **AI Assistant** | Custom | Political Sphere AI | Free | `npm run mcp:ai-assistant` |
+| **Playwright** | Official | E2E testing | Free | `npm run mcp:playwright` |
+| **Chrome DevTools** | Official | Browser debugging | Free | `npm run mcp:chrome-devtools` |
+| **Filesystem (Official)** | Official | Standard file ops | Free | `npm run mcp:filesystem-official` |
+| **Time** | Community | DateTime utilities | Free | `npm run mcp:time` |
+
+*GitHub server requires free GitHub personal access token
+
+**Total: 10 MCP servers, 100% free, £0 cost**
 
 ## Overview
 
-The project includes several MCP servers to enhance AI capabilities:
+The project includes both custom and official MCP servers to enhance AI capabilities, all **completely free** with no paid APIs required:
 
+### Project-Specific Servers (Free, Custom-Built)
 - **Filesystem MCP Server**: Secure file operations and code analysis
-- **GitHub MCP Server**: Repository management and GitHub API integration
+- **GitHub MCP Server**: Repository management and GitHub API integration (requires free GitHub token)
 - **SQLite MCP Server**: Database queries and data analysis
-- **Puppeteer MCP Server**: Web automation and scraping
+- **Puppeteer MCP Server**: Web automation and scraping for testing
 - **Git MCP Server**: Git operations and version control
-- **AI Assistant MCP Server**: Custom AI-powered development assistance
+- **AI Assistant MCP Server**: Custom AI-powered development assistance with Political Sphere standards
+
+### Community & Official Servers (Free, Zero Cost)
+- **Playwright MCP Server**: Official E2E testing integration from Microsoft
+- **Chrome DevTools MCP Server**: Browser debugging and performance analysis from Google
+- **Official Filesystem Server**: Standard MCP filesystem implementation
+- **Time MCP Server**: Date/time utilities and awareness for AI assistants
+
+**All servers require zero budget** - no paid API keys, subscriptions, or services needed!
 
 ## Prerequisites
 
@@ -76,16 +103,22 @@ SQLITE_DB_PATH=./data/database.db
 Use the provided npm scripts to start individual servers:
 
 ```bash
-# Start individual servers
-npm run mcp:filesystem
-npm run mcp:github
-npm run mcp:sqlite
-npm run mcp:puppeteer
-npm run mcp:git
-npm run mcp:ai-assistant
+# Project-specific servers (custom-built, free)
+npm run mcp:filesystem         # File operations
+npm run mcp:github            # GitHub integration (free token required)
+npm run mcp:sqlite            # Database queries
+npm run mcp:puppeteer         # Web automation
+npm run mcp:git               # Git operations
+npm run mcp:ai-assistant      # AI-powered assistance
+
+# Community & official servers (free, no API keys)
+npm run mcp:playwright         # E2E testing with Playwright
+npm run mcp:chrome-devtools    # Browser debugging
+npm run mcp:filesystem-official # Official MCP filesystem
+npm run mcp:time              # Date/time utilities
 
 # Or start multiple servers concurrently
-npx concurrently "npm run mcp:filesystem" "npm run mcp:github" "npm run mcp:ai-assistant"
+npx concurrently "npm run mcp:filesystem" "npm run mcp:github" "npm run mcp:playwright" "npm run mcp:time"
 ```
 
 ## VSCode/Copilot Integration
@@ -155,28 +188,33 @@ Once configured, you can use the MCP servers in Copilot Chat:
 ## Server Capabilities
 
 ### Filesystem Server
+
 - Read files securely within allowed paths
 - List directory contents
 - Search for files with glob patterns
 
 ### GitHub Server
+
 - Get repository information
 - List and search issues
 - Get pull request details
 - Search repositories
 
 ### SQLite Server
+
 - Connect to SQLite databases
 - Execute SELECT queries (read-only)
 - List tables and schemas
 
 ### Puppeteer Server
+
 - Launch headless browsers
 - Navigate to web pages
 - Extract content and take screenshots
 - Interact with web elements
 
 ### Git Server
+
 - Initialize repositories
 - Get status and logs
 - Stage and commit changes
@@ -184,11 +222,75 @@ Once configured, you can use the MCP servers in Copilot Chat:
 - Push and pull from remotes
 
 ### AI Assistant Server
+
 - Generate code following Political Sphere standards
 - Review code for quality and security
 - Optimize performance
 - Generate tests
-- Simulate scenarios
+- Simulate political scenarios specific to the game
+
+### Playwright MCP Server (Official, Free)
+
+- **E2E Testing**: Complete end-to-end test automation
+- **Browser Control**: Automate Chrome, Firefox, Safari, Edge
+- **Visual Testing**: Screenshot and visual regression testing
+- **Accessibility Testing**: Built-in accessibility checks (WCAG)
+- **Network Interception**: Mock APIs and test edge cases
+- **Mobile Testing**: Test responsive designs on mobile viewports
+- **Parallel Execution**: Run tests concurrently for speed
+- **Developed by**: Microsoft (official Playwright team)
+
+### Chrome DevTools MCP Server (Official, Free)
+
+- **Performance Profiling**: CPU, memory, and network analysis
+- **Debugging**: Breakpoints, step debugging, console access
+- **Network Monitoring**: Request/response inspection
+- **Coverage Analysis**: Find unused code
+- **Accessibility Audits**: Lighthouse accessibility scoring
+- **Security Analysis**: Mixed content and certificate checks
+- **Developed by**: Google Chrome team
+
+### Official Filesystem Server (Free)
+
+- **Standard MCP Implementation**: Reference implementation from MCP creators
+- **File Operations**: Read, write, list, search files
+- **Directory Management**: Create, delete, traverse directories
+- **Pattern Matching**: Glob and regex file searching
+- **Safe Operations**: Permission checks and path validation
+- **Cross-Platform**: Works on Windows, macOS, Linux
+
+### Time MCP Server (Free)
+
+- **DateTime Awareness**: Give AI assistants time context
+- **Timezone Handling**: Convert between timezones
+- **Date Formatting**: Human-readable date formats
+- **Relative Time**: "2 hours ago", "in 3 days" calculations
+- **Scheduling Context**: Understand business hours, deadlines
+- **Calendar Math**: Add/subtract days, weeks, months
+
+## Use Cases
+
+### Development Workflow
+1. **Code Generation**: Use AI Assistant to generate code following project standards
+2. **Repository Management**: GitHub server for issue tracking and PR reviews
+3. **Database Queries**: SQLite server for data analysis and testing
+4. **Version Control**: Git server for automated git operations
+5. **E2E Testing**: Playwright for comprehensive browser testing
+6. **Debugging**: Chrome DevTools for performance and debugging
+7. **Time Context**: Time server for scheduling and deadline awareness
+
+### Testing & Quality Assurance
+- **Playwright**: Run automated E2E tests across all browsers
+- **Chrome DevTools**: Profile performance, find memory leaks
+- **Puppeteer**: Custom web scraping and automation
+- **AI Assistant**: Generate test cases and validate coverage
+
+### AI-Powered Development
+- **Context-Aware Suggestions**: AI understands your codebase structure
+- **Time-Aware Planning**: AI can schedule tasks and understand deadlines
+- **Automated Testing**: Generate and run tests with Playwright
+- **Performance Analysis**: Use Chrome DevTools to identify bottlenecks
+- **Security Scanning**: Automated vulnerability detection
 
 ## Security Considerations
 

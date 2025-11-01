@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -88,17 +88,17 @@ Keep mechanics server-authoritative.
 
 ## 🛠️ Technology Stack Snapshot
 
-| Layer | Technologies | Key Policies |
-| ----- | ------------ | ------------ |
-| **Client** | Web app (React + Vite) | Browser-based UI only (no mobile app for now) |
-| **Backend** | Node.js (v22) + Fastify | REST API only, clean endpoint design, modular routing, JSON schema validation (Zod) |
-| **Realtime** | WebSockets (ws or socket.io free mode) | Debate events, vote broadcasts, player presence/status updates |
-| **Auth** | Simple secure username/password + JWT sessions | No external auth provider |
-| **Data** | PostgreSQL (Docker local or Supabase free tier if needed), Prisma OR Kysely | Row-Level Security for separate worlds, Postgres Full-Text Search |
-| **Queues & Events** | Redis Pub/Sub (free, docker) | If event bus needed; otherwise keep it simple event handlers in code for now |
-| **Storage** | Local filesystem storage during dev | Upgrade to MinIO free-local later only if needed |
-| **AI** | Ollama | Local models only, small instruction-tuned models for NPC decision logic |
-| **Deployment** | Self-host Docker Compose on free tier VM / NAS / home lab when ready | But not mandatory yet — local dev phase |
+| Layer               | Technologies                                                                | Key Policies                                                                        |
+| ------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| **Client**          | Web app (React + Vite)                                                      | Browser-based UI only (no mobile app for now)                                       |
+| **Backend**         | Node.js (v22) + Fastify                                                     | REST API only, clean endpoint design, modular routing, JSON schema validation (Zod) |
+| **Realtime**        | WebSockets (ws or socket.io free mode)                                      | Debate events, vote broadcasts, player presence/status updates                      |
+| **Auth**            | Simple secure username/password + JWT sessions                              | No external auth provider                                                           |
+| **Data**            | PostgreSQL (Docker local or Supabase free tier if needed), Prisma OR Kysely | Row-Level Security for separate worlds, Postgres Full-Text Search                   |
+| **Queues & Events** | Redis Pub/Sub (free, docker)                                                | If event bus needed; otherwise keep it simple event handlers in code for now        |
+| **Storage**         | Local filesystem storage during dev                                         | Upgrade to MinIO free-local later only if needed                                    |
+| **AI**              | Ollama                                                                      | Local models only, small instruction-tuned models for NPC decision logic            |
+| **Deployment**      | Self-host Docker Compose on free tier VM / NAS / home lab when ready        | But not mandatory yet — local dev phase                                             |
 
 ---
 
@@ -169,6 +169,5 @@ Everything else comes after.
 Political Sphere runs on a zero-budget architecture using REST, WebSockets, Node.js, local PostgreSQL, and local AI models. No paid services, no GraphQL, no cloud spend. Modular monolith, Docker-friendly, simple eventing, secure authentication, deterministic political simulation logic, and responsible AI usage.
 
 ---
-
 
 Keep this system overview synchronized with ADRs, incident learnings, and major roadmap decisions to preserve architectural integrity as Political Sphere grows.

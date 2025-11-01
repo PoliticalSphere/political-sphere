@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Game Design Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |        Owner        | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :-----------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Game Design Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -21,20 +21,24 @@ Political Sphere is a persistent, multiplayer parliamentary simulation where pla
 ## 🎮 Game Overview
 
 ### Genre
+
 - Strategy Simulation
 - Multiplayer Role-Playing
 - Procedural Politics
 
 ### Platform
+
 - Web-based (PWA)
 - Cross-platform compatibility
 
 ### Target Audience
+
 - Age: 17-35
 - Interests: Strategy games, debate, governance, long-form narratives
 - Mindset: Thoughtful, competitive but respectful
 
 ### Unique Selling Points
+
 - Fair, procedure-driven gameplay
 - Persistent worlds with real consequences
 - Ethical AI for NPC behaviors
@@ -45,12 +49,14 @@ Political Sphere is a persistent, multiplayer parliamentary simulation where pla
 ## 📖 Story and Setting
 
 ### Fictional Universe
+
 - **World Name:** [TBD - e.g., "Republica"]
 - **Government:** Parliamentary democracy with proportional representation
 - **Institutions:** Parliament, Executive, Judiciary, Media
 - **Themes:** Governance, alliances, reform, accountability
 
 ### Player Narrative
+
 Players join as Members of Parliament (MPs) in a persistent world. Through debate, voting, and coalition-building, they shape laws, policies, and the political landscape. Success comes from reputation, strategic alliances, and procedural mastery—not volume or aggression.
 
 ---
@@ -66,21 +72,25 @@ Players join as Members of Parliament (MPs) in a persistent world. Through debat
 ## 🔧 Core Mechanics
 
 ### Parliamentary Sessions
+
 - **Debates:** Structured speaking order, time limits, relevance enforcement
 - **Voting:** Secure, auditable votes on motions and bills
 - **Procedure:** Rules of order prevent chaos; moderators enforce
 
 ### Progression Systems
+
 - **Reputation:** Earned through conduct, consistency, and achievements
 - **Roles:** MP → Minister → Party Leader → Prime Minister
 - **Unlocks:** New abilities, alliances, world influence
 
 ### Social Systems
+
 - **Parties/Factions:** Form groups with shared goals
 - **Alliances:** Binding agreements with consequences for breach
 - **Diplomacy:** Negotiate privately or publicly
 
 ### AI Integration
+
 - **NPC MPs:** Fill seats, participate procedurally
 - **Moderation:** AI assists in content filtering
 - **World Events:** AI generates scenarios and reactions
@@ -90,11 +100,13 @@ Players join as Members of Parliament (MPs) in a persistent world. Through debat
 ## 🎨 Art and Audio
 
 ### Visual Style
+
 - Clean, professional UI
 - Minimalist icons for institutions
 - Accessible color schemes
 
 ### Audio
+
 - Subtle ambient sounds
 - Notification tones
 - No music to maintain focus
@@ -104,16 +116,19 @@ Players join as Members of Parliament (MPs) in a persistent world. Through debat
 ## 🧪 User Experience
 
 ### Onboarding
+
 - Tutorial world for new players
 - Guided first session
 - Progressive disclosure of mechanics
 
 ### Accessibility
+
 - WCAG compliance
 - Keyboard navigation
 - Screen reader support
 
 ### Safety
+
 - Content moderation
 - Harassment reporting
 - Ethical boundaries
@@ -130,14 +145,17 @@ Players join as Members of Parliament (MPs) in a persistent world. Through debat
 ## 🗓️ Development Roadmap
 
 ### Phase 1: Core Loop (3-6 months)
+
 - Basic parliament, debate, voting
 - Simple worlds, reputation system
 
 ### Phase 2: Depth (6-12 months)
+
 - Parties, elections, AI NPCs
 - Media system, advanced roles
 
 ### Phase 3: Polish (12-18 months)
+
 - Balancing, accessibility, large worlds
 - Advanced features, community tools
 

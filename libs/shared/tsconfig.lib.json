@@ -2,8 +2,10 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
+    "rootDir": "./src",
     "declaration": true,
-    "types": ["node"]
+    "types": ["node"],
+    "module": "es2022"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["jest.config.js", "src/**/*.spec.ts", "src/**/*.test.ts"]

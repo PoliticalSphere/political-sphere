@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
-|  🔒 Internal   | `1.0.0` |  2025-10-29  | Compliance Team    |  Annual      | **Approved** |
+| Classification | Version | Last Updated |      Owner      | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :-------------: | :----------: | :----------: |
+|  🔒 Internal   | `1.0.0` |  2025-10-29  | Compliance Team |    Annual    | **Approved** |
 
 </div>
 
@@ -47,35 +47,35 @@ This Retention and Archiving Policy establishes standardized procedures for mana
 
 ### Legal and Regulatory Requirements
 
-| Document Type | Retention Period | Legal Basis | Examples |
-|---------------|------------------|-------------|----------|
-| **GDPR Records** | 7 years | GDPR Article 30 | Data processing records, DPIAs |
-| **Financial Records** | 7 years | Tax laws | Invoices, financial statements, tax returns |
-| **Employment Records** | 7 years | Employment laws | Contracts, payroll, performance reviews |
-| **Legal Agreements** | 7 years + contract term | Contract law | NDAs, partnerships, vendor agreements |
-| **EU AI Act Documentation** | 10 years | EU AI Act | AI system documentation, risk assessments |
-| **Security Incident Reports** | 7 years | Data protection laws | Breach reports, investigations |
+| Document Type                 | Retention Period        | Legal Basis          | Examples                                    |
+| ----------------------------- | ----------------------- | -------------------- | ------------------------------------------- |
+| **GDPR Records**              | 7 years                 | GDPR Article 30      | Data processing records, DPIAs              |
+| **Financial Records**         | 7 years                 | Tax laws             | Invoices, financial statements, tax returns |
+| **Employment Records**        | 7 years                 | Employment laws      | Contracts, payroll, performance reviews     |
+| **Legal Agreements**          | 7 years + contract term | Contract law         | NDAs, partnerships, vendor agreements       |
+| **EU AI Act Documentation**   | 10 years                | EU AI Act            | AI system documentation, risk assessments   |
+| **Security Incident Reports** | 7 years                 | Data protection laws | Breach reports, investigations              |
 
 ### Business Requirements
 
-| Document Type | Retention Period | Business Reason | Examples |
-|---------------|------------------|-----------------|----------|
-| **Strategic Plans** | 10 years | Historical context | Business plans, roadmap documents |
-| **Project Documentation** | 7 years | Knowledge preservation | Requirements, designs, test results |
-| **Training Materials** | 5 years | Compliance tracking | Training records, certifications |
-| **Audit Reports** | 7 years | Regulatory compliance | Internal/external audit reports |
-| **Change Logs** | Indefinite | Historical record | Document change history |
-| **Archived Code** | 7 years | Intellectual property | Deprecated code repositories |
+| Document Type             | Retention Period | Business Reason        | Examples                            |
+| ------------------------- | ---------------- | ---------------------- | ----------------------------------- |
+| **Strategic Plans**       | 10 years         | Historical context     | Business plans, roadmap documents   |
+| **Project Documentation** | 7 years          | Knowledge preservation | Requirements, designs, test results |
+| **Training Materials**    | 5 years          | Compliance tracking    | Training records, certifications    |
+| **Audit Reports**         | 7 years          | Regulatory compliance  | Internal/external audit reports     |
+| **Change Logs**           | Indefinite       | Historical record      | Document change history             |
+| **Archived Code**         | 7 years          | Intellectual property  | Deprecated code repositories        |
 
 ### Operational Requirements
 
-| Document Type | Retention Period | Operational Reason | Examples |
-|---------------|------------------|---------------------|----------|
-| **Meeting Notes** | 3 years | Reference purposes | Internal meetings, stakeholder calls |
-| **Email Correspondence** | 7 years (legal), 3 years (operational) | Legal/communication records | Business emails, support tickets |
-| **System Logs** | 3 years | Troubleshooting | Application logs, error reports |
-| **Backup Files** | 1 year | Recovery purposes | Database backups, configuration files |
-| **Temporary Documents** | 1 year | Working documents | Drafts, working papers |
+| Document Type            | Retention Period                       | Operational Reason          | Examples                              |
+| ------------------------ | -------------------------------------- | --------------------------- | ------------------------------------- |
+| **Meeting Notes**        | 3 years                                | Reference purposes          | Internal meetings, stakeholder calls  |
+| **Email Correspondence** | 7 years (legal), 3 years (operational) | Legal/communication records | Business emails, support tickets      |
+| **System Logs**          | 3 years                                | Troubleshooting             | Application logs, error reports       |
+| **Backup Files**         | 1 year                                 | Recovery purposes           | Database backups, configuration files |
+| **Temporary Documents**  | 1 year                                 | Working documents           | Drafts, working papers                |
 
 ---
 
@@ -84,6 +84,7 @@ This Retention and Archiving Policy establishes standardized procedures for mana
 ### Archival Triggers
 
 Documents are moved to archival storage when:
+
 - **Age-based**: Document reaches end of active retention period
 - **Usage-based**: Document hasn't been accessed for 2+ years
 - **Project completion**: Project ends and documentation is no longer actively used
@@ -108,12 +109,14 @@ graph TD
 ### Archival Storage
 
 **Primary Archive:**
+
 - **Location**: AWS S3 Glacier Deep Archive (EU region for GDPR compliance)
 - **Encryption**: AES-256 with key rotation
 - **Access**: REST API with authentication
 - **Retention**: Configurable per document type
 
 **Secondary Archive:**
+
 - **Location**: On-premises tape library (for critical legal documents)
 - **Encryption**: Hardware-based encryption
 - **Access**: Physical media with dual custody
@@ -122,6 +125,7 @@ graph TD
 ### Archival Metadata
 
 Each archived document includes:
+
 - Original classification and retention period
 - Archival date and authorizing personnel
 - Storage location and retrieval procedures
@@ -135,6 +139,7 @@ Each archived document includes:
 ### Disposal Triggers
 
 Documents are disposed when:
+
 - **Retention period expires**: Standard disposal after retention requirements met
 - **Legal hold released**: Documents under legal hold are disposed after hold expiration
 - **Classification change**: Documents down-classified may have reduced retention
@@ -142,12 +147,12 @@ Documents are disposed when:
 
 ### Disposal Methods
 
-| Classification | Method | Verification | Documentation |
-|----------------|--------|--------------|---------------|
-| **Public** | Standard deletion | File system confirmation | Disposal log entry |
-| **Internal** | Secure deletion (DoD 5220.22-M) | Overwrite verification | Disposal certificate |
-| **Confidential** | Cryptographic erasure + physical destruction | Multi-pass verification | Chain of custody log |
-| **Restricted** | Physical shredding + cryptographic erasure | Witnessed destruction | Legal disposal affidavit |
+| Classification   | Method                                       | Verification             | Documentation            |
+| ---------------- | -------------------------------------------- | ------------------------ | ------------------------ |
+| **Public**       | Standard deletion                            | File system confirmation | Disposal log entry       |
+| **Internal**     | Secure deletion (DoD 5220.22-M)              | Overwrite verification   | Disposal certificate     |
+| **Confidential** | Cryptographic erasure + physical destruction | Multi-pass verification  | Chain of custody log     |
+| **Restricted**   | Physical shredding + cryptographic erasure   | Witnessed destruction    | Legal disposal affidavit |
 
 ### Disposal Procedures
 
@@ -167,16 +172,19 @@ graph TD
 ### Disposal Verification
 
 **Technical Verification:**
+
 - File system deletion confirmation
 - Overwrite pattern verification
 - Cryptographic key destruction confirmation
 
 **Physical Verification:**
+
 - Chain of custody documentation
 - Witness signatures for high-value disposal
 - Photographic evidence for critical documents
 
 **Audit Verification:**
+
 - Regular sampling of disposed documents
 - Third-party audit of disposal processes
 - Compliance reporting to regulators
@@ -188,6 +196,7 @@ graph TD
 ### Legal Hold Process
 
 When a legal hold is initiated:
+
 1. **Notification**: All relevant personnel notified immediately
 2. **Scope Definition**: Clear definition of documents under hold
 3. **Preservation**: All identified documents preserved in original form
@@ -196,15 +205,16 @@ When a legal hold is initiated:
 
 ### Hold Types
 
-| Hold Type | Trigger | Duration | Examples |
-|-----------|---------|----------|----------|
-| **Litigation Hold** | Lawsuit filed | Until case resolution | Contract disputes, employment claims |
-| **Regulatory Hold** | Investigation initiated | Until investigation complete | GDPR complaints, AI Act reviews |
-| **Internal Hold** | Internal investigation | Until investigation complete | Security incidents, compliance reviews |
+| Hold Type           | Trigger                 | Duration                     | Examples                               |
+| ------------------- | ----------------------- | ---------------------------- | -------------------------------------- |
+| **Litigation Hold** | Lawsuit filed           | Until case resolution        | Contract disputes, employment claims   |
+| **Regulatory Hold** | Investigation initiated | Until investigation complete | GDPR complaints, AI Act reviews        |
+| **Internal Hold**   | Internal investigation  | Until investigation complete | Security incidents, compliance reviews |
 
 ### Hold Release
 
 Holds are released when:
+
 - **Legal resolution**: Case dismissed or settled
 - **Regulatory closure**: Investigation completed
 - **Internal completion**: Investigation findings documented
@@ -231,16 +241,19 @@ Holds are released when:
 ### Audit Activities
 
 **Monthly Monitoring:**
+
 - Retention schedule compliance review
 - Archival queue processing
 - Disposal schedule execution
 
 **Quarterly Audits:**
+
 - Random sampling of retained documents
 - Archival storage integrity checks
 - Disposal method verification
 
 **Annual Audits:**
+
 - Comprehensive retention schedule review
 - Legal requirement alignment assessment
 - Process effectiveness evaluation
@@ -252,11 +265,13 @@ Holds are released when:
 ### Retention Extensions
 
 **Approved Extensions:**
+
 - **Legal requirements**: Court orders, regulatory mandates
 - **Business value**: Documents with ongoing reference value
 - **Research purposes**: Academic or historical research value
 
 **Extension Process:**
+
 1. Business justification documented
 2. Legal review if applicable
 3. Compliance Team approval
@@ -265,11 +280,13 @@ Holds are released when:
 ### Early Disposal
 
 **Approved Early Disposal:**
+
 - **Obsolete information**: No longer relevant or accurate
 - **Storage constraints**: Cost-benefit analysis favors disposal
 - **Privacy requirements**: Personal data minimization
 
 **Early Disposal Process:**
+
 1. Risk assessment completed
 2. Stakeholder consultation
 3. Compliance Team approval
@@ -282,6 +299,7 @@ Holds are released when:
 ### Document Lifecycle Management System
 
 **Core Features:**
+
 - Automated retention scheduling
 - Classification-based lifecycle rules
 - Archival workflow automation
@@ -289,6 +307,7 @@ Holds are released when:
 - Audit trail maintenance
 
 **Integration Points:**
+
 - Document management systems
 - Email archiving solutions
 - Database retention policies
@@ -299,17 +318,17 @@ Holds are released when:
 ```yaml
 # Example retention rule configuration
 retention_rules:
-  - document_type: "financial_records"
-    retention_period: "7_years"
-    archival_trigger: "6_years"
-    disposal_method: "secure_delete"
-    legal_basis: "tax_laws"
+  - document_type: 'financial_records'
+    retention_period: '7_years'
+    archival_trigger: '6_years'
+    disposal_method: 'secure_delete'
+    legal_basis: 'tax_laws'
 
-  - document_type: "gdpr_records"
-    retention_period: "7_years"
-    archival_trigger: "5_years"
-    disposal_method: "cryptographic_erasure"
-    legal_basis: "gdpr_article_30"
+  - document_type: 'gdpr_records'
+    retention_period: '7_years'
+    archival_trigger: '5_years'
+    disposal_method: 'cryptographic_erasure'
+    legal_basis: 'gdpr_article_30'
 ```
 
 ---
@@ -398,13 +417,13 @@ retention_rules:
 
 ### 📋 Document Control
 
-|         Field         |          Value          |
-| :-------------------: | :---------------------: |
-| 🏷️ **Classification** |        Internal         |
-|    🔢 **Version**     |         `1.0.0`         |
-|  📅 **Last Review**   |       2025-10-29        |
-|  🔄 **Next Review**   |       2026-10-29        |
-|    ✍️ **Approver**    | Compliance Team Lead    |
+|         Field         |        Value         |
+| :-------------------: | :------------------: |
+| 🏷️ **Classification** |       Internal       |
+|    🔢 **Version**     |       `1.0.0`        |
+|  📅 **Last Review**   |      2025-10-29      |
+|  🔄 **Next Review**   |      2026-10-29      |
+|    ✍️ **Approver**    | Compliance Team Lead |
 
 ---
 
@@ -416,9 +435,9 @@ retention_rules:
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |
-| :------------: | :-----: | :----------: | :----------------: | :----------: |
-|  🔒 Internal   | `1.0.0` |  2025-10-29  | Compliance Team    |  Annual      |
+| Classification | Version | Last Updated |      Owner      | Review Cycle |
+| :------------: | :-----: | :----------: | :-------------: | :----------: |
+|  🔒 Internal   | `1.0.0` |  2025-10-29  | Compliance Team |    Annual    |
 
 </div>
 
@@ -458,6 +477,7 @@ This Retention and Archiving Policy establishes standardized procedures for reta
 ## 📋 Scope
 
 ### In Scope
+
 - All digital documents and records
 - Physical documents and media
 - Database records and backups
@@ -466,6 +486,7 @@ This Retention and Archiving Policy establishes standardized procedures for reta
 - Audit logs and system records
 
 ### Out of Scope
+
 - Source code (managed via Git/version control)
 - Temporary files (< 30 days)
 - Public marketing materials (no retention limit)
@@ -477,68 +498,74 @@ This Retention and Archiving Policy establishes standardized procedures for reta
 
 ### By Document Classification
 
-| Classification | Minimum Retention | Maximum Retention | Rationale |
-|----------------|-------------------|-------------------|-----------|
-| **Public** | Business need | No limit | Public availability |
-| **Internal** | 7 years | 10 years | Operational records |
-| **Confidential** | 10 years | 20 years | Regulatory compliance |
-| **Restricted** | 20 years | Indefinite | Critical security/legal |
+| Classification   | Minimum Retention | Maximum Retention | Rationale               |
+| ---------------- | ----------------- | ----------------- | ----------------------- |
+| **Public**       | Business need     | No limit          | Public availability     |
+| **Internal**     | 7 years           | 10 years          | Operational records     |
+| **Confidential** | 10 years          | 20 years          | Regulatory compliance   |
+| **Restricted**   | 20 years          | Indefinite        | Critical security/legal |
 
 ### By Document Type
 
 #### 📋 Governance & Legal
-| Document Type | Retention Period | Legal Basis | Disposal Method |
-|---------------|-----------------|-------------|-----------------|
-| **Articles of Incorporation** | Permanent | Business continuity | Secure archive |
-| **Board Meeting Minutes** | 7 years | Corporate governance | Secure shredding |
-| **Contracts & Agreements** | 7 years post-termination | Contract law | Secure deletion |
-| **Regulatory Filings** | 7 years | Regulatory requirements | Encrypted archive |
-| **Legal Correspondence** | 7 years | Legal discovery | Secure disposal |
+
+| Document Type                 | Retention Period         | Legal Basis             | Disposal Method   |
+| ----------------------------- | ------------------------ | ----------------------- | ----------------- |
+| **Articles of Incorporation** | Permanent                | Business continuity     | Secure archive    |
+| **Board Meeting Minutes**     | 7 years                  | Corporate governance    | Secure shredding  |
+| **Contracts & Agreements**    | 7 years post-termination | Contract law            | Secure deletion   |
+| **Regulatory Filings**        | 7 years                  | Regulatory requirements | Encrypted archive |
+| **Legal Correspondence**      | 7 years                  | Legal discovery         | Secure disposal   |
 
 #### 💰 Financial & Accounting
-| Document Type | Retention Period | Legal Basis | Disposal Method |
-|---------------|-----------------|-------------|-----------------|
-| **Financial Statements** | 7 years | SOX compliance | Secure archive |
-| **Tax Records** | 7 years | Tax law | Encrypted disposal |
-| **Payroll Records** | 7 years | Employment law | Secure shredding |
-| **Expense Reports** | 5 years | Audit requirements | Secure deletion |
-| **Bank Statements** | 7 years | Financial regulations | Encrypted archive |
+
+| Document Type            | Retention Period | Legal Basis           | Disposal Method    |
+| ------------------------ | ---------------- | --------------------- | ------------------ |
+| **Financial Statements** | 7 years          | SOX compliance        | Secure archive     |
+| **Tax Records**          | 7 years          | Tax law               | Encrypted disposal |
+| **Payroll Records**      | 7 years          | Employment law        | Secure shredding   |
+| **Expense Reports**      | 5 years          | Audit requirements    | Secure deletion    |
+| **Bank Statements**      | 7 years          | Financial regulations | Encrypted archive  |
 
 #### 🔐 Security & Compliance
-| Document Type | Retention Period | Legal Basis | Disposal Method |
-|---------------|-----------------|-------------|-----------------|
-| **Security Incident Reports** | 7 years | ISO 27001 | Encrypted archive |
-| **Access Control Logs** | 3 years | GDPR Article 30 | Secure deletion |
-| **Data Breach Notifications** | 10 years | GDPR | Encrypted archive |
-| **Compliance Audit Reports** | 7 years | Regulatory | Secure disposal |
-| **Penetration Test Reports** | 5 years | Security best practice | Encrypted deletion |
+
+| Document Type                 | Retention Period | Legal Basis            | Disposal Method    |
+| ----------------------------- | ---------------- | ---------------------- | ------------------ |
+| **Security Incident Reports** | 7 years          | ISO 27001              | Encrypted archive  |
+| **Access Control Logs**       | 3 years          | GDPR Article 30        | Secure deletion    |
+| **Data Breach Notifications** | 10 years         | GDPR                   | Encrypted archive  |
+| **Compliance Audit Reports**  | 7 years          | Regulatory             | Secure disposal    |
+| **Penetration Test Reports**  | 5 years          | Security best practice | Encrypted deletion |
 
 #### 🤖 AI & Machine Learning
-| Document Type | Retention Period | Legal Basis | Disposal Method |
-|---------------|-----------------|-------------|-----------------|
-| **Model Cards** | 10 years | EU AI Act | Encrypted archive |
-| **Training Data** | 10 years | GDPR | Secure deletion |
-| **Model Performance Logs** | 5 years | Audit trail | Encrypted disposal |
-| **Ethics Review Records** | 10 years | EU AI Act | Encrypted archive |
-| **Bias Assessment Reports** | 7 years | Fairness requirements | Secure deletion |
+
+| Document Type               | Retention Period | Legal Basis           | Disposal Method    |
+| --------------------------- | ---------------- | --------------------- | ------------------ |
+| **Model Cards**             | 10 years         | EU AI Act             | Encrypted archive  |
+| **Training Data**           | 10 years         | GDPR                  | Secure deletion    |
+| **Model Performance Logs**  | 5 years          | Audit trail           | Encrypted disposal |
+| **Ethics Review Records**   | 10 years         | EU AI Act             | Encrypted archive  |
+| **Bias Assessment Reports** | 7 years          | Fairness requirements | Secure deletion    |
 
 #### 📊 Operational & Technical
-| Document Type | Retention Period | Legal Basis | Disposal Method |
-|---------------|-----------------|-------------|-----------------|
-| **System Architecture Docs** | 7 years | Operational continuity | Secure archive |
-| **Change Management Records** | 5 years | Audit requirements | Secure deletion |
-| **Incident Response Plans** | 5 years | Business continuity | Encrypted disposal |
-| **Backup Recovery Tests** | 3 years | Operational requirements | Secure deletion |
-| **Performance Monitoring Data** | 2 years | Operational analysis | Automated deletion |
+
+| Document Type                   | Retention Period | Legal Basis              | Disposal Method    |
+| ------------------------------- | ---------------- | ------------------------ | ------------------ |
+| **System Architecture Docs**    | 7 years          | Operational continuity   | Secure archive     |
+| **Change Management Records**   | 5 years          | Audit requirements       | Secure deletion    |
+| **Incident Response Plans**     | 5 years          | Business continuity      | Encrypted disposal |
+| **Backup Recovery Tests**       | 3 years          | Operational requirements | Secure deletion    |
+| **Performance Monitoring Data** | 2 years          | Operational analysis     | Automated deletion |
 
 #### 👥 Human Resources
-| Document Type | Retention Period | Legal Basis | Disposal Method |
-|---------------|-----------------|-------------|-----------------|
-| **Employee Contracts** | 7 years post-termination | Employment law | Secure shredding |
-| **Performance Reviews** | 5 years | Employment records | Secure deletion |
-| **Training Records** | 5 years | Compliance requirements | Encrypted disposal |
-| **Disciplinary Actions** | 7 years | Legal protection | Secure archive |
-| **Termination Records** | 7 years | Employment law | Encrypted deletion |
+
+| Document Type            | Retention Period         | Legal Basis             | Disposal Method    |
+| ------------------------ | ------------------------ | ----------------------- | ------------------ |
+| **Employee Contracts**   | 7 years post-termination | Employment law          | Secure shredding   |
+| **Performance Reviews**  | 5 years                  | Employment records      | Secure deletion    |
+| **Training Records**     | 5 years                  | Compliance requirements | Encrypted disposal |
+| **Disciplinary Actions** | 7 years                  | Legal protection        | Secure archive     |
+| **Termination Records**  | 7 years                  | Employment law          | Encrypted deletion |
 
 ---
 
@@ -547,6 +574,7 @@ This Retention and Archiving Policy establishes standardized procedures for reta
 ### Archival Triggers
 
 Documents are archived when:
+
 - ✅ Retention period expires but legal hold applies
 - ✅ Document no longer actively used
 - ✅ Storage optimization required
@@ -576,12 +604,14 @@ graph TD
 ### Archival Media & Formats
 
 #### Primary Archive Formats
+
 - **Digital Documents:** PDF/A (archival PDF) with embedded metadata
 - **Databases:** Encrypted SQL dumps with schema documentation
 - **Logs:** Compressed, encrypted text files with indexing
 - **Media Files:** Lossless formats with integrity checksums
 
 #### Storage Media
+
 - **Tier 1 (Active Archive):** SSD storage with RAID protection
 - **Tier 2 (Long-term):** Tape libraries with offsite replication
 - **Tier 3 (Permanent):** WORM (Write Once Read Many) optical media
@@ -589,12 +619,14 @@ graph TD
 ### Archive Integrity
 
 **Integrity Checks:**
+
 - SHA-256 checksums for all archived files
 - Annual integrity verification (100% coverage)
 - Automated corruption detection and repair
 - Chain of custody documentation
 
 **Access Controls:**
+
 - Archive access requires dual authorization
 - All access attempts logged and monitored
 - Read-only access for archived content
@@ -606,21 +638,23 @@ graph TD
 
 ### Disposal Methods by Classification
 
-| Classification | Disposal Method | Verification | Witness Required |
-|----------------|-----------------|--------------|------------------|
-| **Public** | Standard deletion | File system check | No |
-| **Internal** | Secure deletion (DoD 5220.22-M) | Overwrite verification | No |
-| **Confidential** | Cryptographic erasure | Certificate of destruction | Yes |
-| **Restricted** | Physical destruction | Chain of custody | Yes |
+| Classification   | Disposal Method                 | Verification               | Witness Required |
+| ---------------- | ------------------------------- | -------------------------- | ---------------- |
+| **Public**       | Standard deletion               | File system check          | No               |
+| **Internal**     | Secure deletion (DoD 5220.22-M) | Overwrite verification     | No               |
+| **Confidential** | Cryptographic erasure           | Certificate of destruction | Yes              |
+| **Restricted**   | Physical destruction            | Chain of custody           | Yes              |
 
 ### Secure Deletion Standards
 
 **Digital Files:**
+
 1. **Gutmann Method:** 35-pass overwrite (for highly sensitive data)
 2. **DoD 5220.22-M:** 3-pass overwrite (standard for classified)
 3. **Cryptographic:** AES encryption followed by key destruction
 
 **Physical Media:**
+
 1. **Shredding:** Cross-cut shredding to <2mm particles
 2. **Incineration:** Professional document destruction service
 3. **Degaussing:** For magnetic media followed by physical destruction
@@ -628,6 +662,7 @@ graph TD
 ### Disposal Verification
 
 **Certificate of Destruction:**
+
 - Date and time of disposal
 - Method used
 - Personnel involved
@@ -635,6 +670,7 @@ graph TD
 - Chain of custody documentation
 
 **Audit Trail:**
+
 - Disposal logged in central system
 - Cross-referenced with retention schedule
 - Annual disposal reports generated
@@ -670,11 +706,13 @@ When litigation or regulatory investigation is anticipated:
 ### Hold Scope Determination
 
 **Custodian Identification:**
+
 - Document owners and creators
 - System administrators with access
 - Key personnel with relevant knowledge
 
 **Data Scope:**
+
 - Documents containing relevant keywords
 - Communications with involved parties
 - Backup tapes and archived data
@@ -687,6 +725,7 @@ When litigation or regulatory investigation is anticipated:
 ### Schedule Updates
 
 **Annual Review Process:**
+
 1. **Regulatory Changes Assessment** - Review new laws and regulations
 2. **Business Process Changes** - Update for new systems/processes
 3. **Risk Assessment** - Evaluate retention vs. risk trade-offs
@@ -694,6 +733,7 @@ When litigation or regulatory investigation is anticipated:
 5. **Stakeholder Approval** - Legal, compliance, and business approval
 
 **Change Triggers:**
+
 - New regulatory requirements
 - Significant business changes
 - Technology platform updates
@@ -703,6 +743,7 @@ When litigation or regulatory investigation is anticipated:
 ### Schedule Implementation
 
 **Automated Enforcement:**
+
 ```bash
 # Check retention compliance
 npm run retention:audit -- --period=2025-Q4
@@ -715,6 +756,7 @@ npm run legal-hold -- --case-id=LEGAL-2025-001 --scope="contracts/*"
 ```
 
 **Manual Oversight:**
+
 - Quarterly compliance reports
 - Exception approval workflow
 - Annual certification by legal counsel
@@ -726,17 +768,20 @@ npm run legal-hold -- --case-id=LEGAL-2025-001 --scope="contracts/*"
 ### Key Metrics
 
 **Retention Compliance:**
+
 - Documents disposed on schedule (target: >99%)
 - Legal holds properly implemented (target: 100%)
 - Archive integrity maintained (target: 100%)
 - Disposal verification complete (target: 100%)
 
 **Storage Optimization:**
+
 - Archive storage costs (target: <5% of total storage)
 - Data growth rate managed (target: <10% YoY)
 - Retrieval success rate (target: >99%)
 
 **Audit Performance:**
+
 - Audit response time (target: <30 days)
 - Findings resolution rate (target: >95%)
 - Preventive control effectiveness (target: >90%)
@@ -744,11 +789,13 @@ npm run legal-hold -- --case-id=LEGAL-2025-001 --scope="contracts/*"
 ### Audit Requirements
 
 **Internal Audits:**
+
 - Quarterly retention schedule compliance
 - Annual archive integrity verification
 - Random sampling of disposed documents
 
 **External Audits:**
+
 - Regulatory compliance examinations
 - Third-party security assessments
 - Legal discovery readiness reviews
@@ -760,6 +807,7 @@ npm run legal-hold -- --case-id=LEGAL-2025-001 --scope="contracts/*"
 ### Archive System Architecture
 
 **Storage Tiers:**
+
 ```
 Active Documents → Archive Tier 1 (SSD) → Archive Tier 2 (Tape) → Archive Tier 3 (Optical WORM)
      ↓                ↓                        ↓                        ↓
@@ -767,6 +815,7 @@ Active Documents → Archive Tier 1 (SSD) → Archive Tier 2 (Tape) → Archive 
 ```
 
 **Access Patterns:**
+
 - **Hot Access:** Frequently accessed archives (immediate retrieval)
 - **Warm Access:** Occasionally accessed (hours to retrieve)
 - **Cold Access:** Rarely accessed (days to retrieve)
@@ -775,12 +824,14 @@ Active Documents → Archive Tier 1 (SSD) → Archive Tier 2 (Tape) → Archive 
 ### Automation Features
 
 **Intelligent Archiving:**
+
 - ML-based prediction of access patterns
 - Automated tier migration
 - Smart deduplication and compression
 - Predictive storage provisioning
 
 **Compliance Automation:**
+
 - Automated retention schedule application
 - Legal hold enforcement
 - Disposal workflow orchestration
@@ -793,16 +844,19 @@ Active Documents → Archive Tier 1 (SSD) → Archive Tier 2 (Tape) → Archive 
 ### Required Training
 
 **All Personnel:**
+
 - Retention basics and responsibilities (annual)
 - Legal hold procedures (annual)
 - Data disposal awareness (annual)
 
 **Document Owners:**
+
 - Retention schedule application (initial + annual)
 - Archive request procedures (annual)
 - Disposal approval processes (annual)
 
 **Compliance Team:**
+
 - Advanced retention management (quarterly)
 - Legal hold coordination (monthly)
 - Audit preparation (quarterly)
@@ -873,13 +927,13 @@ Active Documents → Archive Tier 1 (SSD) → Archive Tier 2 (Tape) → Archive 
 
 ### 📋 Document Control
 
-|         Field         |          Value          |
-| :-------------------: | :---------------------: |
-| 🏷️ **Classification** |        Internal         |
-|    🔢 **Version**     |         `1.0.0`         |
-|  📅 **Last Review**   |       2025-10-29        |
-|  🔄 **Next Review**   |       2026-10-29        |
-|    ✍️ **Approver**    |   Compliance Team Lead  |
+|         Field         |        Value         |
+| :-------------------: | :------------------: |
+| 🏷️ **Classification** |       Internal       |
+|    🔢 **Version**     |       `1.0.0`        |
+|  📅 **Last Review**   |      2025-10-29      |
+|  🔄 **Next Review**   |      2026-10-29      |
+|    ✍️ **Approver**    | Compliance Team Lead |
 
 ---
 

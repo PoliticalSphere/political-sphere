@@ -3,7 +3,7 @@
 **Date:** October 29, 2025  
 **Severity:** High  
 **Status:** Resolved  
-**Duration:** ~30 minutes  
+**Duration:** ~30 minutes
 
 ---
 
@@ -105,14 +105,16 @@ When creating commit `6a2abc9`, only a **partial subset** of files from the dev-
 ### Immediate Actions (Implemented)
 
 ✅ **1. Document This Incident**
-   - Created this postmortem for team awareness
-   - Added to incident response knowledge base
+
+- Created this postmortem for team awareness
+- Added to incident response knowledge base
 
 ### Recommended Actions (To Implement)
 
 #### 🔴 Critical Priority
 
 **1. Add Workspace Integrity Checks**
+
 ```yaml
 # .github/workflows/workspace-integrity.yml
 name: Workspace Integrity Check
@@ -156,6 +158,7 @@ jobs:
 ```
 
 **2. Protected Branch Rules**
+
 ```
 Repository Settings → Branches → Branch protection rules for 'main':
 ☑ Require status checks to pass before merging
@@ -167,6 +170,7 @@ Repository Settings → Branches → Branch protection rules for 'main':
 ```
 
 **3. Add Pre-Push Git Hook**
+
 ```bash
 # .husky/pre-push
 #!/bin/sh
@@ -196,10 +200,12 @@ echo "✅ Workspace integrity check passed"
 #### 🟡 High Priority
 
 **4. Automated Build Test on Every Commit**
+
 - Ensure `npm install` and `nx build` work on every commit
 - Add to CI pipeline to catch missing dependencies
 
 **5. Branch Naming Convention**
+
 ```
 main           → production-ready code
 dev            → integration branch
@@ -209,6 +215,7 @@ docs/*         → documentation only (clearly marked)
 ```
 
 **6. Commit Message Templates**
+
 ```bash
 # .gitmessage
 # Type: feat|fix|docs|chore|refactor|test|ci
@@ -229,6 +236,7 @@ docs/*         → documentation only (clearly marked)
 #### 🟢 Medium Priority
 
 **7. Regular Workspace Audits**
+
 ```bash
 # Add to package.json scripts
 {
@@ -240,15 +248,18 @@ docs/*         → documentation only (clearly marked)
 ```
 
 **8. Better Git Workflow Documentation**
+
 - Document proper branching strategy
 - Create merge checklist
 - Add workflow diagrams
 
 **9. Periodic Backups**
+
 - Weekly automated branch snapshots
 - Tag important milestones: `git tag -a v0.1.0-snapshot`
 
 **10. Team Training**
+
 - Git best practices workshop
 - Monorepo management training
 - Incident response procedures
@@ -284,15 +295,15 @@ docs/*         → documentation only (clearly marked)
 
 ## Action Items
 
-| Priority | Action | Owner | Status | Due Date |
-|----------|--------|-------|--------|----------|
-| 🔴 Critical | Add workspace-integrity workflow | DevOps | ✅ DONE | 2025-10-30 |
-| 🔴 Critical | Enable branch protection on main | Admin | ✅ DONE | 2025-10-30 |
-| 🔴 Critical | Add pre-push git hook | Developer | ✅ DONE | 2025-10-30 |
-| 🟡 High | Add build check to CI | DevOps | 📋 TODO | 2025-11-01 |
-| 🟡 High | Document branching strategy | Tech Lead | 📋 TODO | 2025-11-01 |
-| 🟢 Medium | Create workspace audit script | Developer | 📋 TODO | 2025-11-05 |
-| 🟢 Medium | Schedule git workflow training | Manager | 📋 TODO | 2025-11-10 |
+| Priority    | Action                           | Owner     | Status  | Due Date   |
+| ----------- | -------------------------------- | --------- | ------- | ---------- |
+| 🔴 Critical | Add workspace-integrity workflow | DevOps    | ✅ DONE | 2025-10-30 |
+| 🔴 Critical | Enable branch protection on main | Admin     | ✅ DONE | 2025-10-30 |
+| 🔴 Critical | Add pre-push git hook            | Developer | ✅ DONE | 2025-10-30 |
+| 🟡 High     | Add build check to CI            | DevOps    | 📋 TODO | 2025-11-01 |
+| 🟡 High     | Document branching strategy      | Tech Lead | 📋 TODO | 2025-11-01 |
+| 🟢 Medium   | Create workspace audit script    | Developer | 📋 TODO | 2025-11-05 |
+| 🟢 Medium   | Schedule git workflow training   | Manager   | 📋 TODO | 2025-11-10 |
 
 ---
 
@@ -307,4 +318,4 @@ docs/*         → documentation only (clearly marked)
 
 **Reviewed by:** Engineering Team  
 **Next Review:** 2025-11-29  
-**Incident ID:** INC-2025-001  
+**Incident ID:** INC-2025-001

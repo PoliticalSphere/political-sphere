@@ -6,10 +6,8 @@ function isAllowedJsonContentType(contentType, allowedTypes) {
 }
 
 export async function readJsonBody(req, options = {}) {
-  const {
-    limit = DEFAULT_MAX_JSON_BYTES,
-    allowedContentTypes = DEFAULT_ALLOWED_CONTENT_TYPES,
-  } = options;
+  const { limit = DEFAULT_MAX_JSON_BYTES, allowedContentTypes = DEFAULT_ALLOWED_CONTENT_TYPES } =
+    options;
 
   const contentTypeHeader = req.headers['content-type'];
   if (
@@ -72,7 +70,7 @@ export function sendError(res, statusCode, message, details, headers = {}) {
     {
       'Cache-Control': 'no-store, no-cache, must-revalidate',
       ...headers,
-    },
+    }
   );
 }
 

@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.1.0` |  2025-10-29  | Developer/Founder  |  Quarterly   | **Draft**  |
+| Classification | Version | Last Updated |       Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :---------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.1.0` |  2025-10-29  | Developer/Founder |  Quarterly   | **Draft** |
 
 </div>
 
@@ -62,9 +62,11 @@ The financial structure is intentionally simple, ethical, and transparent.
 ## 💼 Operational Model
 
 ### Current Value Proposition
+
 **A persistent multiplayer political simulation game grounded in UK parliamentary procedures, offering fair, skill-based gameplay with AI assistance.**
 
 ### Target Customers
+
 Individuals interested in political simulation, strategy, governance, and structured role-based decision-making.
 
 - **Community-driven players**: Value systems, realism, reputation, and long-form progression
@@ -118,6 +120,7 @@ The goal is not maximising revenue per user, but:
 ## 💰 Revenue Model
 
 ### Single-Tier Subscription
+
 **One subscription provides full access to all game features and content.**
 
 - **No micro-transactions**: No DLC, cosmetic purchases, or in-game purchases
@@ -127,6 +130,7 @@ The goal is not maximising revenue per user, but:
 - **No monetization tied to outcomes**: Progression based on skill, not spending
 
 ### Pricing Strategy
+
 **Affordable, stable, and inclusive pricing designed for accessibility.**
 
 - **Modest monthly fee**: Covers operational costs with fair profit margin
@@ -135,6 +139,7 @@ The goal is not maximising revenue per user, but:
 - **Transparent costs**: Clear breakdown of what subscription covers
 
 ### Target Customer Segments
+
 **Players who value deep, systemic gameplay and political simulation.**
 
 - **Political simulation enthusiasts**: Seek realistic, procedural gameplay
@@ -147,15 +152,18 @@ The goal is not maximising revenue per user, but:
 ## 💵 Pricing Strategy
 
 ### Value-Based Pricing
+
 **Pricing reflects the fair value of access to a comprehensive political simulation platform.**
 
 #### Consumer Pricing Psychology
+
 - **Affordability**: Modest fee ensures broad accessibility
 - **Stability**: Predictable costs build trust and planning
 - **Transparency**: Clear value proposition and cost breakdown
 - **Fairness**: Equal access for all subscribers regardless of background
 
 #### Inclusive Access Framework
+
 - **Single tier**: No complex pricing structures or hidden fees
 - **Stable pricing**: No frequent changes that disrupt player planning
 - **Accessible design**: Platform usable across devices and regions
@@ -166,18 +174,21 @@ The goal is not maximising revenue per user, but:
 ## 📊 Operational Status & Sustainability
 
 ### Current Status
+
 - **Revenue**: Modest monthly subscriptions from active players
 - **Users**: Dedicated community of political simulation enthusiasts
 - **Key Metrics**: Player retention, engagement, subscription renewals
 - **Major Costs**: Platform operations, development, and fair profit margins
 
 ### Sustainability Goals
+
 - **Stable growth**: Organic expansion through word-of-mouth and quality
 - **Healthy recurring income**: Predictable revenue from satisfied subscribers
 - **Long-term platform maintenance**: Sustainable funding for continuous improvement
 - **High trust and low churn**: Focus on player satisfaction over aggressive growth
 
 ### Growth Strategy
+
 - **Community focus**: Build through player recommendations and shared experiences
 - **Quality over quantity**: Maintain high standards that attract dedicated players
 - **Transparent operations**: Clear communication about development and costs
@@ -188,24 +199,28 @@ The goal is not maximising revenue per user, but:
 ## 🏆 Competitive Advantages
 
 ### Technical Advantages
+
 - **Modern architecture**: AI-first, compliance-first design with monorepo governance
 - **High observability**: Comprehensive logging, tracing, and monitoring
 - **Scalable foundation**: Designed for gradual feature and player population growth
 - **Security focus**: Built-in compliance and threat model from inception
 
 ### Game Design Advantages
+
 - **Procedural integrity**: Realistic UK parliamentary mechanics and processes
 - **Fair competition**: Single-tier access ensures merit-based gameplay
 - **AI enhancement**: NPCs and systems that enrich without manipulating
 - **Educational depth**: Natural learning through structured, rule-driven play
 
 ### Ethical Advantages
+
 - **Transparency**: Clear business model with no hidden monetization
 - **Independence**: No external influences or political affiliations
 - **Safety**: Robust moderation and ethical AI constraints
 - **Accessibility**: Inclusive design supporting diverse players
 
 ### Market Advantages
+
 - **Niche focus**: Specialized political simulation without mainstream dilution
 - **Community trust**: Ethical model attracts dedicated, long-term players
 - **Sustainable growth**: Quality-driven expansion rather than aggressive scaling
@@ -216,24 +231,29 @@ The goal is not maximising revenue per user, but:
 ## 🚀 Growth Strategy
 
 ### Community-Driven Growth
+
 **Focus on organic expansion through player satisfaction and word-of-mouth.**
 
 #### Target Community
+
 - Political simulation enthusiasts seeking realistic, procedural gameplay
 - Strategy gamers interested in complex decision-making and long-term planning
 - Community builders valuing reputation, alliances, and social dynamics
 - Educational learners benefiting from natural skill development
 
 #### Growth Channels
+
 - **Player referrals**: Satisfied subscribers recommending to like-minded individuals
 - **Quality reputation**: Building trust through fair, transparent operations
 - **Community engagement**: Forums, discussions, and shared experiences
 - **Content excellence**: Regular updates and feature improvements
 
 ### Sustainable Scaling
+
 **Gradual expansion that maintains quality and ethical standards.**
 
 #### Scaling Principles
+
 - **Quality over quantity**: Maintain high standards that attract dedicated players
 - **Transparent operations**: Clear communication about development and costs
 - **Ethical expansion**: Growth that preserves fairness and simulation integrity
@@ -244,15 +264,18 @@ The goal is not maximising revenue per user, but:
 ## 🤝 Strategic Partnerships
 
 ### Partnership Opportunities
+
 **Collaborations that align with ethical model and enhance player experience.**
 
 #### Community Partnerships
+
 - **Gaming communities**: Cross-promotion with strategy and simulation game groups
 - **Educational forums**: Sharing insights on political learning through gameplay
 - **Research collaborations**: Academic studies on political simulation effectiveness
 - **Tech communities**: Knowledge sharing on AI and game development
 
 #### Ethical Collaborations
+
 - **Transparency organizations**: Joint efforts on platform accountability
 - **Civic education groups**: Partnerships for broader educational impact
 - **Game development collectives**: Shared best practices for ethical game design
@@ -263,18 +286,21 @@ The goal is not maximising revenue per user, but:
 ## 📈 Success Metrics
 
 ### Operational Metrics
+
 - **Player retention**: High subscription renewal rates indicating satisfaction
 - **Engagement levels**: Active participation in debates, votes, and community features
 - **Revenue stability**: Consistent monthly subscription income
 - **Platform reliability**: Uptime, performance, and user experience quality
 
 ### Community Metrics
+
 - **Player growth**: Organic expansion through word-of-mouth and quality reputation
 - **Satisfaction scores**: High ratings for fairness, transparency, and gameplay value
 - **Community health**: Positive interactions, low toxicity, constructive engagement
 - **Educational impact**: Natural development of civic literacy skills through play
 
 ### Ethical Metrics
+
 - **Transparency compliance**: Clear communication and operational honesty
 - **Fairness maintenance**: Equal access and merit-based progression
 - **Safety standards**: Effective moderation and harassment prevention
@@ -285,18 +311,21 @@ The goal is not maximising revenue per user, but:
 ## ⚠️ Risk Management
 
 ### Operational Risks
+
 - **Revenue volatility**: Subscription fluctuations affecting sustainability
 - **Mitigation**: Stable pricing, high retention, cost controls
 - **Platform downtime**: Technical issues disrupting player experience
 - **Mitigation**: Robust infrastructure, monitoring, backup systems
 
 ### Community Risks
+
 - **Player dissatisfaction**: Unmet expectations leading to churn
 - **Mitigation**: Regular feedback, transparent updates, quality focus
 - **Toxic behavior**: Harassment or manipulation undermining fairness
 - **Mitigation**: Strong moderation, clear rules, appeal processes
 
 ### Ethical Risks
+
 - **Transparency lapses**: Hidden changes or unclear communications
 - **Mitigation**: Regular updates, open decision-making, audit trails
 - **Fairness compromises**: Perceived advantages or unequal treatment
@@ -307,12 +336,14 @@ The goal is not maximising revenue per user, but:
 ## 🔄 Continuous Evolution
 
 ### Adaptation Framework
+
 - **Player feedback**: Regular input from subscribers and community
 - **Technical improvements**: Staying current with AI and simulation advancements
 - **Quality enhancements**: Iterative improvements based on player experience
 - **Ethical refinement**: Regular reviews of fairness and transparency practices
 
 ### Evolution Principles
+
 - **Sustainable pace**: Gradual improvements that maintain stability
 - **Player-centric**: Changes driven by community needs and feedback
 - **Ethical consistency**: All updates aligned with core values and principles
@@ -377,13 +408,13 @@ The goal is not maximising revenue per user, but:
 
 ### 📋 Document Control
 
-|         Field         |          Value          |
-| :-------------------: | :---------------------: |
-| 🏷️ **Classification** |        Internal         |
-|    🔢 **Version**     |         `0.1.0`         |
-|  📅 **Last Review**   |       2025-10-29        |
-|  🔄 **Next Review**   |       2026-01-29        |
-|    ✍️ **Approver**    | Developer/Founder       |
+|         Field         |       Value       |
+| :-------------------: | :---------------: |
+| 🏷️ **Classification** |     Internal      |
+|    🔢 **Version**     |      `0.1.0`      |
+|  📅 **Last Review**   |    2025-10-29     |
+|  🔄 **Next Review**   |    2026-01-29     |
+|    ✍️ **Approver**    | Developer/Founder |
 
 ---
 

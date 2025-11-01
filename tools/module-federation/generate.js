@@ -43,4 +43,6 @@ fs.writeFileSync(path.join(outDir, 'remote.webpack.config.js'), remote);
 
 console.log('Module Federation starter files written to', outDir);
 
-console.log('Next steps:\n  - Copy these configs into your app projects\n  - Adjust publicPath/URL and shared deps versions\n  - Serve remote and host apps on distinct ports');
+console.log(
+  'Next steps:\n  - Copy these configs into your app projects\n  - Adjust publicPath/URL and shared deps versions\n  - Serve remote and host apps on distinct ports'
+);

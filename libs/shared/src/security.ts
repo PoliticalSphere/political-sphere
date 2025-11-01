@@ -97,14 +97,14 @@ export function isValidInput(input: string): boolean {
 
   // Check for suspicious patterns
   const suspiciousPatterns = [
-    /\.\.\//,  // Directory traversal
-    /<\s*script/i,  // Script tags
-    /javascript:/i,  // JavaScript URLs
-    /data:\s*text\/html/i,  // Data URLs with HTML
-    /('|(\\x27)|(\\x2D\\x2D)|(;)|(\\\\)|(\\')|(\\")|(\\x23)|(\\x3B)|(\\x2F\\x2A)|(\\x2A\\x2F))/i,  // SQL injection patterns
+    /\.\.\//, // Directory traversal
+    /<\s*script/i, // Script tags
+    /javascript:/i, // JavaScript URLs
+    /data:\s*text\/html/i, // Data URLs with HTML
+    /('|(\\x27)|(\\x2D\\x2D)|(;)|(\\\\)|(\\')|(\\")|(\\x23)|(\\x3B)|(\\x2F\\x2A)|(\\x2A\\x2F))/i, // SQL injection patterns
   ];
 
-  return !suspiciousPatterns.some(pattern => pattern.test(input));
+  return !suspiciousPatterns.some((pattern) => pattern.test(input));
 }
 
 /**
@@ -122,7 +122,10 @@ export function isValidEmail(email: string): boolean {
 /**
  * Validates URL format and protocol
  */
-export function isValidUrl(url: string, allowedProtocols: string[] = DEFAULT_ALLOWED_PROTOCOLS): boolean {
+export function isValidUrl(
+  url: string,
+  allowedProtocols: string[] = DEFAULT_ALLOWED_PROTOCOLS
+): boolean {
   if (typeof url !== 'string') {
     return false;
   }
@@ -136,8 +139,10 @@ export function isValidUrl(url: string, allowedProtocols: string[] = DEFAULT_ALL
     }
 
     // Check for localhost in production
-    if (env['NODE_ENV'] === 'production' &&
-        (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1')) {
+    if (
+      env['NODE_ENV'] === 'production' &&
+      (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1')
+    ) {
       return false;
     }
 
@@ -210,7 +215,11 @@ export function validateTag(tag: string): string | null {
 /**
  * Checks rate limit for a given key
  */
-export function checkRateLimit(key: string, optionsOrMaxRequests?: number | { maxRequests?: number; windowMs?: number }, windowMs?: number): boolean {
+export function checkRateLimit(
+  key: string,
+  optionsOrMaxRequests?: number | { maxRequests?: number; windowMs?: number },
+  windowMs?: number
+): boolean {
   let maxRequests: number;
   let windowDuration: number;
 
@@ -245,7 +254,10 @@ export function checkRateLimit(key: string, optionsOrMaxRequests?: number | { ma
 /**
  * Gets rate limit information for a key
  */
-export function getRateLimitInfo(key: string, options?: { maxRequests?: number; windowMs?: number }): { remaining: number; reset: number; limit: number } {
+export function getRateLimitInfo(
+  key: string,
+  options?: { maxRequests?: number; windowMs?: number }
+): { remaining: number; reset: number; limit: number } {
   const maxRequests = options?.maxRequests ?? DEFAULT_RATE_LIMIT.maxRequests;
   const windowMs = options?.windowMs ?? DEFAULT_RATE_LIMIT.windowMs;
 
@@ -255,7 +267,11 @@ export function getRateLimitInfo(key: string, options?: { maxRequests?: number; 
   const current = rateLimitStore.get(windowKey);
 
   if (!current || now > current.resetTime) {
-    return { remaining: maxRequests, reset: Math.floor((now + windowMs) / 1000), limit: maxRequests };
+    return {
+      remaining: maxRequests,
+      reset: Math.floor((now + windowMs) / 1000),
+      limit: maxRequests,
+    };
   }
 
   const remaining = Math.max(0, maxRequests - current.count);
@@ -285,7 +301,8 @@ export function generateCsrfToken(sessionId: string): string {
   csrfTokenStore.set(sessionId, { token, created });
 
   // Clean up old tokens periodically
-  if (Math.random() < 0.01) { // 1% chance
+  if (Math.random() < 0.01) {
+    // 1% chance
     cleanupCsrfTokens();
   }
 
@@ -295,7 +312,11 @@ export function generateCsrfToken(sessionId: string): string {
 /**
  * Validates a CSRF token
  */
-export function validateCsrfToken(token: string, sessionId: string, maxAge: number = 3600000): boolean {
+export function validateCsrfToken(
+  token: string,
+  sessionId: string,
+  maxAge: number = 3600000
+): boolean {
   const stored = csrfTokenStore.get(sessionId);
 
   if (!stored) {
@@ -338,14 +359,14 @@ export function isIpAllowed(ip: string, blocklist: string[] = []): boolean {
 
   // Allow private IP ranges (RFC 1918)
   const privateIpPatterns = [
-    /^10\./,                    // 10.0.0.0/8
+    /^10\./, // 10.0.0.0/8
     /^172\.(1[6-9]|2[0-9]|3[0-1])\./, // 172.16.0.0/12
-    /^192\.168\./,              // 192.168.0.0/16
-    /^fc00:/,                   // IPv6 unique local addresses
-    /^fe80:/,                   // IPv6 link-local
+    /^192\.168\./, // 192.168.0.0/16
+    /^fc00:/, // IPv6 unique local addresses
+    /^fe80:/, // IPv6 link-local
   ];
 
-  return privateIpPatterns.some(pattern => pattern.test(ip));
+  return privateIpPatterns.some((pattern) => pattern.test(ip));
 }
 
 /**
@@ -356,7 +377,8 @@ export const SECURITY_HEADERS: Record<string, string> = {
   'X-Frame-Options': 'DENY',
   'X-XSS-Protection': '1; mode=block',
   'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
-  'Content-Security-Policy': "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
+  'Content-Security-Policy':
+    "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
   'Referrer-Policy': 'strict-origin-when-cross-origin',
   'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
 };
@@ -365,7 +387,8 @@ export const SECURITY_HEADERS: Record<string, string> = {
  * Gets CORS headers for a request
  */
 export function getCorsHeaders(origin: string): Record<string, string> {
-  const isAllowedOrigin = DEFAULT_ALLOWED_ORIGINS.includes(origin) ||
+  const isAllowedOrigin =
+    DEFAULT_ALLOWED_ORIGINS.includes(origin) ||
     (env['NODE_ENV'] !== 'production' && origin?.includes('localhost'));
 
   return {

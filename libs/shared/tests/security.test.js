@@ -16,7 +16,7 @@ import {
   createSecurityHeaders,
   getCorsHeaders,
   isIpAllowed,
-  getRateLimitInfo
+  getRateLimitInfo,
 } from '../src/security.js';
 
 describe('Security Utilities', () => {
@@ -290,7 +290,7 @@ describe('Security Utilities', () => {
 
     test('rejects expired tokens', () => {
       const sessionId = 'session-123';
-      const oldTimestamp = Date.now() - (2 * 60 * 60 * 1000); // 2 hours ago
+      const oldTimestamp = Date.now() - 2 * 60 * 60 * 1000; // 2 hours ago
       const token = `${oldTimestamp}.fakehash`;
       expect(validateCsrfToken(token, sessionId, 60 * 60 * 1000)).toBe(false);
     });

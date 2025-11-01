@@ -2,14 +2,13 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :-------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
 
 </div>
 
 ---
-
 
 ## Overview
 
@@ -25,31 +24,37 @@ Political Sphere is designed as a UK-style parliamentary simulation, launching p
 ## Target Markets (Phased)
 
 ### Phase 1: English-Speaking Strategy/Politics Audience (Launch)
+
 - United Kingdom, Ireland, Canada, Australia/NZ, English-speaking EU, US (niche parliamentary interest).
 - Rationale: Shared language reduces barriers; early community from academic/strategy circles.
 
 ### Phase 2: High Strategy-Game Engagement Markets (6-18 Months)
+
 - Germany, Netherlands, Scandinavia, France, Singapore/Hong Kong (English bilingual).
 - Criteria: Strong strategy-gaming culture, high English comprehension, political civility, low polarization risk.
 
 ### Phase 3: Broader Expansion (18+ Months)
+
 - Spanish-speaking markets, Japanese, Korean strategy audiences.
 - Conditional on safety and moderation scaling.
 
 ## Translation & Localization Approach
 
 ### Initial Setup
+
 - Text extraction and string externalization (e.g., /locales/en.json).
 - i18n libraries (free/local, e.g., react-i18next).
 - English-only UI and content; avoid hard-coded strings.
 
 ### Later Phases
+
 - Text bundles per language.
 - Community-assisted translation with review and trust rules.
 - Tutorial and onboarding translations once core is stable.
 - Right-to-left (RTL) support as needed (not MVP).
 
 ### Prohibited Elements
+
 - Region-specific political ideology content.
 - Local partisan references.
 - Real political party localization.
@@ -83,11 +88,11 @@ Political Sphere is designed as a UK-style parliamentary simulation, launching p
 
 ## Timeline Reality
 
-| Phase | Timeline | Scope |
-|-------|----------|-------|
-| MVP | 0–6 months | English only, i18n foundation |
-| Early Growth | 6–18 months | European language pack (community-validated) |
-| Scale | 18+ months | Asian languages, RTL support, structured pipeline |
+| Phase        | Timeline    | Scope                                             |
+| ------------ | ----------- | ------------------------------------------------- |
+| MVP          | 0–6 months  | English only, i18n foundation                     |
+| Early Growth | 6–18 months | European language pack (community-validated)      |
+| Scale        | 18+ months  | Asian languages, RTL support, structured pipeline |
 
 **Rule:** Expand only when moderation and safety scale.
 

@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Strategy Council |   Quarterly  | **Approved** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :----------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Strategy Council |  Quarterly   | **Approved** |
 
 </div>
 
@@ -27,6 +27,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** We can build incrementally, starting with small playable loops and testing each mechanic in isolation.
 
 **Mitigation:**
+
 - Incremental build with clear MVP scope.
 - Test each mechanic in isolation.
 - Use small, testable prototypes.
@@ -38,6 +39,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** Deterministic rules and server-authoritative logic can prevent corruption.
 
 **Mitigation:**
+
 - Implement deterministic rules.
 - Use server-authoritative logic.
 - Maintain audit logs.
@@ -50,6 +52,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** Transparent rules and human oversight can maintain trust.
 
 **Mitigation:**
+
 - Ensure transparent rules with change logs.
 - Implement appeals processes.
 - Provide human oversight over AI moderation.
@@ -61,6 +64,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** Strong moderation and community norms can contain this.
 
 **Mitigation:**
+
 - Enforce safe simulation mission.
 - Build guardrails against real-world politics.
 - Develop strong moderation tools.
@@ -73,6 +77,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** Minimal personal data and internal-world politics will avoid major issues.
 
 **Mitigation:**
+
 - Collect minimal personal data.
 - Keep politics internal and fictional.
 - Implement content policies.
@@ -86,6 +91,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** Clear disclaimers and containment will clarify the intent.
 
 **Mitigation:**
+
 - Use clear disclaimers.
 - Maintain a fictional political universe.
 - Prohibit real-world campaigning.
@@ -98,6 +104,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** The niche is loyal and intellectually invested.
 
 **Mitigation:**
+
 - Target thoughtful strategy gamers.
 - Provide good onboarding.
 - Develop "learn by playing" tools.
@@ -110,6 +117,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** Structured systems can manage this.
 
 **Mitigation:**
+
 - Implement structured role systems.
 - Use reputation consequences.
 - Offer new-player mentorship.
@@ -122,6 +130,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** Internal tooling and gradual expansion can compensate.
 
 **Mitigation:**
+
 - Start with small private test worlds.
 - Prioritize internal tooling over external spend.
 - Expand players gradually.
@@ -134,6 +143,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** Transparency and constraints will build trust.
 
 **Mitigation:**
+
 - Make AI fully transparent.
 - Log all AI decisions.
 - Require human override on moderation.
@@ -146,6 +156,7 @@ This document outlines the main challenges and risks facing Political Sphere, al
 **Assumption:** Clear progression and rituals will maintain engagement.
 
 **Mitigation:**
+
 - Implement short initial cycles.
 - Provide clear progression feedback.
 - Add recurring events and highlights.

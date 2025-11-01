@@ -2,14 +2,13 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :--------: |
+| Classification | Version | Last Updated |       Owner        | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :----------------: | :----------: | :-------: |
 |  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
 
 </div>
 
 ---
-
 
 ## Overview
 
@@ -18,11 +17,13 @@ This roadmap outlines the phased development and growth of Political Sphere, foc
 ## Phase 1: Foundation & MVP (0-3 Months)
 
 ### Objectives
+
 - Establish the minimal but solid platform to prove the simulation works.
 - Create a small, fully functional closed test world.
 - Prioritise integrity over features — fairness, persistence, stability, security.
 
 ### Key Milestones
+
 - **Infrastructure:** Local dev environment, Docker setup, database schema, REST + WebSocket baseline.
 - **Core Systems:** Player accounts, auth, role types (MP, Speaker, Admin).
 - **Gameplay Loop:** Create → debate → vote → record result.
@@ -32,11 +33,13 @@ This roadmap outlines the phased development and growth of Political Sphere, foc
 - **Docs & Governance:** Foundation docs complete (Core Values, Business Model, Security, Roadmap).
 
 ### Priorities
+
 - Build for reliability & fairness, not speed.
 - Keep costs at £0.
 - Focus on one playable world with testable parliamentary flow.
 
 ### Success Metrics
+
 - 1 functional persistent world (no resets needed).
 - 5–15 active testers.
 - <1 critical bug per week.
@@ -46,11 +49,13 @@ This roadmap outlines the phased development and growth of Political Sphere, foc
 ## Phase 2: Closed Beta & World Expansion (3-12 Months)
 
 ### Objectives
+
 - Transition from prototype to public-ready closed beta.
 - Build robust systems for moderation, reputation, and progression.
 - Strengthen UX and trust infrastructure.
 
 ### Key Milestones
+
 - **Gameplay:** Full parliamentary cycle: sessions, debates, amendments, votes, results, and archives.
 - **Reputation & Parties:** Party creation, leadership, whip system, reputation scoring.
 - **AI & NPCs:** NPCs for quorum + procedural support; AI moderation assistant with transparency logs.
@@ -62,11 +67,13 @@ This roadmap outlines the phased development and growth of Political Sphere, foc
 - **Docs & Policy:** Player Safety Charter, Moderation Framework, Subscription Policy.
 
 ### Priorities
+
 - Deliver a full “session cycle” experience.
 - Prepare ethical, safe testing community.
 - Establish gameplay trust — procedural clarity, no bias.
 
 ### Success Metrics
+
 - 100+ registered testers.
 - 80%+ report clarity in rules and fairness.
 - 95% uptime during sessions.
@@ -76,11 +83,13 @@ This roadmap outlines the phased development and growth of Political Sphere, foc
 ## Phase 3: Growth & Refinement (12-36 Months)
 
 ### Objectives
+
 - Move from beta to sustainable, ongoing live simulation.
 - Build long-term player retention loops, community culture, and ethical scalability.
 - Develop archival, narrative, and seasonal systems.
 
 ### Key Milestones
+
 - **Governance:** Player-elected Speaker, formalised procedural constitution.
 - **Elections & History:** World seasons, election cycles, persistent archives.
 - **Content:** Scenarios, amendments, party manifestos, NPC campaigns.
@@ -91,11 +100,13 @@ This roadmap outlines the phased development and growth of Political Sphere, foc
 - **Sustainability:** Stable subscription base (modest, low-cost hosting covered by subs).
 
 ### Priorities
+
 - Maintain fairness, ethical containment, and world stability.
 - Grow deliberately — quality > quantity.
 - Institutionalize transparency: changelogs, policies, and moderation accountability.
 
 ### Success Metrics
+
 - **Community:** 1,000+ active monthly players.
 - **Stability:** 99.5% uptime, <0.1% rollback rate.
 - **Fairness:** <2% successful moderation appeals (indicating consistency).
@@ -106,14 +117,14 @@ This roadmap outlines the phased development and growth of Political Sphere, foc
 
 ## Strategic Alignment Table
 
-| Long-Term Pillar | 3–12–36 Month Alignment |
-|------------------|--------------------------|
-| Fairness | 3m: procedural enforcement → 12m: reputation fairness → 36m: governance codification |
-| Persistence | 3m: stable DB → 12m: world saves → 36m: world history + archives |
-| Safety | 3m: flag/report → 12m: appeals → 36m: community-led moderation |
-| Ethics | 3m: no real-world politics → 12m: containment checks → 36m: policy audits |
-| Scalability | 3m: single world → 12m: multi-world → 36m: autonomous worlds |
-| Accessibility | 3m: keyboard nav → 12m: full onboarding → 36m: i18n + assistive design |
+| Long-Term Pillar | 3–12–36 Month Alignment                                                              |
+| ---------------- | ------------------------------------------------------------------------------------ |
+| Fairness         | 3m: procedural enforcement → 12m: reputation fairness → 36m: governance codification |
+| Persistence      | 3m: stable DB → 12m: world saves → 36m: world history + archives                     |
+| Safety           | 3m: flag/report → 12m: appeals → 36m: community-led moderation                       |
+| Ethics           | 3m: no real-world politics → 12m: containment checks → 36m: policy audits            |
+| Scalability      | 3m: single world → 12m: multi-world → 36m: autonomous worlds                         |
+| Accessibility    | 3m: keyboard nav → 12m: full onboarding → 36m: i18n + assistive design               |
 
 ## High-Level Narrative
 

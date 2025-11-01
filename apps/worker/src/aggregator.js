@@ -16,17 +16,16 @@ export function summarizeNews(items) {
     }
   }
 
-  const latest = [...safeItems]
-    .filter((item) => Boolean(item?.updatedAt))
-    .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0] ?? null;
+  const latest =
+    [...safeItems]
+      .filter((item) => Boolean(item?.updatedAt))
+      .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0] ?? null;
 
   return {
     total: safeItems.length,
     categories,
     tags,
-    latest: latest
-      ? { id: latest.id, title: latest.title, updatedAt: latest.updatedAt }
-      : null,
+    latest: latest ? { id: latest.id, title: latest.title, updatedAt: latest.updatedAt } : null,
     generatedAt: new Date().toISOString(),
   };
 }

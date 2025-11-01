@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -22,12 +22,12 @@
 
 ## 🧱 Telemetry Stack
 
-| Pillar | Tooling | Notes |
-| ------ | ------- | ----- |
+| Pillar      | Tooling                                                                      | Notes                                                                     |
+| ----------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
 | **Tracing** | OpenTelemetry SDK (Node.js, React via W3C Trace Context), Tempo/Jaeger (TBD) | Every request carries `traceId`; spans include tenant, feature flag state |
-| **Metrics** | Prometheus-compatible exporters, Grafana dashboards | Standard metrics library, RED/USE dashboards per service |
-| **Logging** | Pino structured logs → Loki/Elastic | JSON logs with redaction middleware; correlation IDs mandatory |
-| **APM** | OpenTelemetry collectors feeding into vendor-neutral backend | Evaluate Lightstep/New Relic after MVP if needed |
+| **Metrics** | Prometheus-compatible exporters, Grafana dashboards                          | Standard metrics library, RED/USE dashboards per service                  |
+| **Logging** | Pino structured logs → Loki/Elastic                                          | JSON logs with redaction middleware; correlation IDs mandatory            |
+| **APM**     | OpenTelemetry collectors feeding into vendor-neutral backend                 | Evaluate Lightstep/New Relic after MVP if needed                          |
 
 ---
 
@@ -43,13 +43,13 @@
 
 ## 📊 Dashboards
 
-| Dashboard | KPIs | Consumers |
-| --------- | ---- | --------- |
-| **Platform SLO** | API latency/error rate, realtime lag, queue depth | Platform, Product |
-| **Gameplay Health** | Debate join success, vote latency, AI assist usage, NPC errors | Product, Game Design |
-| **Safety & Moderation** | Report volume, SLA adherence, moderator backlog, false positives/negatives | Safety, Compliance |
-| **AI Quality** | Prompt throughput, provider latency, refusal rate, evaluation scores | AI Ops, Ethics |
-| **Infrastructure** | CPU/memory/disk, cost metrics, node health | DevOps |
+| Dashboard               | KPIs                                                                       | Consumers            |
+| ----------------------- | -------------------------------------------------------------------------- | -------------------- |
+| **Platform SLO**        | API latency/error rate, realtime lag, queue depth                          | Platform, Product    |
+| **Gameplay Health**     | Debate join success, vote latency, AI assist usage, NPC errors             | Product, Game Design |
+| **Safety & Moderation** | Report volume, SLA adherence, moderator backlog, false positives/negatives | Safety, Compliance   |
+| **AI Quality**          | Prompt throughput, provider latency, refusal rate, evaluation scores       | AI Ops, Ethics       |
+| **Infrastructure**      | CPU/memory/disk, cost metrics, node health                                 | DevOps               |
 
 ---
 

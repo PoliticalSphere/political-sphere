@@ -28,8 +28,7 @@ const P95_MAX_MS = Number(process.env.PERF_P95_MAX_MS || 300); // ms
 const requests = data.requests || {};
 const latency = data.latency || {};
 
-const requestsPerSec =
-  requests.mean || requests.average || data.throughput || 0;
+const requestsPerSec = requests.mean || requests.average || data.throughput || 0;
 const p95 = latency.p95 || latency['95'] || 0;
 
 console.log(`Perf summary: req/s ≈ ${requestsPerSec}, p95 ≈ ${p95} ms`);
@@ -39,9 +38,7 @@ let failed = false;
 const messages = [];
 if (requestsPerSec < THROUGHPUT_MIN) {
   failed = true;
-  messages.push(
-    `Throughput too low: ${requestsPerSec} req/s < ${THROUGHPUT_MIN} req/s`
-  );
+  messages.push(`Throughput too low: ${requestsPerSec} req/s < ${THROUGHPUT_MIN} req/s`);
 }
 if (p95 > P95_MAX_MS) {
   failed = true;

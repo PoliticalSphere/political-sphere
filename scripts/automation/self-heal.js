@@ -145,9 +145,7 @@ test('self-healing demo - nested tests - nested test case', () => {
       execSync(`npm install ${moduleName}`, { stdio: 'inherit' });
       return { success: true };
     } catch (installError) {
-      console.log(
-        `❌ Could not install ${moduleName}: ${installError.message}`
-      );
+      console.log(`❌ Could not install ${moduleName}: ${installError.message}`);
       return { success: false };
     }
   }
@@ -167,8 +165,7 @@ test('self-healing demo - nested tests - nested test case', () => {
     if (errorDetails.includes('Unexpected token')) {
       return {
         success: false,
-        message:
-          'Unexpected token - check for typos or missing syntax elements',
+        message: 'Unexpected token - check for typos or missing syntax elements',
       };
     }
 
@@ -212,9 +209,7 @@ test('self-healing demo - nested tests - nested test case', () => {
 
   async fixTypeScriptErrors(match, errorOutput, context) {
     const missingName = match[1];
-    console.log(
-      `🔧 Attempting to fix TypeScript error: Cannot find name '${missingName}'`
-    );
+    console.log(`🔧 Attempting to fix TypeScript error: Cannot find name '${missingName}'`);
 
     // Common TypeScript fixes
     if (['console', 'process', 'Buffer'].includes(missingName)) {
@@ -266,9 +261,7 @@ test('self-healing demo - nested tests - nested test case', () => {
 
   async runCommandWithHealing(command, options = {}) {
     return new Promise((resolve, reject) => {
-      console.log(
-        `🔧 Executing: ${command} ${options.args ? options.args.join(' ') : ''}`
-      );
+      console.log(`🔧 Executing: ${command} ${options.args ? options.args.join(' ') : ''}`);
 
       const child = spawn(command, options.args || [], {
         stdio: ['inherit', 'pipe', 'pipe'],
@@ -300,29 +293,19 @@ test('self-healing demo - nested tests - nested test case', () => {
 
           // Check both stdout and stderr for errors
           const fullErrorOutput = stdout + '\n' + stderr;
-          const healingResult = await this.diagnoseAndFix(
-            fullErrorOutput,
-            options.context
-          );
+          const healingResult = await this.diagnoseAndFix(fullErrorOutput, options.context);
 
           if (healingResult.success) {
             console.log('🔄 Retrying command after auto-fix...');
             // Retry the command
             try {
-              const retryResult = await this.runCommandWithHealing(
-                command,
-                options
-              );
+              const retryResult = await this.runCommandWithHealing(command, options);
               resolve(retryResult);
             } catch (retryError) {
               reject(retryError);
             }
           } else {
-            reject(
-              new Error(
-                `Command failed with exit code ${code}: ${fullErrorOutput}`
-              )
-            );
+            reject(new Error(`Command failed with exit code ${code}: ${fullErrorOutput}`));
           }
         }
       });
@@ -347,25 +330,20 @@ async function main() {
 
   if (args.length === 0) {
     console.log('Usage: npm run heal -- <command>');
-    console.log(
-      'Example: npm run heal -- node --test tests/unit/broken-test.mjs'
-    );
+    console.log('Example: npm run heal -- node --test tests/unit/broken-test.mjs');
     process.exit(1);
   }
 
   const command = args[0];
   const commandArgs = args.slice(1);
 
-  console.log(
-    `🚀 Running with self-healing: ${command} ${commandArgs.join(' ')}`
-  );
+  console.log(`🚀 Running with self-healing: ${command} ${commandArgs.join(' ')}`);
   console.log('🔍 Command args:', commandArgs);
   console.log(
     '🔍 Test file arg:',
     commandArgs.find(
       (arg) =>
-        arg.includes('test') &&
-        (arg.endsWith('.js') || arg.endsWith('.mjs') || arg.endsWith('.ts'))
+        arg.includes('test') && (arg.endsWith('.js') || arg.endsWith('.mjs') || arg.endsWith('.ts'))
     )
   );
 
@@ -384,9 +362,7 @@ async function main() {
               commandArgs.find(
                 (arg) =>
                   arg.includes('test') &&
-                  (arg.endsWith('.js') ||
-                    arg.endsWith('.mjs') ||
-                    arg.endsWith('.ts'))
+                  (arg.endsWith('.js') || arg.endsWith('.mjs') || arg.endsWith('.ts'))
               )
             )
           : undefined,
@@ -396,10 +372,7 @@ async function main() {
     console.log('✅ Command completed successfully');
     if (result.stdout) console.log(result.stdout);
   } catch (error) {
-    console.error(
-      '❌ Command failed even after healing attempts:',
-      error.message
-    );
+    console.error('❌ Command failed even after healing attempts:', error.message);
     process.exit(1);
   }
 }

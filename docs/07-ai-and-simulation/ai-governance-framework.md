@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | AI Ethics Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |       Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :---------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | AI Ethics Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -24,6 +24,7 @@
 ## 🧭 Governance Structure
 
 ### AI Ethics Council
+
 - **Composition:** Cross-functional team including ethics experts, developers, product managers, and legal advisors.
 - **Responsibilities:**
   - Approve new AI use cases.
@@ -33,14 +34,17 @@
 - **Meetings:** Monthly; ad-hoc for urgent matters.
 
 ### AI Product Owner
+
 - **Role:** Champion AI initiatives; ensure alignment with product goals.
 - **Responsibilities:** Define requirements, prioritize features, monitor performance.
 
 ### AI Engineers
+
 - **Role:** Develop and maintain AI systems.
 - **Responsibilities:** Implement safety constraints, document systems, report issues.
 
 ### Data Stewards
+
 - **Role:** Manage data used for AI training and evaluation.
 - **Responsibilities:** Ensure data quality, privacy compliance, and ethical sourcing.
 
@@ -49,18 +53,21 @@
 ## 📋 Governance Processes
 
 ### AI Use Case Approval
+
 1. **Proposal:** Submit use case with ethical impact assessment.
 2. **Review:** AI Ethics Council evaluates alignment with principles.
 3. **Approval:** Council approves or requests modifications.
 4. **Documentation:** Approved use cases documented in [Model Inventory](../model-inventory-and-system-cards/).
 
 ### Change Management
+
 1. **Impact Assessment:** Evaluate changes for safety, fairness, and performance.
 2. **Testing:** Conduct red teaming and benchmarking.
 3. **Approval:** Council review for high-impact changes.
 4. **Deployment:** Roll out with monitoring and rollback plans.
 
 ### Incident Response
+
 1. **Detection:** Monitoring alerts or user reports.
 2. **Assessment:** Determine impact and root cause.
 3. **Response:** Activate kill switches if needed; notify stakeholders.
@@ -80,12 +87,12 @@
 
 ## 📊 Metrics and Reporting
 
-| Metric | Frequency | Owner |
-| ------ | --------- | ----- |
-| AI incident rate | Monthly | AI Ethics Council |
-| Model performance scores | Quarterly | AI Engineers |
-| Compliance audit results | Annually | Data Stewards |
-| User feedback on AI | Continuous | AI Product Owner |
+| Metric                   | Frequency  | Owner             |
+| ------------------------ | ---------- | ----------------- |
+| AI incident rate         | Monthly    | AI Ethics Council |
+| Model performance scores | Quarterly  | AI Engineers      |
+| Compliance audit results | Annually   | Data Stewards     |
+| User feedback on AI      | Continuous | AI Product Owner  |
 
 ---
 

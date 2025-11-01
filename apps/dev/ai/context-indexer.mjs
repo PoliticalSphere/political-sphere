@@ -96,9 +96,7 @@ const summarizeContent = (lines) => {
 const buildContextIndex = async () => {
   const markdownFiles = await walkDocs(docsRoot);
   const previousIndex = await safeReadJson(outputPath, { documents: [] });
-  const previousDocs = new Map(
-    (previousIndex?.documents ?? []).map((doc) => [doc.path, doc])
-  );
+  const previousDocs = new Map((previousIndex?.documents ?? []).map((doc) => [doc.path, doc]));
 
   const classificationCounts = {};
   const docEntries = await Promise.all(
@@ -144,8 +142,7 @@ const buildContextIndex = async () => {
 
   const documents = docEntries.map(({ doc }) => {
     const classification = doc.classification ?? 'Unknown';
-    classificationCounts[classification] =
-      (classificationCounts[classification] ?? 0) + 1;
+    classificationCounts[classification] = (classificationCounts[classification] ?? 0) + 1;
     return doc;
   });
 
@@ -170,7 +167,9 @@ const main = async () => {
   console.log('📚 Building AI context index from documentation...');
   const index = await buildContextIndex();
   console.log(`✅ Indexed ${index.totals.documents} documents`);
-  console.log(`🔎 Classification coverage: ${Object.keys(index.totals.classifications).join(', ')}`);
+  console.log(
+    `🔎 Classification coverage: ${Object.keys(index.totals.classifications).join(', ')}`
+  );
 };
 
 main().catch((error) => {

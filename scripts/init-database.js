@@ -11,14 +11,19 @@ import fs from 'fs';
 
 // Simple console logger for database initialization
 const logger = {
-  info: (message, meta = {}) => console.log(`[INFO] ${message}`, Object.keys(meta).length ? JSON.stringify(meta) : ''),
-  warn: (message, meta = {}) => console.warn(`[WARN] ${message}`, Object.keys(meta).length ? JSON.stringify(meta) : ''),
-  error: (message, meta = {}) => console.error(`[ERROR] ${message}`, Object.keys(meta).length ? JSON.stringify(meta) : ''),
-  fatal: (message, meta = {}) => console.error(`[FATAL] ${message}`, Object.keys(meta).length ? JSON.stringify(meta) : '')
+  info: (message, meta = {}) =>
+    console.log(`[INFO] ${message}`, Object.keys(meta).length ? JSON.stringify(meta) : ''),
+  warn: (message, meta = {}) =>
+    console.warn(`[WARN] ${message}`, Object.keys(meta).length ? JSON.stringify(meta) : ''),
+  error: (message, meta = {}) =>
+    console.error(`[ERROR] ${message}`, Object.keys(meta).length ? JSON.stringify(meta) : ''),
+  fatal: (message, meta = {}) =>
+    console.error(`[FATAL] ${message}`, Object.keys(meta).length ? JSON.stringify(meta) : ''),
 };
 
 // Database configuration
-const DB_PATH = process.env.SQLITE_DB_PATH || path.join(process.cwd(), 'data', 'political_sphere.db');
+const DB_PATH =
+  process.env.SQLITE_DB_PATH || path.join(process.cwd(), 'data', 'political_sphere.db');
 const DB_DIR = path.dirname(DB_PATH);
 
 // Ensure data directory exists
@@ -205,7 +210,6 @@ try {
   }
 
   logger.info('Database initialization completed successfully');
-
 } catch (error) {
   logger.fatal('Database initialization failed', { error: error.message, stack: error.stack });
   throw error;

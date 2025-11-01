@@ -49,20 +49,9 @@
     "default": {
       "runner": "nx/tasks-runners/default",
       "options": {
-<<<<<<< Updated upstream
-        "cacheableOperations": [
-          "build",
-          "lint",
-          "test",
-          "e2e",
-          "test:e2e",
-          "lint:boundaries"
-        ]
-=======
         "cacheableOperations": ["build", "lint", "test", "e2e", "test:e2e", "lint:boundaries"],
-        "parallel": 4,
-        "maxParallel": 4
->>>>>>> Stashed changes
+        "parallel": 6,
+        "maxParallel": 8
       }
     }
   },

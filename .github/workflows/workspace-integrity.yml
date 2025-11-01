@@ -10,7 +10,7 @@ jobs:
   verify-workspace:
     name: Verify Workspace Structure
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -18,7 +18,7 @@ jobs:
       - name: Check Critical Files Exist
         run: |
           echo "🔍 Verifying critical files..."
-          
+
           required_files=(
             "package.json"
             "nx.json"
@@ -26,7 +26,7 @@ jobs:
             ".github/workflows/ci.yml"
             "README.md"
           )
-          
+
           missing_files=()
           for file in "${required_files[@]}"; do
             if [ ! -f "$file" ]; then
@@ -36,27 +36,27 @@ jobs:
               echo "✅ Found: $file"
             fi
           done
-          
+
           if [ ${#missing_files[@]} -ne 0 ]; then
             echo ""
             echo "❌ ERROR: ${#missing_files[@]} critical file(s) missing!"
             exit 1
           fi
-          
+
           echo ""
           echo "✅ All critical files present"
 
       - name: Verify Source Code Presence
         run: |
           echo "🔍 Checking for source code files..."
-          
+
           # Count TypeScript files (excluding node_modules, .nx, dist)
           ts_count=$(find . -name "*.ts" -o -name "*.tsx" | \
             grep -v node_modules | \
             grep -v ".nx/cache" | \
             grep -v "dist/" | \
             wc -l | tr -d ' ')
-          
+
           # Count JavaScript files (excluding node_modules, .nx, dist, build artifacts)
           js_count=$(find . -name "*.js" -o -name "*.mjs" | \
             grep -v node_modules | \
@@ -64,19 +64,19 @@ jobs:
             grep -v "dist/" | \
             grep -v "playwright-report" | \
             wc -l | tr -d ' ')
-          
+
           echo "📊 TypeScript files: $ts_count"
           echo "📊 JavaScript files: $js_count"
-          
+
           # Alert if counts are suspiciously low
           if [ "$ts_count" -lt 3 ]; then
             echo "⚠️  WARNING: Very few TypeScript files detected ($ts_count)"
           fi
-          
+
           if [ "$js_count" -lt 10 ]; then
             echo "⚠️  WARNING: Very few JavaScript files detected ($js_count)"
           fi
-          
+
           # Fail if BOTH are too low (likely means source is missing)
           if [ "$ts_count" -lt 3 ] && [ "$js_count" -lt 10 ]; then
             echo ""
@@ -84,22 +84,22 @@ jobs:
             echo "This could indicate an incomplete commit or merge."
             exit 1
           fi
-          
+
           echo ""
           echo "✅ Source code files present"
 
       - name: Verify Apps Structure
         run: |
           echo "🔍 Checking apps directory structure..."
-          
+
           if [ ! -d "apps" ]; then
             echo "❌ ERROR: apps/ directory missing!"
             exit 1
           fi
-          
+
           app_count=$(find apps -maxdepth 1 -mindepth 1 -type d | wc -l | tr -d ' ')
           echo "📊 Found $app_count apps"
-          
+
           # Check each app has either src/ or package.json or project.json
           for app_dir in apps/*/; do
             if [ -d "$app_dir" ]; then
@@ -119,14 +119,14 @@ jobs:
               fi
             fi
           done
-          
+
           echo ""
           echo "✅ Apps structure verified"
 
       - name: Verify Libs Structure
         run: |
           echo "🔍 Checking libs directory structure..."
-          
+
           if [ ! -d "libs" ]; then
             echo "⚠️  WARNING: libs/ directory missing (may be intentional)"
           else
@@ -138,20 +138,20 @@ jobs:
       - name: Check GitHub Workflows
         run: |
           echo "🔍 Checking GitHub workflows..."
-          
+
           if [ ! -d ".github/workflows" ]; then
             echo "❌ ERROR: .github/workflows/ directory missing!"
             exit 1
           fi
-          
+
           workflow_count=$(find .github/workflows -name "*.yml" -o -name "*.yaml" | wc -l | tr -d ' ')
           echo "📊 Found $workflow_count workflow files"
-          
+
           if [ "$workflow_count" -lt 1 ]; then
             echo "❌ ERROR: No workflow files found!"
             exit 1
           fi
-          
+
           echo "✅ GitHub workflows present"
 
       - name: Generate Workspace Report

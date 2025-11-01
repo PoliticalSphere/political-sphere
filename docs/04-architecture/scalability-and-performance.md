@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -14,12 +14,12 @@
 
 ## 🎯 Targets
 
-| Metric | Target | Notes |
-| ------ | ------ | ----- |
-| **API Latency** | P95 < 250 ms | Applies to GraphQL and REST; measured at edge |
-| **Realtime Latency** | Server-side < 150 ms | Debate/vote events from publish → client |
-| **Availability** | 99.9% MVP, roadmap to 99.95% | Error budgets defined per SLO |
-| **Throughput** | 5k concurrent users baseline | Scale beyond via horizontal nodes |
+| Metric               | Target                       | Notes                                         |
+| -------------------- | ---------------------------- | --------------------------------------------- |
+| **API Latency**      | P95 < 250 ms                 | Applies to GraphQL and REST; measured at edge |
+| **Realtime Latency** | Server-side < 150 ms         | Debate/vote events from publish → client      |
+| **Availability**     | 99.9% MVP, roadmap to 99.95% | Error budgets defined per SLO                 |
+| **Throughput**       | 5k concurrent users baseline | Scale beyond via horizontal nodes             |
 
 ---
 
@@ -36,12 +36,12 @@
 
 ## 🛠️ Performance Testing
 
-| Test Type | Tooling | Cadence | Success Criteria |
-| --------- | ------- | ------- | ---------------- |
-| **Load Tests** | Locust/k6 | Pre-release and quarterly | Sustain 5k concurrent sessions with <10% error rate |
-| **Soak Tests** | k6 (duration >6 hrs) | Quarterly | Detect memory leaks, queue growth, GC issues |
-| **Realtime Burst** | Custom websocket harness | Before feature launch | Support 1k simultaneous debate events without >150 ms latency |
-| **Client Performance** | Lighthouse, Web Vitals | CI + regression | LCP <2.5 s, TBT <200 ms on reference hardware |
+| Test Type              | Tooling                  | Cadence                   | Success Criteria                                              |
+| ---------------------- | ------------------------ | ------------------------- | ------------------------------------------------------------- |
+| **Load Tests**         | Locust/k6                | Pre-release and quarterly | Sustain 5k concurrent sessions with <10% error rate           |
+| **Soak Tests**         | k6 (duration >6 hrs)     | Quarterly                 | Detect memory leaks, queue growth, GC issues                  |
+| **Realtime Burst**     | Custom websocket harness | Before feature launch     | Support 1k simultaneous debate events without >150 ms latency |
+| **Client Performance** | Lighthouse, Web Vitals   | CI + regression           | LCP <2.5 s, TBT <200 ms on reference hardware                 |
 
 ---
 

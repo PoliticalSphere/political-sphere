@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Data Protection  |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |      Owner      | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :-------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Data Protection |  Quarterly   | **Draft** |
 
 </div>
 
@@ -14,14 +14,14 @@
 
 ## 🔐 PII Categories
 
-| Category | Examples | Lawful Basis | Retention | Handling Notes |
-| -------- | -------- | ------------ | --------- | -------------- |
-| **Direct Identifiers** | Email, display name/handle, OAuth subject ID | Consent (players), contract (staff) | Active + 1 year | Stored hashed where possible; used for login and messaging |
-| **Sensitive Behavioural** | Vote history, debate participation, moderation actions | Legitimate interest (education) | Active + 3 years | Aggregated for analytics; raw data access restricted to parliamentary context |
-| **Location & Network** | IP address, device geo (coarse), session metadata | Legitimate interest (security) | 90 days | Used for fraud detection, rate limiting; anonymised for reports |
-| **Payment (Future)** | Billing address, payment token | Contract | 7 years | Tokenized via payment processor; no raw PAN storage |
-| **User Generated Content (UGC)** | Speeches, chat, media uploads | Consent | Subject to user deletion + moderation retention matrix | Content moderation pipeline logs access and retention |
-| **Safety Evidence** | Screenshots, transcripts, moderation notes | Legal obligation | 7 years | Stored in encrypted evidence bucket with strict ACLs |
+| Category                         | Examples                                               | Lawful Basis                        | Retention                                              | Handling Notes                                                                |
+| -------------------------------- | ------------------------------------------------------ | ----------------------------------- | ------------------------------------------------------ | ----------------------------------------------------------------------------- |
+| **Direct Identifiers**           | Email, display name/handle, OAuth subject ID           | Consent (players), contract (staff) | Active + 1 year                                        | Stored hashed where possible; used for login and messaging                    |
+| **Sensitive Behavioural**        | Vote history, debate participation, moderation actions | Legitimate interest (education)     | Active + 3 years                                       | Aggregated for analytics; raw data access restricted to parliamentary context |
+| **Location & Network**           | IP address, device geo (coarse), session metadata      | Legitimate interest (security)      | 90 days                                                | Used for fraud detection, rate limiting; anonymised for reports               |
+| **Payment (Future)**             | Billing address, payment token                         | Contract                            | 7 years                                                | Tokenized via payment processor; no raw PAN storage                           |
+| **User Generated Content (UGC)** | Speeches, chat, media uploads                          | Consent                             | Subject to user deletion + moderation retention matrix | Content moderation pipeline logs access and retention                         |
+| **Safety Evidence**              | Screenshots, transcripts, moderation notes             | Legal obligation                    | 7 years                                                | Stored in encrypted evidence bucket with strict ACLs                          |
 
 ---
 

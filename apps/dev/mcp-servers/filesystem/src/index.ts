@@ -132,7 +132,7 @@ class FilesystemMCPServer extends Server {
 
     try {
       const entries = await fs.readdir(dirPath, { withFileTypes: true });
-      const result = entries.map(entry => ({
+      const result = entries.map((entry) => ({
         name: entry.name,
         type: entry.isDirectory() ? 'directory' : 'file',
         path: path.join(dirPath, entry.name),
@@ -192,7 +192,7 @@ class FilesystemMCPServer extends Server {
 
   private isPathAllowed(filePath: string): boolean {
     const resolvedPath = path.resolve(filePath);
-    return this.allowedPaths.some(allowedPath =>
+    return this.allowedPaths.some((allowedPath) =>
       resolvedPath.startsWith(path.resolve(allowedPath))
     );
   }

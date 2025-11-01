@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |   Status   |
-| :------------: | :-----: | :----------: | :--------------: | :----------: | :--------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |   Quarterly  | **Draft** |
+| Classification | Version | Last Updated |      Owner       | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :--------------: | :----------: | :-------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Platform Council |  Quarterly   | **Draft** |
 
 </div>
 
@@ -33,12 +33,12 @@
 
 ## 🧪 Validation
 
-| Exercise | Frequency | Owner | Description |
-| -------- | --------- | ----- | ----------- |
-| **Game Days** | Quarterly | Platform + Product | Simulate failure scenarios (DB outage, AI provider downtime, moderation surge) |
-| **Chaos Experiments** | Monthly | SRE | Inject latency, kill pods, drop NATS cluster to validate resilience |
-| **Failover Drills** | Semi-annual | Platform | Practice restoring from backups and switching to standby region |
-| **Incident Reviews** | After incident | Cross-functional | Postmortems capture learnings, feed runbook updates |
+| Exercise              | Frequency      | Owner              | Description                                                                    |
+| --------------------- | -------------- | ------------------ | ------------------------------------------------------------------------------ |
+| **Game Days**         | Quarterly      | Platform + Product | Simulate failure scenarios (DB outage, AI provider downtime, moderation surge) |
+| **Chaos Experiments** | Monthly        | SRE                | Inject latency, kill pods, drop NATS cluster to validate resilience            |
+| **Failover Drills**   | Semi-annual    | Platform           | Practice restoring from backups and switching to standby region                |
+| **Incident Reviews**  | After incident | Cross-functional   | Postmortems capture learnings, feed runbook updates                            |
 
 ---
 

@@ -2,30 +2,33 @@
 # Pre-commit configuration for Political Sphere
 # Uses lint-staged for standard linting/formatting + specialized checks
 # Owner: Platform Engineering
-# Last updated: 2025-10-29
+# Last updated: 2025-11-01
+
+# Performance and resource configuration
+colors: true
 
 pre-commit:
   parallel: true
   commands:
-    # Standard linting and formatting (ESLint, Prettier)
+    # Standard linting and formatting (ESLint, Prettier, Biome)
     lint-staged:
       run: npx lint-staged
-    
+
     # Spell checking
     cspell:
       run: npx cspell --no-progress {staged_files}
       files: git diff --name-only --cached -- '*.ts' '*.tsx' '*.js' '*.jsx' '*.md'
-    
+
     # Accessibility checks for UI changes
     a11y:
       run: bash scripts/ci/a11y-check.sh
       files: git diff --name-only --cached -- '*.tsx' '*.jsx'
-    
+
     # Module boundary enforcement
     import-boundaries:
       run: node scripts/ci/check-import-boundaries.js
       files: git diff --name-only --cached -- '*.ts' '*.tsx' '*.js' '*.jsx'
-    
+
     # Secret scanning
     secrets:
       run: npx trufflehog filesystem --fail-verified false --no-update --max_depth 5 --json .
@@ -36,3 +39,9 @@ commit-msg:
     # Enforce conventional commit messages
     commitlint:
       run: npx commitlint --edit {1}
+
+pre-push:
+  commands:
+    # Workspace integrity check
+    integrity:
+      run: bash .husky/pre-push

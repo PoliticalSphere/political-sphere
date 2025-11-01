@@ -19,12 +19,14 @@ The Political Sphere API provides a comprehensive set of endpoints for managing 
 All API requests require authentication using JWT tokens obtained through the authentication service.
 
 ### Headers
+
 ```
 Authorization: Bearer <jwt_token>
 Content-Type: application/json
 ```
 
 ### Authentication Flow
+
 1. **Login**: POST `/auth/login` with credentials
 2. **Receive Token**: JWT token in response
 3. **Use Token**: Include in Authorization header for all requests
@@ -35,15 +37,18 @@ Content-Type: application/json
 ### Users
 
 #### GET /api/users
+
 Get list of users with pagination and filtering.
 
 **Query Parameters:**
+
 - `page` (number): Page number (default: 1)
 - `limit` (number): Items per page (default: 20, max: 100)
 - `search` (string): Search by name or email
 - `role` (string): Filter by user role
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -66,9 +71,11 @@ Get list of users with pagination and filtering.
 ```
 
 #### GET /api/users/{id}
+
 Get detailed user information.
 
 **Response:**
+
 ```json
 {
   "id": "uuid",
@@ -91,9 +98,11 @@ Get detailed user information.
 ```
 
 #### PUT /api/users/{id}
+
 Update user profile.
 
 **Request Body:**
+
 ```json
 {
   "name": "Updated Name",
@@ -110,9 +119,11 @@ Update user profile.
 ### Posts
 
 #### GET /api/posts
+
 Get posts feed with filtering and sorting.
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `sort` (string): Sort by (recent, popular, trending)
@@ -121,6 +132,7 @@ Get posts feed with filtering and sorting.
 - `tags` (array): Filter by tags
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -155,9 +167,11 @@ Get posts feed with filtering and sorting.
 ```
 
 #### POST /api/posts
+
 Create a new post.
 
 **Request Body:**
+
 ```json
 {
   "title": "New Policy Proposal",
@@ -169,6 +183,7 @@ Create a new post.
 ```
 
 **Response:**
+
 ```json
 {
   "id": "uuid",
@@ -180,9 +195,11 @@ Create a new post.
 ```
 
 #### PUT /api/posts/{id}
+
 Update an existing post.
 
 **Request Body:**
+
 ```json
 {
   "title": "Updated Title",
@@ -192,22 +209,27 @@ Update an existing post.
 ```
 
 #### DELETE /api/posts/{id}
+
 Delete a post (soft delete).
 
 ### Comments
 
 #### GET /api/posts/{postId}/comments
+
 Get comments for a specific post.
 
 **Query Parameters:**
+
 - `page` (number): Page number
 - `limit` (number): Items per page
 - `sort` (string): Sort by (oldest, newest, popular)
 
 #### POST /api/posts/{postId}/comments
+
 Add a comment to a post.
 
 **Request Body:**
+
 ```json
 {
   "content": "This is my comment on the post.",
@@ -218,9 +240,11 @@ Add a comment to a post.
 ### Categories
 
 #### GET /api/categories
+
 Get all available categories.
 
 **Response:**
+
 ```json
 {
   "data": [
@@ -247,12 +271,15 @@ Get all available categories.
 ### Analytics
 
 #### GET /api/analytics/overview
+
 Get platform analytics overview.
 
 **Query Parameters:**
+
 - `period` (string): Time period (day, week, month, year)
 
 **Response:**
+
 ```json
 {
   "period": "month",
@@ -276,9 +303,11 @@ Get platform analytics overview.
 ```
 
 #### GET /api/analytics/content
+
 Get content performance analytics.
 
 **Response:**
+
 ```json
 {
   "topCategories": [
@@ -309,6 +338,7 @@ Get content performance analytics.
 For complex queries and mutations, the API also supports GraphQL at `/graphql`.
 
 ### Example Query
+
 ```graphql
 query GetPosts($first: Int, $after: String) {
   posts(first: $first, after: $after) {
@@ -340,6 +370,7 @@ query GetPosts($first: Int, $after: String) {
 ```
 
 ### Example Mutation
+
 ```graphql
 mutation CreatePost($input: CreatePostInput!) {
   createPost(input: $input) {
@@ -356,6 +387,7 @@ mutation CreatePost($input: CreatePostInput!) {
 Real-time features are available through WebSocket connections.
 
 ### Connection
+
 ```
 ws://api.political-sphere.com/ws?token=<jwt_token>
 ```
@@ -363,6 +395,7 @@ ws://api.political-sphere.com/ws?token=<jwt_token>
 ### Events
 
 #### Post Updates
+
 ```json
 {
   "type": "post.updated",
@@ -376,6 +409,7 @@ ws://api.political-sphere.com/ws?token=<jwt_token>
 ```
 
 #### Comments
+
 ```json
 {
   "type": "comment.created",
@@ -401,6 +435,7 @@ API requests are rate limited to prevent abuse:
 - **Search Requests**: 50 requests per hour
 
 Rate limit headers are included in responses:
+
 ```
 X-RateLimit-Limit: 1000
 X-RateLimit-Remaining: 999
@@ -425,6 +460,7 @@ All API errors follow a consistent format:
 ```
 
 ### Common Error Codes
+
 - `VALIDATION_ERROR`: Invalid input data
 - `AUTHENTICATION_ERROR`: Authentication required or failed
 - `AUTHORIZATION_ERROR`: Insufficient permissions
@@ -435,6 +471,7 @@ All API errors follow a consistent format:
 ## SDKs and Libraries
 
 ### JavaScript/TypeScript SDK
+
 ```bash
 npm install @political-sphere/sdk
 ```
@@ -444,7 +481,7 @@ import { PoliticalSphereAPI } from '@political-sphere/sdk';
 
 const api = new PoliticalSphereAPI({
   baseURL: 'https://api.political-sphere.com',
-  token: 'your-jwt-token'
+  token: 'your-jwt-token',
 });
 
 // Get posts
@@ -454,7 +491,7 @@ const posts = await api.posts.list({ limit: 10 });
 const newPost = await api.posts.create({
   title: 'My Post',
   content: 'Post content...',
-  category: 'discussion'
+  category: 'discussion',
 });
 ```
 
@@ -468,6 +505,7 @@ The API uses semantic versioning. Breaking changes will be communicated in advan
 ## Support
 
 For API support and questions:
+
 - **Documentation**: https://docs.political-sphere.com
 - **Status Page**: https://status.political-sphere.com
 - **Support**: support@political-sphere.com
@@ -476,6 +514,7 @@ For API support and questions:
 ## Changelog
 
 ### v1.0.0 (Current)
+
 - Initial release with core CRUD operations
 - Authentication and authorization
 - Basic analytics and reporting
@@ -483,6 +522,7 @@ For API support and questions:
 - WebSocket real-time updates
 
 ### Upcoming Features
+
 - Advanced search and filtering
 - Bulk operations
 - Webhook integrations

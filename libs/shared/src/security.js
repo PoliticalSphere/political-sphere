@@ -56,7 +56,7 @@ const ALLOWED_STATUSES = new Set(['draft', 'published', 'archived']);
  */
 export function sanitizeHtml(input) {
   if (typeof input !== 'string') return '';
-  
+
   return input
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -73,7 +73,7 @@ export function sanitizeHtml(input) {
  */
 export function isValidInput(input) {
   if (typeof input !== 'string') return false;
-  
+
   // Check for common injection patterns
   const dangerousPatterns = [
     /<script/i,
@@ -90,8 +90,8 @@ export function isValidInput(input) {
     /DELETE.*FROM/i,
     /UPDATE.*SET/i,
   ];
-  
-  return !dangerousPatterns.some(pattern => pattern.test(input));
+
+  return !dangerousPatterns.some((pattern) => pattern.test(input));
 }
 
 /**
@@ -171,7 +171,7 @@ export function hashValue(value) {
 export function validateCategory(category) {
   if (typeof category !== 'string') return null;
   const sanitized = category.toLowerCase().trim();
-  
+
   return VALID_CATEGORIES.has(sanitized) ? sanitized : null;
 }
 
@@ -182,12 +182,12 @@ export function validateCategory(category) {
  */
 export function validateTag(tag) {
   if (typeof tag !== 'string') return null;
-  
+
   const sanitized = tag.trim();
-  
+
   // Tags should be alphanumeric with hyphens/underscores, 2-30 chars
   const tagRegex = /^[a-zA-Z0-9_-]{2,30}$/;
-  
+
   return tagRegex.test(sanitized) ? sanitized : null;
 }
 
@@ -199,7 +199,9 @@ const rateLimitStore = new Map();
 function normalizeRateLimitOptions(options = {}) {
   if (typeof options === 'number') {
     return {
-      maxRequests: Number.isFinite(options) ? Math.max(1, Math.floor(options)) : DEFAULT_RATE_LIMIT.maxRequests,
+      maxRequests: Number.isFinite(options)
+        ? Math.max(1, Math.floor(options))
+        : DEFAULT_RATE_LIMIT.maxRequests,
       windowMs: DEFAULT_RATE_LIMIT.windowMs,
       maxKeys: DEFAULT_RATE_LIMIT.maxKeys,
     };
@@ -248,20 +250,20 @@ export function checkRateLimit(key, options = DEFAULT_RATE_LIMIT) {
     maxRequests,
     windowMs,
   };
-  
+
   // Reset if window has passed
   if (now > record.resetTime) {
     record.count = 0;
     record.resetTime = now + windowMs;
   }
-  
+
   record.count++;
   record.maxRequests = maxRequests;
   record.windowMs = windowMs;
   rateLimitStore.set(key, record);
 
   ensureRateLimitCapacity(maxKeys);
-  
+
   return record.count <= maxRequests;
 }
 
@@ -281,7 +283,7 @@ export function getRateLimitInfo(key, options = DEFAULT_RATE_LIMIT) {
   const now = Date.now();
   const remaining = Math.max(0, record.maxRequests - record.count);
   const resetSeconds = Math.max(0, Math.ceil((record.resetTime - now) / 1000));
-  
+
   return {
     remaining,
     reset: resetSeconds,
@@ -319,10 +321,8 @@ export function generateCsrfToken(sessionId) {
 
   const secret = resolveSecret('CSRF_SECRET', 'change-me-in-production');
   const timestamp = Date.now().toString();
-  const token = createHash('sha256')
-    .update(`${sessionId}${timestamp}${secret}`)
-    .digest('hex');
-  
+  const token = createHash('sha256').update(`${sessionId}${timestamp}${secret}`).digest('hex');
+
   return `${timestamp}.${token}`;
 }
 
@@ -335,13 +335,13 @@ export function generateCsrfToken(sessionId) {
  */
 export function validateCsrfToken(token, sessionId, maxAge = 60 * 60 * 1000) {
   if (!token || typeof token !== 'string') return false;
-  
+
   const [timestamp, hash] = token.split('.');
   if (!timestamp || !hash) return false;
-  
+
   const tokenAge = Date.now() - parseInt(timestamp, 10);
   if (tokenAge > maxAge || tokenAge < 0) return false;
-  
+
   const secret = resolveSecret('CSRF_SECRET', 'change-me-in-production');
   const expectedHash = createHash('sha256')
     .update(`${sessionId}${timestamp}${secret}`)
@@ -451,7 +451,7 @@ function resolveAllowedOrigins(customOrigins = []) {
       ...customOrigins.filter(Boolean),
       ...envOrigins,
       ...devOrigins,
-    ]),
+    ])
   );
 }
 
@@ -504,7 +504,7 @@ export function isIpAllowed(ip, blocklist = []) {
   }
 
   if (blocklist.includes(ip)) return false;
-  
+
   // Additional IP validation logic can be added here
   return true;
 }

@@ -509,18 +509,18 @@ Include runbook links in alert annotations: `runbook: ./docs/09-observability-an
 
 ## Scoring
 
-**Security:** **_/40 (Critical items must be 100%)  
-**Infrastructure:** _**/25  
-**Logging & Observability:** **_/15  
-**Testing:** _**/20  
-**CI/CD:** **_/15  
-**Documentation:** _**/10  
-**Backup & Recovery:** **_/15  
-**Performance:** _**/10  
-**Operational Readiness:** **_/15  
-**Application Features:** _**/10  
-**DNS & Networking:** **_/10  
-**External Services:** _**/10  
+**Security:** **\_/40 (Critical items must be 100%)  
+**Infrastructure:** \_**/25  
+**Logging & Observability:** **\_/15  
+**Testing:** \_**/20  
+**CI/CD:** **\_/15  
+**Documentation:** \_**/10  
+**Backup & Recovery:** **\_/15  
+**Performance:** \_**/10  
+**Operational Readiness:** **\_/15  
+**Application Features:** \_**/10  
+**DNS & Networking:** **\_/10  
+**External Services:** \_**/10  
 **Final Checks:** \_\_\_/15
 
 **Total:** \_\_\_/200
@@ -535,10 +535,10 @@ Include runbook links in alert annotations: `runbook: ./docs/09-observability-an
 
 ## Sign-Off
 
-**Engineering Lead:** ********\_******** Date: **\_\_\_**  
-**Security Lead:** ********\_******** Date: **\_\_\_**  
-**CTO:** ********\_******** Date: **\_\_\_**  
-**CEO (if required):** ********\_******** Date: **\_\_\_**
+**Engineering Lead:** **\*\*\*\***\_**\*\*\*\*** Date: **\_\_\_**  
+**Security Lead:** **\*\*\*\***\_**\*\*\*\*** Date: **\_\_\_**  
+**CTO:** **\*\*\*\***\_**\*\*\*\*** Date: **\_\_\_**  
+**CEO (if required):** **\*\*\*\***\_**\*\*\*\*** Date: **\_\_\_**
 
 ---
 

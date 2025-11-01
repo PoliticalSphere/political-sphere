@@ -4,9 +4,9 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |      Owner       | Review Cycle |
-| :------------: | :-----: | :----------: | :--------------: | :----------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | AI Ethics Council |   Quarterly  |
+| Classification | Version | Last Updated |       Owner       | Review Cycle |
+| :------------: | :-----: | :----------: | :---------------: | :----------: |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | AI Ethics Council |  Quarterly   |
 
 </div>
 
@@ -33,33 +33,34 @@
 
 ## 📋 Key Documents
 
-| Document | Purpose | Status |
-| -------- | ------- | ------ |
-| [AI Governance Framework](ai-governance-framework.md) | Overall AI strategy and oversight | Active |
-| [Alignment and Safety Constraints](alignment-and-safety-constraints.md) | Ethical guidelines for AI behavior | Active |
+| Document                                                                      | Purpose                              | Status |
+| ----------------------------------------------------------------------------- | ------------------------------------ | ------ |
+| [AI Governance Framework](ai-governance-framework.md)                         | Overall AI strategy and oversight    | Active |
+| [Alignment and Safety Constraints](alignment-and-safety-constraints.md)       | Ethical guidelines for AI behavior   | Active |
 | [Bias, Fairness, and Harms Assessment](bias-fairness-and-harms-assessment.md) | Evaluating AI for fairness and risks | Active |
-| [Data Sources and Dataset Statements](data-sources-and-dataset-statements.md) | Transparency on training data | Active |
-| [Evaluation and Benchmarking](evaluation-and-benchmarking.md) | Measuring AI performance and safety | Active |
-| [Human-in-the-Loop Oversight](human-in-the-loop-oversight.md) | Human review processes | Active |
-| [Multi-Agent Orchestration](multi-agent-orchestration.md) | Coordinating multiple AI agents | Draft |
-| [Red Teaming and Adversarial Testing](red-teaming-and-adversarial-testing.md) | Testing AI robustness | Draft |
-| [Rollback and Kill Switches](rollback-and-kill-switches.md) | Emergency controls for AI | Active |
-| [Telemetry for AI Systems](telemetry-for-ai-systems.md) | Monitoring AI behavior | Active |
+| [Data Sources and Dataset Statements](data-sources-and-dataset-statements.md) | Transparency on training data        | Active |
+| [Evaluation and Benchmarking](evaluation-and-benchmarking.md)                 | Measuring AI performance and safety  | Active |
+| [Human-in-the-Loop Oversight](human-in-the-loop-oversight.md)                 | Human review processes               | Active |
+| [Multi-Agent Orchestration](multi-agent-orchestration.md)                     | Coordinating multiple AI agents      | Draft  |
+| [Red Teaming and Adversarial Testing](red-teaming-and-adversarial-testing.md) | Testing AI robustness                | Draft  |
+| [Rollback and Kill Switches](rollback-and-kill-switches.md)                   | Emergency controls for AI            | Active |
+| [Telemetry for AI Systems](telemetry-for-ai-systems.md)                       | Monitoring AI behavior               | Active |
 
 ### Subdirectories
+
 - **[Model Inventory and System Cards/](model-inventory-and-system-cards/)**: Documentation for each AI model and system.
 
 ---
 
 ## 🤖 AI Systems in Political Sphere
 
-| System | Purpose | Model Type | Oversight |
-| ------ | ------- | ---------- | --------- |
-| **NPC MPs** | Fill parliamentary seats with procedural behavior | Local LLM (Ollama) | Human review of outputs |
-| **Debate Summarizer** | Generate neutral summaries of debates | Local LLM | Content filters |
-| **Moderation Assistant** | Flag potential violations | Rule-based + LLM | Human escalation |
-| **Scenario Generator** | Create fictional political scenarios | Local LLM | Ethical constraints |
-| **Speech Analyzer** | Assess speech relevance and tone | Local LLM | Transparency logs |
+| System                   | Purpose                                           | Model Type         | Oversight               |
+| ------------------------ | ------------------------------------------------- | ------------------ | ----------------------- |
+| **NPC MPs**              | Fill parliamentary seats with procedural behavior | Local LLM (Ollama) | Human review of outputs |
+| **Debate Summarizer**    | Generate neutral summaries of debates             | Local LLM          | Content filters         |
+| **Moderation Assistant** | Flag potential violations                         | Rule-based + LLM   | Human escalation        |
+| **Scenario Generator**   | Create fictional political scenarios              | Local LLM          | Ethical constraints     |
+| **Speech Analyzer**      | Assess speech relevance and tone                  | Local LLM          | Transparency logs       |
 
 ---
 

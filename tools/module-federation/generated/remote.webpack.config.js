@@ -9,9 +9,9 @@ export default {
       name: 'remoteApp',
       filename: 'remoteEntry.js',
       exposes: {
-        './Widget': path.resolve(process.cwd(), 'apps/remote/src/bootstrap.js')
+        './Widget': path.resolve(process.cwd(), 'apps/remote/src/bootstrap.js'),
       },
-      shared: { react: { singleton: true }, 'react-dom': { singleton: true } }
-    })
-  ]
+      shared: { react: { singleton: true }, 'react-dom': { singleton: true } },
+    }),
+  ],
 };

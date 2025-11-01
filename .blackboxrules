@@ -43,6 +43,55 @@ Generate code, documentation, and infrastructure that:
 
 **This ensures continuous improvement and consistency across all AI assistants.**
 
+### How to update these governance rules
+
+When proposing edits to the governance rule sets, follow this required process to preserve parity, traceability, and auditability:
+
+1. Make coordinated edits to BOTH files: `.blackboxrules` (this file) and `.github/copilot-instructions.md`.
+2. Update the `Last updated` date and increment the `Version` field in both files.
+3. Add a short entry to `docs/CHANGELOG.md` under the `Unreleased` section describing the change (date, author, type: Added/Changed/Fixed, short description).
+4. Add or update `docs/TODO.md` with a completed or planned task reflecting the change (for traceability).
+5. Use the `rule-update` PR template (see `.github/PULL_REQUEST_TEMPLATE/rule-update.md`) and ensure the checklist is completed.
+6. At least one governance owner (see CODEOWNERS) must review and approve the PR before merge. For emergency fixes follow the emergency approval workflow described below.
+
+Enforcement: A CI job (`.github/workflows/rule-parity-check.yml`) will reject pull requests that modify one rule file without a corresponding edit to the other. This prevents accidental one-sided updates.
+
+Emergency edits: If an urgent security or safety fix is required, open a PR with the title prefixed by `EMERGENCY:` and tag the `Technical Governance Committee`. The CI parity check still applies; include an explanation in the PR body and request expedited review from the listed approvers.
+
+Rationale: These steps automate and standardize the Meta-Rule while preserving human oversight and audit trails.
+
+## Rule Tiers & Execution Modes
+
+To help automated agents choose appropriate rigor, rules are grouped into tiers. Agents must explicitly select an Execution Mode and apply the corresponding tiers.
+
+Rule Tiers:
+- Tier 0 — Constitutional: Ethics, safety, privacy, anti-manipulation. Never bypass.
+- Tier 1 — Operational Mandatory: Secret detection, security scans, license checks, basic tests, critical CI gates.
+- Tier 2 — Best-Practice Defaults: Linting, formatting, coverage thresholds, docs updates, accessibility checks.
+- Tier 3 — Advisory Optimisation: Performance tuning, large refactors, non-blocking improvements.
+
+Execution Modes (agent-selectable):
+- Safe (default) → T0 + T1 + T2.
+- Fast-Secure → T0 + T1 only; deferred gates must be recorded in `/docs/TODO.md`.
+- Audit → T0 + T1 + T2 + T3 + full artefact capture (traces, diffs, SBOMs).
+- R&D → T0 + minimal T1; outputs marked `experimental`; no production merges without a Safe re-run.
+
+Agents must declare the Execution Mode in PR bodies and local logs.
+
+### Change entry template (required)
+
+When you add the required CHANGELOG/TODO entries as part of a rule update, use this minimal template to ensure consistency and traceability:
+
+- Date: YYYY-MM-DD
+- Author: <GitHub handle or automation name>
+- Files changed: `.blackboxrules`, `.github/copilot-instructions.md`
+- Type: Added / Changed / Fixed / Removed
+- Summary: 1-2 line summary of the change
+- Impact: short note (tools, CI, owners to review)
+
+Include a reference to the PR or issue number when available. This template must be added to the `Unreleased` section of `docs/CHANGELOG.md` and a matching TODO entry must be added to `/TODO.md` (or `/docs/TODO.md` per the project conventions).
+
+
 ## Organisation & Structure
 
 ### Directory Placement
@@ -58,6 +107,15 @@ NEVER place files in root. Always use these structured locations:
 /ai-metrics    - AI performance metrics
 .github/       - GitHub workflows and configs
 ```
+
+Exceptions to root placement
+While most project contents must live under structured directories, common top-level files required by standard tools and discoverability are excepted:
+- `/README.md`, `/LICENSE`, `/CHANGELOG.md`, `/CONTRIBUTING.md`
+- `/package.json`, `/pnpm-workspace.yaml`, `/nx.json`, `/tsconfig.base.json`
+- `/.editorconfig`, `/.gitignore`, `/.gitattributes`
+- `/.github/` (workflows, templates)
+
+Rationale: These exceptions align with tooling expectations and improve discoverability across developer tools and CI.
 
 ### Naming Conventions (Strict)
 Apply consistently across ALL files:
@@ -89,6 +147,16 @@ Before creating new code:
 3. Use single-source-of-truth for configs
 4. Reference (don't duplicate) documentation
 5. Suggest refactoring when duplication found
+
+### TODO Management (Single Source of Truth)
+Maintain ONE consolidated TODO list at `/docs/TODO.md`:
+- Categorize tasks by priority and functional area
+- Include completed tasks with dates for traceability
+ - Update `/docs/TODO.md` for ALL changes (code, docs, infrastructure)
+ - AI assistants must reference `/docs/TODO.md` exclusively
+ - No fragmented TODO-*.md files in subdirectories
+ - **NEVER overwrite the TODO list** - only add new items or mark existing ones as completed
+ - Organize by practice area (e.g., Organization, Quality, Security, AI Governance, Testing, Compliance, UX/Accessibility, Operations, Strategy)
 
 ### Separation of Concerns
 Maintain clear boundaries:
@@ -230,12 +298,15 @@ Classify and protect data appropriately:
 | **Restricted** | Credentials, PII, political preferences | Full encryption + tamper-evident logs |
 
 ### Secrets Management (Critical)
-**NEVER** commit secrets:
-- ❌ NO secrets in code, configs, or logs
-- ✅ Use environment variables or secret managers (Vault, AWS Secrets Manager)
-- ✅ Rotate secrets regularly
-- ✅ Add `.gitignore` patterns for sensitive files
-- ✅ Flag potential leaks immediately
+Secrets are never stored in the repository. Follow these patterns:
+
+- ❌ Do NOT commit secrets, encrypted or not, into source control.
+- ✅ Use managed secret stores: AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault, or cloud KMS-backed secrets.
+- ✅ CI and automation must retrieve secrets using short-lived OIDC tokens or least-privilege service accounts/roles.
+- ✅ For local development, use git-ignored `.env.local` or `.env` files managed by tools like `direnv`, `doppler`, or local secret tooling; never commit those files.
+- ✅ Rotate keys on compromise and on a regular cadence (policy defined by security team).
+- ✅ Add `.gitignore` entries to prevent accidental commit of local secret artefacts and secret-tooling caches.
+- ✅ Flag potential leaks immediately and follow the incident response runbook.
 
 ### Supply Chain Security
 Protect the software supply chain:
@@ -264,12 +335,14 @@ Embed privacy from the start:
 - Apply purpose limitation strictly
 
 ### Cryptographic Standards
-Use approved, vetted cryptography:
-- ✅ AES-256, RSA-4096, ECDSA
-- ✅ TLS 1.3+ for transport
-- ❌ NEVER roll your own crypto
-- ✅ Implement key rotation
-- ✅ Store keys in HSMs/KMS
+Cryptographic guidance (modern and precise):
+
+- Transport: TLS 1.3+ (use secure ciphersuites only)
+- At-rest: AES-256-GCM or equivalent authenticated encryption
+- Signatures: Ed25519 preferred; ECDSA P-256 acceptable. Avoid new RSA deployments; if required for legacy interop, RSA-2048+ only.
+- Key storage: Keys must be stored in KMS/HSM solutions and not in source control or plaintext config.
+- Key rotation: rotate keys on exposure and at least annually for long-lived keys (policy-controlled).
+- NEVER roll your own crypto; use well-vetted libraries and follow platform guidance.
 
 ### Security Auditability
 Make security events traceable:
@@ -388,11 +461,11 @@ Test political simulation scenarios:
 
 ### ESM Test Files Standardization
 For projects using ES modules (package.json with `"type": "module"`):
-- Use `.mjs` for Jest test files that rely on ESM syntax or top‑level await
-- Avoid top‑level await in `.js` tests; prefer async `beforeAll`/`afterAll` or convert to `.mjs`
-- When migrating suites to `.mjs`, neutralize any lingering `.js` duplicates by replacing them with a minimal CommonJS placeholder using `describe.skip` and no imports; this prevents ESM parse errors in mixed runners while keeping tooling happy
-- Keep exactly one authoritative test file per suite; duplicates must be skipped or removed
-- Ensure placeholders contain no ESM imports and no side effects
+- Prefer a single test runner configuration across the monorepo (for example, Jest + ts-jest or Vitest). Consistency prevents brittle cross-package issues.
+- If `"type": "module"` is set, ensure the runner natively supports ESM or provide a robust transformer (ts-jest, babel, or an ESM-aware transformer).
+- Avoid mixed CJS/ESM in the same package; if unavoidable, add a tiny CJS shim placeholder with `describe.skip` and no imports to avoid parse errors.
+- Use `.mjs` for tests that rely on ESM features or top-level await when your runner supports it.
+- Keep exactly one authoritative test file per suite; duplicates must be skipped or removed.
 
 ### Resilience Testing
 Validate system robustness:
@@ -472,6 +545,8 @@ Respect user autonomy:
 - Honest, understandable interfaces
 
 ### WCAG 2.2 AA+ Compliance (Mandatory)
+Accessibility baseline: WCAG 2.2 AA (mandatory). Where feasible, require selected additional AAA criteria: 1.4.6 Contrast (Enhanced) for body text and 2.3.3 Animation from Interactions (where it improves accessibility).
+
 All UI must be fully accessible:
 
 **Perceivable:**
@@ -644,7 +719,101 @@ Always improve:
 
 ---
 
-## Code Suggestion Guidelines
+## Development Process Guidelines
+
+### Development Workflow (Iterative Process)
+Follow this structured development process for all tasks:
+
+1. **Plan**: Analyze requirements, gather information, create comprehensive plan with user approval
+2. **Challenge the Plan**: Review assumptions, identify risks, validate approach with stakeholders
+3. **Replan**: Refine plan based on challenges, adjust scope/timeline, update documentation
+4. **Design**: Create detailed technical design, define interfaces, plan testing strategy
+5. **Build**: Implement code following established patterns, commit frequently with clear messages
+6. **Test**: Execute comprehensive testing (unit, integration, e2e), validate against requirements
+7. **Review**: Conduct code review, security audit, accessibility check, performance validation
+8. **Deploy**: Progressive rollout with monitoring, rollback plan ready
+9. **Monitor**: Track metrics, gather feedback, identify improvement opportunities
+10. **Iterate**: Apply lessons learned, update documentation, improve processes
+
+## Agent Standard Operating Procedure (SOP)
+
+Agents must follow this SOP for every task to avoid loops, produce auditable output, and keep human reviewers in the loop:
+
+1. Retrieve Context: Read nearest README, ADRs, owner files, package configs; run a code search for relevant terms. Prefer symbol usage graphs before full-file reads.
+2. Plan: Produce a short plan (approach, risks, tests, affected modules) and list the Execution Mode to be used.
+3. Check Gates: Enumerate applicable gates from the selected Execution Mode and Tier; record any deferred gates to `/docs/TODO.md`.
+4. Implement: Make small, atomic commits with clear conventional-commit messages; include inline rationale for non-obvious choices.
+5. Verify: Run unit tests, linters, and secret scan according to the Execution Mode. Capture small smoke runs or targeted tests rather than full heavy suites unless required by mode.
+6. Document: Update `docs/CHANGELOG.md`, `docs/TODO.md`, and any touched README or ADR snippets; include Mode used in PR body.
+7. Self-Review: Run quick checklist (security, accessibility, error paths, observability) and append results to PR description.
+8. Exit / Escalate: If blocked, or if a human trade-off is required, open a draft PR with findings, label `blocked` and `requires-governance`, and add a `/docs/TODO.md` entry.
+
+### Loop & Stall Prevention
+
+- Max Steps: 40 reasoning steps per task; if exceeded, escalate with a concise summary and open an issue labelled `ai-escalation`.
+- No-Progress Counter: Abort after 3 consecutive iterations with <5% change in plan or output; create a draft PR and mark `blocked`.
+- Novelty Threshold: If generated code is ≥80% similar to the previous attempt, stop and request human input.
+- Deadman Switch: If a critical dependency or owner is unavailable, open an issue labelled `blocked` and `owner-needed` and attach current artifacts.
+- Idempotent Fixes: Compute a dry-run diff for large refactors and bail if fewer than 2 files meaningfully change.
+
+### Context Retrieval Heuristics
+
+- Read ≤ 20 files or 1500 lines per task unless flagged `large-change`.
+- Priority order: nearest README → owner file → ADR → index/barrel files → referenced modules.
+- Prefer symbol/usage graphs over full-file reads; fall back to full reads only when types or contracts are unresolved.
+- For UI changes, fetch component, story, tests, and accessibility checks.
+
+### Tool-selection policy
+
+- Prefer targeted code search and `nx graph --focus` before workspace-wide scans.
+- For dependency updates prefer minimal semver bumps and include release notes links.
+- Use `ripgrep`/tsserver for fast symbol search; only run broad scans when necessary.
+
+### PR Body & Labels (Agent-produced)
+
+Agents must populate PRs with:
+- Purpose: one sentence
+- Scope: files/modules changed
+- Risks: security, privacy, accessibility, performance (tick/notes)
+- Tests: added/updated, coverage impact
+- Observability: logs/metrics/traces touched
+- Docs: README/CHANGELOG/ADR links updated
+- Mode used: Safe / Fast-Secure / Audit / R&D
+- Rollback: safe to revert? Y/N and why
+
+Suggested labels: `ai-change`, `requires-governance`, `accessibility`, `security-touched`, `breaking-change`, `docs-updated`.
+
+### Change Cadence Guardrail
+
+- Optimisation window: weekly for non-security rule edits (batch non-urgent changes).
+- Quarterly review: structural or standard changes.
+- Emergency: security/safety only; prefix PR title with `EMERGENCY:` and follow expedited review.
+
+### Architecture & Dependency Discipline
+
+Create an ADR when:
+- Adding a new runtime dependency
+- Introducing cross-boundary coupling
+- Changing auth/identity models
+- Adding persistent data stores or queues
+- Adopting new build/test runners
+
+### Developer Ergonomics First
+
+Compliance should be automated and light-touch. Rules are enforced by CI and linters, not memory. Prefer auto-fixers (eslint --fix, biome, formatters). If a rule increases cognitive load without measurable benefit, propose an automation or relaxation with data.
+
+### Human Oversight Hierarchy
+
+Constitutional → Governance owners → Maintainers → AI agents. Agents must halt and escalate when a human decision or trade-off is required.
+
+### Security & Privacy Baselines for Agents
+
+- Default to least privilege for any integration key.
+- Never suggest downloading or persisting production data locally.
+- Sanitise logs; no PII or secrets.
+- Always add secret-scanning checks to PR workflows.
+
+### Code Suggestion Guidelines
 
 ### When suggesting code:
 
@@ -866,6 +1035,32 @@ Before marking work complete:
 
 ## Interaction Style
 
+### Core AI Assistant Principles
+
+- **Always use British English** (e.g., "organise" not "organize", "behaviour" not "behavior")
+- **Always ask (or look) for missing context rather than guessing** - seek clarification when information is incomplete
+- **Prioritise correctness, safety, and clarity over speed** (but do things as efficiently as possible)
+- **Always follow standards unless a better approach is justified** - document rationale for deviations
+- **Avoid duplication, hacks, ambiguity, magic values, silent failure** - maintain clean, explicit code
+- **Document reasoning for architectural choices** - explain why decisions were made
+- **Identify risks, weaknesses, and blind spots** - proactively highlight potential issues
+- **Offer a "better way" if the user's plan isn't optimal** - suggest improvements constructively
+- **Suggest tests, monitoring, and validation points** - ensure quality and reliability
+- **Provide improvement prompts for yourself and the user** - enable continuous learning
+- **Write secure, scalable, maintainable code by default** - follow best practices automatically
+- **Add comments where non-obvious intent exists** - make code self-documenting
+- **Include tests** - validate functionality and prevent regressions
+- **Propose environment setup + CI/CD steps when relevant** - ensure reproducible deployments
+- **Use descriptive, consistent names** - improve readability and maintainability
+- **Prefer composition over inheritance** - favour flexible, modular designs
+- **Avoid global state unless absolutely necessary** - minimise coupling and side effects
+- **When changing something, include a brief change note + rationale** - maintain audit trail
+- **Avoid leaking internal complexity into presentation layer** - maintain clean separation
+- **Propose modular patterns, clean interfaces, and clear boundaries** - enhance maintainability
+- **Before output: quick self-audit for hallucination or security risk** - ensure accuracy and safety
+- **Flag highly risky assumptions** - highlight areas needing validation
+- **Be reflective: acknowledge mistakes, correct them, reflect on them, prevent recurrence** - learn from errors through systematic analysis and proactive prevention measures
+
 ### When assisting:
 
 - **Be proactive**: Suggest improvements beyond the immediate ask
@@ -886,17 +1081,19 @@ Before marking work complete:
 
 ## Compliance Checklist for Suggestions
 
-Before suggesting code, infrastructure, or configuration changes, verify:
+Before suggesting code, infrastructure, or configuration changes, verify all requirements:
 
-- ✅ Aligns with organizational rules (ORG-01 to ORG-10)
-- ✅ Maintains quality standards (QUAL-01 to QUAL-09)
-- ✅ Follows security principles (SEC-01 to SEC-10)
-- ✅ Respects AI governance (AIGOV-01 to AIGOV-07)
-- ✅ Includes appropriate testing (TEST-01 to TEST-06)
-- ✅ Supports compliance needs (COMP-01 to COMP-05)
-- ✅ Meets UX/accessibility requirements (UX-01 to UX-05)
-- ✅ Enables operational excellence (OPS-01 to OPS-05)
-- ✅ Aligns with strategic direction (STRAT-01 to STRAT-05)
+| Category | Requirements |
+|----------|--------------|
+| Organization | ORG-01 to ORG-10 |
+| Quality | QUAL-01 to QUAL-09 |
+| Security | SEC-01 to SEC-10 |
+| AI Governance | AIGOV-01 to AIGOV-07 |
+| Testing | TEST-01 to TEST-06 |
+| Compliance | COMP-01 to COMP-05 |
+| UX/Accessibility | UX-01 to UX-05 |
+| Operations | OPS-01 to OPS-05 |
+| Strategy | STRAT-01 to STRAT-05 |
 
 ---
 
@@ -920,8 +1117,20 @@ Implement intelligent caching to reduce response times:
 - Invalidate cache on rule updates or significant changes
 - Prioritize caching for read-heavy operations
 
+### AI indexing & warm-start distribution
+Provide explicit guidance for keeping Blackbox assistants fast and warm across developer machines and CI:
+
+- Run an asynchronous codebase indexer to build a lightweight, file-level semantic index under `ai-index/codebase-index.json` and keep it small (token-level inverted map) for fast lookups.
+- Prefer an in-memory index server for interactive queries during development (`scripts/ai/index-server.js`) to avoid repeated disk loads; the server should expose `/search`, `/health`, `/metrics` and accept `POST /reload` for index refresh.
+- Use a warmed-index persistence strategy in CI to avoid frequent cold rebuilds: persist `ai-index/` artifacts and publish to a dedicated branch (for example `ai-index-cache`) and provide a local helper (`scripts/ai/fetch-index.sh`) to fetch the warmed index.
+- Provide a FAST_AI mode (env var `FAST_AI=1`) for low-latency, low-resource index and context preloads. Document trade-offs: FAST_AI reduces scanned lines/files and may lower recall in exchange for faster startup.
+- Expose simple tuning env vars for quick iteration: `INDEXER_CONCURRENCY`, `PRE_CACHE_MAX_ENTRIES`, `PRE_CACHE_TTL_MS` and clearly document defaults and safe ranges in `scripts/ai/README.md`.
+- Add a small smoke script (`scripts/ai/smoke.sh`) that runs index build, pre-cache and context preloader to validate artifacts; run this as a CI gating step before persisting warmed artifacts.
+
+These operational patterns significantly reduce assistant cold-start latency and improve local developer feedback loops. Any change to these operational files or patterns must follow governance (rule parity, CHANGELOG and TODO updates) as described in the Meta-Rule section.
+
 ### Quality Gate Optimization
-Balance speed and quality by making gates optional for speed-critical tasks:
+BalaIand quality by making gates optional for speed-critical tasks:
 - **Essential Gates** (always apply): Security scans, secret detection
 - **Recommended Gates** (apply when time allows): Full linting, accessibility checks, comprehensive testing
 - **Optional Gates** (skip for speed): Detailed performance profiling, exhaustive fuzz testing
@@ -956,7 +1165,7 @@ This instruction set is itself governed by our principles:
 - Accessible to all team members
 - **AI assistants should proactively improve these rules when patterns emerge** (see Meta-Rule above)
 
-**Last updated**: 2025-10-29  
-**Version**: 1.2.1  
-**Owned by**: Technical Governance Committee  
+**Last updated**: 2025-11-01
+**Version**: 1.2.7
+**Owned by**: Technical Governance Committee
 **Review cycle**: Quarterly

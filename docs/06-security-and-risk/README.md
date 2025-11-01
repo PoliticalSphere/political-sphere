@@ -6,7 +6,7 @@
 
 | Classification | Version | Last Updated |      Owner       | Review Cycle |
 | :------------: | :-----: | :----------: | :--------------: | :----------: |
-|  🔒 Internal   | `0.2.0` |  2025-10-30  | Security Council |   Quarterly  |
+|  🔒 Internal   | `0.2.0` |  2025-10-30  | Security Council |  Quarterly   |
 
 </div>
 
@@ -34,22 +34,23 @@
 
 ## 📋 Key Documents
 
-| Document | Purpose | Status |
-| -------- | ------- | ------ |
-| [Information Security Policy (ISO 27001)](information-security-policy-iso27001.md) | Core security policies and controls | Draft |
-| [Risk Appetite and Matrix](risk-appetite-and-matrix.md) | Defines acceptable risk levels and assessment framework | Draft |
-| [Risk Register](risk-register.md) | Catalog of identified risks and mitigation plans | Active |
-| [Threat Modeling (STRIDE)](threat-modeling-stride.md) | Methodology for identifying and addressing threats | Draft |
-| [Identity and Access Management](identity-and-access-management.md) | User authentication, authorization, and session management | Draft |
-| [Encryption and Key Management](encryption-and-key-management.md) | Data protection at rest and in transit | Draft |
-| [Secrets Management](secrets-management.md) | Handling sensitive credentials and keys | Draft |
-| [Secure Development Lifecycle (SDL)](secure-development-lifecycle-sdl.md) | Security practices in software development | Draft |
-| [Vulnerability Management](vulnerability-management.md) | Scanning, patching, and remediation processes | Draft |
-| [Logging and Forensics](logging-and-forensics.md) | Audit trails, incident investigation, and evidence collection | Draft |
-| [Business Continuity and Disaster Recovery (BCDR)](business-continuity-and-disaster-recovery-bcdr.md) | Plans for maintaining operations during disruptions | Draft |
-| [End-to-End Audit Report (2025-10-29)](audits/END-TO-END-AUDIT-2025-10-29.md) | Comprehensive project audit against governance standards | Published |
+| Document                                                                                              | Purpose                                                       | Status    |
+| ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- | --------- |
+| [Information Security Policy (ISO 27001)](information-security-policy-iso27001.md)                    | Core security policies and controls                           | Draft     |
+| [Risk Appetite and Matrix](risk-appetite-and-matrix.md)                                               | Defines acceptable risk levels and assessment framework       | Draft     |
+| [Risk Register](risk-register.md)                                                                     | Catalog of identified risks and mitigation plans              | Active    |
+| [Threat Modeling (STRIDE)](threat-modeling-stride.md)                                                 | Methodology for identifying and addressing threats            | Draft     |
+| [Identity and Access Management](identity-and-access-management.md)                                   | User authentication, authorization, and session management    | Draft     |
+| [Encryption and Key Management](encryption-and-key-management.md)                                     | Data protection at rest and in transit                        | Draft     |
+| [Secrets Management](secrets-management.md)                                                           | Handling sensitive credentials and keys                       | Draft     |
+| [Secure Development Lifecycle (SDL)](secure-development-lifecycle-sdl.md)                             | Security practices in software development                    | Draft     |
+| [Vulnerability Management](vulnerability-management.md)                                               | Scanning, patching, and remediation processes                 | Draft     |
+| [Logging and Forensics](logging-and-forensics.md)                                                     | Audit trails, incident investigation, and evidence collection | Draft     |
+| [Business Continuity and Disaster Recovery (BCDR)](business-continuity-and-disaster-recovery-bcdr.md) | Plans for maintaining operations during disruptions           | Draft     |
+| [End-to-End Audit Report (2025-10-29)](audits/END-TO-END-AUDIT-2025-10-29.md)                         | Comprehensive project audit against governance standards      | Published |
 
 ### Subdirectories
+
 - **[Audits/](audits/)**: Audit schedules, reports, and compliance evidence.
 - **[Incident Response/](incident-response/)**: Incident response plans, playbooks, and postmortems.
 
@@ -58,18 +59,21 @@
 ## 🔐 Security Controls Overview
 
 ### Preventive Controls
+
 - Access controls (RBAC, least privilege)
 - Encryption (data at rest/transit)
 - Input validation and sanitization
 - Secure coding practices
 
 ### Detective Controls
+
 - Logging and monitoring
 - Intrusion detection
 - Vulnerability scanning
 - AI safety filters
 
 ### Corrective Controls
+
 - Incident response procedures
 - Patch management
 - Backup and recovery

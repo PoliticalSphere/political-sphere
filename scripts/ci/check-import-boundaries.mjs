@@ -33,10 +33,7 @@ function processFile(filePath) {
   for (let i = 0; i < lines.length; i++) {
     const original = lines[i];
     const stripped = stripCommentsAndStrings(original);
-    if (
-      /\.{2}\/\.{0,1}\.{0,1}\//.test(stripped) ||
-      /(\.\.)\/(\.\.)\//.test(stripped)
-    ) {
+    if (/\.{2}\/\.{0,1}\.{0,1}\//.test(stripped) || /(\.\.)\/(\.\.)\//.test(stripped)) {
       // More conservative pattern: '../../' or repeated '../'
       if (stripped.includes('../../') || /\.\.\//.test(stripped)) {
         findings.push({ line: i + 1, text: original.trim() });
@@ -62,16 +59,7 @@ function listFiles() {
         const full = path.join(dir, name);
         const stat = fs.statSync(full);
         if (stat.isDirectory()) {
-          if (
-            [
-              'node_modules',
-              'dev/docker',
-              'docs',
-              'dist',
-              'build',
-              'artifacts',
-            ].includes(name)
-          )
+          if (['node_modules', 'dev/docker', 'docs', 'dist', 'build', 'artifacts'].includes(name))
             continue;
           res.push(...walk(full));
         } else if (/\.(js|ts|jsx|tsx)$/.test(name)) {

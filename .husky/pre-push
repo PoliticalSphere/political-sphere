@@ -10,7 +10,7 @@ echo "🔍 Running enhanced pre-push workspace integrity check..."
 echo ""
 
 # In CI or fast mode, skip interactive checks to avoid blocking automation
-if [ "$CI" = "true" ] || [ "$FAST_AI" = "1" ] || [ "$FAST_AI" = "true" ]; then
+if [ "${CI:-false}" = "true" ] || [ "${FAST_AI:-0}" = "1" ] || [ "${FAST_AI:-false}" = "true" ]; then
   echo "⚡ FAST/CI mode detected – skipping interactive integrity prompts"
   exit 0
 fi

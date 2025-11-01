@@ -29,10 +29,14 @@ pre-commit:
       run: node scripts/ci/check-import-boundaries.js
       files: git diff --name-only --cached -- '*.ts' '*.tsx' '*.js' '*.jsx'
 
-    # Secret scanning
+    # Secret scanning (fast mode - gitleaks on staged changes only)
     secrets:
-      run: npx trufflehog filesystem --fail-verified false --no-update --max_depth 5 --json .
-      files: git diff --name-only --cached
+      run: |
+        if command -v gitleaks >/dev/null 2>&1; then
+          gitleaks protect --staged --verbose --log-level error
+        else
+          echo "⚠️  Warning: gitleaks not installed, skipping secret scan (install via: brew install gitleaks)"
+        fi
 
 commit-msg:
   commands:

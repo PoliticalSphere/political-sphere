@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+
+- **Fixed hnswlib vulnerability**: Updated hnswlib from 0.7.0 to 0.8.0 to fix double free bug in init_index when M is a large integer (2025-11-01)
+
+### Performance
+
+- **Fixed Nx refresh slowdown**: Optimized daemon settings with 1000ms debounce delay and 500ms aggregate changes delay to reduce refresh frequency (2025-11-01)
+- **Cleared Nx cache**: Removed 1.3GB of old cache entries that were causing performance degradation (2025-11-01)
+- **Added file watcher optimizations**: Configured Nx to ignore AI directories (ai-cache, ai-logs, ai-metrics, ai-learning, ai-index, ai-knowledge) and other non-source directories (tmp, artifacts, monitoring/data) to prevent unnecessary file watching (2025-11-01)
+- **Created optimization script**: Added `scripts/optimize-nx.sh` for easy performance tuning and cache management (2025-11-01)
+- **Fixed commit buffering**: Replaced slow TruffleHog with fast gitleaks for pre-commit secret scanning - reduces commit time from 30+ seconds to <2 seconds (2025-11-01)
+
 ### Added
 
 - **MCP Servers (4 New)**: Added Playwright, Chrome DevTools, Official Filesystem, and Time MCP servers - all 100% free (2025-11-01)

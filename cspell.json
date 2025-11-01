@@ -61,7 +61,17 @@
     "docs:lint",
     "ai:commit",
     "ai:review",
-    "dev-autopilot"
+    "dev-autopilot",
+    "elif",
+    "toplevel",
+    "evilmartians",
+    "csjones",
+    "devbox",
+    "hnswlib",
+    "modelcontextprotocol",
+    "blackboxrules",
+    "AMLS",
+    "pipefail"
   ],
   "ignorePaths": [
     "node_modules/**",

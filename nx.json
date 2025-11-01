@@ -1,6 +1,15 @@
 {
   "npmScope": "political",
   "useDaemonProcess": true,
+  "useInferencePlugins": false,
+  "daemonSettings": {
+    "debounceDelay": 1000,
+    "aggregateChangesDelay": 500
+  },
+  "workspaceLayout": {
+    "appsDir": "apps",
+    "libsDir": "libs"
+  },
   "namedInputs": {
     "default": ["{projectRoot}/**/*", "sharedGlobals"],
     "production": [
@@ -13,7 +22,18 @@
       "!{projectRoot}/.eslintrc.json",
       "!{projectRoot}/eslint.config.js"
     ],
-    "sharedGlobals": []
+    "sharedGlobals": [
+      "!{workspaceRoot}/ai-cache/**/*",
+      "!{workspaceRoot}/ai-logs/**/*",
+      "!{workspaceRoot}/ai-metrics/**/*",
+      "!{workspaceRoot}/ai-learning/**/*",
+      "!{workspaceRoot}/ai-index/**/*",
+      "!{workspaceRoot}/ai-knowledge/**/*",
+      "!{workspaceRoot}/.ps/**/*",
+      "!{workspaceRoot}/tmp/**/*",
+      "!{workspaceRoot}/artifacts/**/*",
+      "!{workspaceRoot}/monitoring/data/**/*"
+    ]
   },
   "targetDefaults": {
     "build": {
@@ -51,9 +71,35 @@
       "options": {
         "cacheableOperations": ["build", "lint", "test", "e2e", "test:e2e", "lint:boundaries"],
         "parallel": 6,
-        "maxParallel": 8
+        "maxParallel": 8,
+        "runtimeCacheInputs": ["node -v"]
       }
     }
+  },
+  "pluginsConfig": {
+    "@nx/js": {
+      "analyzeSourceFiles": false
+    }
+  },
+  "defaultBase": "main",
+  "cacheDirectory": ".nx/cache",
+  "watch": {
+    "ignoreDotfiles": true,
+    "ignore": [
+      "**/ai-cache/**",
+      "**/ai-logs/**",
+      "**/ai-metrics/**",
+      "**/ai-learning/**",
+      "**/ai-index/**",
+      "**/ai-knowledge/**",
+      "**/.ps/**",
+      "**/tmp/**",
+      "**/artifacts/**",
+      "**/monitoring/data/**"
+    ]
+  },
+  "installation": {
+    "version": "22.0.1"
   },
   "nxCloudId": "690298b92b74acd1e02e8ff0"
 }

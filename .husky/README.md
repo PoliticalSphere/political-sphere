@@ -23,6 +23,7 @@ Runs automatically before pushing. These checks ensure code quality:
 - ✅ **integrity** - Workspace integrity check
 - ✅ **test-affected** - Run tests for affected projects
 - ✅ **lint-affected** - Lint affected projects
+- 📊 **check-ci-status** - Show GitHub Actions status for main branch
 
 ### Skipping Checks
 
@@ -38,6 +39,17 @@ SKIP_LINT=1 git push
 # Skip both
 SKIP_TESTS=1 SKIP_LINT=1 git push
 ```
+
+### GitHub Actions Status
+
+The pre-push hook will show you the status of recent GitHub Actions runs on the main branch, so you can see if CI is passing before you push.
+
+**Requirements:**
+
+- Install GitHub CLI: `brew install gh`
+- Authenticate: `gh auth login`
+
+If not installed, this check is automatically skipped.
 
 ### Fast Mode
 

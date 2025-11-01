@@ -27,6 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **Enhanced git hooks with detailed output**: Updated `.lefthook.yml` to show verbose test and lint results on commit/push with clear pass/fail messages. Added `SKIP_TESTS=1` and `SKIP_LINT=1` environment variables to bypass checks when needed. Increased visibility with execution logs and interactive output (2025-11-01)
+- **GitHub Actions status in pre-push hook**: Added CI status check that displays recent workflow runs on main branch with color-coded indicators (✅ success, ❌ failure, 🔄 in progress, ⚠️ cancelled). Requires GitHub CLI (`gh`) - automatically skips if not installed (2025-11-01)
 
 - **MCP Servers (4 New)**: Added Playwright, Chrome DevTools, Official Filesystem, and Time MCP servers - all 100% free (2025-11-01)
 - **Playwright MCP**: Official Microsoft E2E testing integration for comprehensive browser automation

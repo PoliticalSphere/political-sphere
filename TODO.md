@@ -16,6 +16,7 @@
 - [x] **Fixed pre-push hanging**: Simplified integrity check to only verify critical files exist instead of slow find operations (2025-11-01)
 - [x] **Fixed integration test workflow**: Updated workflow to gracefully handle missing migration/seed scripts and services (2025-11-01)
 - [x] **Enhanced git hooks with detailed output**: Added verbose test/lint results on commit/push with clear pass/fail messages and skip options (2025-11-01)
+- [x] **Added GitHub Actions status to pre-push**: Shows status of recent CI runs on main branch before pushing, with color-coded results (2025-11-01)
 - [ ] Run full test suite to verify all Jest configuration improvements
 - [ ] Address remaining database connectivity issues (500 errors in tests)
 - [ ] Fix module resolution issues in unit tests (UserService import)

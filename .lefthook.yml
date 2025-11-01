@@ -16,6 +16,19 @@ output:
 pre-commit:
   parallel: true
   commands:
+    # Welcome message with branding
+    welcome:
+      run: |
+        echo ""
+        echo "╔════════════════════════════════════════════════════╗"
+        echo "║         🏛️  POLITICAL SPHERE 🏛️                     ║"
+        echo "║                                                    ║"
+        echo "║    Democratic Governance • Political Simulation    ║"
+        echo "╚════════════════════════════════════════════════════╝"
+        echo ""
+        echo "✨ Thank you for contributing to democratic technology!"
+        echo ""
+
     # Standard linting and formatting (ESLint, Prettier, Biome)
     lint-staged:
       run: npx lint-staged
@@ -39,17 +52,24 @@ pre-commit:
     # Secret scanning (fast mode - gitleaks on staged changes only)
     secrets:
       run: |
-        echo "🔍 Scanning for secrets..."
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "� Secret Scanning"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         if command -v gitleaks >/dev/null 2>&1; then
-          if gitleaks protect --staged --verbose --log-level info; then
+          if gitleaks protect --staged --verbose --log-level info 2>&1; then
+            echo ""
             echo "✅ No secrets detected"
           else
-            echo "❌ Secrets detected! Review the output above."
+            echo ""
+            echo "❌ FAILED: Secrets detected! Review the output above."
             exit 1
           fi
         else
-          echo "⚠️  Warning: gitleaks not installed, skipping secret scan (install via: brew install gitleaks)"
+          echo "⚠️  Warning: gitleaks not installed"
+          echo "   Install: brew install gitleaks"
         fi
+        echo ""
       interactive: true
 
 commit-msg:
@@ -63,29 +83,45 @@ pre-push:
     # Fast workspace integrity check (critical files only)
     integrity:
       run: |
-        echo "🔍 Checking workspace integrity..."
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🔍 Workspace Integrity"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         if [ ! -f "package.json" ] || [ ! -f "nx.json" ]; then
-          echo "❌ Critical files missing!"
+          echo "❌ FAILED: Critical files missing!"
           exit 1
         fi
-        echo "✅ Workspace integrity OK"
+        echo "✅ All critical files present"
+        echo ""
 
     # Run affected tests before push (skip with SKIP_TESTS=1)
     test-affected:
       run: |
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🧪 Running Tests"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         if [ "${SKIP_TESTS:-0}" = "1" ]; then
-          echo "⚠️  Skipping tests (SKIP_TESTS=1)"
+          echo "⚠️  Skipped (SKIP_TESTS=1)"
+          echo ""
           exit 0
         fi
-        echo "🧪 Running tests for affected projects..."
-        echo "   (Use SKIP_TESTS=1 git push to skip)"
+        echo "💡 Tip: Use SKIP_TESTS=1 git push to skip"
+        echo ""
         if npx nx affected:test --base=origin/main --head=HEAD --verbose; then
           echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "✅ All tests passed"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
         else
           echo ""
-          echo "❌ Tests failed! See output above for details."
-          echo "Fix the failing tests before pushing, or use SKIP_TESTS=1 to bypass."
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "❌ FAILED: Tests failed"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Review the output above for details."
+          echo "Fix failing tests or use: SKIP_TESTS=1 git push"
+          echo ""
           exit 1
         fi
       interactive: true
@@ -93,19 +129,105 @@ pre-push:
     # Run linting on affected projects (skip with SKIP_LINT=1)
     lint-affected:
       run: |
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "🔍 Linting Code"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
         if [ "${SKIP_LINT:-0}" = "1" ]; then
-          echo "⚠️  Skipping lint (SKIP_LINT=1)"
+          echo "⚠️  Skipped (SKIP_LINT=1)"
+          echo ""
           exit 0
         fi
-        echo "🔍 Linting affected projects..."
-        echo "   (Use SKIP_LINT=1 git push to skip)"
+        echo "💡 Tip: Use SKIP_LINT=1 git push to skip"
+        echo ""
         if npx nx affected:lint --base=origin/main --head=HEAD; then
           echo ""
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo "✅ Linting passed"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo ""
         else
           echo ""
-          echo "❌ Linting failed! See output above for details."
-          echo "Fix the linting errors before pushing, or use SKIP_LINT=1 to bypass."
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "❌ FAILED: Linting errors found"
+          echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+          echo "Review the output above for details."
+          echo "Fix linting errors or use: SKIP_LINT=1 git push"
+          echo ""
           exit 1
         fi
       interactive: true
+
+    # Check GitHub Actions status for main branch
+    check-ci-status:
+      run: |
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "📊 GitHub Actions Status (main branch)"
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo ""
+
+        # Check if gh CLI is installed
+        if ! command -v gh >/dev/null 2>&1; then
+          echo "⚠️  GitHub CLI not installed"
+          echo "   Install: brew install gh"
+          echo ""
+          exit 0
+        fi
+
+        # Check if authenticated
+        if ! gh auth status >/dev/null 2>&1; then
+          echo "⚠️  Not authenticated with GitHub"
+          echo "   Run: gh auth login"
+          echo ""
+          exit 0
+        fi
+
+        # Get workflow runs for main branch
+        echo "Recent CI runs:"
+        echo ""
+        gh run list --branch main --limit 8 --json conclusion,name,status,createdAt,workflowName --jq '.[] | "\(.status)|\(.conclusion // "pending")|\(.workflowName)"' | while IFS='|' read status conclusion workflow; do
+          # Truncate long workflow names
+          if [ ${#workflow} -gt 40 ]; then
+            workflow="${workflow:0:37}..."
+          fi
+          
+          if [ "$status" = "completed" ]; then
+            if [ "$conclusion" = "success" ]; then
+              printf "   ✅  %-45s [PASSED]\n" "$workflow"
+            elif [ "$conclusion" = "failure" ]; then
+              printf "   ❌  %-45s [FAILED]\n" "$workflow"
+            elif [ "$conclusion" = "cancelled" ]; then
+              printf "   ⚠️   %-45s [CANCELLED]\n" "$workflow"
+            else
+              printf "   ❓  %-45s [%s]\n" "$workflow" "$conclusion"
+            fi
+          else
+            printf "   🔄  %-45s [IN PROGRESS]\n" "$workflow"
+          fi
+        done
+
+        echo ""
+        echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+        echo "💡 Commands:"
+        echo "   • View all runs:  gh run list --branch main"
+        echo "   • View logs:      gh run view <run-id> --log"
+        echo "   • Watch latest:   gh run watch"
+        echo ""
+      interactive: true
+
+    # Thank contributors
+    thank-you:
+      run: |
+        echo ""
+        echo "╔════════════════════════════════════════════════════╗"
+        echo "║                                                    ║"
+        echo "║           🙏 Thank You, Contributor! 🙏           ║"
+        echo "║                                                    ║"
+        echo "║   Your work strengthens democratic technology     ║"
+        echo "║   and helps build transparent governance tools    ║"
+        echo "║                                                    ║"
+        echo "║   Every contribution matters. Keep building! 🚀   ║"
+        echo "║                                                    ║"
+        echo "╚════════════════════════════════════════════════════╝"
+        echo ""

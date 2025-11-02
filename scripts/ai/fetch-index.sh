@@ -1,57 +1,42 @@
-#!/usr/bin/env bash
-# Fetch the latest ai-index from the ai-index-cache branch into the working tree.
-# Usage: scripts/ai/fetch-index.sh [--branch BRANCH] [--force]
+#!/bin/bash
+# Fetch warmed index from CI cache branch
+# Usage: ./scripts/ai/fetch-index.sh
 
-set -euo pipefail
+set -e
+
 BRANCH="ai-index-cache"
-FORCE=0
-while [[ $# -gt 0 ]]; do
-  case "$1" in
-    --branch) BRANCH="$2"; shift 2 ;;
-    --force) FORCE=1; shift ;;
-    -h|--help) echo "Usage: $0 [--branch BRANCH] [--force]"; exit 0 ;;
-    *) echo "Unknown arg: $1"; exit 1 ;;
-  esac
-done
+INDEX_DIR="ai-index"
 
-# Ensure git repo
-if [ ! -d .git ]; then
-  echo "Not a git repository. Run from repo root." >&2
-  exit 2
-fi
+echo "Fetching warmed index from $BRANCH branch..."
 
-# Fetch branch
-echo "Fetching branch $BRANCH from origin..."
-git fetch origin $BRANCH || true
-
-# Check if branch exists on remote
-if ! git ls-remote --exit-code --heads origin $BRANCH >/dev/null 2>&1; then
-  echo "Remote branch $BRANCH not found. Nothing to fetch." >&2
+# Check if branch exists
+if ! git ls-remote --exit-code --heads origin "$BRANCH" >/dev/null 2>&1; then
+  echo "Cache branch $BRANCH not found. Building fresh index..."
+  node scripts/ai/code-indexer.js build
   exit 0
 fi
 
-# Create a temporary worktree to extract ai-index
-TMPDIR=$(mktemp -d)
-cleanup() { rm -rf "$TMPDIR"; }
-trap cleanup EXIT
+# Fetch and checkout the cache branch temporarily
+git fetch origin "$BRANCH"
+git checkout "origin/$BRANCH" -- "$INDEX_DIR"
 
-# Use git worktree to checkout the remote branch content
-git worktree add -f "$TMPDIR" origin/$BRANCH
+echo "Index cache restored from $BRANCH"
 
-# Copy ai-index into current repo (merge carefully)
-if [ -d "$TMPDIR/ai-index" ]; then
-  if [ -d ai-index ] && [ $FORCE -eq 0 ]; then
-    echo "ai-index already exists locally. Use --force to overwrite." >&2
-    exit 1
+# Return to original branch
+git checkout - >/dev/null 2>&1
+
+# Verify index integrity
+if [ -f "$INDEX_DIR/codebase-index.json" ]; then
+  INDEX_SIZE=$(stat -f%z "$INDEX_DIR/codebase-index.json" 2>/dev/null || stat -c%s "$INDEX_DIR/codebase-index.json" 2>/dev/null || echo "0")
+  if [ "$INDEX_SIZE" -gt 1000 ]; then
+    echo "Index verified (size: $INDEX_SIZE bytes)"
+  else
+    echo "Index appears corrupted, rebuilding..."
+    node scripts/ai/code-indexer.js build
   fi
-  rm -rf ai-index || true
-  cp -r "$TMPDIR/ai-index" ./ai-index
-  echo "ai-index fetched to ./ai-index"
 else
-  echo "No ai-index directory found on branch $BRANCH" >&2
+  echo "Index file missing, rebuilding..."
+  node scripts/ai/code-indexer.js build
 fi
 
-# Cleanup worktree
-git worktree remove --force "$TMPDIR" || true
-
-exit 0
+echo "Ready to use cached index"

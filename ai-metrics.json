@@ -138,6 +138,12 @@
       "timestamp": "2025-11-01T22:28:39.720Z",
       "durationMs": 1135,
       "success": true
+    },
+    {
+      "script": "context-preloader:preload",
+      "timestamp": "2025-11-02T11:47:52.034Z",
+      "durationMs": 129,
+      "success": true
     }
   ],
   "totalRequests": 0,
@@ -146,6 +152,11 @@
   "averageResponseTime": 0,
   "performanceMetrics": {
     "cacheHitRate": 0,
-    "rateLimitHits": 0
+    "rateLimitHits": 0,
+    "taskThroughput": 0,
+    "idleTimeRatio": 0,
+    "reExecutionRate": 0,
+    "lowContextModeUsage": 0,
+    "batchingEfficiency": 0
   }
 }

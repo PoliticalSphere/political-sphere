@@ -1,417 +1,194 @@
 #!/usr/bin/env node
-
 /*
- * Simple in-memory index server for fast local search
- * Usage: node index-server.js [port]
- */
+  Index Server: In-memory index server for fast interactive queries
+  Usage: node scripts/ai/index-server.js
+*/
 
-import http from 'http';
-import { promises as fsp } from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
-import crypto from 'crypto';
+import { readFileSync, existsSync } from "fs";
+import http from "http";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const INDEX_FILE = "ai-index/codebase-index.json";
+const PORT = process.env.AI_INDEX_PORT || 3001;
 
-const PORT = parseInt(process.argv[2] || process.env.AI_INDEX_PORT || '3030', 10);
-const INDEX_PATH = path.join(__dirname, '..', '..', 'ai-index', 'codebase-index.json');
-const VECTORS_PATH = path.join(__dirname, '..', '..', 'ai-index', 'semantic-vectors.json');
+let index = null;
 
-// Optional ANN backend (e.g. Flask hnswlib service)
-const ANN_BACKEND_URL = process.env.ANN_BACKEND_URL || process.env.AI_ANN_BACKEND_URL || '';
+function loadIndex() {
+  if (!existsSync(INDEX_FILE)) {
+    throw new Error("Index file not found. Run code-indexer build first.");
+  }
+  // Lazy load index to reduce memory usage
+  const indexData = readFileSync(INDEX_FILE, "utf8");
+  if (indexData.length > 2000000) {
+    // 2MB threshold
+    console.warn("Index file is large, consider incremental indexing for better performance");
+  }
+  index = JSON.parse(indexData);
+  console.log(`Loaded index with ${Object.keys(index.files).length} files`);
+}
 
-const annMetrics = {
-  calls: 0,
-  successes: 0,
-  failures: 0,
-  totalLatencyMs: 0,
-  fallbacks: 0,
-};
+function search(query) {
+  if (!index) return { error: "Index not loaded" };
 
-let INDEX = null;
-let VECTORS = null; // { dims, vectors: { filePath: [..] } }
-
-function normalize(q) {
-  return String(q || '')
+  // Enhanced query processing with semantic understanding
+  const queryTokens = query
     .toLowerCase()
-    .replace(/[^a-z0-9]/g, '')
-    .trim();
-}
+    .split(/[^A-Za-z0-9_]+/)
+    .filter((token) => token.length > 1);
+  const semanticTokens = new Set(queryTokens);
 
-function getCandidates(index, query) {
-  if (!query) return Object.keys(index.files || {});
-  const tokens = String(query).split(/\W+/).map(normalize).filter(Boolean);
-  const set = new Set();
-  for (const t of tokens) {
-    const hits = index.semanticMap?.[t];
-    if (Array.isArray(hits)) hits.forEach((p) => set.add(p));
-  }
-  return set.size > 0 ? Array.from(set) : Object.keys(index.files || {});
-}
-
-function scoreFile(fileInfo, filePath, query) {
-  const q = String(query || '').toLowerCase();
-  let score = 0;
-  if (!fileInfo) return 0;
-  if ((fileInfo.fileName || '').toLowerCase().includes(q)) score += 10;
-  if ((filePath || '').toLowerCase().includes(q)) score += 5;
-  if ((fileInfo.summary || '').toLowerCase().includes(q)) score += 3;
-  if ((fileInfo.functions || []).some((f) => f.toLowerCase().includes(q))) score += 8;
-  if ((fileInfo.classes || []).some((c) => c.toLowerCase().includes(q))) score += 8;
-  return score;
-}
-
-async function loadIndex() {
-  try {
-    const raw = await fsp.readFile(INDEX_PATH, 'utf8');
-    INDEX = JSON.parse(raw);
-    console.log('Index loaded into memory:', INDEX_PATH);
-    // try to load vector embeddings if present
-    try {
-      const vr = await fsp.readFile(VECTORS_PATH, 'utf8').catch(() => null);
-      if (vr) {
-        VECTORS = JSON.parse(vr);
-        console.log(
-          'Embeddings loaded:',
-          VECTORS_PATH,
-          'vectors=',
-          Object.keys(VECTORS.vectors || {}).length
-        );
-      }
-    } catch (e) {
-      console.warn('Failed to load embeddings:', e?.message || e);
-    }
-    return true;
-  } catch (err) {
-    console.warn('Index not found or failed to load:', err?.message || err);
-    return false;
-  }
-}
-
-function hashToIndex(token, dims) {
-  const h = crypto.createHash('sha256').update(token).digest();
-  const val = h.readUInt32BE(0);
-  return val % dims;
-}
-
-function vectorizeText(text, dims = 128) {
-  const vec = new Array(dims).fill(0);
-  const tokens = String(text)
-    .split(/\W+/)
-    .map((t) => t.toLowerCase().replace(/[^a-z0-9]/g, ''))
-    .filter(Boolean);
-  const freq = {};
-  for (const t of tokens) freq[t] = (freq[t] || 0) + 1;
-  for (const [tok, w] of Object.entries(freq)) {
-    const idx = hashToIndex(tok, dims);
-    vec[idx] += w;
-  }
-  // L2 normalize
-  let norm = 0;
-  for (let i = 0; i < dims; i++) norm += vec[i] * vec[i];
-  norm = Math.sqrt(norm) || 1;
-  for (let i = 0; i < dims; i++) vec[i] = vec[i] / norm;
-  return vec;
-}
-
-function dotProduct(a, b) {
-  let s = 0;
-  const n = Math.min(a.length, b.length);
-  for (let i = 0; i < n; i++) s += (a[i] || 0) * (b[i] || 0);
-  return s;
-}
-
-async function buildIndexIfMissing({ maxWaitMs = 5 * 60 * 1000 } = {}) {
-  const exists = await fsp
-    .stat(INDEX_PATH)
-    .then(() => true)
-    .catch(() => false);
-  if (exists) return true;
-
-  console.log('Index file not found. Running code-indexer to build it...');
-  try {
-    console.log('Importing and running code-indexer build in-process...');
-    const modulePath = new URL('./code-indexer.js', import.meta.url).pathname;
-    const mod = await import(modulePath);
-    const idx = await mod.buildIndex({
-      concurrency: parseInt(process.env.INDEXER_CONCURRENCY || '50', 10) || 50,
+  // Add semantic variations for better recall
+  for (const token of queryTokens) {
+    // Add camelCase splits
+    const camelSplits = token.replace(/([a-z])([A-Z])/g, "$1 $2").split(" ");
+    camelSplits.forEach((split) => {
+      if (split.length > 1) semanticTokens.add(split);
     });
-    await fsp.mkdir(path.dirname(INDEX_PATH), { recursive: true });
-    await fsp.writeFile(INDEX_PATH, JSON.stringify(idx, null, 2), 'utf8');
-    console.log('Index built and saved to', INDEX_PATH);
-    return true;
-  } catch (err) {
-    console.error('Failed to build index in-process:', err?.message || err);
-    return false;
-  }
-}
 
-function handleSearch(query, category, limit = 10) {
-  if (!INDEX) return [];
-  const candidates = getCandidates(INDEX, query);
-  const results = [];
-  for (const filePath of candidates) {
-    const fi = INDEX.files[filePath];
-    if (!fi) continue;
-    if (category && fi.category !== category) continue;
-    const score = scoreFile(fi, filePath, query);
-    if (score > 0) results.push({ ...fi, score, filePath });
-  }
-  return results.sort((a, b) => b.score - a.score).slice(0, limit);
-}
-
-async function getPrometheusMetrics() {
-  const lines = [];
-  try {
-    // Index metrics
-    const indexStat = await fsp.stat(INDEX_PATH).catch(() => null);
-    if (INDEX) {
-      lines.push(`# HELP ai_index_total_files Total number of files indexed`);
-      lines.push(`# TYPE ai_index_total_files gauge`);
-      lines.push(`ai_index_total_files ${INDEX.totalFiles || 0}`);
-      lines.push(`# HELP ai_index_size_bytes Size of index file in bytes`);
-      const size = indexStat ? indexStat.size : 0;
-      lines.push(`ai_index_size_bytes ${size}`);
-      lines.push(
-        `# HELP ai_index_last_indexed_seconds Seconds since epoch when index was last indexed`
-      );
-      const ts = INDEX.lastIndexed ? Math.floor(new Date(INDEX.lastIndexed).getTime() / 1000) : 0;
-      lines.push(`ai_index_last_indexed_seconds ${ts}`);
-    }
-
-    // ai-metrics (various)
-    const metricsPaths = [
-      path.join(__dirname, '../../ai-metrics.json'),
-      path.join(__dirname, '../../ai-metrics/ai-metrics.json'),
-    ];
-    let metrics = null;
-    for (const p of metricsPaths) {
-      try {
-        const raw = await fsp.readFile(p, 'utf8').catch(() => null);
-        if (raw) {
-          metrics = JSON.parse(raw);
-          break;
-        }
-      } catch (e) {
-        /* ignore */
-      }
-    }
-    if (metrics) {
-      lines.push(`# HELP ai_average_response_time_ms Average AI response time in ms`);
-      lines.push(`# TYPE ai_average_response_time_ms gauge`);
-      lines.push(`ai_average_response_time_ms ${metrics.averageResponseTime || 0}`);
-      const cacheHit = metrics.performanceMetrics?.cacheHitRate
-        ? metrics.performanceMetrics.cacheHitRate * 1
-        : 0;
-      lines.push(`# HELP ai_cache_hit_rate Cache hit rate (0..1)`);
-      lines.push(`# TYPE ai_cache_hit_rate gauge`);
-      lines.push(`ai_cache_hit_rate ${cacheHit}`);
-    }
-
-    // ANN metrics
-    lines.push(`# HELP ai_ann_calls_total Total ANN backend calls`);
-    lines.push(`# TYPE ai_ann_calls_total counter`);
-    lines.push(`ai_ann_calls_total ${annMetrics.calls}`);
-    lines.push(`# HELP ai_ann_successes_total Successful ANN calls`);
-    lines.push(`# TYPE ai_ann_successes_total counter`);
-    lines.push(`ai_ann_successes_total ${annMetrics.successes}`);
-    lines.push(`# HELP ai_ann_failures_total Failed ANN calls`);
-    lines.push(`# TYPE ai_ann_failures_total counter`);
-    lines.push(`ai_ann_failures_total ${annMetrics.failures}`);
-    lines.push(`# HELP ai_ann_fallbacks_total Number of times ANN fallback to brute-force`);
-    lines.push(`# TYPE ai_ann_fallbacks_total counter`);
-    lines.push(`ai_ann_fallbacks_total ${annMetrics.fallbacks}`);
-    const avg = annMetrics.calls > 0 ? annMetrics.totalLatencyMs / annMetrics.calls : 0;
-    lines.push(`# HELP ai_ann_average_latency_ms Average ANN call latency in ms`);
-    lines.push(`# TYPE ai_ann_average_latency_ms gauge`);
-    lines.push(`ai_ann_average_latency_ms ${avg}`);
-
-    // ai-cache size
-    const cachePath = path.join(__dirname, '../../ai-cache/cache.json');
-    try {
-      const raw = await fsp.readFile(cachePath, 'utf8').catch(() => null);
-      if (raw) {
-        const cache = JSON.parse(raw);
-        const entries = Object.keys(cache.queries || {}).length;
-        lines.push(`# HELP ai_cache_entries Number of cached queries`);
-        lines.push(`# TYPE ai_cache_entries gauge`);
-        lines.push(`ai_cache_entries ${entries}`);
-      }
-    } catch (e) {
-      /* ignore */
-    }
-  } catch (err) {
-    // ignore
-  }
-  return lines.join('\n') + '\n';
-}
-
-const server = http.createServer(async (req, res) => {
-  try {
-    const url = new URL(req.url, `http://localhost:${PORT}`);
-
-    if (url.pathname === '/search') {
-      const q = url.searchParams.get('q') || '';
-      const category = url.searchParams.get('category') || null;
-      const limit = parseInt(url.searchParams.get('limit') || '10', 10);
-      const results = handleSearch(q, category, limit);
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ results, meta: { total: results.length, q } }));
-      return;
-    }
-
-    if (url.pathname === '/health') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ ok: true, indexedFiles: INDEX?.totalFiles || 0 }));
-      return;
-    }
-
-    if (url.pathname === '/metrics') {
-      const body = await getPrometheusMetrics();
-      res.writeHead(200, { 'Content-Type': 'text/plain; version=0.0.4' });
-      res.end(body);
-      return;
-    }
-
-    if (url.pathname === '/vector-search') {
-      const q = url.searchParams.get('q') || '';
-      const top = parseInt(url.searchParams.get('top') || '10', 10);
-
-      if (!VECTORS) {
-        res.writeHead(503, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'embeddings not available; run embeddings build' }));
-        return;
-      }
-
-      // If ANN backend is configured, try it first and fall back to brute-force
-      if (ANN_BACKEND_URL) {
-        annMetrics.calls += 1;
-        const start = Date.now();
-        try {
-          const base = ANN_BACKEND_URL.endsWith('/')
-            ? ANN_BACKEND_URL.slice(0, -1)
-            : ANN_BACKEND_URL;
-          const annUrl = `${base}/ann-search?q=${encodeURIComponent(q)}&top=${encodeURIComponent(String(top))}`;
-          const resp = await fetch(annUrl, {
-            method: 'GET',
-            headers: { Accept: 'application/json' },
-          });
-          const latency = Date.now() - start;
-          annMetrics.totalLatencyMs += latency;
-          if (!resp.ok) {
-            annMetrics.failures += 1;
-            annMetrics.fallbacks += 1;
-            console.warn('ANN backend returned non-OK:', resp.status);
-          } else {
-            // Read response as text first (some servers may return non-standard JSON like NaN)
-            let body = null;
-            try {
-              const txt = await resp.text();
-              try {
-                body = JSON.parse(txt);
-              } catch (pe) {
-                const sanitized = txt.replace(/\bNaN\b/g, '0');
-                try {
-                  body = JSON.parse(sanitized);
-                } catch (e2) {
-                  body = null;
-                }
-              }
-            } catch (e) {
-              body = null;
-            }
-            if (body && Array.isArray(body.results) && body.results.length > 0) {
-              annMetrics.successes += 1;
-              const results = body.results
-                .map((r) => {
-                  const rawScore = Number(r.score ?? r.distance ?? 0);
-                  const score = Number.isFinite(rawScore) ? rawScore : 0;
-                  return { file: r.file, score };
-                })
-                .slice(0, top);
-              const annotated = results.map((r) => ({
-                file: r.file,
-                score: r.score,
-                info: INDEX?.files?.[r.file] || null,
-              }));
-              res.writeHead(200, { 'Content-Type': 'application/json' });
-              res.end(
-                JSON.stringify({
-                  results: annotated,
-                  meta: { q, total: annotated.length, backend: 'ann' },
-                })
-              );
-              return;
-            }
-            // unexpected payload -> fall through to brute-force
-            annMetrics.failures += 1;
-            annMetrics.fallbacks += 1;
-            console.warn('ANN backend returned unexpected payload');
-          }
-        } catch (err) {
-          annMetrics.failures += 1;
-          annMetrics.fallbacks += 1;
-          console.warn('ANN backend call failed:', err?.message || err);
-        }
-        // fall through to brute-force if ANN failed
-      }
-
-      // Brute-force vector search
-      const dims = VECTORS.dims || 128;
-      const qvec = vectorizeText(q, dims);
-      const scores = [];
-      for (const [file, vec] of Object.entries(VECTORS.vectors || {})) {
-        const s = dotProduct(qvec, vec || []);
-        scores.push({ file, score: s });
-      }
-      scores.sort((a, b) => b.score - a.score);
-      const results = scores
-        .slice(0, top)
-        .map((r) => ({ file: r.file, score: r.score, info: INDEX?.files?.[r.file] || null }));
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ results, meta: { q, total: results.length, backend: 'brute' } }));
-      return;
-    }
-
-    if (url.pathname === '/reload' && req.method === 'POST') {
-      res.writeHead(202, { 'Content-Type': 'application/json' });
-      res.end(JSON.stringify({ reloading: true }));
-      // Trigger rebuild in background
-      (async () => {
-        console.log('Manual reload requested: rebuilding index');
-        const ok = await buildIndexIfMissing({ maxWaitMs: 2 * 60 * 1000 });
-        if (ok) await loadIndex();
-        console.log('Reload complete');
-      })();
-      return;
-    }
-
-    res.writeHead(404);
-    res.end('Not found');
-  } catch (err) {
-    console.error('Request handling error:', err?.message || err);
-    res.writeHead(500, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({ error: 'internal' }));
-  }
-});
-
-async function startServer() {
-  // Ensure index exists (build if necessary)
-  const built = await buildIndexIfMissing().catch(() => false);
-  const loaded = built ? await loadIndex() : await loadIndex();
-  if (!loaded) {
-    console.error(
-      'Failed to load index after build attempt. Server will still start but /search will return empty results until index is available.'
-    );
+    // Add common abbreviations
+    if (token === "func") semanticTokens.add("function");
+    if (token === "comp") semanticTokens.add("component");
+    if (token === "iface") semanticTokens.add("interface");
   }
 
-  server.listen(PORT, () => {
-    console.log(`AI index server listening on http://localhost:${PORT}`);
+  const scores = {};
+  const contextMatches = {};
+
+  for (const token of semanticTokens) {
+    if (index.tokens[token]) {
+      for (const file of index.tokens[token]) {
+        scores[file] = (scores[file] || 0) + 1;
+
+        // Track context for better relevance
+        const fileExt = file.split(".").pop();
+        if (!contextMatches[fileExt]) contextMatches[fileExt] = [];
+        contextMatches[fileExt].push(file);
+      }
+    }
+  }
+
+  // Boost scores for files with multiple token matches and semantic relevance
+  const boostedResults = Object.entries(scores).map(([file, score]) => {
+    let boostedScore = score;
+
+    // Boost for files with higher semantic match density
+    const fileTokens = index.files[file]?.tokens?.length || 0;
+    if (fileTokens > 0) {
+      boostedScore *= (score / fileTokens) * 2; // Density bonus
+    }
+
+    // Boost for rule/governance files when relevant
+    if (
+      file.includes(".blackboxrules") ||
+      file.includes("copilot-instructions") ||
+      file.includes("ADR")
+    ) {
+      boostedScore *= 1.5;
+    }
+
+    return { file, score: boostedScore, originalScore: score };
   });
+
+  const results = boostedResults
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 10) // Reduced from 15 for better performance
+    .map(({ file, score, originalScore }) => ({
+      file,
+      score: Math.round(score * 100) / 100,
+      originalScore,
+    }));
+
+  return {
+    results,
+    query,
+    semanticTokens: Array.from(semanticTokens),
+    contextMatches,
+    timestamp: new Date().toISOString(),
+  };
 }
 
-startServer().catch((err) => {
-  console.error('Failed to start index server:', err?.message || err);
-  process.exit(1);
+const server = http.createServer((req, res) => {
+  res.setHeader("Content-Type", "application/json");
+  // Restrict CORS to localhost for security
+  const origin = req.headers.origin;
+  if (
+    origin &&
+    (origin.startsWith("http://localhost:") || origin.startsWith("http://127.0.0.1:"))
+  ) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  }
+
+  // Add observability hooks
+  const startTime = Date.now();
+  const requestId = Math.random().toString(36).substr(2, 9);
+
+  console.log(`[${requestId}] ${req.method} ${req.url} - Request started`);
+
+  // Error handling wrapper
+  const handleRequest = async () => {
+    try {
+      if (req.method === "GET" && req.url === "/health") {
+        const response = { status: "ok", indexLoaded: !!index, requestId };
+        res.end(JSON.stringify(response));
+      } else if (req.method === "GET" && req.url === "/metrics") {
+        const metrics = {
+          files: index ? Object.keys(index.files).length : 0,
+          tokens: index ? Object.keys(index.tokens).length : 0,
+          lastUpdated: index ? index.lastUpdated : null,
+          uptime: process.uptime(),
+          memoryUsage: process.memoryUsage(),
+          requestId,
+        };
+        res.end(JSON.stringify(metrics));
+      } else if (req.method === "POST" && req.url === "/reload") {
+        try {
+          loadIndex();
+          const response = { status: "reloaded", requestId };
+          res.end(JSON.stringify(response));
+        } catch (e) {
+          console.error(`[${requestId}] Reload error:`, e.message);
+          res.statusCode = 500;
+          res.end(JSON.stringify({ error: e.message, requestId }));
+        }
+      } else if (req.method === "GET" && req.url?.startsWith("/search?q=")) {
+        const url = new URL(req.url, `http://localhost:${PORT}`);
+        const query = url.searchParams.get("q") || "";
+
+        // Input validation
+        if (!query.trim()) {
+          res.statusCode = 400;
+          res.end(JSON.stringify({ error: 'Query parameter "q" is required', requestId }));
+          return;
+        }
+
+        const result = search(query);
+        result.requestId = requestId;
+        res.end(JSON.stringify(result));
+      } else {
+        res.statusCode = 404;
+        res.end(JSON.stringify({ error: "Not found", requestId }));
+      }
+    } catch (error) {
+      console.error(`[${requestId}] Unexpected error:`, error);
+      res.statusCode = 500;
+      res.end(JSON.stringify({ error: "Internal server error", requestId }));
+    } finally {
+      const duration = Date.now() - startTime;
+      console.log(`[${requestId}] ${req.method} ${req.url} - Completed in ${duration}ms`);
+    }
+  };
+
+  handleRequest();
 });
+
+try {
+  loadIndex();
+  server.listen(PORT, () => {
+    console.log(`Index server running on port ${PORT}`);
+    console.log(`Endpoints: /health, /metrics, /search?q=query, POST /reload`);
+  });
+} catch (e) {
+  console.error("Failed to start server:", e.message);
+  process.exit(1);
+}

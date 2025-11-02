@@ -1,42 +1,10 @@
 {
-  "generatedAt": "2025-10-30T15:15:39.012Z",
-  "guard": {
-    "totalRuns": 2,
-    "passRate": 0,
-    "averageDurationMs": 19686,
-    "checkFailureRates": {
-      "ESLint": 0,
-      "TypeScript type check": 0,
-      "Documentation lint": 100
-    },
-    "lastRun": {
-      "timestamp": "2025-10-30T15:15:19.249Z",
-      "durationMs": 18250,
-      "status": "failed",
-      "actor": "morganlowman",
-      "checks": [
-        {
-          "name": "ESLint",
-          "status": "passed"
-        },
-        {
-          "name": "TypeScript type check",
-          "status": "passed"
-        },
-        {
-          "name": "Documentation lint",
-          "status": "failed",
-          "reason": "npm run docs:lint failed with exit code 1"
-        }
-      ]
-    }
-  },
-  "knowledgeBase": {
-    "documents": 200,
-    "classifications": {
-      "🔒 Internal": 13,
-      "Unknown": 187
-    },
-    "lastIndexedAt": "2025-10-30T15:15:38.428Z"
-  }
+  "responseTimes": [1500, 1200, 1800],
+  "cacheHits": 25,
+  "cacheMisses": 5,
+  "qualityGatesPassed": 8,
+  "qualityGatesFailed": 2,
+  "userSatisfaction": [0.8, 0.9, 0.7],
+  "taskThroughput": [12, 15, 10],
+  "lastUpdated": "2025-11-02T14:21:53.255Z"
 }

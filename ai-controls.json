@@ -5,11 +5,12 @@
     "guardTimeoutMs": 120000
   },
   "performanceTuning": {
-    "indexerConcurrency": 50,
-    "cacheMaxEntries": 200,
+    "indexerConcurrency": 25,
+    "cacheMaxEntries": 150,
     "cacheTtlMs": 86400000,
-    "contextPreloadConcurrency": 8,
-    "incrementalIndexing": true
+    "contextPreloadConcurrency": 5,
+    "incrementalIndexing": true,
+    "maxIndexSize": 1000000
   },
   "monitoring": {
     "metricsCollection": true,
@@ -21,5 +22,6 @@
     "maxMemoryUsage": "512MB",
     "maxCpuUsage": "80%",
     "timeoutMs": 300000
-  }
+  },
+  "lastUpdated": "2025-11-02T14:21:53.255Z"
 }

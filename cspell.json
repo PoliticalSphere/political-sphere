@@ -118,7 +118,9 @@
     "domcontentloaded",
     "networkidle",
     "notnull",
-    "dflt"
+    "dflt",
+    "nonexistentterm",
+    "qvec"
   ],
   "ignorePaths": [
     "node_modules/**",

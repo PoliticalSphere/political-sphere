@@ -7,7 +7,6 @@ services:
       dockerfile: .devcontainer/Dockerfile
     volumes:
       - ../../..:/workspaces/political-sphere:cached
-      - node_modules:/workspaces/political-sphere/node_modules
       - /var/run/docker.sock:/var/run/docker.sock
     command: sleep infinity
     environment:
@@ -164,6 +163,7 @@ services:
           memory: 512M
 
   api:
+    profiles: ['app']
     build:
       context: ../../..
       dockerfile: apps/api/Dockerfile
@@ -200,6 +200,7 @@ services:
           memory: 1G
 
   frontend:
+    profiles: ['app']
     build:
       context: ../../..
       dockerfile: apps/frontend/Dockerfile
@@ -229,6 +230,7 @@ services:
           memory: 1G
 
   worker:
+    profiles: ['app']
     build:
       context: ../../..
       dockerfile: apps/worker/Dockerfile
@@ -343,7 +345,6 @@ volumes:
   localstack-data:
   prometheus-data:
   grafana-data:
-  node_modules:
 
 networks:
   dev-network:

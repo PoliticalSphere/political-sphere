@@ -96,9 +96,9 @@
   "initializeCommand": { "validate": "bash .devcontainer/scripts/validate-host.sh" },
   "onCreateCommand": {
     "env-setup": "bash .devcontainer/scripts/setup-env.sh",
-    "dependencies": "npm ci --prefer-offline --no-audit"
+    "dependencies": "bash .devcontainer/scripts/install-deps.sh"
   },
-  "updateContentCommand": { "update-deps": "npm ci --prefer-offline" },
+  "updateContentCommand": { "update-deps": "bash .devcontainer/scripts/install-deps.sh" },
   "postCreateCommand": {
     "wait": "bash .devcontainer/scripts/wait-for-services.sh",
     "prepare": "npm run prepare || echo 'Git hooks setup skipped'",
@@ -106,19 +106,6 @@
     "welcome": "echo '✅ Development environment ready! Run: bash .devcontainer/scripts/status-check.sh'"
   },
   "postAttachCommand": { "status": "bash .devcontainer/scripts/status-check.sh" },
-  "runArgs": [
-    "--security-opt=no-new-privileges",
-    "--cap-drop=ALL",
-    "--cap-add=NET_ADMIN",
-    "--cpus=2.0",
-    "--memory=4g",
-    "--memory-swap=8g",
-    "--pids-limit=1024",
-    "--name=political-sphere-dev",
-    "--tmpfs=/tmp:rw,noexec,nosuid,size=1g",
-    "--read-only",
-    "--tmpfs=/workspaces:rw,exec,size=10g"
-  ],
   "hostRequirements": { "cpus": 2, "memory": "4gb", "storage": "16gb" },
   "remoteUser": "node",
   "remoteEnv": {

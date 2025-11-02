@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- **Containerised environment**: Removed conflicting `--read-only` and `--tmpfs=/workspaces` flags from `.devcontainer/devcontainer.json` runArgs that prevented proper workspace mounting from docker-compose. The workspace is now properly bind-mounted from the host, allowing file changes to persist and the development environment to function correctly (2025-11-01)
+
 - AI Indexing: Added ANN recall integration test (`apps/dev/tests/integration/ann-recall.test.mjs`) comparing ANN `/vector-search` to brute-force baseline, with fallback and metrics checks (2025-11-01)
 
 ### Performance

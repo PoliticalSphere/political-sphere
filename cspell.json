@@ -74,7 +74,16 @@
     "pipefail",
     "isready",
     "PGPASSWORD",
-    "psql"
+    "psql",
+    "localstack",
+    "pgadmin",
+    "tmpfs",
+    "findstr",
+    "BUILDKIT",
+    "synchronisation",
+    "Containerised",
+    "Standardised",
+    "containerised"
   ],
   "ignorePaths": [
     "node_modules/**",

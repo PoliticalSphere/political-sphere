@@ -74,7 +74,7 @@ The devcontainer includes these features:
 - **Infrastructure as Code** (Terraform, TFLint, Terragrunt)
 - **AWS CLI** for cloud resource management
 - **Python 3.11** for scripting and automation
-- **Security hardening** with read-only filesystem and tmpfs mounts
+- **Security hardening** with capability restrictions and resource limits
 - **Performance optimization** with resource limits and efficient caching
 
 ## Lifecycle Hooks
@@ -166,6 +166,15 @@ docker compose version
 # View container logs
 docker compose -f apps/dev/docker/docker-compose.dev.yaml logs dev
 ```
+
+### Workspace files not persisting or mounting issues
+
+If file changes don't persist or the workspace appears empty:
+
+- Ensure `runArgs` in `devcontainer.json` don't include `--read-only` or `--tmpfs=/workspaces`
+- These flags conflict with the bind-mount from docker-compose
+- The workspace should be bind-mounted from the host via docker-compose, not as tmpfs
+- Rebuild the container after removing conflicting flags
 
 ### Services not ready
 
@@ -263,8 +272,8 @@ The container is optimized for development workloads:
 
 - **CPU**: 2 cores (scalable based on host capabilities)
 - **Memory**: 4GB with 8GB swap for burst capacity
-- **Storage**: tmpfs mounts for high-performance I/O
-- **Security**: Read-only root filesystem with controlled write access
+- **Storage**: Bind-mounted workspace with volume caching for node_modules
+- **Security**: Capability restrictions and resource limits enforced
 
 ### Volume Caching
 
@@ -363,19 +372,20 @@ If you were developing locally without devcontainer:
 
 ### Security Features
 
-- **Read-only root filesystem** prevents unauthorized modifications
-- **tmpfs mounts** provide secure temporary storage
-- **Capability restrictions** limit container privileges
+- **Capability restrictions** (`--cap-drop=ALL`, `--cap-add=NET_ADMIN`) limit container privileges
+- **Process limits** prevent fork bombs and resource exhaustion
 - **Non-root user** (node) for development operations
 - **Secure password generation** with high entropy
+- **No-new-privileges** security option prevents privilege escalation
 
 ### Performance Optimizations
 
-- **Resource limits** prevent resource exhaustion
-- **Volume caching** speeds up dependency installation
-- **tmpfs I/O** accelerates temporary file operations
+- **Resource limits** prevent resource exhaustion (CPU, memory, PIDs)
+- **Volume caching** speeds up dependency installation (node_modules, .nx/cache)
+- **tmpfs for /tmp** accelerates temporary file operations
 - **BuildKit** enables parallel and cached builds
 - **Incremental updates** minimize rebuild times
+- **Bind-mounted workspace** enables real-time file synchronisation
 
 ### Monitoring & Troubleshooting
 

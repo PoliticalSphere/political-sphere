@@ -1,7 +1,8 @@
 {
   "name": "@political-sphere/shared",
   "version": "0.0.1",
-  "type": "commonjs",
+  "description": "Shared utilities and libraries for Political Sphere applications",
+  "type": "module",
   "main": "./dist/src/index.js",
   "types": "./dist/src/index.d.ts",
   "exports": {

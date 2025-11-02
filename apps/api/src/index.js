@@ -1,8 +1,8 @@
-import { initializeDatabase, runMigrations } from './migrations';
-import { UserStore } from './user-store';
-import { PartyStore } from './party-store';
-import { BillStore } from './bill-store';
-import { VoteStore } from './vote-store';
+import { initializeDatabase, runMigrations } from "./migrations/index.js";
+import { UserStore } from "./user-store.js";
+import { PartyStore } from "./party-store.js";
+import { BillStore } from "./bill-store.js";
+import { VoteStore } from "./vote-store.js";
 export class DatabaseConnection {
   db;
   users;

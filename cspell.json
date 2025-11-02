@@ -143,7 +143,10 @@
     "AIGOV",
     "STRAT",
     "SARIF",
-    "Jaccard"
+    "Jaccard",
+    "nosniff",
+    "SEMRESATTRS",
+    "Millis"
   ],
   "ignorePaths": [
     "node_modules/**",

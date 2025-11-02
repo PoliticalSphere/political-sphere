@@ -5,18 +5,22 @@ receivers:
       http: {}
 
 exporters:
-  jaeger:
-    endpoint: 'jaeger:14250'
+  # Use OTLP exporter to send to Jaeger (which supports OTLP natively)
+  otlp/jaeger:
+    endpoint: 'jaeger:4317'
     tls:
       insecure: true
   prometheus:
-    endpoint: '0.0.0.0:8888'
+    endpoint: '0.0.0.0:8889'
+  # Debug logging for troubleshooting
+  logging:
+    verbosity: normal
 
 service:
   pipelines:
     traces:
       receivers: [otlp]
-      exporters: [jaeger]
+      exporters: [otlp/jaeger, logging]
     metrics:
       receivers: [otlp]
-      exporters: [prometheus]
+      exporters: [prometheus, logging]

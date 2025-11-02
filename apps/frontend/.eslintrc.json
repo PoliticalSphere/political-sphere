@@ -1,0 +1,6 @@
+{
+  "extends": "../../.eslintrc.json",
+  "rules": {
+    "@nrwl/nx/enforce-module-boundaries": "off"
+  }
+}

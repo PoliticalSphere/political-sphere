@@ -75,7 +75,17 @@ if command -v docker &> /dev/null && docker info &> /dev/null; then
         log_warning "Docker Compose not available"
     fi
 else
-    log_warning "Docker daemon not running or not accessible"
+    if [ -S "/var/run/docker.sock" ]; then
+        # Check for permission issue specifically
+        if docker info 2>&1 | grep -qi "permission denied\|got permission denied"; then
+            log_warning "Docker socket present but permission denied for current user"
+            log_info "Try running: bash .devcontainer/scripts/docker-socket-perms.sh, then reload window"
+        else
+            log_warning "Docker daemon not running or not accessible"
+        fi
+    else
+        log_warning "Docker socket not found; ensure host socket is mounted in docker-compose"
+    fi
 fi
 
 echo ""

@@ -149,7 +149,8 @@
     "Millis",
     "AUTOINCREMENT",
     "DPIA",
-    "endgroup"
+    "endgroup",
+    "USERPROFILE"
   ],
   "ignorePaths": [
     "node_modules/**",

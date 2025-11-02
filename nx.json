@@ -86,7 +86,36 @@
       "depConstraints": [
         {
           "sourceTag": "type:app",
-          "onlyDependOnLibsWithTags": ["type:ui", "type:feature", "type:data", "type:util"]
+          "onlyDependOnLibsWithTags": ["type:ui", "type:feature", "type:data", "type:util", "*"]
+        },
+        {
+          "sourceTag": "type:ui",
+          "onlyDependOnLibsWithTags": [
+            "type:ui",
+            "type:feature",
+            "type:data",
+            "type:util",
+            "type:library",
+            "*"
+          ]
+        },
+        {
+          "sourceTag": "type:service",
+          "onlyDependOnLibsWithTags": [
+            "type:feature",
+            "type:data",
+            "type:util",
+            "type:library",
+            "*"
+          ]
+        },
+        {
+          "sourceTag": "scope:frontend",
+          "onlyDependOnLibsWithTags": ["*"]
+        },
+        {
+          "sourceTag": "scope:worker",
+          "onlyDependOnLibsWithTags": ["*"]
         },
         { "sourceTag": "scope:core", "onlyDependOnLibsWithTags": ["scope:core"] }
       ]

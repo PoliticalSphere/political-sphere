@@ -114,10 +114,7 @@
     "9090": { "label": "Prometheus", "onAutoForward": "ignore" }
   },
   "initializeCommand": "bash .devcontainer/scripts/validate-host.sh",
-  "onCreateCommand": [
-    "bash .devcontainer/scripts/setup-env.sh",
-    "bash .devcontainer/scripts/install-deps.sh"
-  ],
+  "onCreateCommand": "cd /workspaces/political-sphere && bash .devcontainer/scripts/setup-env.sh && bash .devcontainer/scripts/install-deps.sh",
   "updateContentCommand": "bash .devcontainer/scripts/install-deps.sh",
   "postCreateCommand": [
     "bash .devcontainer/scripts/install-tools.sh",

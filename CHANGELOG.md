@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AI Deputy Mode: Enables Copilot and Blackbox to shadow changes and flag governance deviations in real-time, with proactive alerts, learning integration, and audit trails. (2025-01-10)
 - Universal audit command (`scripts/universal-audit.sh`) for comprehensive project auditing across all dimensions including code quality, security, AI governance, game simulation logic, accessibility, observability, and constitutional compliance
 - Integration of universal audit into controls system as blocker control to ensure comprehensive quality gates
+- **DevContainer startup troubleshooting**: Added `docs/DEVCONTAINER-STARTUP-ISSUES.md` with comprehensive guide for resolving container rebuild failures and command execution errors (2025-11-02)
 - **Docker helper script**: Added `scripts/docker-helper.sh` to manage Docker daemon and monitoring stack within dev container, with commands for starting/stopping services and checking status (2025-11-02)
 - **Container fixes documentation**: Added `docs/CONTAINER-FIXES.md` with comprehensive guide for resolving Docker-in-Docker permission issues and monitoring stack startup (2025-11-02)
 - **DevContainer extension debugging**: Added `debug-extensions.sh` script to troubleshoot VS Code extension loading issues, with comprehensive diagnostics and troubleshooting steps (2025-11-02)
@@ -21,6 +22,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **DevContainer startup failures**: Fixed critical issues preventing container rebuild and startup (2025-11-02):
+  - Removed problematic SSH mount that caused permission errors and build failures
+  - Changed `postCreateCommand` from array to resilient bash command with `set +e` to continue on errors
+  - Removed hard `exit 1` from build:shared failure that prevented container from starting
+  - Made all lifecycle commands non-blocking with proper warning messages
 - **Docker-in-Docker configuration**: Updated `apps/dev/docker/docker-compose.dev.yaml` to enable Docker-in-Docker functionality by adding `privileged: true` and required capabilities (SYS_ADMIN, NET_ADMIN), replacing overly restrictive security settings that prevented Docker daemon from starting (2025-11-02)
 - **Docker Compose version warning**: Removed obsolete `version: '3.8'` from `monitoring/docker-compose.yml` to eliminate deprecation warnings in Docker Compose v2 (2025-11-02)
 - DevContainer feature options: Removed unsupported `installYarnUsingApt` from Node feature and corrected `kubectl-helm-minikube` to use `kubectl` version key instead of `version`. This resolves Remote Containers feature parsing/build errors during devcontainer creation. (2025-11-02)

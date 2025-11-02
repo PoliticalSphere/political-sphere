@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - AI Intelligence & Competence Enhancement section with 13 improvements to speed up AI agents (Blackbox AI and GitHub Copilot) by narrowing scope, pre-fetching context, generating working memory files, predicting next steps, maintaining best snippet libraries, automatic diff previews, chunking tasks, caching decisions, guarding against rabbit holes, auto-creating dev helpers, opportunistic clean-as-you-go, pre-filling PR templates, and proactive daily improvements. (2025-01-10)
 - AI Deputy Mode: Enables Copilot and Blackbox to shadow changes and flag governance deviations in real-time, with proactive alerts, learning integration, and audit trails. (2025-01-10)
 - **DevContainer extension debugging**: Added `debug-extensions.sh` script to troubleshoot VS Code extension loading issues, with comprehensive diagnostics and troubleshooting steps (2025-11-02)
+- **DevContainer tool bootstrap**: Added `install-tools.sh` to install pnpm via corepack and optionally Nx CLI globally; wired into postCreate. Improves extension activation and script reliability by ensuring expected tools exist in the container. (2025-11-02)
+- **Docker socket permission helper**: Added `docker-socket-perms.sh` to detect host docker.sock GID, create matching group, and add the container user to enable Docker access; referenced from status checks. (2025-11-02)
 
 ### Fixed
 
@@ -34,6 +36,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Reduced ESLint warnings: tightened types in controls runner (`getByPath` uses unknown), removed unused imports in Git MCP placeholder, removed unused import in `scripts/find-leaky-types.ts`, removed `any` casts from telemetry error logging, and replaced explicit `any` in API stores with typed better-sqlite3 Statement generics (2025-11-02)
   - MCP servers lint cleanup: removed explicit `any` usage and added precise request param types; introduced safe error handling with `unknown` and message extraction; tightened Puppeteer `waitUntil` typing; added structural typing for `.connect(...)` to avoid `any` casts in Filesystem, Political Sphere, Puppeteer, and SQLite servers. Lint now passes with zero warnings. (2025-11-02)
   - DevContainer features: Replaced deprecated `ghcr.io/devcontainers-contrib/features/mkcert` with `ghcr.io/devcontainers-extra/features/mkcert`; removed unsupported `runArgs` for Compose-based devcontainer (to be enforced via docker-compose). JSON validation passes. (2025-11-02)
+  - Fixed invalid command schema usage in `.devcontainer/devcontainer.json`: replaced object maps for `initializeCommand`, `onCreateCommand`, and `updateContentCommand` with supported string/array forms to satisfy Remote Containers parser. (2025-11-02)
+  - Fixed SSH mount path: corrected `mounts` entry to use `${localEnv:HOME}/.ssh` (macOS/Linux) instead of concatenating HOME and USERPROFILE which produced an invalid path and prevented container start. (2025-11-02)
 
 - **DevContainer code review and improvements**: Reviewed all devcontainer files for readability, quality, and issues. Fixed incorrect source path in test-functions.sh, made telemetry opt-in by default for privacy, made IMAGE_NAME configurable in security-scan.sh, enhanced Dockerfile comments, removed unnecessary blank line in extensions list, and ensured consistent error handling across scripts (2025-11-02)
 - **DevContainer configuration**: Fixed multiple critical issues in `.devcontainer/devcontainer.json`:
@@ -46,6 +50,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Package scripts**: Added missing `build:shared` script to package.json to build shared libraries during dev container setup (2025-11-02)
 - **DevContainer extensions**: Corrected invalid extension identifiers in `customizations.vscode.extensions` (replaced `ms-vscode.vscode-jest` with `Orta.vscode-jest`, removed deprecated/built-in `ms-vscode.vscode-json`). Added a post-create reminder to trust the workspace so extensions can activate (2025-11-02)
   - **Extension reliability**: Added `Blackboxapp.blackbox` to the devcontainer extension list and configured `remote.extensionKind` to run Blackbox on the UI side, and Copilot on Workspace/UI as supported. Enabled automatic extension updates (2025-11-02)
+  - **Extension updates enabled**: Turned on `extensions.autoCheckUpdates` and `extensions.autoUpdate` to avoid stale/broken versions causing buffering; ensured Blackbox/Copilot run on the UI for remote containers. (2025-11-02)
+  - **Removed IPC override**: Removed `VSCODE_IPC_HOOK_CLI` containerEnv override which could interfere with VS Code CLI and extension activation in the container. (2025-11-02)
 - **Extension completeness**: Added tooling-aligned extensions: `GitHub.vscode-github-actions`, `EditorConfig.EditorConfig`, `streetsidesoftware.code-spell-checker`, `hashicorp.terraform`, `ms-vscode.makefile-tools`, and `mikestead.dotenv`. Mapped extension hosts for reliability (`remote.extensionKind`) (2025-11-02)
 
 ### Changed

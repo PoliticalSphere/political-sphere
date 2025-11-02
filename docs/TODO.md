@@ -40,6 +40,10 @@
 - [x] Removed explicit `any` types in GitHub MCP server; added safe narrowing for tool args and Octokit params (2025-11-02)
 - [x] Reduced ESLint warnings across custom MCP servers (filesystem, political-sphere, puppeteer, sqlite) by removing explicit `any`, adding precise request param types, safe `unknown` error handling, and structural `.connect(...)` typing; lint now passes with zero warnings (2025-11-02)
 - [x] DevContainer maintenance: Switched mkcert feature from deprecated `devcontainers-contrib` to `devcontainers-extra`; removed unsupported `runArgs` in Compose-based setup (follow-up: move constraints to docker-compose). JSON check passes. (2025-11-02)
+- [x] Ensure expected tools inside DevContainer: installed pnpm via corepack and optional global Nx CLI using `install-tools.sh`; wired into postCreate. (2025-11-02)
+- [x] Improve Docker access inside DevContainer: added `docker-socket-perms.sh` and enhanced diagnostics in `status-check.sh` for permission-denied vs. missing daemon; documented reload requirement. (2025-11-02)
+- [x] Improve extension reliability in remote containers: enabled extension auto updates, moved Blackbox/Copilot to UI host via `remote.extensionKind`, and removed IPC env override that could break CLI. (2025-11-02)
+- [x] Fix DevContainer command fields and SSH mount: replaced object maps for `initializeCommand`, `onCreateCommand`, and `updateContentCommand` with supported string/array forms; corrected SSH mount to `${localEnv:HOME}/.ssh` to avoid invalid path on macOS. (2025-11-02)
 
 ## Foundation & Strategy (High Priority)
 

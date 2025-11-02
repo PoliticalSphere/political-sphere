@@ -1,2 +1,2 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+// Placeholder for future Git MCP server implementation.
+// Intentionally left minimal to avoid unused import warnings.

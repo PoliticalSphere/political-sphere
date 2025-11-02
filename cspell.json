@@ -113,7 +113,12 @@
     "FPTP",
     "ABAC",
     "dataloaders",
-    "PITR"
+    "PITR",
+    "uuidv",
+    "domcontentloaded",
+    "networkidle",
+    "notnull",
+    "dflt"
   ],
   "ignorePaths": [
     "node_modules/**",

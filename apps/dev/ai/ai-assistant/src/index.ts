@@ -1,5 +1,5 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,
   ErrorCode,
@@ -7,7 +7,7 @@ import {
   ListToolsRequestSchema,
   McpError,
   ReadResourceRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
+} from "@modelcontextprotocol/sdk/types.js";
 
 interface McpRequest {
   params?: Record<string, unknown>;
@@ -16,13 +16,13 @@ interface McpRequest {
 
 class PoliticalSphereAIAssistant extends Server {
   private userRequests: Map<string, number[]> = new Map();
-  private rateLimitWindow: number = 60000; // 1 minute
-  private maxRequests: number = 10;
+  private rateLimitWindow = 60000; // 1 minute
+  private maxRequests = 10;
 
   constructor() {
     super({
-      name: 'political-sphere-ai-assistant',
-      version: '1.0.0',
+      name: "political-sphere-ai-assistant",
+      version: "1.0.0",
     });
 
     this.setRequestHandler(ListToolsRequestSchema, this.handleListTools.bind(this));
@@ -35,70 +35,70 @@ class PoliticalSphereAIAssistant extends Server {
     return {
       tools: [
         {
-          name: 'generate_code',
-          description: 'Generate code based on requirements with Political Sphere standards',
+          name: "generate_code",
+          description: "Generate code based on requirements with Political Sphere standards",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               requirement: {
-                type: 'string',
-                description: 'Code requirement description',
+                type: "string",
+                description: "Code requirement description",
               },
-              language: { type: 'string', description: 'Programming language' },
-              context: { type: 'string', description: 'Additional context' },
+              language: { type: "string", description: "Programming language" },
+              context: { type: "string", description: "Additional context" },
             },
-            required: ['requirement'],
+            required: ["requirement"],
           },
         },
         {
-          name: 'review_code',
-          description: 'Review code for quality, security, and standards compliance',
+          name: "review_code",
+          description: "Review code for quality, security, and standards compliance",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              code: { type: 'string', description: 'Code to review' },
-              language: { type: 'string', description: 'Programming language' },
+              code: { type: "string", description: "Code to review" },
+              language: { type: "string", description: "Programming language" },
             },
-            required: ['code'],
+            required: ["code"],
           },
         },
         {
-          name: 'optimize_performance',
-          description: 'Analyze and suggest performance optimizations',
+          name: "optimize_performance",
+          description: "Analyze and suggest performance optimizations",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              code: { type: 'string', description: 'Code to optimize' },
-              context: { type: 'string', description: 'Performance context' },
+              code: { type: "string", description: "Code to optimize" },
+              context: { type: "string", description: "Performance context" },
             },
-            required: ['code'],
+            required: ["code"],
           },
         },
         {
-          name: 'generate_tests',
-          description: 'Generate comprehensive test cases',
+          name: "generate_tests",
+          description: "Generate comprehensive test cases",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              code: { type: 'string', description: 'Code to test' },
+              code: { type: "string", description: "Code to test" },
               testType: {
-                type: 'string',
-                enum: ['unit', 'integration', 'e2e'],
+                type: "string",
+                enum: ["unit", "integration", "e2e"],
               },
             },
-            required: ['code'],
+            required: ["code"],
           },
         },
         {
-          name: 'simulate_scenario',
-          description: 'Simulate scenarios for testing and planning',
+          name: "simulate_scenario",
+          description: "Simulate scenarios for testing and planning",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
-              scenario: { type: 'string', description: 'Scenario description' },
-              parameters: { type: 'object', description: 'Simulation parameters' },
+              scenario: { type: "string", description: "Scenario description" },
+              parameters: { type: "object", description: "Simulation parameters" },
             },
-            required: ['scenario'],
+            required: ["scenario"],
           },
         },
       ],
@@ -112,50 +112,50 @@ class PoliticalSphereAIAssistant extends Server {
     };
 
     // Type guard for args
-    if (!args || typeof args !== 'object') {
-      throw new McpError(ErrorCode.InvalidRequest, 'Invalid arguments');
+    if (!args || typeof args !== "object") {
+      throw new McpError(ErrorCode.InvalidRequest, "Invalid arguments");
     }
 
     const typedArgs = args as Record<string, unknown>;
 
     // Security and safety checks
     if (this.detectAbuse(typedArgs)) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Abusive content detected');
+      throw new McpError(ErrorCode.InvalidRequest, "Abusive content detected");
     }
 
-    if (this.checkRateLimit(request.userId || 'anonymous')) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Rate limit exceeded');
+    if (this.checkRateLimit(request.userId || "anonymous")) {
+      throw new McpError(ErrorCode.InvalidRequest, "Rate limit exceeded");
     }
 
     if (!this.checkFairness(typedArgs)) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Request may introduce unfair bias');
+      throw new McpError(ErrorCode.InvalidRequest, "Request may introduce unfair bias");
     }
 
     if (this.detectConstitutionalViolation(typedArgs)) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Content violates constitutional safety');
+      throw new McpError(ErrorCode.InvalidRequest, "Content violates constitutional safety");
     }
 
-    if (!this.checkCommandSafety(name || '', typedArgs)) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Command is not safe to execute');
+    if (!this.checkCommandSafety(name || "", typedArgs)) {
+      throw new McpError(ErrorCode.InvalidRequest, "Command is not safe to execute");
     }
 
     // Log for audit and causality awareness
     this.logInteraction(request);
 
     switch (name) {
-      case 'generate_code':
+      case "generate_code":
         return await this.generateCode(
-          typedArgs as { requirement: string; language?: string; context?: string }
+          typedArgs as { requirement: string; language?: string; context?: string },
         );
-      case 'review_code':
+      case "review_code":
         return await this.reviewCode(typedArgs as { code: string; language?: string });
-      case 'optimize_performance':
+      case "optimize_performance":
         return await this.optimizePerformance(typedArgs as { code: string; context?: string });
-      case 'generate_tests':
+      case "generate_tests":
         return await this.generateTests(typedArgs as { code: string });
-      case 'simulate_scenario':
+      case "simulate_scenario":
         return await this.simulateScenario(
-          typedArgs as { scenario: string; parameters?: Record<string, unknown> }
+          typedArgs as { scenario: string; parameters?: Record<string, unknown> },
         );
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
@@ -171,7 +171,7 @@ class PoliticalSphereAIAssistant extends Server {
  * ${requirement}
  */
 
-export class ${this.toPascalCase(requirement.replace(/\W+/g, ' '))} {
+export class ${this.toPascalCase(requirement.replace(/\W+/g, " "))} {
   constructor(private config: Config) {}
 
   async execute(): Promise<Result> {
@@ -223,7 +223,7 @@ interface Result {
 }`;
 
     return {
-      content: [{ type: 'text', text: generatedCode }],
+      content: [{ type: "text", text: generatedCode }],
     };
   }
 
@@ -235,33 +235,33 @@ interface Result {
       score: 8.5,
       issues: [
         {
-          type: 'style',
-          severity: 'low',
-          message: 'Consider using more descriptive variable names',
+          type: "style",
+          severity: "low",
+          message: "Consider using more descriptive variable names",
           line: 15,
         },
         {
-          type: 'security',
-          severity: 'medium',
-          message: 'Input validation could be more comprehensive',
+          type: "security",
+          severity: "medium",
+          message: "Input validation could be more comprehensive",
           line: 25,
         },
       ],
       suggestions: [
-        'Add JSDoc comments for better documentation',
-        'Consider implementing error boundaries',
-        'Add unit tests for edge cases',
+        "Add JSDoc comments for better documentation",
+        "Consider implementing error boundaries",
+        "Add unit tests for edge cases",
       ],
       standards: {
-        'Political Sphere Code Standards': '✅ Compliant',
-        'Security Best Practices': '⚠️ Minor improvements needed',
-        'Performance Guidelines': '✅ Compliant',
-        'Testing Coverage': '⚠️ Additional tests recommended',
+        "Political Sphere Code Standards": "✅ Compliant",
+        "Security Best Practices": "⚠️ Minor improvements needed",
+        "Performance Guidelines": "✅ Compliant",
+        "Testing Coverage": "⚠️ Additional tests recommended",
       },
     };
 
     return {
-      content: [{ type: 'text', text: JSON.stringify(review, null, 2) }],
+      content: [{ type: "text", text: JSON.stringify(review, null, 2) }],
     };
   }
 
@@ -271,27 +271,27 @@ interface Result {
 
     const optimizations = [
       {
-        type: 'algorithm',
-        suggestion: 'Consider using a more efficient sorting algorithm for large datasets',
-        impact: 'high',
-        effort: 'medium',
+        type: "algorithm",
+        suggestion: "Consider using a more efficient sorting algorithm for large datasets",
+        impact: "high",
+        effort: "medium",
       },
       {
-        type: 'memory',
-        suggestion: 'Implement streaming for large file processing to reduce memory usage',
-        impact: 'medium',
-        effort: 'high',
+        type: "memory",
+        suggestion: "Implement streaming for large file processing to reduce memory usage",
+        impact: "medium",
+        effort: "high",
       },
       {
-        type: 'caching',
-        suggestion: 'Add Redis caching for frequently accessed data',
-        impact: 'high',
-        effort: 'low',
+        type: "caching",
+        suggestion: "Add Redis caching for frequently accessed data",
+        impact: "high",
+        effort: "low",
       },
     ];
 
     return {
-      content: [{ type: 'text', text: JSON.stringify({ optimizations }, null, 2) }],
+      content: [{ type: "text", text: JSON.stringify({ optimizations }, null, 2) }],
     };
   }
 
@@ -343,7 +343,7 @@ describe('${this.extractClassName(code)}', () => {
 });`;
 
     return {
-      content: [{ type: 'text', text: testCode }],
+      content: [{ type: "text", text: testCode }],
     };
   }
 
@@ -355,23 +355,23 @@ describe('${this.extractClassName(code)}', () => {
       scenario,
       parameters,
       outcomes: [
-        'Successful execution with expected results',
-        'Potential failure points identified',
-        'Performance bottlenecks simulated',
-        'Risk assessment completed',
+        "Successful execution with expected results",
+        "Potential failure points identified",
+        "Performance bottlenecks simulated",
+        "Risk assessment completed",
       ],
       recommendations: [
-        'Implement monitoring for critical paths',
-        'Add fallback mechanisms',
-        'Test edge cases thoroughly',
-        'Document assumptions and constraints',
+        "Implement monitoring for critical paths",
+        "Add fallback mechanisms",
+        "Test edge cases thoroughly",
+        "Document assumptions and constraints",
       ],
-      riskLevel: 'Medium',
-      estimatedImpact: 'High visibility improvement',
+      riskLevel: "Medium",
+      estimatedImpact: "High visibility improvement",
     };
 
     return {
-      content: [{ type: 'text', text: JSON.stringify(simulationResult, null, 2) }],
+      content: [{ type: "text", text: JSON.stringify(simulationResult, null, 2) }],
     };
   }
 
@@ -379,22 +379,22 @@ describe('${this.extractClassName(code)}', () => {
     return {
       resources: [
         {
-          uri: 'standards://political-sphere/code-standards',
-          name: 'Political Sphere Code Standards',
-          description: 'Comprehensive coding standards and best practices',
-          mimeType: 'application/json',
+          uri: "standards://political-sphere/code-standards",
+          name: "Political Sphere Code Standards",
+          description: "Comprehensive coding standards and best practices",
+          mimeType: "application/json",
         },
         {
-          uri: 'knowledge://political-sphere/architecture-patterns',
-          name: 'Architecture Patterns',
-          description: 'Reusable architectural patterns and templates',
-          mimeType: 'application/json',
+          uri: "knowledge://political-sphere/architecture-patterns",
+          name: "Architecture Patterns",
+          description: "Reusable architectural patterns and templates",
+          mimeType: "application/json",
         },
         {
-          uri: 'metrics://ai/performance',
-          name: 'AI Performance Metrics',
-          description: 'Performance metrics for AI operations',
-          mimeType: 'application/json',
+          uri: "metrics://ai/performance",
+          name: "AI Performance Metrics",
+          description: "Performance metrics for AI operations",
+          mimeType: "application/json",
         },
       ],
     };
@@ -404,64 +404,64 @@ describe('${this.extractClassName(code)}', () => {
     const { uri } = (request.params || {}) as { uri?: string };
 
     switch (uri) {
-      case 'standards://political-sphere/code-standards':
+      case "standards://political-sphere/code-standards":
         return {
           contents: [
             {
               uri,
-              mimeType: 'application/json',
+              mimeType: "application/json",
               text: JSON.stringify(
                 {
-                  naming: 'camelCase for variables, PascalCase for classes',
-                  errorHandling: 'Use try/catch with specific error types',
-                  testing: 'Minimum 80% coverage, integration tests required',
-                  security: 'Input validation, no hardcoded secrets',
-                  performance: 'Optimize for O(n) complexity, use caching',
+                  naming: "camelCase for variables, PascalCase for classes",
+                  errorHandling: "Use try/catch with specific error types",
+                  testing: "Minimum 80% coverage, integration tests required",
+                  security: "Input validation, no hardcoded secrets",
+                  performance: "Optimize for O(n) complexity, use caching",
                 },
                 null,
-                2
+                2,
               ),
             },
           ],
         };
 
-      case 'knowledge://political-sphere/architecture-patterns':
+      case "knowledge://political-sphere/architecture-patterns":
         return {
           contents: [
             {
               uri,
-              mimeType: 'application/json',
+              mimeType: "application/json",
               text: JSON.stringify(
                 {
                   patterns: [
-                    'Repository Pattern for data access',
-                    'Observer Pattern for event handling',
-                    'Strategy Pattern for algorithm selection',
-                    'Factory Pattern for object creation',
+                    "Repository Pattern for data access",
+                    "Observer Pattern for event handling",
+                    "Strategy Pattern for algorithm selection",
+                    "Factory Pattern for object creation",
                   ],
                 },
                 null,
-                2
+                2,
               ),
             },
           ],
         };
 
-      case 'metrics://ai/performance':
+      case "metrics://ai/performance":
         return {
           contents: [
             {
               uri,
-              mimeType: 'application/json',
+              mimeType: "application/json",
               text: JSON.stringify(
                 {
-                  responseTime: 'Average 2.3s for code generation',
-                  accuracy: '94% code compilation success rate',
-                  usage: '150 requests/day',
-                  satisfaction: '4.7/5 user rating',
+                  responseTime: "Average 2.3s for code generation",
+                  accuracy: "94% code compilation success rate",
+                  usage: "150 requests/day",
+                  satisfaction: "4.7/5 user rating",
                 },
                 null,
-                2
+                2,
               ),
             },
           ],
@@ -475,35 +475,42 @@ describe('${this.extractClassName(code)}', () => {
   private toPascalCase(str: string): string {
     return str
       .replace(/(?:^\w|[A-Z]|\b\w)/g, (word, index) =>
-        index === 0 ? word.toUpperCase() : word.toUpperCase()
+        index === 0 ? word.toUpperCase() : word.toUpperCase(),
       )
-      .replace(/\s+/g, '');
+      .replace(/\s+/g, "");
   }
 
   private extractClassName(code: string): string {
     const match = code.match(/class\s+(\w+)/);
-    return match ? match[1] : 'UnknownClass';
+    return match?.[1] ?? "UnknownClass";
   }
 
   private extractFileName(): string {
     // Simple heuristic - in real implementation, use file path
-    return 'implementation';
+    return "implementation";
   }
 
   private detectAbuse(args: Record<string, unknown>): boolean {
     const content = JSON.stringify(args).toLowerCase();
-    return content.includes('abuse') || content.includes('harm');
+    return content.includes("abuse") || content.includes("harm");
   }
 
   private checkRateLimit(userId: string): boolean {
     const now = Date.now();
+    const requests = this.userRequests.get(userId) ?? [];
+    // Ensure the map stores the same array instance so future calls see history
     if (!this.userRequests.has(userId)) {
-      this.userRequests.set(userId, []);
+      this.userRequests.set(userId, requests);
     }
-    const requests = this.userRequests.get(userId)!;
     // Remove old requests
-    while (requests.length > 0 && now - requests[0] > this.rateLimitWindow) {
-      requests.shift();
+    while (requests.length > 0) {
+      const oldest = requests[0];
+      if (oldest === undefined) break;
+      if (now - oldest > this.rateLimitWindow) {
+        requests.shift();
+      } else {
+        break;
+      }
     }
     if (requests.length >= this.maxRequests) {
       return true; // exceeded
@@ -514,13 +521,13 @@ describe('${this.extractClassName(code)}', () => {
 
   private checkFairness(args: Record<string, unknown>): boolean {
     const content = JSON.stringify(args).toLowerCase();
-    const biasWords = ['bias', 'unfair'];
+    const biasWords = ["bias", "unfair"];
     return !biasWords.some((word) => content.includes(word));
   }
 
   private detectConstitutionalViolation(args: Record<string, unknown>): boolean {
     const content = JSON.stringify(args).toLowerCase();
-    return content.includes('unconstitutional');
+    return content.includes("unconstitutional");
   }
 
   private checkCommandSafety(_name: string, _args: Record<string, unknown>): boolean {
@@ -531,7 +538,7 @@ describe('${this.extractClassName(code)}', () => {
   }
 
   private logInteraction(request: McpRequest) {
-    console.log(`Interaction: ${request.params?.name} by ${request.userId || 'anonymous'}`);
+    console.log(`Interaction: ${request.params?.name} by ${request.userId || "anonymous"}`);
   }
 }
 
@@ -539,9 +546,9 @@ async function main() {
   const server = new PoliticalSphereAIAssistant();
   const transport = new StdioServerTransport();
   await (server as unknown as { connect(t: StdioServerTransport): Promise<void> }).connect(
-    transport
+    transport,
   );
-  console.error('Political Sphere AI Assistant MCP server running...');
+  console.error("Political Sphere AI Assistant MCP server running...");
 }
 
 main().catch(console.error);

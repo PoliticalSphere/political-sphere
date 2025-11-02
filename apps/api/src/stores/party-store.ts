@@ -1,6 +1,14 @@
-import Database from 'better-sqlite3';
-import { v4 as uuidv4 } from 'uuid';
-import { Party, CreatePartyInput } from '@political-sphere/shared';
+import Database from "better-sqlite3";
+import { v4 as uuidv4 } from "uuid";
+import { Party, CreatePartyInput } from "@political-sphere/shared";
+
+interface PartyRow {
+  id: string;
+  name: string;
+  description: string | null;
+  color: string;
+  created_at: string;
+}
 
 export class PartyStore {
   constructor(private db: Database.Database) {}
@@ -26,55 +34,48 @@ export class PartyStore {
   }
 
   getById(id: string): Party | null {
-    const stmt = this.db.prepare(`
-      SELECT id, name, description, color, created_at
-      FROM parties
-      WHERE id = ?
-    `);
-
-    const row = stmt.get(id) as any;
+    const row = this.db
+      .prepare<[string], PartyRow>(
+        `SELECT id, name, description, color, created_at FROM parties WHERE id = ?`,
+      )
+      .get(id);
     if (!row) return null;
 
     return {
       id: row.id,
       name: row.name,
-      description: row.description,
+      description: row.description ?? undefined,
       color: row.color,
       createdAt: new Date(row.created_at),
     };
   }
 
   getByName(name: string): Party | null {
-    const stmt = this.db.prepare(`
-      SELECT id, name, description, color, created_at
-      FROM parties
-      WHERE name = ?
-    `);
-
-    const row = stmt.get(name) as any;
+    const row = this.db
+      .prepare<[string], PartyRow>(
+        `SELECT id, name, description, color, created_at FROM parties WHERE name = ?`,
+      )
+      .get(name);
     if (!row) return null;
 
     return {
       id: row.id,
       name: row.name,
-      description: row.description,
+      description: row.description ?? undefined,
       color: row.color,
       createdAt: new Date(row.created_at),
     };
   }
 
   getAll(): Party[] {
-    const stmt = this.db.prepare(`
-      SELECT id, name, description, color, created_at
-      FROM parties
-      ORDER BY created_at DESC
-    `);
-
-    const rows = stmt.all() as any[];
+    const stmt = this.db.prepare<[], PartyRow>(
+      `SELECT id, name, description, color, created_at FROM parties ORDER BY created_at DESC`,
+    );
+    const rows = stmt.all();
     return rows.map((row) => ({
       id: row.id,
       name: row.name,
-      description: row.description,
+      description: row.description ?? undefined,
       color: row.color,
       createdAt: new Date(row.created_at),
     }));

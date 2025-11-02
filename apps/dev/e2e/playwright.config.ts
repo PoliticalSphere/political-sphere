@@ -1,18 +1,18 @@
-import { defineConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from "@playwright/test";
 
 export default defineConfig({
-  testDir: './tests',
+  testDir: "./tests",
   timeout: 30_000,
   expect: { timeout: 5000 },
   fullyParallel: true,
-  reporter: [['html', { outputFolder: 'playwright-report' }]],
+  reporter: [["html", { outputFolder: "playwright-report" }]],
   use: {
     headless: true,
     viewport: { width: 1280, height: 720 },
     actionTimeout: 10_000,
-    baseURL: process.env.E2E_BASE_URL || 'http://localhost:3000',
+    baseURL: process.env.E2E_BASE_URL || "http://localhost:3000",
   },
-  projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'] } }],
+  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
   /* Enable sharding for CI */
-  shard: process.env.CI ? { current: 1, total: 3 } : undefined,
+  shard: process.env.CI ? { current: 1, total: 3 } : null,
 });

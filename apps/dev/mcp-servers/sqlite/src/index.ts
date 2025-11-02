@@ -1,5 +1,5 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,
   ErrorCode,
@@ -7,9 +7,9 @@ import {
   ListToolsRequestSchema,
   McpError,
   ReadResourceRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
-import Database from 'better-sqlite3';
-import path from 'path';
+} from "@modelcontextprotocol/sdk/types.js";
+import Database from "better-sqlite3";
+import path from "path";
 
 class SQLiteMCPServer extends Server {
   private db: Database.Database | null = null;
@@ -17,8 +17,8 @@ class SQLiteMCPServer extends Server {
 
   constructor() {
     super({
-      name: 'political-sphere-sqlite',
-      version: '1.0.0',
+      name: "political-sphere-sqlite",
+      version: "1.0.0",
     });
 
     this.setRequestHandler(ListToolsRequestSchema, this.handleListTools.bind(this));
@@ -32,72 +32,72 @@ class SQLiteMCPServer extends Server {
 
   private initializeDatabase() {
     // Database will be initialized when connect_db tool is called
-    console.log('SQLite MCP server initialized - waiting for database connection');
+    console.log("SQLite MCP server initialized - waiting for database connection");
   }
 
   async handleListTools() {
     return {
       tools: [
         {
-          name: 'connect_db',
-          description: 'Connect to a SQLite database file',
+          name: "connect_db",
+          description: "Connect to a SQLite database file",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               path: {
-                type: 'string',
-                description: 'Path to the SQLite database file',
+                type: "string",
+                description: "Path to the SQLite database file",
               },
             },
-            required: ['path'],
+            required: ["path"],
           },
         },
         {
-          name: 'execute_query',
-          description: 'Execute a SQL query (SELECT only for safety)',
+          name: "execute_query",
+          description: "Execute a SQL query (SELECT only for safety)",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               query: {
-                type: 'string',
-                description: 'SQL query to execute (SELECT only)',
+                type: "string",
+                description: "SQL query to execute (SELECT only)",
               },
               params: {
-                type: 'array',
-                description: 'Query parameters',
-                items: { type: 'string' },
+                type: "array",
+                description: "Query parameters",
+                items: { type: "string" },
               },
             },
-            required: ['query'],
+            required: ["query"],
           },
         },
         {
-          name: 'list_tables',
-          description: 'List all tables in the connected database',
+          name: "list_tables",
+          description: "List all tables in the connected database",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {},
           },
         },
         {
-          name: 'get_table_schema',
-          description: 'Get schema information for a specific table',
+          name: "get_table_schema",
+          description: "Get schema information for a specific table",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               table: {
-                type: 'string',
-                description: 'Table name',
+                type: "string",
+                description: "Table name",
               },
             },
-            required: ['table'],
+            required: ["table"],
           },
         },
         {
-          name: 'disconnect_db',
-          description: 'Disconnect from the current database',
+          name: "disconnect_db",
+          description: "Disconnect from the current database",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {},
           },
         },
@@ -105,25 +105,25 @@ class SQLiteMCPServer extends Server {
     };
   }
 
-  async handleCallTool(request: any) {
+  async handleCallTool(request: { params: { name: string; arguments?: unknown } }) {
     const { name, arguments: args } = request.params;
 
-    if (!args || typeof args !== 'object') {
-      throw new McpError(ErrorCode.InvalidRequest, 'Invalid arguments');
+    if (!args || typeof args !== "object") {
+      throw new McpError(ErrorCode.InvalidRequest, "Invalid arguments");
     }
 
     const typedArgs = args as Record<string, unknown>;
 
     switch (name) {
-      case 'connect_db':
+      case "connect_db":
         return await this.connectDB(typedArgs as { path: string });
-      case 'execute_query':
+      case "execute_query":
         return await this.executeQuery(typedArgs as { query: string; params?: string[] });
-      case 'list_tables':
+      case "list_tables":
         return await this.listTables();
-      case 'get_table_schema':
+      case "get_table_schema":
         return await this.getTableSchema(typedArgs as { table: string });
-      case 'disconnect_db':
+      case "disconnect_db":
         return await this.disconnectDB();
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
@@ -135,15 +135,15 @@ class SQLiteMCPServer extends Server {
       // Security: only allow access to specific directories
       const allowedDirs = [
         process.cwd(),
-        path.join(process.cwd(), 'data'),
-        path.join(process.cwd(), 'db'),
+        path.join(process.cwd(), "data"),
+        path.join(process.cwd(), "db"),
       ];
 
       const resolvedPath = path.resolve(args.path);
       const isAllowed = allowedDirs.some((dir) => resolvedPath.startsWith(dir));
 
       if (!isAllowed) {
-        throw new McpError(ErrorCode.InvalidRequest, 'Database path not allowed');
+        throw new McpError(ErrorCode.InvalidRequest, "Database path not allowed");
       }
 
       // Close existing connection if any
@@ -155,29 +155,27 @@ class SQLiteMCPServer extends Server {
       this.dbPath = resolvedPath;
 
       // Enable WAL mode for better concurrency
-      this.db.pragma('journal_mode = WAL');
+      this.db.pragma("journal_mode = WAL");
 
       return {
-        content: [{ type: 'text', text: `Connected to database: ${resolvedPath}` }],
+        content: [{ type: "text", text: `Connected to database: ${resolvedPath}` }],
       };
-    } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Failed to connect to database: ${error.message}`
-      );
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to connect to database: ${message}`);
     }
   }
 
   private async executeQuery(args: { query: string; params?: string[] }) {
     if (!this.db) {
-      throw new McpError(ErrorCode.InvalidRequest, 'No database connected');
+      throw new McpError(ErrorCode.InvalidRequest, "No database connected");
     }
 
     try {
       // Security: only allow SELECT queries
       const query = args.query.trim().toUpperCase();
-      if (!query.startsWith('SELECT')) {
-        throw new McpError(ErrorCode.InvalidRequest, 'Only SELECT queries are allowed');
+      if (!query.startsWith("SELECT")) {
+        throw new McpError(ErrorCode.InvalidRequest, "Only SELECT queries are allowed");
       }
 
       const stmt = this.db.prepare(args.query);
@@ -185,16 +183,17 @@ class SQLiteMCPServer extends Server {
       const results = stmt.all(...params);
 
       return {
-        content: [{ type: 'text', text: JSON.stringify(results, null, 2) }],
+        content: [{ type: "text", text: JSON.stringify(results, null, 2) }],
       };
-    } catch (error: any) {
-      throw new McpError(ErrorCode.InternalError, `Failed to execute query: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to execute query: ${message}`);
     }
   }
 
   private async listTables() {
     if (!this.db) {
-      throw new McpError(ErrorCode.InvalidRequest, 'No database connected');
+      throw new McpError(ErrorCode.InvalidRequest, "No database connected");
     }
 
     try {
@@ -205,36 +204,43 @@ class SQLiteMCPServer extends Server {
         ORDER BY name
       `;
       const stmt = this.db.prepare(query);
-      const results = stmt.all();
+      const results = stmt.all() as Array<{ name: string }>;
 
-      const tables = results.map((row: any) => row.name);
+      const tables = results.map((row) => row.name);
 
       return {
-        content: [{ type: 'text', text: JSON.stringify(tables, null, 2) }],
+        content: [{ type: "text", text: JSON.stringify(tables, null, 2) }],
       };
-    } catch (error: any) {
-      throw new McpError(ErrorCode.InternalError, `Failed to list tables: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to list tables: ${message}`);
     }
   }
 
   private async getTableSchema(args: { table: string }) {
     if (!this.db) {
-      throw new McpError(ErrorCode.InvalidRequest, 'No database connected');
+      throw new McpError(ErrorCode.InvalidRequest, "No database connected");
     }
 
     try {
       // Validate table name to prevent SQL injection
       if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(args.table)) {
-        throw new McpError(ErrorCode.InvalidRequest, 'Invalid table name');
+        throw new McpError(ErrorCode.InvalidRequest, "Invalid table name");
       }
 
       const query = `PRAGMA table_info(${args.table})`;
       const stmt = this.db.prepare(query);
-      const columns = stmt.all();
+      const columns = stmt.all() as Array<{
+        name: string;
+        type: string;
+        notnull: number;
+        pk: number;
+        dflt_value: unknown;
+      }>;
 
       const schema = {
         table: args.table,
-        columns: columns.map((col: any) => ({
+        columns: columns.map((col) => ({
           name: col.name,
           type: col.type,
           notnull: col.notnull,
@@ -244,10 +250,11 @@ class SQLiteMCPServer extends Server {
       };
 
       return {
-        content: [{ type: 'text', text: JSON.stringify(schema, null, 2) }],
+        content: [{ type: "text", text: JSON.stringify(schema, null, 2) }],
       };
-    } catch (error: any) {
-      throw new McpError(ErrorCode.InternalError, `Failed to get table schema: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to get table schema: ${message}`);
     }
   }
 
@@ -258,11 +265,11 @@ class SQLiteMCPServer extends Server {
       this.dbPath = null;
 
       return {
-        content: [{ type: 'text', text: 'Disconnected from database' }],
+        content: [{ type: "text", text: "Disconnected from database" }],
       };
     } else {
       return {
-        content: [{ type: 'text', text: 'No database connection to close' }],
+        content: [{ type: "text", text: "No database connection to close" }],
       };
     }
   }
@@ -273,19 +280,19 @@ class SQLiteMCPServer extends Server {
     if (this.dbPath) {
       resources.push({
         uri: `sqlite://current-db`,
-        name: 'Current Database Info',
-        description: 'Information about the currently connected database',
-        mimeType: 'application/json',
+        name: "Current Database Info",
+        description: "Information about the currently connected database",
+        mimeType: "application/json",
       });
     }
 
     return { resources };
   }
 
-  async handleReadResource(request: any) {
+  async handleReadResource(request: { params: { uri: string } }) {
     const { uri } = request.params;
 
-    if (uri === 'sqlite://current-db' && this.dbPath) {
+    if (uri === "sqlite://current-db" && this.dbPath) {
       const info = {
         path: this.dbPath,
         connected: this.db !== null,
@@ -296,7 +303,7 @@ class SQLiteMCPServer extends Server {
         contents: [
           {
             uri,
-            mimeType: 'application/json',
+            mimeType: "application/json",
             text: JSON.stringify(info, null, 2),
           },
         ],
@@ -317,8 +324,8 @@ class SQLiteMCPServer extends Server {
         ORDER BY name
       `;
       const stmt = this.db.prepare(query);
-      const results = stmt.all();
-      return results.map((row: any) => row.name);
+      const results = stmt.all() as Array<{ name: string }>;
+      return results.map((row) => row.name);
     } catch {
       return [];
     }
@@ -328,8 +335,10 @@ class SQLiteMCPServer extends Server {
 async function main() {
   const server = new SQLiteMCPServer();
   const transport = new StdioServerTransport();
-  await (server as any).connect(transport);
-  console.error('Political Sphere SQLite MCP server running...');
+  await (server as unknown as { connect: (t: StdioServerTransport) => Promise<void> }).connect(
+    transport,
+  );
+  console.error("Political Sphere SQLite MCP server running...");
 }
 
 main().catch(console.error);

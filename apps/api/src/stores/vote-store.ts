@@ -1,6 +1,20 @@
-import Database from 'better-sqlite3';
-import { v4 as uuidv4 } from 'uuid';
-import { Vote, CreateVoteInput, VoteType } from '@political-sphere/shared';
+import Database from "better-sqlite3";
+import { v4 as uuidv4 } from "uuid";
+import { Vote, CreateVoteInput, VoteType } from "@political-sphere/shared";
+
+interface VoteRow {
+  id: string;
+  bill_id: string;
+  user_id: string;
+  vote: VoteType | string;
+  created_at: string;
+}
+
+interface VoteCountRow {
+  aye: number | null;
+  nay: number | null;
+  abstain: number | null;
+}
 
 export class VoteStore {
   constructor(private db: Database.Database) {}
@@ -26,13 +40,11 @@ export class VoteStore {
   }
 
   getById(id: string): Vote | null {
-    const stmt = this.db.prepare(`
-      SELECT id, bill_id, user_id, vote, created_at
-      FROM votes
-      WHERE id = ?
-    `);
-
-    const row = stmt.get(id) as any;
+    const row = this.db
+      .prepare<[string], VoteRow>(
+        `SELECT id, bill_id, user_id, vote, created_at FROM votes WHERE id = ?`,
+      )
+      .get(id);
     if (!row) return null;
 
     return {
@@ -45,14 +57,10 @@ export class VoteStore {
   }
 
   getByBillId(billId: string): Vote[] {
-    const stmt = this.db.prepare(`
-      SELECT id, bill_id, user_id, vote, created_at
-      FROM votes
-      WHERE bill_id = ?
-      ORDER BY created_at DESC
-    `);
-
-    const rows = stmt.all(billId) as any[];
+    const stmt = this.db.prepare<[string], VoteRow>(
+      `SELECT id, bill_id, user_id, vote, created_at FROM votes WHERE bill_id = ? ORDER BY created_at DESC`,
+    );
+    const rows = stmt.all(billId);
     return rows.map((row) => ({
       id: row.id,
       billId: row.bill_id,
@@ -63,14 +71,10 @@ export class VoteStore {
   }
 
   getByUserId(userId: string): Vote[] {
-    const stmt = this.db.prepare(`
-      SELECT id, bill_id, user_id, vote, created_at
-      FROM votes
-      WHERE user_id = ?
-      ORDER BY created_at DESC
-    `);
-
-    const rows = stmt.all(userId) as any[];
+    const stmt = this.db.prepare<[string], VoteRow>(
+      `SELECT id, bill_id, user_id, vote, created_at FROM votes WHERE user_id = ? ORDER BY created_at DESC`,
+    );
+    const rows = stmt.all(userId);
     return rows.map((row) => ({
       id: row.id,
       billId: row.bill_id,
@@ -81,31 +85,28 @@ export class VoteStore {
   }
 
   hasUserVotedOnBill(userId: string, billId: string): boolean {
-    const stmt = this.db.prepare(`
-      SELECT COUNT(*) as count
-      FROM votes
-      WHERE user_id = ? AND bill_id = ?
-    `);
-
-    const row = stmt.get(userId, billId) as any;
-    return row.count > 0;
+    const stmt = this.db.prepare<[string, string], { count: number | null }>(
+      `SELECT COUNT(*) as count FROM votes WHERE user_id = ? AND bill_id = ?`,
+    );
+    const row = stmt.get(userId, billId);
+    return (row?.count ?? 0) > 0;
   }
 
   getVoteCounts(billId: string): { aye: number; nay: number; abstain: number } {
-    const stmt = this.db.prepare(`
-      SELECT
+    const stmt = this.db.prepare<[string], VoteCountRow>(
+      `SELECT
         SUM(CASE WHEN vote = 'aye' THEN 1 ELSE 0 END) as aye,
         SUM(CASE WHEN vote = 'nay' THEN 1 ELSE 0 END) as nay,
         SUM(CASE WHEN vote = 'abstain' THEN 1 ELSE 0 END) as abstain
       FROM votes
-      WHERE bill_id = ?
-    `);
+      WHERE bill_id = ?`,
+    );
 
-    const row = stmt.get(billId) as any;
+    const row = stmt.get(billId) ?? { aye: 0, nay: 0, abstain: 0 };
     return {
-      aye: row.aye || 0,
-      nay: row.nay || 0,
-      abstain: row.abstain || 0,
+      aye: row.aye ?? 0,
+      nay: row.nay ?? 0,
+      abstain: row.abstain ?? 0,
     };
   }
 }

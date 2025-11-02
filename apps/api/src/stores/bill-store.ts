@@ -1,6 +1,16 @@
-import Database from 'better-sqlite3';
-import { v4 as uuidv4 } from 'uuid';
-import { Bill, CreateBillInput, BillStatus } from '@political-sphere/shared';
+import Database from "better-sqlite3";
+import { v4 as uuidv4 } from "uuid";
+import { Bill, CreateBillInput, BillStatus } from "@political-sphere/shared";
+
+interface BillRow {
+  id: string;
+  title: string;
+  description: string | null;
+  proposer_id: string;
+  status: BillStatus | string;
+  created_at: string;
+  updated_at: string;
+}
 
 export class BillStore {
   constructor(private db: Database.Database) {}
@@ -19,9 +29,9 @@ export class BillStore {
       input.title,
       input.description || null,
       input.proposerId,
-      'proposed',
+      "proposed",
       now.toISOString(),
-      now.toISOString()
+      now.toISOString(),
     );
 
     return {
@@ -29,26 +39,24 @@ export class BillStore {
       title: input.title,
       description: input.description,
       proposerId: input.proposerId,
-      status: 'proposed',
+      status: "proposed",
       createdAt: now,
       updatedAt: now,
     };
   }
 
   getById(id: string): Bill | null {
-    const stmt = this.db.prepare(`
-      SELECT id, title, description, proposer_id, status, created_at, updated_at
-      FROM bills
-      WHERE id = ?
-    `);
-
-    const row = stmt.get(id) as any;
+    const row = this.db
+      .prepare<[string], BillRow>(
+        `SELECT id, title, description, proposer_id, status, created_at, updated_at FROM bills WHERE id = ?`,
+      )
+      .get(id);
     if (!row) return null;
 
     return {
       id: row.id,
       title: row.title,
-      description: row.description,
+      description: row.description ?? undefined,
       proposerId: row.proposer_id,
       status: row.status as BillStatus,
       createdAt: new Date(row.created_at),
@@ -59,20 +67,20 @@ export class BillStore {
   updateStatus(id: string, status: BillStatus): Bill | null {
     const now = new Date();
 
-    const stmt = this.db.prepare(`
-      UPDATE bills
-      SET status = ?, updated_at = ?
-      WHERE id = ?
-      RETURNING id, title, description, proposer_id, status, created_at, updated_at
-    `);
+    const stmt = this.db.prepare<[BillStatus, string, string], BillRow>(
+      `UPDATE bills
+       SET status = ?, updated_at = ?
+       WHERE id = ?
+       RETURNING id, title, description, proposer_id, status, created_at, updated_at`,
+    );
 
-    const row = stmt.get(status, now.toISOString(), id) as any;
+    const row = stmt.get(status, now.toISOString(), id);
     if (!row) return null;
 
     return {
       id: row.id,
       title: row.title,
-      description: row.description,
+      description: row.description ?? undefined,
       proposerId: row.proposer_id,
       status: row.status as BillStatus,
       createdAt: new Date(row.created_at),
@@ -81,17 +89,17 @@ export class BillStore {
   }
 
   getAll(): Bill[] {
-    const stmt = this.db.prepare(`
-      SELECT id, title, description, proposer_id, status, created_at, updated_at
-      FROM bills
-      ORDER BY created_at DESC
-    `);
+    const stmt = this.db.prepare<[], BillRow>(
+      `SELECT id, title, description, proposer_id, status, created_at, updated_at
+       FROM bills
+       ORDER BY created_at DESC`,
+    );
 
-    const rows = stmt.all() as any[];
+    const rows = stmt.all();
     return rows.map((row) => ({
       id: row.id,
       title: row.title,
-      description: row.description,
+      description: row.description ?? undefined,
       proposerId: row.proposer_id,
       status: row.status as BillStatus,
       createdAt: new Date(row.created_at),
@@ -100,18 +108,18 @@ export class BillStore {
   }
 
   getByProposerId(proposerId: string): Bill[] {
-    const stmt = this.db.prepare(`
-      SELECT id, title, description, proposer_id, status, created_at, updated_at
-      FROM bills
-      WHERE proposer_id = ?
-      ORDER BY created_at DESC
-    `);
+    const stmt = this.db.prepare<[string], BillRow>(
+      `SELECT id, title, description, proposer_id, status, created_at, updated_at
+       FROM bills
+       WHERE proposer_id = ?
+       ORDER BY created_at DESC`,
+    );
 
-    const rows = stmt.all(proposerId) as any[];
+    const rows = stmt.all(proposerId);
     return rows.map((row) => ({
       id: row.id,
       title: row.title,
-      description: row.description,
+      description: row.description ?? undefined,
       proposerId: row.proposer_id,
       status: row.status as BillStatus,
       createdAt: new Date(row.created_at),

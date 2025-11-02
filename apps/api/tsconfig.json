@@ -1,6 +1,7 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "baseUrl": "../..",
     "paths": {
       "@political-sphere/shared": ["libs/shared/src"]

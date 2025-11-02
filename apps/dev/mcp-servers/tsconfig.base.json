@@ -1,6 +1,7 @@
 {
   "extends": "../../../../tsconfig.base.json",
   "compilerOptions": {
+    "ignoreDeprecations": "6.0",
     "module": "ESNext",
     "target": "ES2022",
     "moduleResolution": "node",
@@ -8,7 +9,6 @@
     "esModuleInterop": true,
     "allowJs": true,
     "declaration": true,
-    "outDir": "./dist",
-    "rootDir": "./src"
+    "outDir": "./dist"
   }
 }

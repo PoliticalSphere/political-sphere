@@ -1,5 +1,5 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { Server } from "@modelcontextprotocol/sdk/server/index.js";
+import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
   CallToolRequestSchema,
   ErrorCode,
@@ -7,8 +7,8 @@ import {
   ListToolsRequestSchema,
   McpError,
   ReadResourceRequestSchema,
-} from '@modelcontextprotocol/sdk/types.js';
-import puppeteer, { Browser, Page } from 'puppeteer';
+} from "@modelcontextprotocol/sdk/types.js";
+import puppeteer, { Browser, Page } from "puppeteer";
 
 class PuppeteerMCPServer extends Server {
   private browser: Browser | null = null;
@@ -16,8 +16,8 @@ class PuppeteerMCPServer extends Server {
 
   constructor() {
     super({
-      name: 'political-sphere-puppeteer',
-      version: '1.0.0',
+      name: "political-sphere-puppeteer",
+      version: "1.0.0",
     });
 
     this.setRequestHandler(ListToolsRequestSchema, this.handleListTools.bind(this));
@@ -30,136 +30,136 @@ class PuppeteerMCPServer extends Server {
     return {
       tools: [
         {
-          name: 'launch_browser',
-          description: 'Launch a headless browser instance',
+          name: "launch_browser",
+          description: "Launch a headless browser instance",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               headless: {
-                type: 'boolean',
-                description: 'Whether to run browser in headless mode',
+                type: "boolean",
+                description: "Whether to run browser in headless mode",
                 default: true,
               },
             },
           },
         },
         {
-          name: 'navigate_to',
-          description: 'Navigate to a URL',
+          name: "navigate_to",
+          description: "Navigate to a URL",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               url: {
-                type: 'string',
-                description: 'URL to navigate to',
+                type: "string",
+                description: "URL to navigate to",
               },
               waitUntil: {
-                type: 'string',
-                enum: ['load', 'domcontentloaded', 'networkidle0', 'networkidle2'],
-                description: 'When to consider navigation complete',
-                default: 'networkidle0',
+                type: "string",
+                enum: ["load", "domcontentloaded", "networkidle0", "networkidle2"],
+                description: "When to consider navigation complete",
+                default: "networkidle0",
               },
             },
-            required: ['url'],
+            required: ["url"],
           },
         },
         {
-          name: 'get_page_content',
-          description: 'Get the HTML content of the current page',
+          name: "get_page_content",
+          description: "Get the HTML content of the current page",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               selector: {
-                type: 'string',
-                description: 'Optional CSS selector to get content from specific element',
+                type: "string",
+                description: "Optional CSS selector to get content from specific element",
               },
             },
           },
         },
         {
-          name: 'take_screenshot',
-          description: 'Take a screenshot of the current page or element',
+          name: "take_screenshot",
+          description: "Take a screenshot of the current page or element",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               selector: {
-                type: 'string',
-                description: 'Optional CSS selector to screenshot specific element',
+                type: "string",
+                description: "Optional CSS selector to screenshot specific element",
               },
               fullPage: {
-                type: 'boolean',
-                description: 'Whether to take full page screenshot',
+                type: "boolean",
+                description: "Whether to take full page screenshot",
                 default: true,
               },
             },
           },
         },
         {
-          name: 'click_element',
-          description: 'Click on an element',
+          name: "click_element",
+          description: "Click on an element",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               selector: {
-                type: 'string',
-                description: 'CSS selector of element to click',
+                type: "string",
+                description: "CSS selector of element to click",
               },
               waitForNavigation: {
-                type: 'boolean',
-                description: 'Whether to wait for navigation after click',
+                type: "boolean",
+                description: "Whether to wait for navigation after click",
                 default: false,
               },
             },
-            required: ['selector'],
+            required: ["selector"],
           },
         },
         {
-          name: 'type_text',
-          description: 'Type text into an input field',
+          name: "type_text",
+          description: "Type text into an input field",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               selector: {
-                type: 'string',
-                description: 'CSS selector of input element',
+                type: "string",
+                description: "CSS selector of input element",
               },
               text: {
-                type: 'string',
-                description: 'Text to type',
+                type: "string",
+                description: "Text to type",
               },
               clear: {
-                type: 'boolean',
-                description: 'Whether to clear field before typing',
+                type: "boolean",
+                description: "Whether to clear field before typing",
                 default: true,
               },
             },
-            required: ['selector', 'text'],
+            required: ["selector", "text"],
           },
         },
         {
-          name: 'wait_for_element',
-          description: 'Wait for an element to appear',
+          name: "wait_for_element",
+          description: "Wait for an element to appear",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {
               selector: {
-                type: 'string',
-                description: 'CSS selector to wait for',
+                type: "string",
+                description: "CSS selector to wait for",
               },
               timeout: {
-                type: 'number',
-                description: 'Timeout in milliseconds',
+                type: "number",
+                description: "Timeout in milliseconds",
                 default: 30000,
               },
             },
-            required: ['selector'],
+            required: ["selector"],
           },
         },
         {
-          name: 'close_browser',
-          description: 'Close the browser instance',
+          name: "close_browser",
+          description: "Close the browser instance",
           inputSchema: {
-            type: 'object',
+            type: "object",
             properties: {},
           },
         },
@@ -167,35 +167,40 @@ class PuppeteerMCPServer extends Server {
     };
   }
 
-  async handleCallTool(request: any) {
+  async handleCallTool(request: { params: { name: string; arguments?: unknown } }) {
     const { name, arguments: args } = request.params;
 
-    if (!args || typeof args !== 'object') {
-      throw new McpError(ErrorCode.InvalidRequest, 'Invalid arguments');
+    if (!args || typeof args !== "object") {
+      throw new McpError(ErrorCode.InvalidRequest, "Invalid arguments");
     }
 
     const typedArgs = args as Record<string, unknown>;
 
     switch (name) {
-      case 'launch_browser':
+      case "launch_browser":
         return await this.launchBrowser(typedArgs as { headless?: boolean });
-      case 'navigate_to':
-        return await this.navigateTo(typedArgs as { url: string; waitUntil?: string });
-      case 'get_page_content':
+      case "navigate_to":
+        return await this.navigateTo(
+          typedArgs as {
+            url: string;
+            waitUntil?: "load" | "domcontentloaded" | "networkidle0" | "networkidle2";
+          },
+        );
+      case "get_page_content":
         return await this.getPageContent(typedArgs as { selector?: string });
-      case 'take_screenshot':
+      case "take_screenshot":
         return await this.takeScreenshot(typedArgs as { selector?: string; fullPage?: boolean });
-      case 'click_element':
+      case "click_element":
         return await this.clickElement(
-          typedArgs as { selector: string; waitForNavigation?: boolean }
+          typedArgs as { selector: string; waitForNavigation?: boolean },
         );
-      case 'type_text':
+      case "type_text":
         return await this.typeText(
-          typedArgs as { selector: string; text: string; clear?: boolean }
+          typedArgs as { selector: string; text: string; clear?: boolean },
         );
-      case 'wait_for_element':
+      case "wait_for_element":
         return await this.waitForElement(typedArgs as { selector: string; timeout?: number });
-      case 'close_browser':
+      case "close_browser":
         return await this.closeBrowser();
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
@@ -211,14 +216,14 @@ class PuppeteerMCPServer extends Server {
       this.browser = await puppeteer.launch({
         headless: args.headless !== false,
         args: [
-          '--no-sandbox',
-          '--disable-setuid-sandbox',
-          '--disable-dev-shm-usage',
-          '--disable-accelerated-2d-canvas',
-          '--no-first-run',
-          '--no-zygote',
-          '--single-process', // <- this one doesn't work in Windows
-          '--disable-gpu',
+          "--no-sandbox",
+          "--disable-setuid-sandbox",
+          "--disable-dev-shm-usage",
+          "--disable-accelerated-2d-canvas",
+          "--no-first-run",
+          "--no-zygote",
+          "--single-process", // <- this one doesn't work in Windows
+          "--disable-gpu",
         ],
       });
 
@@ -229,16 +234,20 @@ class PuppeteerMCPServer extends Server {
       await this.page.setViewport({ width: 1280, height: 720 });
 
       return {
-        content: [{ type: 'text', text: 'Browser launched successfully' }],
+        content: [{ type: "text", text: "Browser launched successfully" }],
       };
-    } catch (error: any) {
-      throw new McpError(ErrorCode.InternalError, `Failed to launch browser: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to launch browser: ${message}`);
     }
   }
 
-  private async navigateTo(args: { url: string; waitUntil?: string }) {
+  private async navigateTo(args: {
+    url: string;
+    waitUntil?: "load" | "domcontentloaded" | "networkidle0" | "networkidle2";
+  }) {
     if (!this.page) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Browser not launched');
+      throw new McpError(ErrorCode.InvalidRequest, "Browser not launched");
     }
 
     try {
@@ -246,12 +255,12 @@ class PuppeteerMCPServer extends Server {
       const url = new URL(args.url);
 
       // Allow only http/https for security
-      if (!['http:', 'https:'].includes(url.protocol)) {
-        throw new McpError(ErrorCode.InvalidRequest, 'Only HTTP/HTTPS URLs are allowed');
+      if (!["http:", "https:"].includes(url.protocol)) {
+        throw new McpError(ErrorCode.InvalidRequest, "Only HTTP/HTTPS URLs are allowed");
       }
 
       await this.page.goto(args.url, {
-        waitUntil: (args.waitUntil as any) || 'networkidle0',
+        waitUntil: args.waitUntil ?? "networkidle0",
         timeout: 30000,
       });
 
@@ -261,19 +270,20 @@ class PuppeteerMCPServer extends Server {
       return {
         content: [
           {
-            type: 'text',
+            type: "text",
             text: `Navigated to: ${url_final}\nTitle: ${title}`,
           },
         ],
       };
-    } catch (error: any) {
-      throw new McpError(ErrorCode.InternalError, `Failed to navigate: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to navigate: ${message}`);
     }
   }
 
   private async getPageContent(args: { selector?: string }) {
     if (!this.page) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Browser not launched');
+      throw new McpError(ErrorCode.InvalidRequest, "Browser not launched");
     }
 
     try {
@@ -291,20 +301,21 @@ class PuppeteerMCPServer extends Server {
 
       // Limit content length for safety
       if (content.length > 50000) {
-        content = content.substring(0, 50000) + '\n\n[Content truncated for length]';
+        content = content.substring(0, 50000) + "\n\n[Content truncated for length]";
       }
 
       return {
-        content: [{ type: 'text', text: content }],
+        content: [{ type: "text", text: content }],
       };
-    } catch (error: any) {
-      throw new McpError(ErrorCode.InternalError, `Failed to get page content: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to get page content: ${message}`);
     }
   }
 
   private async takeScreenshot(args: { selector?: string; fullPage?: boolean }) {
     if (!this.page) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Browser not launched');
+      throw new McpError(ErrorCode.InvalidRequest, "Browser not launched");
     }
 
     try {
@@ -323,24 +334,25 @@ class PuppeteerMCPServer extends Server {
       }
 
       // Convert to base64 for text response
-      const base64Image = screenshot.toString('base64');
+      const base64Image = screenshot.toString("base64");
 
       return {
         content: [
           {
-            type: 'text',
+            type: "text",
             text: `Screenshot taken (${screenshot.length} bytes)\nData: data:image/png;base64,${base64Image}`,
           },
         ],
       };
-    } catch (error: any) {
-      throw new McpError(ErrorCode.InternalError, `Failed to take screenshot: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to take screenshot: ${message}`);
     }
   }
 
   private async clickElement(args: { selector: string; waitForNavigation?: boolean }) {
     if (!this.page) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Browser not launched');
+      throw new McpError(ErrorCode.InvalidRequest, "Browser not launched");
     }
 
     try {
@@ -356,16 +368,17 @@ class PuppeteerMCPServer extends Server {
       }
 
       return {
-        content: [{ type: 'text', text: `Clicked element: ${args.selector}` }],
+        content: [{ type: "text", text: `Clicked element: ${args.selector}` }],
       };
-    } catch (error: any) {
-      throw new McpError(ErrorCode.InternalError, `Failed to click element: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to click element: ${message}`);
     }
   }
 
   private async typeText(args: { selector: string; text: string; clear?: boolean }) {
     if (!this.page) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Browser not launched');
+      throw new McpError(ErrorCode.InvalidRequest, "Browser not launched");
     }
 
     try {
@@ -376,22 +389,23 @@ class PuppeteerMCPServer extends Server {
 
       if (args.clear !== false) {
         await element.click({ clickCount: 3 }); // Select all text
-        await this.page.keyboard.press('Backspace'); // Clear the field
+        await this.page.keyboard.press("Backspace"); // Clear the field
       }
 
       await element.type(args.text);
 
       return {
-        content: [{ type: 'text', text: `Typed text into: ${args.selector}` }],
+        content: [{ type: "text", text: `Typed text into: ${args.selector}` }],
       };
-    } catch (error: any) {
-      throw new McpError(ErrorCode.InternalError, `Failed to type text: ${error.message}`);
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Failed to type text: ${message}`);
     }
   }
 
   private async waitForElement(args: { selector: string; timeout?: number }) {
     if (!this.page) {
-      throw new McpError(ErrorCode.InvalidRequest, 'Browser not launched');
+      throw new McpError(ErrorCode.InvalidRequest, "Browser not launched");
     }
 
     try {
@@ -400,13 +414,11 @@ class PuppeteerMCPServer extends Server {
       });
 
       return {
-        content: [{ type: 'text', text: `Element found: ${args.selector}` }],
+        content: [{ type: "text", text: `Element found: ${args.selector}` }],
       };
-    } catch (error: any) {
-      throw new McpError(
-        ErrorCode.InternalError,
-        `Element not found within timeout: ${error.message}`
-      );
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : String(error);
+      throw new McpError(ErrorCode.InternalError, `Element not found within timeout: ${message}`);
     }
   }
 
@@ -417,11 +429,11 @@ class PuppeteerMCPServer extends Server {
       this.page = null;
 
       return {
-        content: [{ type: 'text', text: 'Browser closed' }],
+        content: [{ type: "text", text: "Browser closed" }],
       };
     } else {
       return {
-        content: [{ type: 'text', text: 'No browser to close' }],
+        content: [{ type: "text", text: "No browser to close" }],
       };
     }
   }
@@ -431,23 +443,23 @@ class PuppeteerMCPServer extends Server {
 
     if (this.page) {
       resources.push({
-        uri: 'web://current-page',
-        name: 'Current Page Info',
-        description: 'Information about the currently loaded page',
-        mimeType: 'application/json',
+        uri: "web://current-page",
+        name: "Current Page Info",
+        description: "Information about the currently loaded page",
+        mimeType: "application/json",
       });
     }
 
     return { resources };
   }
 
-  async handleReadResource(request: any) {
+  async handleReadResource(request: { params: { uri: string } }) {
     const { uri } = request.params;
 
-    if (uri === 'web://current-page' && this.page) {
+    if (uri === "web://current-page" && this.page) {
       const info = {
         url: this.page.url(),
-        title: await this.page.title().catch(() => 'Unknown'),
+        title: await this.page.title().catch(() => "Unknown"),
         viewport: await this.page.viewport(),
       };
 
@@ -455,7 +467,7 @@ class PuppeteerMCPServer extends Server {
         contents: [
           {
             uri,
-            mimeType: 'application/json',
+            mimeType: "application/json",
             text: JSON.stringify(info, null, 2),
           },
         ],
@@ -469,8 +481,10 @@ class PuppeteerMCPServer extends Server {
 async function main() {
   const server = new PuppeteerMCPServer();
   const transport = new StdioServerTransport();
-  await (server as any).connect(transport);
-  console.error('Political Sphere Puppeteer MCP server running...');
+  await (server as unknown as { connect: (t: StdioServerTransport) => Promise<void> }).connect(
+    transport,
+  );
+  console.error("Political Sphere Puppeteer MCP server running...");
 }
 
 main().catch(console.error);

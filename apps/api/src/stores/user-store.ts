@@ -1,6 +1,14 @@
-import Database from 'better-sqlite3';
-import { v4 as uuidv4 } from 'uuid';
-import { User, CreateUserInput } from '@political-sphere/shared';
+import Database from "better-sqlite3";
+import { v4 as uuidv4 } from "uuid";
+import { User, CreateUserInput } from "@political-sphere/shared";
+
+interface UserRow {
+  id: string;
+  username: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}
 
 export class UserStore {
   constructor(private db: Database.Database) {}
@@ -26,13 +34,11 @@ export class UserStore {
   }
 
   getById(id: string): User | null {
-    const stmt = this.db.prepare(`
-      SELECT id, username, email, created_at, updated_at
-      FROM users
-      WHERE id = ?
-    `);
-
-    const row = stmt.get(id) as any;
+    const row = this.db
+      .prepare<[string], UserRow>(
+        `SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?`,
+      )
+      .get(id);
     if (!row) return null;
 
     return {
@@ -45,13 +51,11 @@ export class UserStore {
   }
 
   getByUsername(username: string): User | null {
-    const stmt = this.db.prepare(`
-      SELECT id, username, email, created_at, updated_at
-      FROM users
-      WHERE username = ?
-    `);
-
-    const row = stmt.get(username) as any;
+    const row = this.db
+      .prepare<[string], UserRow>(
+        `SELECT id, username, email, created_at, updated_at FROM users WHERE username = ?`,
+      )
+      .get(username);
     if (!row) return null;
 
     return {
@@ -64,13 +68,11 @@ export class UserStore {
   }
 
   getByEmail(email: string): User | null {
-    const stmt = this.db.prepare(`
-      SELECT id, username, email, created_at, updated_at
-      FROM users
-      WHERE email = ?
-    `);
-
-    const row = stmt.get(email) as any;
+    const row = this.db
+      .prepare<[string], UserRow>(
+        `SELECT id, username, email, created_at, updated_at FROM users WHERE email = ?`,
+      )
+      .get(email);
     if (!row) return null;
 
     return {

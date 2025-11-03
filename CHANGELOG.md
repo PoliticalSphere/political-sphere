@@ -9,6 +9,91 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Production-Grade Docker Infrastructure**: World-class containerization setup with expert-level optimizations:
+  - **Base Image Pinning**: All Dockerfiles pin node:22-alpine by SHA256 digest for reproducible builds
+  - **NPM Workspaces Pattern**: Committed to npm (removed pnpm-lock.yaml references), using --workspaces=false flag
+  - **BuildKit Cache Mounts**: Added --mount=type=cache for /home/nodejs/.npm to dramatically speed up builds
+  - **Non-Root Install Security**: All npm ci commands run as nodejs user (UID 1001) to prevent ownership issues
+  - **TypeScript Build Steps**: Added dedicated builder stages that compile TypeScript to dist/ before production
+  - **Proper Health Checks**: API/Worker use actual endpoints and heartbeat files (not placeholders)
+  - **Graceful Shutdown**: All services include STOPSIGNAL SIGTERM for proper signal handling
+  - **OCI Labels**: Build-time metadata with REVISION and CREATED args for traceability
+  - **No apk upgrade**: Removed for build reproducibility (keeps only apk add --no-cache)
+  - **Frontend Architecture**: Static SPA served by nginx (dist/ only, no Node runtime in production)
+  - **Worker Heartbeat**: File-based liveness checks that worker code updates periodically
+- **Enhanced dev-up.sh Script**: Upgraded startup script with production-grade improvements (2025-11-03):
+  - **Built-in Waiting**: Uses `docker compose up -d --wait --wait-timeout 180` for deterministic readiness
+  - **Profile Support**: Ready for compose profiles (--monitoring uses 'obs', --full uses 'obs' + 'tools')
+  - **Port Collision Detection**: Pre-flight checks warn about busy ports (3000/4000/8080/5432/6379/etc)
+  - **Enhanced Resource Hints**: Shows Docker CPU allocation + memory with automatic --minimal suggestions
+  - **Environment Loading**: Exports .env vars to shell for consistent compose behaviour
+  - **Graceful Interruption**: Ctrl-C trap provides clear next-steps instead of confusion
+  - **Fail-Fast**: Returns non-zero exit code on healthcheck failures with diagnostic hints
+  - **Healthcheck Awareness**: Warns if services lack healthchecks (informational, not blocking)
+  - **macOS Optimized**: Uses lsof for ports, sysctl for RAM, no GNU-only flags
+- **Enhanced dev-down.sh Script**: Upgraded shutdown script with production-grade safety and control (2025-11-03):
+  - **Deterministic Project Scoping**: Uses `-p political-sphere` for consistent volume/image targeting
+  - **Remove Orphans**: `--orphans` flag adds `--remove-orphans` to prevent stray containers
+  - **Safe Volume Cleanup**: `--clean` shows exact volumes to delete and requires typing project name
+  - **Image Removal**: `--images` flag removes project-specific images after shutdown
+  - **Hard Reset**: `--hard` flag combines --clean, --orphans, --images, and --prune for total reset
+  - **Profile Support**: Respects COMPOSE_PROFILES env var for consistent service sets
+  - **Smart Status**: Uses `docker compose ps` (project-scoped) instead of name grep
+  - **TTY Detection**: Only prints ANSI colors when stdout is a TTY (CI/pipe friendly)
+  - **Environment Loading**: Loads .env for consistent compose variable access
+- **Enhanced seed-db.sh Script**: Upgraded database seeding with critical safety and reliability fixes (2025-11-03):
+  - **Fixed Heredoc Terminator**: Corrected `EOFEOF` → `EOF` to prevent hanging/errors
+  - **Environment-Based Credentials**: Loads POSTGRES_USER/POSTGRES_DB/POSTGRES_PASSWORD from .env (no hard-coded creds)
+  - **ON_ERROR_STOP=1**: Added `-v ON_ERROR_STOP=1` to psql for proper error handling (fails fast on SQL errors)
+  - **Schema-Aware Checks**: Table existence checks now filter by `current_schema()` to avoid wrong schema matches
+  - **Project Scoping**: Uses `-p` flag for consistent compose project targeting
+  - **Health Check**: Validates postgres container is running and healthy before seeding
+  - **Migration Hook**: Prefers `npm run -w apps/api migrate` over hard-coded paths, with fallback support
+  - **Custom Seed Files**: New `--file` flag allows external SQL files without editing script
+  - **TTY Detection**: Colors only when stdout is TTY (clean CI logs)
+  - **Idempotent Inserts**: Uses `ON CONFLICT DO NOTHING` for safe reruns
+- **Enhanced docker-status.sh Script**: Upgraded status monitoring with production-grade reliability and CI support (2025-11-03):
+  - **Project Scoping**: Uses `docker compose -p "$PROJECT" ps` instead of hard-coded container name grep
+  - **Health Detection Without Crashes**: Guards health field access with `{{if .State.Health}}` to prevent errors on unhealthy services
+  - **Exit Codes for CI**: Returns exit code 1 if any services are unhealthy or missing (enables automated monitoring)
+  - **TTY-Aware Colors**: Only prints ANSI colors when stdout is a TTY (clean CI/pipeline logs)
+  - **Profile Support**: Respects COMPOSE_PROFILES env var for consistent service visibility
+  - **Label-Based Stats**: Filters `docker stats` by compose project label for accurate resource usage
+  - **Service Groups**: Organizes checks into Core Infrastructure, Application Services, Development Tools, and Observability
+  - **Global Health Counters**: Tracks UNHEALTHY and MISSING counts across all service groups
+  - **Argument Parsing**: Supports `-p|--project` flag to override default project name
+  - **Quick Help**: Contextual commands reference using actual project name
+- **Docker CI/CD Workflow**: Production-grade GitHub Actions workflow for Docker infrastructure (2025-11-03):
+  - **Concurrency Control**: Cancels superseded runs for faster feedback and cost savings
+  - **Conventional Image Naming**: Uses `ghcr.io/owner/political-sphere-{service}` format (standard tooling pattern)
+  - **GitHub Cache Backend**: Uses `type=gha` for reliable BuildKit layer caching across runners
+  - **Accurate Build Timestamps**: Generates `CREATED` timestamp at build time (not repo metadata)
+  - **Pinned Actions**: Trivy action pinned to `@0.24.0` with database caching enabled
+  - **Python YAML Validation**: Robust healthcheck validation using Python (no brittle grep patterns)
+  - **Smart Secret Detection**: Flags hard-coded secrets while allowing `${...}` env templates
+  - **Compose --wait**: Integration tests use built-in `--wait` for deterministic service readiness
+  - **Job-Level Permissions**: Scoped permissions per job (principle of least privilege)
+  - **Hadolint Integration**: Dockerfile linting with optional enforcement
+  - **Semgrep Integration**: Code security scanning with SARIF upload to GitHub Security
+  - **Explicit Build Targets**: All builds specify `target: production` for reproducibility
+  - **Remove Orphans**: Cleanup includes `--remove-orphans` for clean resets
+- **Comprehensive Docker Setup** (Initial implementation 2025-11-03, Production improvements 2025-11-03):
+  - Multi-stage Dockerfiles for API, Frontend, and Worker
+  - docker-compose.yml with 13 services (PostgreSQL, Redis, Keycloak, LocalStack, MailHog, pgAdmin, Prometheus, Grafana, node-exporter)
+  - Resource-optimized for MacBook Pro (2018) 16GB RAM, 6-core CPU
+  - Helper scripts: dev-up.sh (enhanced), dev-down.sh, seed-db.sh, docker-status.sh (all executable)
+  - .dockerignore with 100+ exclusion patterns for faster builds
+  - Documentation: docs/DOCKER-SETUP.md and DOCKER-QUICKSTART.md
+  - package.json docker:* npm scripts for common operations
+- **Docker CI/CD Pipeline**: Production-grade GitHub Actions workflow for Docker infrastructure (2025-11-03):
+  - **Compose Validation**: Syntax checks, secret detection, required health check verification
+  - **Multi-Service Builds**: Parallel builds for API, Frontend, Worker with BuildKit caching
+  - **Security Scanning**: Trivy vulnerability scanning with SARIF upload to GitHub Security
+  - **Integration Testing**: Automated compose up with health checks, database/Redis connectivity tests
+  - **Script Validation**: Syntax checks, executability tests, help flag validation for all helper scripts
+  - **Build Optimization**: Layer caching, metadata extraction, multi-platform support ready
+  - **Container Testing**: Automated container startup and health verification for each service
+  - **Summary Reporting**: Consolidated pipeline results with clear pass/fail indicators
 - AI Intelligence & Competence Enhancement section with 13 improvements to speed up AI agents (Blackbox AI and GitHub Copilot) by narrowing scope, pre-fetching context, generating working memory files, predicting next steps, maintaining best snippet libraries, automatic diff previews, chunking tasks, caching decisions, guarding against rabbit holes, auto-creating dev helpers, opportunistic clean-as-you-go, pre-filling PR templates, and proactive daily improvements. (2025-01-10)
 - AI Deputy Mode: Enables Copilot and Blackbox to shadow changes and flag governance deviations in real-time, with proactive alerts, learning integration, and audit trails. (2025-01-10)
 - **DevContainer extension debugging**: Added `debug-extensions.sh` script to troubleshoot VS Code extension loading issues, with comprehensive diagnostics and troubleshooting steps (2025-11-02)

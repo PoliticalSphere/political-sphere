@@ -39,3 +39,13 @@ temp/
 # package-lock.json
 # pnpm-lock.yaml
 # yarn.lock
+# Nx cache/workspace artifacts (don't commit generated caches or workspace DBs)
+.nx/
+
+# AI indexes and generated artifacts
+ai-index/
+ai/ai-index/
+ai-assets.json
+ai-controls.json
+ai-metrics.json
+ai-metrics/

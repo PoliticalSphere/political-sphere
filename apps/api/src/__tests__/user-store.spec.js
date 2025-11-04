@@ -105,15 +105,15 @@ describe("UserStore (in-memory DB + cache)", () => {
 		expect(cached).not.toBeNull();
 	});
 
-	it("can lookup by username and email", async () => {
-		const input = { username: "carol", email: "c@example.com" };
-		await store.create(input);
-		const byUsername = await store.getByUsername("carol");
-		expect(byUsername).not.toBeNull();
-		expect(byUsername.email).toBe("c@example.com");
+  it('can lookup by username and email', async () => {
+    const input = { username: 'carol', email: 'c@example.com' };
+    await store.create(input);
+    const byUsername = await store.getByUsername('carol');
+    expect(byUsername).not.toBeNull();
+    expect(byUsername.email).toBe('c@example.com');
 
-		const byEmail = await store.getByEmail("c@example.com");
-		expect(byEmail).not.toBeNull();
-		expect(byEmail.username).toBe("carol");
-	});
+    const byEmail = await store.getByEmail('c@example.com');
+    expect(byEmail).not.toBeNull();
+    expect(byEmail.username).toBe('carol');
+  });
 });

@@ -2,7 +2,10 @@ import { Vote, CreateVoteInput, CreateVoteSchema } from '@political-sphere/share
 import { getDatabase } from '../stores';
 
 export class VoteService {
-  private db = getDatabase();
+  // Lazy getter to avoid stale DB connections in tests
+  private get db() {
+    return getDatabase();
+  }
 
   async castVote(input: CreateVoteInput): Promise<Vote> {
     // Validate input

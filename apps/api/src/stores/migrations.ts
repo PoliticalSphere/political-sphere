@@ -1,7 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import os from 'os';
+// os is not required when using in-memory DB for tests
 import fs from 'fs';
 
 // Support both ESM and CommonJS environments
@@ -19,35 +19,42 @@ const getDbPath = () => {
 
 let DB_PATH = getDbPath();
 
-// For test runs, use a unique temp DB file to avoid cross-test pollution
-if (process.env.NODE_ENV === 'test') {
-  const fileName = `political_sphere_test_${process.pid}.db`;
-  DB_PATH = path.join(os.tmpdir(), fileName);
+// For test runs, prefer an in-memory database to avoid filesystem locking and
+// interference between parallel test runs. Use a file-backed DB only outside tests.
+  if (process.env.NODE_ENV === 'test') {
+  DB_PATH = ':memory:';
 }
 
 export function initializeDatabase(): Database.Database {
-  // Ensure the directory exists before opening the DB file
-  const dir = path.dirname(DB_PATH);
-  try {
-    fs.mkdirSync(dir, { recursive: true });
-  } catch (_e) {
-    // If for some reason directory creation fails, let better-sqlite3 report the error
-  }
-
-  // For test runs, start with a fresh DB file for each new connection to avoid cross-test pollution
-  if (process.env.NODE_ENV === 'test') {
+  // If using a file-backed DB, ensure the directory exists before opening it.
+  if (DB_PATH !== ':memory:') {
+    const dir = path.dirname(DB_PATH);
     try {
-      if (fs.existsSync(DB_PATH)) fs.unlinkSync(DB_PATH);
+      fs.mkdirSync(dir, { recursive: true });
     } catch (_e) {
-      // ignore - will error when opening if removal failed
+      // If for some reason directory creation fails, let better-sqlite3 report the error
     }
   }
 
+  // Open the database. For in-memory DBs, better-sqlite3 accepts ':memory:'.
   const db = new Database(DB_PATH);
 
-  // Enable WAL mode for better concurrency
-  db.pragma('journal_mode = WAL');
-  db.pragma('foreign_keys = ON');
+  // Enable WAL mode for better concurrency on file-backed DBs only. WAL is not
+  // applicable for in-memory databases and can cause errors or be ignored.
+  if (DB_PATH !== ':memory:') {
+    try {
+      db.pragma('journal_mode = WAL');
+    } catch (_e) {
+      // Ignore pragma failures; concurrency will be lower but tests should proceed.
+    }
+  }
+
+  // Always enable foreign keys enforcement where supported.
+  try {
+    db.pragma('foreign_keys = ON');
+  } catch (_e) {
+    // Ignore if pragma not supported in some environments
+  }
 
   return db;
 }

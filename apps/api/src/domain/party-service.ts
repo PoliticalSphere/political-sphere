@@ -2,7 +2,10 @@ import { Party, CreatePartyInput, CreatePartySchema } from '@political-sphere/sh
 import { getDatabase } from '../stores';
 
 export class PartyService {
-  private db = getDatabase();
+  // Lazy getter to avoid holding a stale DB connection across test lifecycle boundaries
+  private get db() {
+    return getDatabase();
+  }
 
   async createParty(input: CreatePartyInput): Promise<Party> {
     // Validate input

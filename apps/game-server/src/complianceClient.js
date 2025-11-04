@@ -4,6 +4,7 @@
  */
 
 const axios = require('axios');
+const { CircuitBreaker } = require('../api/src/error-handler');
 
 class ComplianceClient {
   constructor(apiBaseUrl = 'http://localhost:3000/api') {
@@ -12,6 +13,9 @@ class ComplianceClient {
       baseURL: apiBaseUrl,
       timeout: 3000, // 3 second timeout for logging
     });
+
+    // Circuit breaker for compliance logging (more lenient since it's non-critical)
+    this.circuitBreaker = new CircuitBreaker(10, 120000, 30000); // 10 failures, 2min timeout, 30s recovery
   }
 
   /**
@@ -21,9 +25,11 @@ class ComplianceClient {
    */
   async logEvent(event) {
     try {
-      // Fire and forget - don't wait for response to avoid blocking game actions
-      this.client.post('/compliance/log', event).catch(err => {
-        console.warn('Compliance logging failed:', err.message);
+      // Fire and forget with circuit breaker protection
+      this.circuitBreaker.execute(async () => {
+        await this.client.post('/compliance/log', event);
+      }).catch(err => {
+        console.warn('Compliance logging failed (circuit breaker):', err.message);
       });
 
       // Return a local event ID for immediate response

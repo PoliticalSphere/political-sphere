@@ -14,7 +14,17 @@
 
 ## 🎯 Purpose
 
-This Business Model Overview outlines Political Sphere's operational revenue framework. Political Sphere operates on a single-tier subscription model designed for fairness, transparency, and accessibility.
+This Business Model Overview documents the intended revenue approach and the guiding principles that will fund and sustain Political Sphere. It explains the single-tier subscription model we intend to use, why that model is chosen, and the constraints we place on monetisation so the simulation remains fair, and accessible. The primary audience for this document includes the developer, contributors, community members, and potential partners who need a clear, auditable statement of the project's funding strategy and ethical boundaries.
+
+Key commitments:
+
+- Equal access: a single subscription grants full access to the game — no paid advantages or feature gating.
+- Independence: no advertising, sponsorships, political donations, or other revenue streams that could influence gameplay or governance.
+- Transparency: pricing, cost allocation and monetisation decisions are communicated openly to players and stakeholders.
+- Sustainability: revenue should reliably cover operating costs and enable responsible, long-term development.
+- Ethical design: monetisation will never be tied to influence, progression, or political outcomes.
+
+The chosen approach is intentionally simple and conservative: modest, affordable subscription revenue funds stewardship of the simulation rather than short-term monetisation. A known challenge is that many similar multiplayer political simulations rely on voluntary donations or complex monetisation strategies; later sections outline mitigations and community-focused tactics to address that risk.
 
 ### Business Model
 

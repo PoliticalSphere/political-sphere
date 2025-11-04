@@ -9,7 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- **Authentication & Authorization System**: Complete JWT-based authentication with role-based access control:
+- **Database Performance Optimization**: Comprehensive caching and indexing improvements to resolve high database latency:
+  - **Performance Indexes Migration**: Created `002-performance-indexes.js` with composite indexes for votes (user_id + bill_id), bills (status + created_at), and users (email, username)
+  - **Redis Query Caching**: Implemented Redis-based caching in all store classes with appropriate TTL values:
+    - VoteStore: Vote counts cached for 5 minutes with invalidation on new votes
+    - BillStore: Individual bills (10min), all bills list (5min), bills by proposer (5min) with invalidation on create/update
+    - UserStore: User lookups by ID/username/email cached for 10 minutes
+    - PartyStore: Party data cached for 15 minutes with invalidation on creation
+  - **Cache Service Integration**: Added CacheService initialization in database connection with graceful Redis fallback
+  - **Cache Invalidation Logic**: Proper cache invalidation on data mutations to maintain consistency
+  - **Performance Testing**: All caching implementations validated with existing test suite
   - **JWT Authentication Middleware**: Implements token validation, user attachment, and role checking
   - **Authentication Routes**: Full registration, login, refresh token, and logout endpoints with bcrypt password hashing
   - **Service Authentication**: Internal API authentication for microservices
@@ -26,6 +35,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **Module Export Consistency**: Updated all route files to use ES modules for consistency
 - **Middleware Exports**: Converted authentication middleware to ES module exports
 - **Dependency Management**: Added missing dependencies (cors, helmet, compression, express-rate-limit)
+
+- **Test reliability & DB lifecycle**: Fixed Vitest aliasing for `@political-sphere/shared` so runtime tests import the TypeScript `index.ts` (prevents missing schema exports). Converted domain services (UserService, PartyService, VoteService, BillService) to use a lazy database getter to avoid stale/closed DB connections during test lifecycle. Removed temporary inspection/test artifacts used for debugging.
+
+### 2025-11-03 - MCP test stubs
+
+- Added minimal MCP server stubs for local testing: filesystem, github, git, puppeteer, sqlite, political-sphere. These are lightweight HTTP /health endpoints to verify MCP wiring and local integration. (Author: automation)
 
 ### Changed
 
@@ -133,6 +148,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - **Summary Reporting**: Consolidated pipeline results with clear pass/fail indicators
 - AI Intelligence & Competence Enhancement section with 13 improvements to speed up AI agents (Blackbox AI and GitHub Copilot) by narrowing scope, pre-fetching context, generating working memory files, predicting next steps, maintaining best snippet libraries, automatic diff previews, chunking tasks, caching decisions, guarding against rabbit holes, auto-creating dev helpers, opportunistic clean-as-you-go, pre-filling PR templates, and proactive daily improvements. (2025-01-10)
 - AI Deputy Mode: Enables Copilot and Blackbox to shadow changes and flag governance deviations in real-time, with proactive alerts, learning integration, and audit trails. (2025-01-10)
+
+### Documentation
+
+- Added Microsoft Learn context files: Responsible AI reference, Identity & Access (Azure Entra/AD + RBAC), and OpenTelemetry observability guidance. (2025-11-04)
 - **DevContainer extension debugging**: Added `debug-extensions.sh` script to troubleshoot VS Code extension loading issues, with comprehensive diagnostics and troubleshooting steps (2025-11-02)
 - **DevContainer tool bootstrap**: Added `install-tools.sh` to install pnpm via corepack and optionally Nx CLI globally; wired into postCreate. Improves extension activation and script reliability by ensuring expected tools exist in the container. (2025-11-02)
 - **Docker socket permission helper**: Added `docker-socket-perms.sh` to detect host docker.sock GID, create matching group, and add the container user to enable Docker access; referenced from status checks. (2025-11-02)

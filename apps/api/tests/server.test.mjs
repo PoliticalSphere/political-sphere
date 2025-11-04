@@ -1,4 +1,4 @@
-import pkg from '@jest/globals';
+
 const { describe, test, expect } = pkg;
 import { createNewsServer } from '../src/server.js';
 import { NewsService } from '../src/newsService.js';

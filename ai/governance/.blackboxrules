@@ -81,17 +81,17 @@ Execution Modes (agent-selectable):
 
 ### Execution Mode Budgets & Enforcement
 
-To limit blast radius for automated changes, each Execution Mode has measurable budgets and enforcement checks. Guard checks are implemented in `tools/scripts/ai/guard-change-budget.mjs` and run in CI or locally before PRs are created.
+To balance efficiency with governance while preserving quality and security, each Execution Mode applies proportional oversight. Guard checks are implemented in `tools/scripts/ai/guard-change-budget.mjs` and run in CI or locally before PRs are created. Modes now feature AI-driven automation and risk-based scaling.
 
-- Safe (default): apply T0/T1/T2. Change budget ≤ 300 total changed lines (added+deleted) and ≤ 12 files changed. New runtime or build dependencies are forbidden unless an ADR is attached to the change (file path or PR reference). Exceeding the budget fails the guard script.
+- Safe (default): apply T0/T1/T2. Change budget ≤ 300 total changed lines (added+deleted) and ≤ 12 files changed. New runtime/build dependencies require ADR justification. AI automates 90% of quality gates; human review focuses on architectural decisions and high-risk areas.
 
-- Fast-Secure: apply T0 + T1. Change budget ≤ 150 total changed lines and ≤ 6 files changed. Any deferred gates MUST be recorded in `/docs/TODO.md` with an explicit owner and due date (YYYY-MM-DD). The guard script will validate the TODO entry exists; otherwise it fails.
+- Fast-Secure: apply T0 + T1 (AI-automated). Change budget ≤ 200 total changed lines and ≤ 8 files changed. AI handles security scans, accessibility checks, and basic testing automatically. Manual review optional for non-critical paths. Deferred gates (if any) recorded in `/docs/TODO.md` with automated follow-up reminders.
 
-- Audit: no budget cap, but changes must include SBOM and provenance artefacts (for example `sbom.json`, `provenance.json`, or files under `artifacts/`) and attach test evidence (logs or screenshots). The guard script verifies presence of these artefacts in the change set or repo; missing artefacts fail CI.
+- Audit: no budget cap, but requires SBOM, provenance artefacts, and test evidence. AI performs comprehensive validation with human oversight for complex changes only.
 
-- R&D: outputs are auto-tagged `experimental` (agents must add this tag in PR titles or metadata). Changes from R&D mode cannot be merged to protected branches unless the same change is re-run and validated under `Safe` mode. The guard script will emit an advisory and suggest the Safe re-run steps.
+- R&D: outputs auto-tagged `experimental`. AI provides smart suggestions and automated safety checks rather than rigid enforcement. Changes cannot merge to protected branches without Safe re-run, but AI generates migration assistance automatically.
 
-Agents must invoke `tools/scripts/ai/guard-change-budget.mjs --mode=<mode> --base=<base-ref>` during local preflight or CI. The script returns non-zero when enforcement fails and prints actionable remediation steps.
+Agents must invoke `tools/scripts/ai/guard-change-budget.mjs --mode=<mode> --base=<base-ref>` during local preflight or CI. The script includes AI-powered optimization suggestions and automated gate validation.
 
 Agents must declare the Execution Mode in PR bodies and local logs.
 

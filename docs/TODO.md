@@ -50,6 +50,15 @@ Implement governance reforms to reduce bureaucracy while preserving quality, sec
 - Summary: Adjusted the AI context preloader to prefer and create repository-root `ai-cache/`, added a robust recursive directory walker and improved error handling. This resolves unit test failures in `tools/scripts/ai/context-preloader.spec.js` that expected `ai-cache/context-cache.json` at the repo root.
 - Impact: Non-breaking; improves test reliability and developer experience. Added changelog entry and marked TODO for traceability.
 
+### 6. Add assistant policy file (2025-11-04)
+
+- Date: 2025-11-04
+- Author: automation/assistant
+- Files changed: `.ai/assistant-policy.json`, `CHANGELOG.md`, `docs/TODO.md`
+- Type: Added
+- Summary: Add a repository-level assistant policy file with recommended implicit contexts (repo_read, tests_run, terminal_run, git_read, pr_create:draft, changelog_todo_edit, ephemeral_cache, audit_logging) and explicit approval list for sensitive actions (repo_write, secrets_access, external_network, package_publish, infra_deploy).
+- Impact: Non-breaking; documents allowed agent capabilities and governance defaults. Commit added on `fix/context-preloader` branch.
+
 ### 5. Validation and Final Checks
 
 - [ ] Test updated execution modes in CI pipeline

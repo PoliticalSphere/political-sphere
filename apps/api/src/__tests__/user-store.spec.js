@@ -103,7 +103,7 @@ describe('UserStore (in-memory DB + cache)', () => {
 
   it('can lookup by username and email', async () => {
     const input = { username: 'carol', email: 'c@example.com' };
-    const created = await store.create(input);
+    await store.create(input);
     const byUsername = await store.getByUsername('carol');
     expect(byUsername).not.toBeNull();
     expect(byUsername.email).toBe('c@example.com');

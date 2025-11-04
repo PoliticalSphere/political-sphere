@@ -16,6 +16,21 @@
       "options": {
         "command": "echo 'Validating GitHub Actions...' && action-validator .github/workflows/"
       }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/coverage/libs/ci"],
+      "options": {
+        "command": "vitest run --config ../../vitest.config.js --coverage --reporter=verbose"
+      },
+      "configurations": {
+        "watch": {
+          "command": "vitest --config ../../vitest.config.js --watch"
+        },
+        "coverage": {
+          "command": "vitest run --config ../../vitest.config.js --coverage"
+        }
+      }
     }
   }
 }

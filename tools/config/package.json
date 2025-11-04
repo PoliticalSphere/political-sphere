@@ -3,10 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "workspaces": [
-    "apps/dev/ai/ai-assistant",
-    "libs/*"
-  ],
+  "workspaces": ["apps/dev/ai/ai-assistant", "libs/*"],
   "devDependencies": {
     "ts-node": "^10.9.2",
     "yaml": "^2.6.0",
@@ -48,10 +45,9 @@
     "webpack-dev-server": "^5.2.2"
   },
   "scripts": {
-    "controls:run": "tsx scripts/controls-runner.ts",
     "dev:clean:processes": "bash scripts/dev/kill-resource-hogs.sh",
     "dev:reset-performance": "bash scripts/dev/kill-resource-hogs.sh",
-    "help": "echo 'Available scripts:\\n  build: Build the project\\n  lint: Lint the code\\n  test: Run tests\\n  bootstrap: Bootstrap the project\\n  format: Format code\\n  typecheck: Type check\\n  docs:lint: Lint documentation\\n  ai:*: AI-related scripts\\n  dev:*: Development servers\\n  validate:env: Validate environment\\n  rollback: Rollback changes'",
+    "help": "echo 'Available scripts:\n  build: Build the project\n  lint: Lint the code\n  test: Run tests\n  bootstrap: Bootstrap the project\n  format: Format code\n  typecheck: Type check\n  docs:lint: Lint documentation\n  ai:*: AI-related scripts\n  dev:*: Development servers\n  validate:env: Validate environment\n  rollback: Rollback changes'",
     "build:shared": "nx run-many --target=build --projects=@political-sphere/shared",
     "bootstrap": "bash scripts/bootstrap.sh",
     "validate:env": "node scripts/validate-env.js",
@@ -119,10 +115,13 @@
     "mcp:git": "nx serve political-sphere-mcp-git",
     "mcp:political-sphere": "nx serve political-sphere-mcp-political-sphere",
     "mcp:ai-assistant": "nx serve political-sphere-ai-assistant",
+    "mcp:microsoft-learn": "nx serve political-sphere-mcp-microsoft-learn",
     "mcp:playwright": "npx -y @playwright/mcp",
     "mcp:chrome-devtools": "npx -y chrome-devtools-mcp",
     "mcp:filesystem-official": "npx -y @modelcontextprotocol/server-filesystem .",
-    "mcp:time": "npx -y time-mcp"
+    "mcp:time": "npx -y time-mcp",
+    "mcp:duckduckgo": "node apps/dev/mcp-servers/duckduckgo/server.mjs",
+    "mcp:all": "concurrently -k \"npm run mcp:filesystem\" \"npm run mcp:github\" \"npm run mcp:sqlite\" \"npm run mcp:puppeteer\" \"npm run mcp:git\" \"npm run mcp:political-sphere\" \"npm run mcp:ai-assistant\" \"npm run mcp:microsoft-learn\" \"npm run mcp:duckduckgo\""
   },
   "dependencies": {
     "@jest/globals": "^30.2.0",
@@ -142,3 +141,4 @@
   },
   "packageManager": "pnpm@9.12.0+sha512.4abf725084d7bcbafbd728bfc7bee61f2f791f977fd87542b3579dcb23504d170d46337945e4c66485cd12d588a0c0e570ed9c477e7ccdd8507cf05f3f92eaca"
 }
+        "ai:performance": "node apps/dev/ai/performance-monitor.js",

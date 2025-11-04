@@ -17,6 +17,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Updated documentation with new endpoints and actions
   - Server tested successfully with health checks and basic API calls (Date: 2025-11-03; Author: automation/assistant)
 
+### Added
+
+- **MCP Servers (stubs)**: Added minimal stub MCP servers for local testing and integration validation for the following projects: `filesystem`, `github`, `git`, `puppeteer`, `sqlite`, `political-sphere`. These stubs expose a `/health` endpoint and allow quick local verification that MCP wiring and npm scripts are operational. (Date: 2025-11-03; Author: automation/assistant)
+
+- **microsoft-learn MCP (stub)**: Added `apps/dev/mcp-servers/microsoft-learn` — a minimal MCP stub exposing `/health` and `/info` for local development. (Date: 2025-11-04; Author: automation/assistant)
+
+- **microsoft-graph MCP (stub)**: Added `apps/dev/mcp-servers/microsoft-graph` — a minimal MCP stub exposing `/health` and `/info` for local development. (Date: 2025-11-04; Author: automation/assistant)
+
+### Fixed
+
+- **github MCP entrypoint restored**: Reconstructed a canonical `src/index.ts` for `apps/dev/mcp-servers/github` from backups and updated the package `dev` script to run `src/index.ts`. Verified `pnpm run dev` and `/health` on port 4011. (Date: 2025-11-04; Author: automation/assistant)
+
+- **git MCP entrypoint restored**: Reconstructed a canonical `src/index.ts` for `apps/dev/mcp-servers/git` from backups and updated the package `dev` script to run `src/index.ts`. Verified `pnpm run dev` and `/health` on port 4012. (Date: 2025-11-04; Author: automation/assistant)
+
+- **puppeteer MCP entrypoint restored**: Reconstructed a canonical `src/index.ts` for `apps/dev/mcp-servers/puppeteer` from backups and updated the package `dev` script to run `src/index.ts`. Verified `pnpm run dev` and `/health` on port 4013. (Date: 2025-11-04; Author: automation/assistant)
+
+- **sqlite MCP entrypoint restored**: Reconstructed a canonical `src/index.ts` for `apps/dev/mcp-servers/sqlite` from backups and updated the package `dev` script to run `src/index.ts`. Verified `pnpm run dev` and `/health` on port 4014. (Date: 2025-11-04; Author: automation/assistant)
+
+- **political-sphere MCP entrypoint restored**: Reconstructed a canonical `src/index.ts` for `apps/dev/mcp-servers/political-sphere` from backups and updated the package `dev` script to run `src/index.ts`. Verified `pnpm run dev` and `/health` on port 4015. (Date: 2025-11-04; Author: automation/assistant)
+
+### Changed
+
+- **Governance Reforms**: Streamlined governance framework to reduce bureaucracy while preserving value (2025-11-03)
+  - Increased Fast-Secure mode budget from 150 to 200 lines/8 files for small features
+  - Automated 90% of quality gates in Safe mode, focusing human review on architectural decisions
+  - Enhanced AI suggestions and automated safety checks in R&D mode
+  - Added proportional oversight balancing efficiency with governance requirements
+  - Updated execution modes with AI-driven automation and risk-based scaling
+
+### Changed
+
+- Streamlined execution modes with automated quality gates and incremental governance (2025-11-04)
+- Increased Fast-Secure budget to 200 lines for small features, AI handles 80% of quality gates (2025-11-04)
+- R&D mode now provides automated migration assistance and suggests optimal approaches (2025-11-04)
+
 ### Changed
 
 - Consolidated automation scripts under `tools/scripts/` for consistency: moved `scripts/ci/check-tools.mjs` to `tools/scripts/ci/check-tools.mjs`, moved `scripts/ai/fetch-index.sh` to `tools/scripts/ai/fetch-index.sh`, removed shim `scripts/ai/guard-change-budget.mjs`, and updated workflow references. (Date: 2025-11-03; Author: automation/assistant)

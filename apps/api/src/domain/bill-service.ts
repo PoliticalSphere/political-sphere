@@ -1,8 +1,16 @@
-import { Bill, CreateBillInput, CreateBillSchema, BillStatus } from '@political-sphere/shared';
-import { getDatabase } from '../stores';
+import {
+  type Bill,
+  type BillStatus,
+  type CreateBillInput,
+  CreateBillSchema,
+} from "@political-sphere/shared";
+import { getDatabase } from "../stores";
 
 export class BillService {
-  private db = getDatabase();
+  // Lazy getter to avoid stale DB connections in tests
+  private get db() {
+    return getDatabase();
+  }
 
   async proposeBill(input: CreateBillInput): Promise<Bill> {
     // Validate input
@@ -11,7 +19,7 @@ export class BillService {
     // Verify proposer exists
     const proposer = await this.db.users.getById(input.proposerId);
     if (!proposer) {
-      throw new Error('Proposer does not exist');
+      throw new Error("Proposer does not exist");
     }
 
     return this.db.bills.create(input);
@@ -21,9 +29,19 @@ export class BillService {
     return this.db.bills.getById(id);
   }
 
-  async getAllBills(): Promise<Bill[]> {
-    const result = await this.db.bills.getAll();
-    return result.bills;
+  async getAllBills(
+    page: number = 1,
+    limit: number = 10
+  ): Promise<{
+    bills: Bill[];
+    total: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  }> {
+    const result = await this.db.bills.getAll(page, limit);
+    const hasNext = page * limit < result.total;
+    const hasPrev = page > 1;
+    return { ...result, hasNext, hasPrev };
   }
 
   async getBillsByProposer(proposerId: string): Promise<Bill[]> {

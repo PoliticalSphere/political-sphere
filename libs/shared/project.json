@@ -26,11 +26,14 @@
       "executor": "nx:run-commands",
       "outputs": ["{workspaceRoot}/coverage/libs/shared"],
       "options": {
-        "command": "npx jest --config=libs/shared/jest.config.cjs --coverage --passWithNoTests"
+        "command": "vitest run --config ../../vitest.config.js --coverage --reporter=verbose"
       },
       "configurations": {
         "watch": {
-          "command": "npx jest --config=libs/shared/jest.config.cjs --watch"
+          "command": "vitest --config ../../vitest.config.js --watch"
+        },
+        "coverage": {
+          "command": "vitest run --config ../../vitest.config.js --coverage"
         }
       }
     }

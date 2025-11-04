@@ -4,6 +4,7 @@
  */
 
 const axios = require('axios');
+const { CircuitBreaker } = require('../api/src/error-handler');
 
 class AgeVerificationClient {
   constructor(apiBaseUrl = 'http://localhost:3000/api') {
@@ -12,6 +13,9 @@ class AgeVerificationClient {
       baseURL: apiBaseUrl,
       timeout: 5000, // 5 second timeout
     });
+
+    // Circuit breaker for age verification API calls
+    this.circuitBreaker = new CircuitBreaker(3, 30000, 30000); // 3 failures, 30s timeout
   }
 
   /**
@@ -21,13 +25,16 @@ class AgeVerificationClient {
    */
   async getVerificationStatus(userId) {
     try {
-      const response = await this.client.get(`/age/status`, {
-        headers: { 'X-User-ID': userId } // Pass user ID in header for anonymous checks
+      const result = await this.circuitBreaker.execute(async () => {
+        const response = await this.client.get(`/age/status`, {
+          headers: { 'X-User-ID': userId } // Pass user ID in header for anonymous checks
+        });
+        return response.data.data;
       });
 
-      return response.data.data;
+      return result;
     } catch (error) {
-      console.error('Age verification status check error:', error.message);
+      console.error('Age verification status check failed:', error.message);
       // Fail safe - assume unverified
       return { verified: false, age: null };
     }
@@ -41,15 +48,18 @@ class AgeVerificationClient {
    */
   async checkContentAccess(userId, contentRating = 'PG') {
     try {
-      const response = await this.client.post('/age/check-access', {
-        contentRating
-      }, {
-        headers: { 'Authorization': `Bearer ${this.getAuthToken(userId)}` } // Assume auth token available
+      const result = await this.circuitBreaker.execute(async () => {
+        const response = await this.client.post('/age/check-access', {
+          contentRating
+        }, {
+          headers: { 'Authorization': `Bearer ${this.getAuthToken(userId)}` } // Assume auth token available
+        });
+        return response.data.data;
       });
 
-      return response.data.data;
+      return result;
     } catch (error) {
-      console.error('Content access check error:', error.message);
+      console.error('Content access check failed:', error.message);
       // Fail safe - deny access
       return { canAccess: false, userAge: null, contentRating };
     }

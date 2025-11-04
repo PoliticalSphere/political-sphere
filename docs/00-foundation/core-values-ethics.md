@@ -9,51 +9,88 @@
 |  🔒 Internal   | `1.0.0` |  2025-10-29  | Ethics Committee |  Quarterly   | **Approved** |
 
 </div>
-
----
-
 ## 🎯 Purpose
 
-Our Core Values & Ethics framework establishes the fundamental principles that guide every decision, interaction, and innovation at Political Sphere. This document ensures our work with AI, political simulation, and civic education maintains the highest standards of integrity, responsibility, and societal benefit.
 
-### Purpose of Values
+## Operational strengthening
 
-These values exist to:
+### Ethics by Design
 
-Guide all game design and development decisions
+All features must include an ethical impact summary before implementation (a mini DPIA). This summary is a required developer artefact and should identify potential harms, mitigation steps, and which item in the constitutional override logic applies.
 
-Ensure fairness and trust between players
+### Product metrics > Vanity metrics
 
-Protect the simulation from abuse or real-world influence
+We optimise for informed participation and learning outcomes, not time-on-site, virality, or emotionally manipulative signals. Product success metrics should prioritise civic competence, fairness, and retention of informed behaviours.
 
-Provide clarity for moderation and governance
+## How this applies in practice — 6 sample edge cases
 
-Anchor long-term development integrity
+1. Fake campaign promising direct cash payouts.
+  - Allowed as satire mechanics if clearly fictional and disconnected from real money.
+  - Disallowed: any mechanism enabling real-player fundraising, payment links, or real-world mobilisation.
+2. Player-run referendum urging real-world action.
+  - Allowed: in-game referendum with in-game consequences only.
+  - Disallowed: any content that directs players to external real-world events or mobilises off-platform action.
+3. AI-generated 'opinion leader' NPC that mimics a real person.
+  - Allowed only if explicitly fictional, provenance included, and cannot be used to contact or influence real accounts.
+4. Targeted messaging to swing in-game votes.
+  - Allowed as game mechanic when targeted messages are purely fictional and transparent.
+  - Disallowed: targeted content that profiles players for likely real-world political persuasion; profiling is prohibited.
+5. Satirical ads causing emotional escalation.
+  - Allowed as labelled satire with safe-guards and opt-outs.
+  - Disallowed: emotionally manipulative content designed to increase engagement via outrage.
+6. Cross-play with external social platforms.
+  - Allowed: sharing anonymised, non-political achievement badges.
+  - Disallowed: any pipeline that enriches contact lists, political persuasion, or recruitment.
 
-The values apply to gameplay, community, and development practices.
+## 📋 Ethical Decision Framework
+Political Sphere teaches the skills of democratic life by simulating politics responsibly, transparently, and free from real-world influence.
+
+We operate like a democracy, not a casino; like a civic institution, not a tech product.
+
+Our Core Values & Ethics framework is a commitment and social contract with players, partners, and society. It sets active obligations for design, moderation, and product choices so that the platform teaches civic practice without enabling real-world persuasion or harm.
+
+### Purpose of Values — our core promise
+
+We pledge to:
+
+- Centre player safety, dignity and informed civic learning in every design choice.
+- Build and maintain a simulation that is fair, auditable, and resilient to abuse.
+- Avoid any feature, AI, or mechanic that can be used to influence real-world political beliefs or behaviour.
+- Prioritise learning outcomes, accountability, and process over vanity engagement metrics.
+
+The values apply to gameplay, community, development, and business practices.
+
+### Proposed Ethical Order of Priority (constitutional override logic)
+
+To make trade-offs clear, we adopt this hierarchy of first principles. When principles conflict, higher items override lower ones:
+
+1. User safety & dignity
+2. Simulation integrity & fairness
+3. No real-world political influence (zero pipeline to real politics)
+4. Learning outcomes over engagement
+5. Transparency & accountability
+6. Innovation that honours the above
+
+This hierarchy is our constitutional override logic — it guides design reviews, risk assessments, and escalation.
 
 ### 💡 Business Value
 
 <table>
 <tr>
 <td width="20%"><b>🛡️ Trust</b></td>
-<td>Builds user confidence in our platform and mission</td>
+<td>Build user confidence in our platform and mission</td>
 </tr>
 <tr>
 <td><b>⚖️ Compliance</b></td>
-<td>Ensures adherence to EU AI Act and ethical standards</td>
+<td>Ensure adherence to legal, ethical, and industry standards</td>
 </tr>
 <tr>
 <td><b>🌟 Reputation</b></td>
-<td>Establishes Political Sphere as an ethical leader</td>
+<td>Establish Political Sphere as a reputable platform</td>
 </tr>
 <tr>
 <td><b>🔍 Accountability</b></td>
-<td>Provides clear standards for decision-making</td>
-</tr>
-<tr>
-<td><b>🤝 Partnerships</b></td>
-<td>Enables collaboration with ethical organizations</td>
+<td>Provide clear standards for decision-making</td>
 </tr>
 </table>
 
@@ -63,112 +100,116 @@ The values apply to gameplay, community, and development practices.
 
 ### Fairness
 
-All players operate on equal terms
-
-No paid advantages or influence
-
-Rules are applied consistently
-
-Server-authoritative simulation
+- All players operate on equal terms
+- No paid advantages or influence
+- Rules are applied consistently
+- Server-authoritative simulation
 
 **Meaning:**
 Outcome is earned through in-world conduct, strategy, and relationships — not money, manipulation, or privilege.
 
 ### Integrity of Simulation
 
-The game world behaves consistently and predictably
-
-Parliamentary processes work as rules-based systems
-
-No arbitrary changes to how political systems behave
+- The game world behaves consistently and predictably
+- Parliamentary processes work as rules-based systems
+- No arbitrary changes to how political systems behave
 
 **Meaning:**
 Systems follow transparent rules; cause → effect is understandable.
 
 ### Player Safety & Respect
 
-No harassment, intimidation, or targeted abuse
-
-No discrimination or hate content
-
-No doxxing, real-world targeting, or personal attacks
+- No harassment, intimidation, or targeted abuse
+- No discrimination or hate content
+- No doxxing, real-world targeting, or personal attacks
 
 **Meaning:**
 Players engage in political simulation — not personal aggression.
 
 ### Ethical Boundaries
 
-Strict separation between in-game politics and real-world politics
-
-No real-world persuasion, mobilisation, recruitment, or ideological promotion
-
-No exploitation of sensitive political issues
+- Strict separation between in-game politics and real-world politics
+- No real-world persuasion, mobilisation, recruitment, or ideological promotion
+- No exploitation of sensitive political issues
 
 **Meaning:**
 Political Sphere simulates — it does not influence real-world politics.
 
 ### Transparency & Accountability
 
-Rules and moderation criteria are visible
-
-Decisions explained when possible
-
-Appeals processes exist
-
-Audit trails for sensitive actions
+- Rules and moderation criteria are visible
+- Decisions explained when possible
+- Appeals processes exist
+- Audit trails for sensitive actions
 
 **Meaning:**
 Trust is built through openness and clear reasoning.
 
 ### Accessibility & Inclusion
 
-Game systems and UI support broad participation
-
-Features do not exclude based on ability, background, or identity
-
-Assistive features when possible (within resource constraints)
+- Game systems and UI support broad participation
+- Features do not exclude based on ability, background, or identity
+- Assistive features when possible (within resource constraints)
 
 **Meaning:**
 Players of different abilities and experiences can succeed.
 
 ### Player Agency With Consequence
 
-Players have meaningful strategic freedom
-
-Conduct and decisions carry in-world outcomes
-
-Leadership roles earned through conduct, not purchased
+- Players have meaningful strategic freedom
+- Conduct and decisions carry in-world outcomes
+- Leadership roles earned through conduct, not purchased
 
 **Meaning:**
 Power in the game is earned and accountable.
 
+### Civic Duty Simulation
+
+- We expose players to the pressures, trade-offs, and responsibilities of leadership — not just power and winning. Learning to govern responsibly is the central educational purpose of Political Sphere.
+
+**Meaning:**
+This distinguishes the platform from politics-as-content games: we teach civic duty, restraint, and institutional stewardship.
+
 ### Responsible Use of AI
 
-AI supports gameplay, moderation, and simulation
-
-No manipulation or psychological influence
-
-Local models only; transparent guardrails
-
-Human override for moderation decisions
+- AI supports gameplay, moderation, and simulation
+- No manipulation or psychological influence
+- Local models only; transparent guardrails
+- Human override for moderation decisions
 
 **Meaning:**
 AI enhances the world, but never controls real-world beliefs or behaviour.
 
 ### Continuous Improvement
 
-Systems evolve while maintaining core fairness
-
-Feedback loops with players
-
-Ethical review of changes
-
-Change logs and decision documentation
+- Systems evolve while maintaining core fairness
+- Feedback loops with players
+- Ethical review of changes
+- Change logs and decision documentation
 
 **Meaning:**
 The game grows, but values remain stable.
 
 ---
+
+## Dual-Layer Values
+
+To make governance and operational changes easier to manage, we separate enduring constitutional values from adaptive operational principles:
+
+- 🌱 Enduring Constitutional Values
+
+  - No real-world political influence
+  - Safety & dignity
+  - Fairness
+  - Accessibility & inclusion
+
+- ⚙️ Adaptive Operational Principles
+  - Weekly community ethics sync
+  - Transparent moderation logs
+  - Audit trails and ABAC (attribute-based access control)
+  - Zero-cost governance tooling
+
+This structure keeps the constitution stable while allowing operations to evolve.
 
 ## 🛡️ Ethical Framework
 
@@ -184,7 +225,7 @@ No external political campaigning
 
 No use of real politicians/parties as mechanics
 
-No psychological manipulation or persuasion systems
+No behavioural-influence systems including nudging, emotional profiling, or targeted content designed to shape political behaviour.
 
 No dark patterns
 
@@ -216,7 +257,11 @@ Security and safety > convenience
 
 Design choices must preserve fairness and equal access
 
-No real-world political influence — ever
+We do not take political positions. We curate process, fairness, and pluralism.
+
+Zero pipeline between in-game actions and real-world politics.
+
+Ethics should empower responsible velocity, not impede progress. Where principles and speed conflict, escalate fast — ethics does not mean paralysis.
 
 ### AI Ethics Principles
 
@@ -242,6 +287,8 @@ No real-world political influence — ever
 - Transparent data usage with user consent and control
 - Regular privacy impact assessments for new features
 
+**Player Identity Protection:** We never infer, predict, or classify a player's real-world political beliefs, affiliations, or voting intentions. Such profiling is prohibited and treated as high-risk under our governance.
+
 #### 🔍 Algorithmic Transparency
 
 **Users understand how our AI works and can verify its outputs independently.**
@@ -252,6 +299,14 @@ No real-world political influence — ever
 - Clear explanations of AI decision-making processes
 - Ability for users to challenge and correct AI outputs
 - Regular third-party audits of algorithmic fairness
+
+#### 🧾 AI Provenance & Verifiability
+
+Any generated political claim or consequential content must include provenance: links to verifiable data, primary sources, or clearly documented derivations. We prioritise reproducible assertions and require source references for claims used in educational contexts.
+
+#### 🛡️ Anti-Manipulation Standard
+
+No AI or game system may be designed to change real-world beliefs, voting behaviour, or political identity. If a mechanic or output could plausibly persuade in real life, it cannot be used in the game.
 
 ### Political Simulation Ethics
 
@@ -370,7 +425,7 @@ graph TD
 
 Protect players and their data
 
-Ensure safe political simulation (no real-world political mobilisation)
+Ensure safe political simulation (zero pipeline between in-game actions and real-world politics)
 
 Maintain fairness and integrity of gameplay
 
@@ -673,6 +728,14 @@ Political Sphere must be secure, fair, and privacy-respecting, using only free t
 - Decision-making frameworks
 - Case studies and simulations
 - Regular refreshers and updates
+
+### Quarterly Public Ethics Statement
+
+We will publish a short, public ethics statement each quarter summarising major decisions, high-risk features reviewed, and lessons learned. This mirrors civic institutions' transparency practices and helps external stakeholders hold us to account.
+
+### Player Ethics Assembly (User Representation Chamber)
+
+We will establish a rotating Player Ethics Assembly: a small, democratically-selected cohort of players who provide structured input on rules, moderation policies, and high-level trade-offs. Membership rotates quarterly and findings feed into Ethics Committee reviews.
 
 ---
 

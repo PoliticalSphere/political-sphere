@@ -5,7 +5,9 @@
     "audit:full": "npm run preflight && npm run audit --if-present && npm run a11y --if-present",
     "test": "vitest --run",
     "test:changed": "vitest --run --changed",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "build:frontend": "vite build --config apps/frontend/vite.config.js",
+    "serve:frontend": "vite --config apps/frontend/vite.config.js --port 3001"
   },
   "dependencies": {
     "better-sqlite3": "^12.4.1",
@@ -15,7 +17,18 @@
     "express-rate-limit": "^7.1.5",
     "helmet": "^7.1.0",
     "ioredis": "^5.8.2",
-    "uuid": "^13.0.0"
+    "uuid": "^13.0.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/auto-instrumentations-node": "^0.66.0",
+    "@opentelemetry/exporter-metrics-otlp-http": "^0.207.0",
+    "@opentelemetry/exporter-trace-otlp-http": "^0.207.0",
+    "@opentelemetry/resources": "^2.2.0",
+    "@opentelemetry/sdk-metrics": "^2.2.0",
+    "@opentelemetry/sdk-node": "^0.207.0",
+    "@opentelemetry/semantic-conventions": "^1.37.0",
+    "@vitejs/plugin-react": "^5.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
@@ -31,7 +44,16 @@
     "supertest": "^6.3.3",
     "ts-jest": "^29.1.0",
     "typescript": "^5.3.0",
-    "vite": "^7.1.12",
-    "vitest": "^4.0.6"
+    "vite": "^5.4.21",
+    "vitest": "^1.0.0",
+    "@langchain/core": "^1.0.2",
+    "@langchain/mcp-adapters": "^1.0.0",
+    "@modelcontextprotocol/sdk": "^1.21.0",
+    "@playwright/mcp": "^0.0.45",
+    "@upstash/context7-mcp": "^1.0.26",
+    "@vitest/coverage-v8": "^4.0.6",
+    "mcp-framework": "^0.2.15",
+    "nx": "^22.0.2",
+    "playwright": "^1.56.1"
   }
 }

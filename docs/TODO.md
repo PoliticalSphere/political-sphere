@@ -59,6 +59,21 @@ Implement governance reforms to reduce bureaucracy while preserving quality, sec
 - Summary: Add a repository-level assistant policy file with recommended implicit contexts (repo_read, tests_run, terminal_run, git_read, pr_create:draft, changelog_todo_edit, ephemeral_cache, audit_logging) and explicit approval list for sensitive actions (repo_write, secrets_access, external_network, package_publish, infra_deploy).
 - Impact: Non-breaking; documents allowed agent capabilities and governance defaults. Commit added on `fix/context-preloader` branch.
 
+### 7. Governance Playbook 2.2.0 Adoption (2025-11-04)
+
+- Date: 2025-11-04
+- Author: BlackboxAI
+- Files changed: `.github/copilot-instructions.md`, `.blackboxrules`, `docs/CHANGELOG.md`, `docs/TODO.md`
+- Type: Changed
+- Summary: Delivered single-source governance playbook v2.2.0 with enhanced quick reference, accountability model, standards matrix, validation/security/accessibility requirements, and tooling expectations.
+- Impact: Requires organisation-wide comms, quick-reference refresh, tooling updates for telemetry identifiers, template additions, and validation of legacy references.
+- [ ] Brief governance, product, security, and data stakeholders on playbook 2.2.0 expectations (`@governance-team`; due: 2025-11-08)
+- [ ] Update `quick-ref.md` (and any prior sub-guides) to align with the consolidated playbook and link to new sections (`@docs-team`; due: 2025-11-07)
+- [ ] Extend `tools/scripts/ai/guard-change-budget.mjs` output with artefact checklist, benchmark mapping reminders, and telemetry identifier requirements (`@tooling-team`; due: 2025-11-12)
+- [ ] Ensure automations/docs referencing `ai/governance/.blackboxrules` point to the root `.blackboxrules` (`@tooling-team`; due: 2025-11-09)
+- [ ] Add bias/fairness, accessibility, incident review, and telemetry report templates to `/docs/templates/` and reference them in the playbook (`@docs-team`; due: 2025-11-10)
+- [ ] Instrument prompt/response logging with trace identifiers and monthly intelligence reporting workflow (`@tooling-team`; due: 2025-11-11)
+
 ### 5. Validation and Final Checks
 
 - [ ] Test updated execution modes in CI pipeline
@@ -75,6 +90,14 @@ Implement governance reforms to reduce bureaucracy while preserving quality, sec
 - [x] Increased Fast-Secure mode flexibility for small features
 - [x] Enhanced AI-driven quality gates and safety checks
 - [x] Added efficiency best-practices integration
+
+### Governance Rule Readability Improvements (2025-11-04)
+
+- [x] Condensed verbose sections into concise inline sentences in `.github/copilot-instructions.md` and `.blackboxrules`
+- [x] Eliminated redundancy and improved structure for better readability
+- [x] Added version 1.5.3 and last reviewed date to both files
+- [x] Ensured parity between rule files per Meta-Rule
+- [x] Updated CHANGELOG.md with entry documenting the changes
 
 ## Completed Tasks
 

@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- **Development Efficiency Improvements (2025-11-04)**: Enhanced developer experience with free/open-source tools compatible with private repositories:
+  - Enhanced VS Code settings for better DX (bracket pairs, emmet, terminal scrollback, etc.)
+  - Added npm scripts for common development tasks (lint:fix, format, type-check, dev shortcuts)
+  - Extended CI pipeline with tests, coverage, linting, and type checking
+  - Implemented pre-commit hooks with Lefthook for code quality enforcement
+  - All improvements use free/open-source tools compatible with private repos
+
+- **Governance Reforms Implementation (2025-11-04)**: Completed comprehensive governance reforms including CI integration, documentation updates, and validation protocol enhancements:
+
+  - Added GitHub Actions workflow for guard change budget checks on PRs with npm ci for dependency installation
+  - Updated PR templates with execution mode examples and FAST_AI guidance
+  - Added VS Code setting for automatic file closing after edits
+  - Removed unnecessary MCP server stubs
+  - Enhanced contributing documentation with guard script information
+  - Updated quick reference with operating loop and validation protocol
+  - Extended guard script output with validation protocol reminders
+  - Updated agent prompts with close-files policy and tool-usage guidance
+  - Maintained parity between .blackboxrules and .github/copilot-instructions.md
+  - Updated TODO.md to track completed and remaining tasks
+  - (Author: BlackboxAI)
+
 - **Database Performance Optimization**: Comprehensive caching and indexing improvements to resolve high database latency:
   - **Performance Indexes Migration**: Created `002-performance-indexes.js` with composite indexes for votes (user_id + bill_id), bills (status + created_at), and users (email, username)
   - **Redis Query Caching**: Implemented Redis-based caching in all store classes with appropriate TTL values:

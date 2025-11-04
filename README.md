@@ -104,6 +104,17 @@ tools/         # Build tools and utilities
 - `npm run ai:blackbox` — Governance compliance checking
 - `npm run ai:performance` — Performance monitoring and optimization
 
+### Model Context Protocol Servers
+
+- `npm run mcp:filesystem` — repository-aware file navigation
+- `npm run mcp:git` — local Git analytics (`status`, `log`, `diff`)
+- `npm run mcp:political-sphere` — domain documentation & governance insights
+- `npm run mcp:sqlite` — read-only queries against project SQLite datasets
+- `npm run mcp:puppeteer` — headless browser automation helpers
+- `npm run mcp:microsoft-learn` — curated Microsoft Learn recommendations
+
+> Complete catalogue, setup notes, and troubleshooting guidance live in `docs/mcp-servers-setup.md`.
+
 ### Quality Gates & Governance
 
 - `npm run controls:run` — Execute machine-checkable governance controls

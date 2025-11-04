@@ -1,31 +1,122 @@
-# Expansion Plan for Political Sphere Website
+# Comprehensive Project TODO List - Political Sphere
 
-## Current Status
+## Overview
+This comprehensive TODO list covers all aspects of the Political Sphere project, including development, maintenance, security, documentation, testing, and operations. Items are categorized by priority and functional area.
 
-- [x] Initial plan approved by user.
-- [x] Detailed expansion plan approved by user.
-- [x] Step 1: Fix DB migrations by editing migrations/index.js to skip or fix validateSchema (comment foreign_key_check, ensure db open).
-- [x] Step 2: Add sample data insert migration.
-- [x] Step 3: Build shared lib: Add build script to libs/shared/package.json, run tsc to generate dist.
-- [x] Step 4: Install React deps: npm install react react-dom @vitejs/plugin-react --save; update root package.json scripts for vite build/serve.
-- [x] Step 5: Create full API routes: Edit apps/api/src/app.js to include news routes from news-service.js; replace mock-server with full Express server on port 4000.
-- [x] Step 6: Refactor frontend to React: Create Vite config in apps/frontend/vite.config.js; move dashboard to React components (Dashboard.jsx using useEffect for API fetch); update server.js to serve Vite dev server or built assets.
-- [ ] Step 7: Add game mechanics stubs: Create libs/game-engine/src/index.ts with stubs for vote simulation, party dynamics; export and use in API/UI.
-- [ ] Step 8: Run npm install.
-- [ ] Step 9: Build shared and game-engine.
-- [ ] Step 10: Run migrations and start API (node apps/api/src/app.js).
-- [ ] Step 11: Start frontend dev server (vite --port 3001).
-- [ ] Step 12: Test: Browser to localhost:3001, curl API endpoints, verify data flow and game stubs (e.g., simulate vote).
-- [ ] Step 13: Use browser_action to verify UI, execute_command for curl tests.
-- [ ] Step 14: Update TODO.md with completion.
+## High Priority Development Tasks
 
-## Recent tasks (automation)
+### 1. Core API Development
+- [ ] Implement JWT authentication middleware with proper token validation
+- [ ] Add rate limiting to all API endpoints (express-rate-limit)
+- [ ] Implement comprehensive error handling with structured logging
+- [ ] Add input validation using Zod schemas for all endpoints
+- [ ] Implement API versioning strategy (/v1/ prefix)
+- [ ] Add OpenAPI/Swagger documentation generation
+- [ ] Implement request/response compression (gzip)
+- [ ] Add CORS configuration for production domains
+- [ ] Implement health check endpoints (/health, /ready)
+- [ ] Add request ID correlation for tracing
 
-- [x] 2025-11-04: Stabilise ANN integration tests and index-server startup. Implemented defensive index loading, legacy /vector-search compatibility, deterministic fallback results, and robust REPO_ROOT discovery in mirrored tests. (owner: automation)
+### 2. Database & Data Layer
+- [ ] Implement database connection pooling
+- [ ] Add database migration system with rollback capability
+- [ ] Implement data seeding scripts for development
+- [ ] Add database backup automation
+- [ ] Implement database query optimization and indexing
+- [ ] Add database connection retry logic
+- [ ] Implement database transaction management
+- [ ] Add database schema validation
+- [ ] Implement data export/import functionality
+- [ ] Add database performance monitoring
 
+### 3. Frontend Development
+- [ ] Implement responsive design for mobile/tablet/desktop
+- [ ] Add accessibility features (ARIA labels, keyboard navigation)
+- [ ] Implement dark/light theme toggle
+- [ ] Add internationalization (i18n) support
+- [ ] Implement progressive web app (PWA) features
+- [ ] Add offline functionality with service workers
+- [ ] Implement real-time updates with WebSockets
+- [ ] Add form validation and error handling
+- [ ] Implement loading states and skeleton screens
+- [ ] Add comprehensive error boundaries
 
-## Notes
+### 4. Game Server Development
+- [ ] Implement WebSocket connection handling
+- [ ] Add room/lobby management system
+- [ ] Implement game state synchronization
+- [ ] Add player session management
+- [ ] Implement game logic validation
+- [ ] Add spectator mode functionality
+- [ ] Implement game replay/recording system
+- [ ] Add anti-cheat measures
+- [ ] Implement matchmaking algorithm
+- [ ] Add game statistics tracking
 
-- Priority: API/DB first (Steps 1-5, 8-10), then UI and game (Steps 6-7, 11-13).
-- Test: Browser to http://localhost:3001 (frontend), curl /api/news, /api/bills.
-- Errors: Ensure shared built, DB initialized, no import issues. Use --legacy-peer-deps for npm if conflicts.
+## Security & Compliance Tasks
+
+### 5. Authentication & Authorization
+- [ ] Implement OAuth2/OIDC integration
+- [ ] Add multi-factor authentication (MFA)
+- [ ] Implement role-based access control (RBAC)
+- [ ] Add password strength requirements
+- [ ] Implement account lockout policies
+- [ ] Add session management and timeout
+- [ ] Implement secure password reset flow
+- [ ] Add audit logging for auth events
+- [ ] Implement API key management
+- [ ] Add biometric authentication support
+
+### 6. Data Protection & Privacy
+- [ ] Implement GDPR compliance features (right to erasure, data portability)
+- [ ] Add data encryption at rest and in transit
+- [ ] Implement privacy policy and consent management
+- [ ] Add data retention policies
+- [ ] Implement data anonymization for analytics
+- [ ] Add cookie consent management
+- [ ] Implement data subject access requests
+- [ ] Add privacy impact assessments
+- [ ] Implement data classification system
+- [ ] Add data breach notification system
+- [x] Update `quick-ref.md` and relevant domain sub-files to reference the new operating loop and validation protocol
+- [ ] Owner: @docs-team
+- [ ] Due: 2025-11-07
+
+### 12. Extend Guard Script Output
+
+- [x] Extend `tools/scripts/ai/guard-change-budget.mjs` output to include validation protocol reminders
+- [x] Owner: @tooling-team
+- [x] Due: 2025-11-12
+
+### 13. Test Execution Modes in CI Pipeline
+
+- [ ] Test updated execution modes in CI pipeline
+- [ ] Validate that reforms reduce development friction while maintaining quality
+- [ ] Monitor adoption and gather feedback from development team
+- [ ] Update any cross-references if needed
+
+## Execution Mode
+
+Safe - Full governance compliance required
+
+## Validation Protocol
+
+- Run guard-change-budget.mjs before any changes
+- Update CHANGELOG.md and TODO.md for all changes
+- Ensure parity between .blackboxrules and .github/copilot-instructions.md
+- Test changes in CI pipeline
+- Gather feedback from development team
+
+## Completed Tasks Summary
+
+- [x] CI Integration for Guard Script
+- [x] Add Example PR Snippet and FAST_AI Guidance
+- [x] Close-files Policy Rollout
+- [x] Review MCP Server Stubs (removed stub)
+- [x] Provision Local Test Runners
+- [x] Tool-usage Rule Rollout
+- [x] Communication: New TODO Update Requirement
+- [x] Update Quick Reference Documentation
+- [x] Extend Guard Script Output
+
+Remaining tasks require governance owner assignment and testing.

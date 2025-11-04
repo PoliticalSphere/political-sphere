@@ -7,7 +7,7 @@ This directory contains configuration files for various GitHub features and inte
 ### `dependabot.yml`
 
 - **Purpose**: Automated dependency updates
-- **Configuration**: Defines update schedules for npm packages across different directories
+- **Configuration**: Defines update schedules for npm packages across different directories (/, /apps/, /libs/)
 - **Documentation**: [Dependabot documentation](https://docs.github.com/en/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file)
 
 ### `env-config.yml`

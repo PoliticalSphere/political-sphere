@@ -45,7 +45,8 @@ app.Run();
 - Add an `observability/onboarding.md` with exact enablement steps for our runtimes and a checklist for staging validation (span presence, sampling, dashboards).
 - Wire trace/metric ingestion alerts for high error rates, high latency and sudden ingestion spikes.
 
-*** Last updated: 2025-11-04
+\*\*\* Last updated: 2025-11-04
+
 # Observability: Azure Monitor & OpenTelemetry
 
 This note summarises how to get started with OpenTelemetry on Azure (Application Insights / Azure Monitor) for the project's services. It emphasises a low-risk rollout (staging → canary → prod) and cost-aware sampling.
@@ -92,6 +93,7 @@ app.Run();
 
 - Add an `observability/onboarding.md` with exact enablement steps for our runtimes and a checklist for staging validation (span presence, sampling, dashboards).
 - Wire trace/metric ingestion alerts for high error rates, high latency and sudden ingestion spikes.
+
 ```markdown
 # Observability: Azure Monitor & OpenTelemetry
 

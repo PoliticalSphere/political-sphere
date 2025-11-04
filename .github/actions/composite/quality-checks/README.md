@@ -8,7 +8,7 @@ This composite action runs comprehensive quality checks for Node.js projects, in
 | ----------------------- | --------------------------------------------------- | -------- | ---------------------------------- |
 | `fail-fast`             | Exit immediately on first failing check             | No       | `true`                             |
 | `continue-on-error`     | Do not fail the job even if checks fail             | No       | `false`                            |
-| `node-version`          | Node.js version                                     | No       | `18`                               |
+| `node-version`          | Node.js version                                     | No       | `22`                               |
 | `working-directory`     | Directory to run commands in (monorepo friendly)    | No       | `.`                                |
 | `package-manager`       | npm, pnpm, or yarn                                  | No       | `npm`                              |
 | `cache-dependency-path` | Lockfile path(s) for caching                        | No       | ``                                 |

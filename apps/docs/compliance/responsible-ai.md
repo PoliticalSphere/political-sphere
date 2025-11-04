@@ -28,7 +28,8 @@ This short reference collects Microsoft Learn resources and practical guidance f
 - `apps/docs/compliance/eu-ai-act.md` — EU AI Act compliance assessment
 - `apps/docs/security/identity-and-access.md` — Identity & Access references
 
-*** Last updated: 2025-11-04
+\*\*\* Last updated: 2025-11-04
+
 # Responsible AI — Microsoft Learn summary
 
 This short reference collects Microsoft Learn resources and practical guidance for implementing Responsible AI controls in Political Sphere. Use it as an authoritative starting point for internal checklists, reviews, and evidence required by the EU AI Act.
@@ -55,6 +56,7 @@ This short reference collects Microsoft Learn resources and practical guidance f
 - Version and link artifacts from the AI systems inventory; keep them discoverable under `apps/docs/compliance/`.
 
 See also: `apps/docs/compliance/eu-ai-act.md` and `apps/docs/security/identity-and-access.md` for related compliance references.
+
 ```markdown
 # Responsible AI — Microsoft Learn summary
 

@@ -1,5 +1,9 @@
-import { User, CreateUserInput, CreateUserSchema } from '@political-sphere/shared';
-import { getDatabase } from '../stores';
+import {
+  type CreateUserInput,
+  CreateUserSchema,
+  type User,
+} from "@political-sphere/shared";
+import { getDatabase } from "../stores";
 
 export class UserService {
   // Use a lazy getter so the service always obtains the current database connection.
@@ -12,21 +16,18 @@ export class UserService {
     // Validate input
     CreateUserSchema.parse(input);
 
-    // Debug logging to diagnose test failures
-    // eslint-disable-next-line no-console
-    console.debug('[UserService] createUser input:', input);
+    // Debug logging removed — use structured logging via shared logger for production
     // Check if username or email already exists
     const [byUsername, byEmail] = await Promise.all([
       this.db.users.getByUsername(input.username),
       this.db.users.getByEmail(input.email),
     ]);
     const existingUser = byUsername || byEmail;
-    // eslint-disable-next-line no-console
-    console.debug('[UserService] existingUser check:', { byUsername, byEmail });
+    // existingUser check performed; details available via store/cache logs
     if (existingUser) {
       // eslint-disable-next-line no-console
-      console.warn('[UserService] user exists, throwing');
-      throw new Error('Username or email already exists');
+      console.warn("[UserService] user exists, throwing");
+      throw new Error("Username or email already exists");
     }
 
     return this.db.users.create(input);

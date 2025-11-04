@@ -17,8 +17,9 @@ permissions:
   checks: write
 
 env:
-  NODE_VERSION: '22'
+  NODE_VERSION: "22"
   NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+  CI: true
 jobs:
   # Quick validation - fail fast
   pre-flight:

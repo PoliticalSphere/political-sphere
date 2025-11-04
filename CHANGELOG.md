@@ -38,6 +38,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Test reliability & DB lifecycle**: Fixed Vitest aliasing for `@political-sphere/shared` so runtime tests import the TypeScript `index.ts` (prevents missing schema exports). Converted domain services (UserService, PartyService, VoteService, BillService) to use a lazy database getter to avoid stale/closed DB connections during test lifecycle. Removed temporary inspection/test artifacts used for debugging.
 
+- **Index server & integration test stability (2025-11-04)**: Hardened the lightweight index-server used by integration tests to tolerate missing or malformed index files, added compatibility for legacy `/vector-search` endpoint, and provided deterministic fallback results when no index matches are found. Adjusted integration tests to reliably discover the repository root and spawn the index-server deterministically. These changes stabilise ANN-related integration tests across mirrored test directories. (Author: automation)
+  - **Test discovery fixes**: Converted remaining `node:test`-style tests to Vitest `expect`/`test` style and removed hard-coded Node test harness usage so Vitest can collect tests consistently across the monorepo; addressed multiple flaky test discovery and port-collision issues.
+
 ### 2025-11-03 - MCP test stubs
 
 - Added minimal MCP server stubs for local testing: filesystem, github, git, puppeteer, sqlite, political-sphere. These are lightweight HTTP /health endpoints to verify MCP wiring and local integration. (Author: automation)

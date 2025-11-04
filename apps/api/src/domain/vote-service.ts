@@ -1,5 +1,9 @@
-import { Vote, CreateVoteInput, CreateVoteSchema } from '@political-sphere/shared';
-import { getDatabase } from '../stores';
+import {
+  type CreateVoteInput,
+  CreateVoteSchema,
+  type Vote,
+} from "@political-sphere/shared";
+import { getDatabase } from "../stores";
 
 export class VoteService {
   // Lazy getter to avoid stale DB connections in tests
@@ -14,19 +18,22 @@ export class VoteService {
     // Verify bill exists
     const bill = await this.db.bills.getById(input.billId);
     if (!bill) {
-      throw new Error('Bill does not exist');
+      throw new Error("Bill does not exist");
     }
 
     // Verify user exists
     const user = await this.db.users.getById(input.userId);
     if (!user) {
-      throw new Error('User does not exist');
+      throw new Error("User does not exist");
     }
 
-    // Check if user has already voted on this bill
-    const hasVoted = this.db.votes.hasUserVotedOnBill(input.userId, input.billId);
+    // Check if user has already voted on this bill (await the async store method)
+    const hasVoted = await this.db.votes.hasUserVotedOnBill(
+      input.userId,
+      input.billId
+    );
     if (hasVoted) {
-      throw new Error('User has already voted on this bill');
+      throw new Error("User has already voted on this bill");
     }
 
     return this.db.votes.create(input);
@@ -44,7 +51,9 @@ export class VoteService {
     return this.db.votes.getByUserId(userId);
   }
 
-  async getVoteCounts(billId: string): Promise<{ aye: number; nay: number; abstain: number }> {
+  async getVoteCounts(
+    billId: string
+  ): Promise<{ aye: number; nay: number; abstain: number }> {
     return this.db.votes.getVoteCounts(billId);
   }
 }

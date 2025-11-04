@@ -182,6 +182,18 @@ These next steps are required per the governance Meta-Rule (add TODO entries wit
   - Due: 2025-11-07
   - Description: Require agents to identify and invoke appropriate workspace tools for a task (code search, semantic search, `read_file`, test runners, linters, guard script, indexers). If a required tool is unavailable, agents must document the failure in the PR and create a `/docs/TODO.md` entry. Updated `.vscode/agent-prompts.md`, `.github/copilot-instructions.md`, and `ai/governance/.blackboxrules`.
 
+## Recent: Test discovery stabilisation (2025-11-04)
+
+- [x] Converted remaining `node:test` style tests to Vitest-compatible tests (used `vitest` imports and `expect`) across `apps/*` and mirrored `tools/*` test folders. This resolves Vitest test discovery failures and multiple flaky suites caused by Node test harness usage.
+
+Owner: @devs-team
+Status: Completed (2025-11-04)
+Next steps:
+
+- Open a draft PR with these changes and include `AI-EXECUTION: mode: Safe` header; assign reviewers from core-maintainers and testing owners.
+- Run full CI preflight on the PR (ensure guard-change-budget script passes) and address any lint/type warnings that appear.
+- If any remaining flakiness is observed in CI, add specific flaky test entries to this TODO list with owner and due date.
+
 ## Recent: Microsoft Learn context added (2025-11-04)
 
 - Files added by assistant to provide authoritative context and onboarding references:

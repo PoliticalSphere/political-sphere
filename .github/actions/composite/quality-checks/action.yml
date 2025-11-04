@@ -18,7 +18,7 @@ inputs:
   node-version:
     description: 'Node.js version'
     required: false
-    default: '18'
+    default: '22'
   working-directory:
     description: 'Directory to run commands in (monorepo friendly)'
     required: false

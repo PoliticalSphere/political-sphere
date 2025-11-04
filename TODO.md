@@ -19,6 +19,11 @@
 - [ ] Step 13: Use browser_action to verify UI, execute_command for curl tests.
 - [ ] Step 14: Update TODO.md with completion.
 
+## Recent tasks (automation)
+
+- [x] 2025-11-04: Stabilise ANN integration tests and index-server startup. Implemented defensive index loading, legacy /vector-search compatibility, deterministic fallback results, and robust REPO_ROOT discovery in mirrored tests. (owner: automation)
+
+
 ## Notes
 
 - Priority: API/DB first (Steps 1-5, 8-10), then UI and game (Steps 6-7, 11-13).

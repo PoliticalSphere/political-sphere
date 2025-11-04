@@ -7,7 +7,13 @@ export default defineConfig({
 	test: {
 		globals: true,
 		environment: "node",
-		exclude: ["**/node_modules/**", "**/e2e/**", "**/playwright.config.js"],
+		exclude: [
+			"**/node_modules/**",
+			"**/e2e/**",
+			"**/playwright.config.js",
+			// Exclude Playwright tests and a11y suites from Vitest collector
+			"tools/tests/**",
+		],
 		include: ["**/*.{test,spec}.{js,mjs,ts,tsx}"],
 		coverage: {
 			reporter: ["text", "json", "html"],
@@ -28,7 +34,10 @@ export default defineConfig({
 	},
 	resolve: {
 		alias: {
-			"@political-sphere/shared": resolve(__dirname, "libs/shared/src/index.ts"),
+			"@political-sphere/shared": resolve(
+				__dirname,
+				"libs/shared/src/index.ts",
+			),
 			"@political-sphere/ui": resolve(__dirname, "libs/ui/src"),
 			"@political-sphere/platform": resolve(__dirname, "libs/platform/src"),
 			"@political-sphere/ci-utils": resolve(__dirname, "libs/ci/src"),
@@ -36,7 +45,10 @@ export default defineConfig({
 				__dirname,
 				"libs/infrastructure/src",
 			),
-			"@political-sphere/game-engine": resolve(__dirname, "libs/game-engine/src"),
+			"@political-sphere/game-engine": resolve(
+				__dirname,
+				"libs/game-engine/src",
+			),
 		},
 	},
 });

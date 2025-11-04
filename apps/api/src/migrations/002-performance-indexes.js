@@ -8,9 +8,9 @@
 export const name = "002_performance_indexes";
 
 export function up(db) {
-  console.log('Running performance optimization migration up function...');
+	console.log("Running performance optimization migration up function...");
 
-  db.exec(`
+	db.exec(`
     -- Composite indexes for vote queries
     CREATE INDEX IF NOT EXISTS idx_votes_bill_user ON votes(bill_id, user_id);
     CREATE INDEX IF NOT EXISTS idx_votes_user_created ON votes(user_id, created_at DESC);
@@ -37,11 +37,11 @@ export function up(db) {
   CREATE INDEX IF NOT EXISTS idx_votes_recent ON votes(created_at);
   `);
 
-  console.log('Performance optimization migration up function completed');
+	console.log("Performance optimization migration up function completed");
 }
 
 export function down(db) {
-  db.exec(`
+	db.exec(`
     DROP INDEX IF EXISTS idx_votes_recent;
     DROP INDEX IF EXISTS idx_bills_active;
     DROP INDEX IF EXISTS idx_users_created_at;

@@ -136,6 +136,7 @@ For AI Act compliance questions:
 ## See also
 
 - `apps/docs/compliance/responsible-ai.md` — Responsible AI references and checklist
+
 # EU AI Act Compliance Assessment
 
 ## Overview

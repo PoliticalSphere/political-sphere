@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { UserStore } from '../../src/stores/user-store.ts';
+import { UserStore } from '../../src/user-store.js';
 
 function createFakeDb() {
   const users = [];

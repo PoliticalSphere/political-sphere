@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { PartyStore } from '../../src/stores/party-store.ts';
+import { PartyStore } from '../../src/party-store.js';
 
 function createFakeDb() {
   const parties = [];

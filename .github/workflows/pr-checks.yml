@@ -20,9 +20,9 @@ jobs:
       - name: Run Guard Change Budget Check
         run: node tools/scripts/ai/guard-change-budget.mjs --mode=safe --base=${{ github.base_ref }}
       - name: Run Tests
-        run: npm test
+        run: npm run test:ci
       - name: Run Coverage
-        run: npm run test:coverage
+        run: node tools/run-vitest-coverage.js
       - name: Run Linting
         run: npm run lint:fix
       - name: Type Check

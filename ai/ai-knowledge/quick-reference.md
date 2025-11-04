@@ -27,6 +27,7 @@ node apps/game-server/scripts/testModeration.js
 >
 > - Services rely on shared utilities inside `libs/shared`. Keep the root `node_modules/` hydrated so `@political-sphere/shared` resolves correctly.
 > - Load curated bundles from `ai/context-bundles/` or service quick references before scanning the repo.
+> - Use Node.js 22.x locally and in CI (`nvm use` respects `.nvmrc`; workflows install Node 22).
 
 ## Frequently Touched Paths
 
@@ -42,6 +43,13 @@ libs/shared/src/logger.ts        # Structured logging
 ai/ai-knowledge/*.md             # AI-facing documentation
 ai/patterns/*.json               # Reusable implementation patterns
 ```
+
+## Execution Modes & Change Budgets
+
+- Safe: ≤300 lines / 12 files; new dependencies require an ADR in the change set.
+- Fast-Secure: ≤200 lines / 8 files; record every deferred gate with owner + due date in `docs/TODO.md`.
+- Audit: Ensure SBOM/provenance artefacts are present and capture supporting test evidence when feasible.
+- R&D: Advisory only; mark outputs `experimental` and schedule a Safe-mode rerun before protected merges.
 
 ## Troubleshooting Cheatsheet
 
@@ -60,11 +68,14 @@ ai/patterns/*.json               # Reusable implementation patterns
 ## Governance Reminders
 
 - Always read `.blackboxrules` and `.github/copilot-instructions.md` before significant work.
+- Treat the repository-root `.blackboxrules` as the single source of truth; update any automation that still references legacy paths.
 - Consult `ai-controls.json` for the current AI rate limits, quality gates, and fast-mode behaviour.
 - Review `ai/ai-metrics/analytics.db` (or fallback JSONL) after automation runs to spot slow scripts.
 - Record substantial automation or findings in `ai/history/` (see `templates/` in that directory).
 - Update `docs/TODO.md` when deferring required gates (tests, accessibility, security scans).
 - Accessibility is mandatory: run the Playwright accessibility test after UI changes.
+- Guard change budget output now includes artefact checklists, benchmark mapping reminders, and telemetry requirements—confirm these items when preparing PR notes.
+- Include trace or telemetry identifiers in automation outputs per Governance Playbook 2.2.0.
 
 ## Operating Loop & Validation Protocol
 
@@ -83,4 +94,4 @@ ai/patterns/*.json               # Reusable implementation patterns
 - Test changes in CI pipeline.
 - Gather feedback from development team.
 
-_Last updated: 2025-11-03_
+_Last updated: 2025-11-05_

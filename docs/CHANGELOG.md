@@ -7,7 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- 2025-11-04 - GitHub Copilot - Added: Safe recovery helper `scripts/recover-install.sh` to back up `node_modules`, clean temp dirs, and optionally run `npm ci` to resolve ENOTEMPTY rename errors; documented usage in `docs/CONTAINER-FIXES.md`.
+- 2025-11-04 - GitHub Copilot - Added: Focused unit tests for `libs/shared/src/security.js` and `libs/shared/src/telemetry.ts` (with OTEL mocks) to increase coverage in a stable, scoped manner.
+
+### Fixed
+
+- 2025-11-04 - GitHub Copilot - Fixed: `libs/shared/src/logger.js` accepted `level: 0` (DEBUG) by switching to nullish coalescing; removed brittle ANSI assertions from logger tests.
+
 ### Changed
+
+- 2025-11-04 - GitHub Copilot - Changed: Developer guidance for npm install failures (ENOTEMPTY) added to `docs/CONTAINER-FIXES.md`; recommend running installs outside VS Code or with extensions disabled to avoid watcher thrash.
+
+### Added
+
+- 2025-11-04 - BlackboxAI - Added: Comprehensive remediation plan for 10 biggest project issues in docs/TODO.md, including prioritized action items, owners, and timelines for fragmented task management, incomplete governance reforms, security/compliance gaps, testing infrastructure issues, documentation inconsistencies, code quality debt, CI/CD complexity, AI integration, game development backlog, and observability gaps.
+
+### Changed
+
+- 2025-11-04 - BlackboxAI - Changed: Consolidated all fragmented TODO files into single source of truth (docs/TODO.md), archived legacy files in docs/archive/ for historical reference, and updated task management to eliminate duplication and improve discoverability.
+
+### Fixed
+
+- 2025-11-04 - BlackboxAI - Fixed: JWT secret management vulnerabilities by enforcing 32-character minimum for all JWT secrets in production and test environments, removing dangerous fallback defaults.
+
+### Changed
+
+- 2025-11-04 - BlackboxAI - Changed: Data classification framework implementation verified as complete - comprehensive framework with field-level classifications, protection requirements, and implementation guidelines already exists in docs/03-legal-and-compliance/data-classification.md.
+- 2025-11-04 - BlackboxAI - Changed: Updated SECURITY.md to reflect enforced JWT secret validation (minimum 32 characters) in all environments.
+
+### Changed
+
 - 2025-11-04 - BlackboxAI - Changed: Delivered Political Sphere AI Master Playbook v2.2.0 with enhanced quick reference, accountability model, standards matrix, and detailed validation/security/accessibility requirements while keeping `.github/copilot-instructions.md` and `.blackboxrules` in perfect parity.
 - 2025-11-04 - BlackboxAI - Changed: Released Political Sphere AI Master Playbook v2.1.0 with refined operating framework, decision gates, standards reporting, and enhanced telemetry/communication guidance; `.github/copilot-instructions.md` and `.blackboxrules` remain in strict parity.
 - 2025-11-04 - BlackboxAI - Changed: Consolidated governance playbook into single-source version 2.0.0, aligning `.github/copilot-instructions.md` and `.blackboxrules`, removing multi-document references, and expanding operating doctrine for adaptive knowledge, oversight, and telemetry excellence.
@@ -20,6 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - **MCP Servers (full suite)**: Replaced previous HTTP stubs with production-ready STDIO MCP servers for filesystem, git, GitHub, SQLite, Puppeteer, Political Sphere knowledge, Microsoft Learn insights, and the Political Sphere AI assistant. Added npm scripts, root `.mcp.json`, and comprehensive setup guidance in `docs/mcp-servers-setup.md`. (Date: 2025-11-04; Author: codex)
+
   - Tools exposed include `list_directory`, `git_status`, `github_repo_overview`, `sqlite_query`, `puppeteer_screenshot`, `ps_governance_tasks`, and `learn_search`
   - Commands validated via `npm run mcp:<name>` smoke checks to ensure each server reports `ready on STDIO`
   - DuckDuckGo HTTP proxy restored for quick external lookups; official MCP integrations (`playwright`, `chrome-devtools`, `filesystem-official`, `time`) wired through unified scripts

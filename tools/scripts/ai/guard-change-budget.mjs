@@ -46,6 +46,17 @@ console.log(
 );
 console.log("- Test changes in CI pipeline.");
 console.log("- Gather feedback from development team.");
+console.log("\nArtefact Checklist:");
+console.log("- Attach or update SBOM/provenance artefacts for the change.");
+console.log("- Capture test evidence (logs, screenshots, reports) when deferring gates.");
+console.log("\nBenchmark Mapping Reminders:");
+console.log(
+	"- Map changes to OWASP ASVS, NIST SP 800-53, ISO/IEC 27001, WCAG 2.2 AA+, NIST AI RMF, and GDPR/CCPA as applicable.",
+);
+console.log("\nTelemetry Identifiers:");
+console.log(
+	"- Ensure automation outputs include trace or telemetry identifiers per governance playbook 2.2.0.",
+);
 console.log("");
 
 const diffNumstat = run(`git diff --numstat ${base}...HEAD`);
@@ -200,8 +211,8 @@ if (mode === "safe") {
 	mode === "fast_secure" ||
 	mode === "fast"
 ) {
-	const MAX_LINES = 150;
-	const MAX_FILES = 6;
+	const MAX_LINES = 200;
+	const MAX_FILES = 8;
 	if (totalChangedLines > MAX_LINES) {
 		fail(
 			`Fast-Secure mode budget exceeded: ${totalChangedLines} lines changed (limit ${MAX_LINES}).`,

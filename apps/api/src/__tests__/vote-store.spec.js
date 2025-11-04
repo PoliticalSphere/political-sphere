@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { VoteStore } from '../../src/stores/vote-store.ts';
+import { VoteStore } from '../../src/vote-store.js';
 
 function createFakeDb() {
   const votes = [];

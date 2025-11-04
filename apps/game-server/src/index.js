@@ -4,6 +4,7 @@ const cors = require("cors");
 const { v4: uuidv4 } = require("uuid");
 const { advanceGameState } = require("../../../libs/game-engine/src/engine");
 const complianceClient = require("./complianceClient");
+const { CircuitBreaker } = require("../api/src/error-handler");
 
 const fs = require("fs");
 const path = require("path");
@@ -21,6 +22,11 @@ let games = new Map();
 const app = express();
 app.use(cors());
 app.use(bodyParser.json());
+
+// Circuit breakers for external service calls
+const moderationCircuitBreaker = new CircuitBreaker(5, 60000, 60000); // 5 failures, 1min timeout
+const ageVerificationCircuitBreaker = new CircuitBreaker(3, 30000, 30000); // 3 failures, 30s timeout
+const ageCheckAccessCircuitBreaker = new CircuitBreaker(3, 30000, 30000);
 
 // Healthcheck
 app.get("/healthz", (_, res) => res.json({ status: "ok" }));
@@ -54,15 +60,10 @@ const MODERATION_ENDPOINT =
 async function remoteModeration(text, userId = null) {
 	if (!MODERATION_ENDPOINT) return null;
 
-	const maxAttempts = 3;
 	const apiKey = process.env.MODERATION_API_KEY || process.env.API_KEY || null;
 
-	for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-		try {
-			const controller = new AbortController();
-			const timeoutMs = 3000 * 2 ** (attempt - 1); // exponential backoff on timeout
-			const timeout = setTimeout(() => controller.abort(), timeoutMs);
-
+	try {
+		const result = await moderationCircuitBreaker.execute(async () => {
 			const headers = { "content-type": "application/json" };
 			if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
 
@@ -70,96 +71,57 @@ async function remoteModeration(text, userId = null) {
 				method: "POST",
 				headers,
 				body: JSON.stringify({ content: text, userId, type: "text" }),
-				signal: controller.signal,
+				signal: AbortSignal.timeout(10000), // 10 second timeout
 			});
-			clearTimeout(timeout);
 
 			if (!res.ok) {
-				// Log non-2xx for observability, and retry if attempts remain
 				const body = await res.text().catch(() => "<no-body>");
-				console.warn(
-					`Moderation API responded ${res.status} (attempt ${attempt}): ${body}`,
-				);
-				if (attempt === maxAttempts) {
-					// Record failure in compliance logs for audit
-					await complianceClient
-						.logEvent({
-							category: "content_moderation",
-							action: "moderation_api_failure",
-							details: {
-								endpoint: MODERATION_ENDPOINT,
-								status: res.status,
-								body,
-							},
-							complianceFrameworks: ["DSA"],
-						})
-						.catch(() => {});
-				}
-				continue;
+				throw new Error(`Moderation API responded ${res.status}: ${body}`);
 			}
 
 			const data = await res.json().catch(() => null);
-			if (data?.success && typeof data?.data?.isSafe === "boolean") {
-				// Record the check for auditability (non-blocking)
-				complianceClient
-					.logEvent({
-						category: "content_moderation",
-						action: "moderation_checked",
-						userId,
-						details: {
-							endpoint: MODERATION_ENDPOINT,
-							isSafe: data.data.isSafe,
-							reasons: data.data.reasons || [],
-							category: data.data.category || null,
-						},
-						complianceFrameworks: ["DSA"],
-					})
-					.catch(() => {});
-
-				return {
-					isSafe: data.data.isSafe,
-					reasons: data.data.reasons || [],
-					category: data.data.category || null,
-					raw: data.data,
-				};
+			if (!data?.success || typeof data?.data?.isSafe !== "boolean") {
+				throw new Error("Invalid moderation API response format");
 			}
 
-			// Unexpected response shape
-			console.warn("Moderation API returned unexpected payload", {
-				attempt,
-				data,
-			});
-			if (attempt === maxAttempts) {
-				await complianceClient
-					.logEvent({
-						category: "content_moderation",
-						action: "moderation_unexpected_response",
-						details: { endpoint: MODERATION_ENDPOINT, data },
-						complianceFrameworks: ["DSA"],
-					})
-					.catch(() => {});
-			}
-			return null;
-		} catch (err) {
-			console.warn(`remoteModeration attempt ${attempt} error: ${err.message}`);
-			if (attempt === maxAttempts) {
-				await complianceClient
-					.logEvent({
-						category: "content_moderation",
-						action: "moderation_error",
-						details: { message: err.message, endpoint: MODERATION_ENDPOINT },
-						complianceFrameworks: ["DSA"],
-					})
-					.catch(() => {});
-				return null;
-			}
-			// small backoff before retrying
-			// eslint-disable-next-line no-await-in-loop
-			await new Promise((r) => setTimeout(r, 200 * 2 ** (attempt - 1)));
-		}
+			return data.data;
+		});
+
+		// Record the successful check for auditability (non-blocking)
+		complianceClient
+			.logEvent({
+				category: "content_moderation",
+				action: "moderation_checked",
+				userId,
+				details: {
+					endpoint: MODERATION_ENDPOINT,
+					isSafe: result.isSafe,
+					reasons: result.reasons || [],
+					category: result.category || null,
+				},
+				complianceFrameworks: ["DSA"],
+			})
+			.catch(() => {});
+
+		return result;
+	} catch (error) {
+		console.error("Moderation circuit breaker failed:", error.message);
+
+		// Record failure in compliance logs for audit
+		await complianceClient
+			.logEvent({
+				category: "content_moderation",
+				action: "moderation_api_failure",
+				details: {
+					endpoint: MODERATION_ENDPOINT,
+					error: error.message,
+				},
+				complianceFrameworks: ["DSA"],
+			})
+			.catch(() => {});
+
+		return null; // Circuit breaker will handle retries, return null on failure
 	}
-
-	return null;
 }
 
 // Create a new game
@@ -212,18 +174,31 @@ async function checkAgeVerification(userId) {
 	if (!AGE_STATUS_ENDPOINT) return { verified: false, age: null };
 
 	try {
-		const res = await fetch(AGE_STATUS_ENDPOINT, {
-			method: "GET",
-			headers: {
-				Authorization: `Bearer ${userId}`, // Assuming userId is a token
-				"content-type": "application/json",
-			},
+		const result = await ageVerificationCircuitBreaker.execute(async () => {
+			const res = await fetch(AGE_STATUS_ENDPOINT, {
+				method: "GET",
+				headers: {
+					Authorization: `Bearer ${userId}`, // Assuming userId is a token
+					"content-type": "application/json",
+				},
+				signal: AbortSignal.timeout(5000), // 5 second timeout
+			});
+
+			if (!res.ok) {
+				throw new Error(`Age verification API responded ${res.status}`);
+			}
+
+			const data = await res.json();
+			if (!data.success) {
+				throw new Error("Age verification API returned unsuccessful response");
+			}
+
+			return data.data;
 		});
 
-		if (!res.ok) return { verified: false, age: null };
-		const data = await res.json();
-		return data.success ? data.data : { verified: false, age: null };
-	} catch (_) {
+		return result;
+	} catch (error) {
+		console.error("Age verification circuit breaker failed:", error.message);
 		return { verified: false, age: null };
 	}
 }
@@ -232,19 +207,32 @@ async function checkContentAccess(userId, contentRating) {
 	if (!AGE_CHECK_ACCESS_ENDPOINT) return false;
 
 	try {
-		const res = await fetch(AGE_CHECK_ACCESS_ENDPOINT, {
-			method: "POST",
-			headers: {
-				Authorization: `Bearer ${userId}`,
-				"content-type": "application/json",
-			},
-			body: JSON.stringify({ contentRating }),
+		const result = await ageCheckAccessCircuitBreaker.execute(async () => {
+			const res = await fetch(AGE_CHECK_ACCESS_ENDPOINT, {
+				method: "POST",
+				headers: {
+					Authorization: `Bearer ${userId}`,
+					"content-type": "application/json",
+				},
+				body: JSON.stringify({ contentRating }),
+				signal: AbortSignal.timeout(5000), // 5 second timeout
+			});
+
+			if (!res.ok) {
+				throw new Error(`Age check access API responded ${res.status}`);
+			}
+
+			const data = await res.json();
+			if (!data.success) {
+				throw new Error("Age check access API returned unsuccessful response");
+			}
+
+			return data.data.canAccess;
 		});
 
-		if (!res.ok) return false;
-		const data = await res.json();
-		return data.success ? data.data.canAccess : false;
-	} catch (_) {
+		return result;
+	} catch (error) {
+		console.error("Age check access circuit breaker failed:", error.message);
 		return false;
 	}
 }

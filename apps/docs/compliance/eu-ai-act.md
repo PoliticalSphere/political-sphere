@@ -2,21 +2,150 @@
 
 ## Overview
 
+This document outlines Political Sphere's compliance with the EU AI Act (Regulation (EU) 2024/1689). The AI Act classifies AI systems by risk level and imposes requirements accordingly. Use this assessment as a living record: update when systems change.
+
+## AI Systems Inventory
+
+### 1. Performance Monitor
+
+- **System**: AI operation monitoring and metrics collection
+- **Risk Classification**: Minimal risk
+- **Justification**: Internal monitoring only, no external automated decision-making
+- **Requirements Met**:
+  - Basic documentation
+  - Data minimisation
+
+### 2. Governance Engine
+
+- **System**: AI usage control, ethics enforcement, content moderation
+- **Risk Classification**: High risk
+- **Justification**: Content moderation affects users and may have legal/rights impact
+- **Requirements Met / In Progress**:
+  - Data governance framework (in progress)
+  - Bias detection algorithms (in development)
+  - Human oversight mechanisms (design stage)
+  - Transparency measures (documentation required)
+
+### 3. GitHub Copilot Integration
+
+- **System**: AI-powered code completion and generation tool
+- **Risk Classification**: Minimal risk
+- **Justification**: Developer assistance, not deployed in user-facing decision-making
+- **Requirements Met**:
+  - Transparency: Documented in developer guidelines
+  - Data Governance: No organizational training data is exposed
+
+### 4. Local AI Helpers (Ollama-based)
+
+- **System**: Local LLMs used for commit messages, PR reviews and developer assistance
+- **Risk Classification**: Minimal risk
+- **Justification**: Local processing; no external data sharing by default
+- **Requirements Met**:
+  - Data protection: local-only by policy
+  - Transparency: usage documented
+
+### 5. Automated Testing and CI/CD Tools
+
+- **System**: AI-assisted test generation and flaky-test detection
+- **Risk Classification**: Minimal risk
+
+## Risk Assessment
+
+### High-Risk AI Systems
+
+- **Governance Engine** — Classified as high-risk due to moderation capabilities.
+- **Status**: Compliance measures in progress.
+- **Key Requirements**:
+  - Conformity assessment (third-party if required)
+  - CE marking (where applicable)
+  - Data governance (Article 10)
+  - Transparency (Article 13)
+  - Human oversight (Article 14)
+  - Accuracy, robustness & cybersecurity controls (Article 15)
+
+### Limited- and Minimal-Risk Systems
+
+- **Limited risk**: Systems that require transparency measures and user information.
+- **Minimal risk**: Internal tooling and developer assistants; basic documentation and good practices suffice.
+
+## Data Governance
+
+### Training & Operational Data
+
+- Document sources, licences, retention, and minimisation steps for any training or operational datasets.
+- Prefer synthetic or privacy-preserving approaches where feasible.
+
+### Data Subject Rights
+
+- Standard GDPR obligations apply. For player-facing AI that affects individual rights, ensure DSR (Data Subject Request) workflows are available (export, deletion, rectification).
+
+## Conformity Assessment
+
+### Self-Assessment
+
+- **Completed**: 28 October 2025 (example entry — update as needed)
+- **Responsible**: CTO / Compliance Officer
+- **Next Review**: Annually or upon material change to AI systems
+
+### Technical Documentation
+
+- Maintain technical documentation and evidence for each AI system (design, training data lineage, test reports, fairness audits).
+
+## Monitoring and Reporting
+
+### Continuous Compliance
+
+- Integrate compliance checks into CI/CD where feasible (linting, configuration checks, evidence presence).
+- Keep audit logs for AI-system changes and approvals.
+
+### Incident Reporting
+
+- Follow internal incident procedure and report to the relevant authority per AI Act timelines where required.
+
+## Implementation Plan
+
+### Phase 1: Documentation (Current)
+
+- ✅ Compliance assessment completed for initial systems
+- ✅ AI systems inventory created
+
+### Phase 2: Technical Controls
+
+- [ ] Add AI Act compliance checks to CI/CD
+- [ ] Implement AI system change approval process
+- [ ] Create compliance monitoring dashboard
+
+### Phase 3: Ongoing Compliance
+
+- [ ] Annual compliance reviews
+- [ ] Staff training on AI Act requirements
+
+## References
+
+- EU AI Act: Regulation (EU) 2024/1689
+- European Commission guidance and national regulatory pages
+
+## Contact
+
+For AI Act compliance questions:
+
+- **Compliance Officer**: CTO
+- **Email**: compliance@politicalsphere.com
+- **Last Updated**: 2025-11-04
+
+## See also
+
+- `apps/docs/compliance/responsible-ai.md` — Responsible AI references and checklist
+
+# EU AI Act Compliance Assessment
+
+## Overview
+
 This document outlines Political Sphere's compliance with the EU AI Act (Regulation (EU) 2024/1689), effective as of 1 August 2024. The AI Act classifies AI systems based on risk levels and imposes requirements accordingly.
 
 ## AI Systems Inventory
 
-### 1. AI Assistant MCP Server
-
-- **System**: AI-powered code generation, review, optimization, and testing
-- **Risk Classification**: Limited risk (Article 40)
-- **Justification**: Code assistance tool with potential for generating incorrect code
-- **Requirements Met**:
-  - Transparency: Clear labeling of AI-generated content
-  - Data Governance: Input validation and output filtering
-  - Human Oversight: Override capabilities
-
-### 2. Performance Monitor
+### 1. Performance Monitor
 
 - **System**: AI operation monitoring and metrics collection
 - **Risk Classification**: Minimal risk (Article 40)
@@ -31,127 +160,153 @@ This document outlines Political Sphere's compliance with the EU AI Act (Regulat
 - **Risk Classification**: High risk (Article 6)
 - **Justification**: Content filtering and moderation with potential for over-blocking or bias
 - **Requirements Met**:
-  - Data governance framework
-  - Bias detection algorithms
-  - Human oversight mechanisms
-  - Transparency measures
 
-### 4. GitHub Copilot Integration
+  ```markdown
+  # EU AI Act Compliance Assessment
 
-- **System**: AI-powered code completion and generation tool
-- **Risk Classification**: Minimal risk (Article 3(1))
-- **Justification**: Used for developer assistance, not high-risk applications
-- **Requirements Met**:
-  - Transparency: Documented in developer guidelines
-  - Data Governance: No training data handling by our systems
+  ## Overview
 
-### 5. Local AI Helpers (Ollama-based)
+  This document outlines Political Sphere's compliance with the EU AI Act (Regulation (EU) 2024/1689), effective as of 1 August 2024. The AI Act classifies AI systems based on risk levels and imposes requirements accordingly.
 
-- **System**: Local LLM for commit messages, PR reviews, and code suggestions
-- **Risk Classification**: Minimal risk
-- **Justification**: Offline, local processing; no external data sharing
-- **Requirements Met**:
-  - Data Protection: All processing local
-  - Transparency: Scripts documented
+  ## AI Systems Inventory
 
-### 6. Automated Testing and CI/CD
+  ### 1. Performance Monitor
 
-- **System**: AI-assisted test generation and flaky test detection
-- **Risk Classification**: Minimal risk
-- **Justification**: Quality assurance tools, not decision-making systems
+  - **System**: AI operation monitoring and metrics collection
+  - **Risk Classification**: Minimal risk (Article 40)
+  - **Justification**: Internal monitoring only, no external impact
+  - **Requirements Met**:
+    - Basic documentation
+    - Data minimization
 
-## Risk Assessment
+  ### 3. Governance Engine
 
-### High-Risk AI Systems
+  - **System**: AI usage control, ethics enforcement, content moderation
+  - **Risk Classification**: High risk (Article 6)
+  - **Justification**: Content filtering and moderation with potential for over-blocking or bias
+  - **Requirements Met**:
+    - Data governance framework
+    - Bias detection algorithms
+    - Human oversight mechanisms
+    - Transparency measures
 
-- **Governance Engine**: Classified as high-risk due to content moderation capabilities
-- **Status**: Compliance measures in progress
-- **Requirements**:
-  - Conformity assessment by third-party
-  - CE marking
-  - Data governance (Article 10)
-  - Transparency (Article 13)
-  - Human oversight (Article 14)
-  - Accuracy and robustness (Article 15)
-  - Cybersecurity (Article 15)
+  ### 4. GitHub Copilot Integration
 
-### Limited-Risk AI Systems
+  - **System**: AI-powered code completion and generation tool
+  - **Risk Classification**: Minimal risk (Article 3(1))
+  - **Justification**: Used for developer assistance, not high-risk applications
+  - **Requirements Met**:
+    - Transparency: Documented in developer guidelines
+    - Data Governance: No training data handling by our systems
 
-- **AI Assistant MCP Server**: Requires transparency and data governance
-- **Status**: Basic measures implemented
+  ### 5. Local AI Helpers (Ollama-based)
 
-### Minimal-Risk AI Systems
+  - **System**: Local LLM for commit messages, PR reviews, and code suggestions
+  - **Risk Classification**: Minimal risk
+  - **Justification**: Offline, local processing; no external data sharing
+  - **Requirements Met**:
+    - Data Protection: All processing local
+    - Transparency: Scripts documented
 
-- **Performance Monitor, Copilot, Local Helpers, CI/CD**: Basic documentation required
-- **Status**: Compliant
+  ### 6. Automated Testing and CI/CD
 
-## Data Governance
+  - **System**: AI-assisted test generation and flaky test detection
+  - **Risk Classification**: Minimal risk
+  - **Justification**: Quality assurance tools, not decision-making systems
 
-### Training Data
+  ## Risk Assessment
 
-- **Copilot**: Uses Microsoft's training data; we do not control or access it
-- **Local Models**: User-configured; no organizational training data used
+  ### High-Risk AI Systems
 
-### Data Subject Rights
+  - **Governance Engine**: Classified as high-risk due to content moderation capabilities
+  - **Status**: Compliance measures in progress
+  - **Requirements**:
+    - Conformity assessment by third-party
+    - CE marking
+    - Data governance (Article 10)
+    - Transparency (Article 13)
+    - Human oversight (Article 14)
+    - Accuracy and robustness (Article 15)
+    - Cybersecurity (Article 15)
 
-- **Implementation**: Standard GDPR compliance applies
-- **AI-Specific**: No automated decision-making affecting data subjects
+  ### Limited-Risk AI Systems
 
-## Conformity Assessment
+  - **AI Assistant MCP Server**: Requires transparency and data governance
+  - **Status**: Basic measures implemented
 
-### Self-Assessment
+  ### Minimal-Risk AI Systems
 
-- **Completed**: 28 October 2025
-- **Responsible**: CTO/Compliance Officer
-- **Next Review**: Annually or upon significant AI system changes
+  - **Performance Monitor, Copilot, Local Helpers, CI/CD**: Basic documentation required
+  - **Status**: Compliant
 
-### Technical Documentation
+  ## Data Governance
 
-- **Location**: This document and linked ADR-0001
-- **Updates**: Version controlled with change tracking
+  ### Training Data
 
-## Monitoring and Reporting
+  - **Copilot**: Uses Microsoft's training data; we do not control or access it
+  - **Local Models**: User-configured; no organizational training data used
 
-### Continuous Compliance
+  ### Data Subject Rights
 
-- **CI/CD Integration**: Automated checks for AI system changes
-- **Audit Logging**: Git history and PR reviews for AI-related changes
+  - **Implementation**: Standard GDPR compliance applies
+  - **AI-Specific**: No automated decision-making affecting data subjects
 
-### Incident Reporting
+  ## Conformity Assessment
 
-- **Process**: Report AI Act violations to EU authorities within 15 days
-- **Contact**: compliance@politicalsphere.com
+  ### Self-Assessment
 
-## Implementation Plan
+  - **Completed**: 28 October 2025
+  - **Responsible**: CTO/Compliance Officer
+  - **Next Review**: Annually or upon significant AI system changes
 
-### Phase 1: Documentation (Current)
+  ### Technical Documentation
 
-- ✅ Compliance assessment completed
-- ✅ AI systems inventory documented
-- ✅ Risk classification determined
+  - **Location**: This document and linked ADR-0001
+  - **Updates**: Version controlled with change tracking
 
-### Phase 2: Technical Controls
+  ## Monitoring and Reporting
 
-- [ ] Add AI Act compliance checks to CI/CD
-- [ ] Implement AI system change approval process
-- [ ] Create compliance monitoring dashboard
+  ### Continuous Compliance
 
-### Phase 3: Ongoing Compliance
+  - **CI/CD Integration**: Automated checks for AI system changes
+  - **Audit Logging**: Git history and PR reviews for AI-related changes
 
-- [ ] Annual compliance reviews
-- [ ] Staff training on AI Act requirements
-- [ ] Regular risk assessments
+  ### Incident Reporting
 
-## References
+  - **Process**: Report AI Act violations to EU authorities within 15 days
+  - **Contact**: compliance@politicalsphere.com
 
-- EU AI Act: Regulation (EU) 2024/1689
-- European Commission AI Act Guidelines
-- ISO/IEC 42001:2023 (AI Management Systems)
+  ## Implementation Plan
 
-## Contact
+  ### Phase 1: Documentation (Current)
 
-For AI Act compliance questions:
+  - ✅ Compliance assessment completed
+  - ✅ AI systems inventory documented
+  - ✅ Risk classification determined
 
-- **Compliance Officer**: CTO
-- **Email**: compliance@politicalsphere.com
-- **Last Updated**: 28 October 2025
+  ### Phase 2: Technical Controls
+
+  - [ ] Add AI Act compliance checks to CI/CD
+  - [ ] Implement AI system change approval process
+  - [ ] Create compliance monitoring dashboard
+
+  ### Phase 3: Ongoing Compliance
+
+  - [ ] Annual compliance reviews
+  - [ ] Staff training on AI Act requirements
+  - [ ] Regular risk assessments
+
+  ## References
+
+  - EU AI Act: Regulation (EU) 2024/1689
+  - European Commission AI Act Guidelines
+  - ISO/IEC 42001:2023 (AI Management Systems)
+
+  ## Contact
+
+  For AI Act compliance questions:
+
+  - **Compliance Officer**: CTO
+  - **Email**: compliance@politicalsphere.com
+  - **Last Updated**: 28 October 2025
+  ```

@@ -1,10 +1,10 @@
-# TODO: Complete Document-Control Folder
+# TODO: Governance Reforms Implementation
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |  Status   |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :-------: |
-|  🔒 Internal   | `0.1.0` |  2025-10-30  | Documentation Team |  Quarterly   | **Draft** |
+| Classification | Version | Last Updated |      Owner      | Review Cycle |  Status   |
+| :------------: | :-----: | :----------: | :-------------: | :----------: | :-------: |
+|  🔒 Internal   | `1.0.0` |  2025-11-03  | Governance Team |  Quarterly   | **Draft** |
 
 </div>
 
@@ -12,52 +12,51 @@
 
 ## Overview
 
-Complete the document-control folder by filling in content for placeholder documents. The templates-index.md is already complete. All content must be production-grade, aligned with Political Sphere's context (political simulation, AI, microservices), and comply with .blackboxrules (security, GDPR, EU AI Act, etc.).
+Implement governance reforms to reduce bureaucracy while preserving quality, security, and compliance value. Focus on AI-driven automation, proportional oversight, and efficiency improvements.
 
 ## Tasks
 
-### 1. Edit docs/document-control/README.md
+### 1. Execution Mode Reforms
 
-- [x] Add comprehensive overview of the document control system
-- [x] Include purpose, scope, and key principles
-- [x] Document control metadata and compliance notes
+- [x] Update execution modes with AI-driven automation and risk-based scaling
+- [x] Increase Fast-Secure budget to 200 lines/8 files for small features
+- [x] Automate 90% of quality gates in Safe mode
+- [x] Enhance AI suggestions and automated safety checks in R&D mode
 
-### 2. Edit docs/document-control/change-log.md
+### 2. Proportional Governance
 
-- [x] Create change log for document and template updates
-- [x] Include version history, change descriptions, and impact
-- [x] Add template for logging new changes
+- [x] Apply governance proportionally - lighter for small changes, stricter for critical paths
+- [x] Focus human review on architectural decisions and high-risk areas
+- [x] Add automated follow-up reminders for deferred gates
 
-### 3. Edit docs/document-control/document-classification-policy.md
+### 3. Efficiency Best-Practices Integration
 
-- [x] Define classification levels (Public, Internal, Confidential, Restricted)
-- [x] Specify handling procedures for each level
-- [x] Include examples relevant to Political Sphere (e.g., AI models, user data)
+- [x] Embed efficiency patterns directly into workflows to reduce friction
+- [x] Use AI to suggest optimal approaches rather than enforcing rigid rules
+- [x] Provide smart defaults for common development tasks
 
-### 4. Edit docs/document-control/retention-and-archiving-policy.md
+### 4. Documentation Updates
 
-- [x] Define retention periods for different document types
-- [x] Outline archiving procedures and media
-- [x] Include compliance with GDPR and other regulations
+- [x] Update CHANGELOG.md with governance reforms
+- [x] Update rule files with new execution modes and budgets
+- [x] Ensure parity between .blackboxrules and copilot-instructions.md
 
-### 5. Edit docs/document-control/review-and-approval-workflow.md
+### 5. Validation and Final Checks
 
-- [x] Describe review and approval processes
-- [x] Define approval tiers and required reviewers
-- [x] Include escalation procedures and timelines
-
-### 6. Edit docs/document-control/versioning-policy.md
-
-- [ ] Establish versioning rules for documents and templates
-- [ ] Define semantic versioning (MAJOR.MINOR.PATCH)
-- [ ] Include branching and tagging strategies
-
-### 7. Validation and Final Checks
-
-- [ ] Run linting on all edited files (markdownlint, etc.)
-- [ ] Ensure all documents reference each other appropriately
-- [ ] Verify compliance with .blackboxrules
+- [ ] Test updated execution modes in CI pipeline
+- [ ] Validate that reforms reduce development friction while maintaining quality
+- [ ] Monitor adoption and gather feedback from development team
 - [ ] Update any cross-references if needed
+
+## Completed Tasks
+
+### Governance Reforms (2025-11-03)
+
+- [x] Streamlined governance framework to reduce bureaucracy while preserving value
+- [x] Updated execution modes with proportional oversight and AI automation
+- [x] Increased Fast-Secure mode flexibility for small features
+- [x] Enhanced AI-driven quality gates and safety checks
+- [x] Added efficiency best-practices integration
 
 ## Completed Tasks
 
@@ -144,6 +143,32 @@ These next steps are required per the governance Meta-Rule (add TODO entries wit
    - Due: 2025-11-07
    - Description: Ensure agent tooling and editor snippets instruct agents to close files after edits (close buffers/tabs). Update agent wrappers and automation to close editor files or log file handles after use.
 
+   ## MCP Stubs Added (2025-11-03)
+
+   - [x] Created minimal MCP server stubs in `apps/dev/mcp-servers/*/src/index.ts` for: filesystem, github, git, puppeteer, sqlite, political-sphere. These are simple HTTP servers exposing `/health` and `/info` to validate local MCP wiring and VSCode/Client integration during development and testing.
+
+   Owner: @devops-team
+   Due: 2025-11-10
+   Description: Review these stubs and replace with production MCP implementations or remove if upstream servers are restored. Ensure `GITHUB_TOKEN` and database artifacts are secured when enabling GitHub/SQLite MCPs in CI/dev environments.
+
+   Notes:
+
+   - Backups of the original, corrupted entrypoints were saved alongside the sources as `src/index.corrupted.txt` in each affected package.
+   - Ephemeral runtime artifacts (logs and PID files) were written to `/tmp/mcp-<name>.log` and `/tmp/mcp-<name>.pid` during the verification run. These can be used to reproduce the quick health checks performed during the session.
+
+   - [x] Repair original `src/index.ts` entrypoints and restore canonical implementations (or formally adopt the `src/dev-server.ts` dev entrypoints):
+
+     - Owner: @devops-team
+     - Done: 2025-11-04
+     - Description: Repaired `src/index.ts` for the following MCP packages and restored the `dev` script to run `src/index.ts`:
+       - `filesystem` (port 4010)
+       - `github` (port 4011)
+       - `git` (port 4012)
+       - `puppeteer` (port 4013)
+       - `sqlite` (port 4014)
+       - `political-sphere` (port 4015)
+     - Notes: Backups kept at `src/index.corrupted.txt`. Ephemeral logs and PIDs are in `/tmp/mcp-<name>.log` and `/tmp/mcp-<name>.pid`.
+
 5. Provision local test runners
 
    - Owner: @devops-team
@@ -156,6 +181,29 @@ These next steps are required per the governance Meta-Rule (add TODO entries wit
   - Owner: @ai-team
   - Due: 2025-11-07
   - Description: Require agents to identify and invoke appropriate workspace tools for a task (code search, semantic search, `read_file`, test runners, linters, guard script, indexers). If a required tool is unavailable, agents must document the failure in the PR and create a `/docs/TODO.md` entry. Updated `.vscode/agent-prompts.md`, `.github/copilot-instructions.md`, and `ai/governance/.blackboxrules`.
+
+## Recent: Test discovery stabilisation (2025-11-04)
+
+- [x] Converted remaining `node:test` style tests to Vitest-compatible tests (used `vitest` imports and `expect`) across `apps/*` and mirrored `tools/*` test folders. This resolves Vitest test discovery failures and multiple flaky suites caused by Node test harness usage.
+
+Owner: @devs-team
+Status: Completed (2025-11-04)
+Next steps:
+
+- Open a draft PR with these changes and include `AI-EXECUTION: mode: Safe` header; assign reviewers from core-maintainers and testing owners.
+- Run full CI preflight on the PR (ensure guard-change-budget script passes) and address any lint/type warnings that appear.
+- If any remaining flakiness is observed in CI, add specific flaky test entries to this TODO list with owner and due date.
+
+## Recent: Microsoft Learn context added (2025-11-04)
+
+- Files added by assistant to provide authoritative context and onboarding references:
+  - `apps/docs/compliance/responsible-ai.md` — Responsible AI references and checklist (Microsoft Learn links)
+  - `apps/docs/security/identity-and-access.md` — Microsoft Entra (Azure AD), RBAC guidance and practical recommendations
+  - `apps/docs/observability/opentelemetry.md` — Azure Monitor OpenTelemetry quickstart and guidance
+
+Owner: @docs-team
+Status: Completed (drafts)
+Notes: These are initial, curated references sourced from Microsoft Learn. Review and expand the content to include project-specific implementation steps and internal compliance artefacts where needed.
 
 ### File placement enforcement (2025-11-03)
 

@@ -1,0 +1,67 @@
+# Setup Node Dependencies Composite Action
+# This composite action sets up Node.js and installs dependencies with caching support
+# for npm, pnpm, and yarn
+# See: https://github.com/actions/runner/blob/main/docs/adrs/0549-composite-run-steps.md
+
+name: 'Setup Node and Dependencies'
+description: 'Sets up Node.js and installs npm dependencies with caching'
+
+inputs:
+  node-version:
+    description: 'Node.js version to use'
+    required: false
+    default: '22'
+  package-manager:
+    description: 'npm | pnpm | yarn'
+    required: false
+    default: 'npm'
+  cache-dependency-path:
+    description: 'Lockfile path(s) for caching (e.g., **/package-lock.json, pnpm-lock.yaml)'
+    required: false
+    default: ''
+  ignore-scripts:
+    description: 'Set to true to run install with --ignore-scripts'
+    required: false
+    default: 'false'
+  enable-corepack:
+    description: 'Enable Corepack for package manager version locking'
+    required: false
+    default: 'true'
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: ${{ inputs.package-manager == 'yarn' && 'yarn' || (inputs.package-manager == 'pnpm' && 'pnpm' || 'npm') }}
+        cache-dependency-path: ${{ inputs.cache-dependency-path }}
+
+    - name: Enable Corepack (lock package managers)
+      if: ${{ inputs.enable-corepack == 'true' }}
+      shell: bash
+      run: |
+        corepack enable
+        corepack prepare ${{ inputs.package-manager }}@latest --activate || true
+
+    - name: Install dependencies
+      shell: bash
+      env:
+        CI: 'true'
+        PM: ${{ inputs.package-manager }}
+        IGNORE: ${{ inputs.ignore-scripts == 'true' && '--ignore-scripts' || '' }}
+      run: |
+        set -euo pipefail
+        if [[ ! "$PM" =~ ^(npm|pnpm|yarn)$ ]]; then
+          echo "❌ Unsupported package manager: $PM"
+          exit 1
+        fi
+        # simple retry for flakey networks
+        for i in 1 2 3; do
+          case "$PM" in
+            pnpm) pnpm install --frozen-lockfile $IGNORE && break || sleep 2 ;;
+            yarn) yarn install --immutable $IGNORE && break || sleep 2 ;;
+            npm)  npm ci $IGNORE && break || sleep 2 ;;
+          esac
+        done

@@ -112,7 +112,7 @@ function requireRole(requiredRoles) {
  * Optional Authentication Middleware
  * Attaches user if token is present, but doesn't require it
  */
-function optionalAuth(req, res, next) {
+function optionalAuth(req, _res, next) {
   try {
     const authHeader = req.headers.authorization;
     const token = authHeader?.startsWith('Bearer ')
@@ -129,7 +129,7 @@ function optionalAuth(req, res, next) {
         };
       }
     }
-  } catch (error) {
+  } catch (_error) {
     // Ignore auth errors for optional auth
   }
 
@@ -189,10 +189,7 @@ function authenticateRefreshToken(req, res, next) {
 }
 
 export {
-  authenticate,
-  requireRole,
-  optionalAuth,
+  authenticate, authenticateRefreshToken, optionalAuth,
   requireAdmin,
-  requireModerator,
-  authenticateRefreshToken
+  requireModerator, requireRole
 };

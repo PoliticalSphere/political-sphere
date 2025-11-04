@@ -6,17 +6,7 @@ Political Sphere implements a comprehensive AI enhancement framework that maximi
 
 ## Core Components
 
-### 1. MCP Server Architecture
-
-- **Purpose**: Standardized interface for AI tool integration
-- **Components**:
-  - Code generation server with Political Sphere standards
-  - Code review server with automated quality checks
-  - Performance optimization server
-  - Test generation server
-- **Benefits**: Consistent AI behavior, extensible architecture
-
-### 2. Standardized Prompt System
+### 1. Standardized Prompt System
 
 - **Templates**: Pre-defined prompts for common development tasks
 - **Quality Gates**: Mandatory inclusion of context, standards, and requirements

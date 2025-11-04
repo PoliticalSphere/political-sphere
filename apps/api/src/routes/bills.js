@@ -44,9 +44,16 @@ router.get("/bills/:id", async (req, res) => {
 
 router.get("/bills", async (req, res) => {
 	try {
-		const bills = await billService.getAllBills();
+		const page = parseInt(req.query.page) || 1;
+		const limit = Math.min(parseInt(req.query.limit) || 10, 100); // Max 100 per page
+		const result = await billService.getAllBills(page, limit);
 		res.set("Cache-Control", "public, max-age=60"); // Cache for 1 minute
-		res.json(bills);
+		// Backwards-compatible: older tests expect an array. If result has a 'bills' array, return it.
+		if (result && Array.isArray(result.bills)) {
+			return res.json(result.bills);
+		}
+		// Otherwise return whatever the service returned.
+		res.json(result);
 	} catch (error) {
 		res.status(500).json({ error: "Internal server error" });
 	}

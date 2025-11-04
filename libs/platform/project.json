@@ -22,6 +22,21 @@
       "options": {
         "command": "cd libs/platform && yamllint argo-apps/*.yaml charts/**/*.yaml namespaces/*.yaml policies/*.yaml || true"
       }
+    },
+    "test": {
+      "executor": "nx:run-commands",
+      "outputs": ["{workspaceRoot}/coverage/libs/platform"],
+      "options": {
+        "command": "vitest run --config ../../vitest.config.js --coverage --reporter=verbose"
+      },
+      "configurations": {
+        "watch": {
+          "command": "vitest --config ../../vitest.config.js --watch"
+        },
+        "coverage": {
+          "command": "vitest run --config ../../vitest.config.js --coverage"
+        }
+      }
     }
   }
 }

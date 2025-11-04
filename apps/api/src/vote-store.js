@@ -1,8 +1,11 @@
 import { v4 as uuidv4 } from 'uuid';
+
 export class VoteStore {
   db;
-  constructor(db) {
+  cache;
+  constructor(db, cache = null) {
     this.db = db;
+    this.cache = cache;
   }
   create(input) {
     const id = uuidv4();
@@ -12,6 +15,12 @@ export class VoteStore {
       VALUES (?, ?, ?, ?, ?)
     `);
     stmt.run(id, input.billId, input.userId, input.vote, now.toISOString());
+
+    // Invalidate vote count cache for this bill
+    if (this.cache) {
+      this.cache.del(`vote_counts:${input.billId}`);
+    }
+
     return {
       id,
       billId: input.billId,
@@ -78,6 +87,16 @@ export class VoteStore {
     return row.count > 0;
   }
   getVoteCounts(billId) {
+    const cacheKey = `vote_counts:${billId}`;
+
+    // Try cache first
+    if (this.cache) {
+      const cached = this.cache.get(cacheKey);
+      if (cached !== null) {
+        return cached;
+      }
+    }
+
     const stmt = this.db.prepare(`
       SELECT
         SUM(CASE WHEN vote = 'aye' THEN 1 ELSE 0 END) as aye,
@@ -87,10 +106,17 @@ export class VoteStore {
       WHERE bill_id = ?
     `);
     const row = stmt.get(billId);
-    return {
+    const result = {
       aye: row.aye || 0,
       nay: row.nay || 0,
       abstain: row.abstain || 0,
     };
+
+    // Cache the result for 5 minutes
+    if (this.cache) {
+      this.cache.set(cacheKey, result, 300);
+    }
+
+    return result;
   }
 }

@@ -2,6 +2,7 @@ import type { CreatePartyInput, Party } from "@political-sphere/shared";
 import type Database from "better-sqlite3";
 import { v4 as uuidv4 } from "uuid";
 import { CACHE_TTL, type CacheService, cacheKeys } from "../cache.js";
+import { DatabaseError, retryWithBackoff } from "../error-handler.js";
 
 interface PartyRow {
   id: string;

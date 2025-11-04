@@ -1,8 +1,15 @@
-import { Party, CreatePartyInput, CreatePartySchema } from '@political-sphere/shared';
-import { getDatabase } from '../stores';
+import {
+  type CreatePartyInput,
+  CreatePartySchema,
+  type Party,
+} from "@political-sphere/shared";
+import { getDatabase } from "../stores";
 
 export class PartyService {
-  private db = getDatabase();
+  // Lazy getter to avoid holding a stale DB connection across test lifecycle boundaries
+  private get db() {
+    return getDatabase();
+  }
 
   async createParty(input: CreatePartyInput): Promise<Party> {
     // Validate input
@@ -11,7 +18,7 @@ export class PartyService {
     // Check if party name already exists
     const existingParty = await this.db.parties.getByName(input.name);
     if (existingParty) {
-      throw new Error('Party name already exists');
+      throw new Error("Party name already exists");
     }
 
     return this.db.parties.create(input);

@@ -21,6 +21,7 @@ class VoteStore {
 				this.cache.del(cacheKeys.vote(id)),
 				this.cache.del(cacheKeys.votesByBill(input.billId)),
 				this.cache.del(cacheKeys.votesByUser(input.userId)),
+				this.cache.del(cacheKeys.userVotes(input.userId)),
 				this.cache.del(cacheKeys.billVotes(input.billId)),
 			]);
 		}

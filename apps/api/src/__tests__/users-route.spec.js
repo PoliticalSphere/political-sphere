@@ -69,7 +69,7 @@ describe("users routes", () => {
 		// Export user data
 		const res = await request(app).get(`/users/${userId}/export`);
 		expect(res.status).toBe(200);
-		expect(res.headers["content-type"]).toBe("application/json");
+		expect(res.headers["content-type"]).toContain("application/json");
 		expect(res.headers["content-disposition"]).toContain("attachment");
 		expect(res.headers["content-disposition"]).toContain(
 			`user-${userId}-export.json`,

@@ -71,10 +71,11 @@ class VoteStore {
 			return this._repo.getVoteCounts(billId);
 		// Fallback: compute from getByBillId
 		const votes = await this.getByBillId(billId);
-		const counts = { yes: 0, no: 0, abstain: 0, total: 0 };
+		// Use the same keys as the real store: aye / nay / abstain
+		const counts = { aye: 0, nay: 0, abstain: 0, total: 0 };
 		for (const v of votes || []) {
-			if (v.vote === "yes") counts.yes += 1;
-			else if (v.vote === "no") counts.no += 1;
+			if (v.vote === "aye") counts.aye += 1;
+			else if (v.vote === "nay") counts.nay += 1;
 			else if (v.vote === "abstain") counts.abstain += 1;
 			counts.total += 1;
 		}
@@ -89,7 +90,7 @@ class VoteStore {
 			throw new Error("Missing required fields");
 		if (!data.billId || !data.userId)
 			throw new Error("Missing required fields");
-		if (!["yes", "no", "abstain"].includes(data.vote))
+		if (!["aye", "nay", "abstain"].includes(data.vote))
 			throw new Error("Invalid vote type");
 		return true;
 	}

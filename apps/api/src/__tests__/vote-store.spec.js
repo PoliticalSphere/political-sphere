@@ -221,17 +221,17 @@ describe("VoteStore", () => {
 	describe("getVoteCounts", () => {
 		it("should count votes by type for a bill", async () => {
 			mockDb.votes.getByBillId.mockResolvedValue([
-				{ vote: "yes" },
-				{ vote: "yes" },
-				{ vote: "no" },
+				{ vote: "aye" },
+				{ vote: "aye" },
+				{ vote: "nay" },
 				{ vote: "abstain" },
 			]);
 
 			const result = await store.getVoteCounts("bill-123");
 
 			expect(result).toEqual({
-				yes: 2,
-				no: 1,
+				aye: 2,
+				nay: 1,
 				abstain: 1,
 				total: 4,
 			});
@@ -243,8 +243,8 @@ describe("VoteStore", () => {
 			const result = await store.getVoteCounts("bill-123");
 
 			expect(result).toEqual({
-				yes: 0,
-				no: 0,
+				aye: 0,
+				nay: 0,
 				abstain: 0,
 				total: 0,
 			});
@@ -256,7 +256,7 @@ describe("VoteStore", () => {
 			const validData = {
 				billId: "bill-123",
 				userId: "user-456",
-				vote: "yes",
+				vote: "aye",
 			};
 
 			expect(() => store.validateVoteData(validData)).not.toThrow();

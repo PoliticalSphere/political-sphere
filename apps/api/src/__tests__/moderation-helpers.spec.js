@@ -54,7 +54,7 @@ describe("ModerationService helper functions (pure)", () => {
 	});
 
 	it("calculates violence score", () => {
-		expect(svc.calculateViolenceScore("no violence here")).toBe(0);
+		expect(svc.calculateViolenceScore("peaceful discussion here")).toBe(0);
 		expect(svc.calculateViolenceScore("kill murder bomb")).toBeGreaterThan(0);
 	});
 

@@ -13,7 +13,7 @@ router.post("/users", validate(CreateUserSchema), async (req, res) => {
 		const db = getDatabase();
 		const user = await db.users.create(req.body);
 		logger.info("User created", { userId: user.id, email: user.email });
-		res.status(201).json(user);
+		res.status(201).json({ success: true, data: user });
 	} catch (error) {
 		logger.error("Failed to create user", {
 			error: error.message,
@@ -21,10 +21,12 @@ router.post("/users", validate(CreateUserSchema), async (req, res) => {
 		});
 		if (/UNIQUE constraint failed/i.test(error.message || "")) {
 			return res.status(400).json({
+				success: false,
 				error: "User already exists",
 			});
 		}
 		res.status(500).json({
+			success: false,
 			error: "Internal server error",
 		});
 	}

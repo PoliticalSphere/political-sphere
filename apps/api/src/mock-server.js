@@ -1,5 +1,6 @@
 const http = require("node:http");
 const url = require("node:url");
+const { log } = require("../../../libs/shared/src/log.js");
 
 const HOST = "localhost";
 const PORT = 4000;
@@ -81,12 +82,12 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, HOST, () => {
-	console.log(`Mock API server running at http://${HOST}:${PORT}`);
+	log("info", "Mock API server running", { host: HOST, port: PORT, url: `http://${HOST}:${PORT}` });
 });
 
 process.on("SIGINT", () => {
 	server.close(() => {
-		console.log("Mock API server closed");
+		log("info", "Mock API server closed");
 		process.exit(0);
 	});
 });

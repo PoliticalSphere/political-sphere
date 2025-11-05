@@ -6,11 +6,12 @@
  */
 
 const { v4: uuidv4 } = require("uuid");
+const { log } = require("../../../../libs/shared/src/log.js");
 
 const name = "003_sample_data";
 
 function up(db) {
-	console.log("Running sample data migration up function...");
+	log("info", "Running sample data migration up function", { migration: name });
 
 	// Sample users
 	const users = [
@@ -168,7 +169,7 @@ function up(db) {
 		insertNews.run(news.id, news.title, news.content, news.category, news.tags);
 	});
 
-	console.log("Sample data migration up function completed");
+	log("info", "Sample data migration up function completed", { migration: name });
 }
 
 function down(db) {

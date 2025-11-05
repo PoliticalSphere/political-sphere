@@ -1,5 +1,6 @@
 import type { RedisOptions } from "ioredis";
 import Redis from "ioredis";
+import { log } from "../../../libs/shared/src/log.js";
 
 type RedisLike = Pick<
   Redis,
@@ -60,7 +61,7 @@ export class CacheService {
       const data = await this.redis.get(key);
       return data ? JSON.parse(data) : null;
     } catch (error) {
-      console.warn("Cache get error:", error);
+      log("warn", "Cache get error", { error: error instanceof Error ? error.message : String(error), key });
       return null;
     }
   }
@@ -79,7 +80,7 @@ export class CacheService {
         await this.redis.set(key, data);
       }
     } catch (error) {
-      console.warn("Cache set error:", error);
+      log("warn", "Cache set error", { error: error instanceof Error ? error.message : String(error), key });
     }
   }
 
@@ -87,7 +88,7 @@ export class CacheService {
     try {
       await this.redis.del(key);
     } catch (error) {
-      console.warn("Cache del error:", error);
+      log("warn", "Cache del error", { error: error instanceof Error ? error.message : String(error), key });
     }
   }
 
@@ -112,7 +113,7 @@ export class CacheService {
         cursor = nextCursor;
       } while (cursor !== "0");
     } catch (error) {
-      console.warn("Cache invalidate pattern error:", error);
+      log("warn", "Cache invalidate pattern error", { error: error instanceof Error ? error.message : String(error), pattern });
     }
   }
 

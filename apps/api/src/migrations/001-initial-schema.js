@@ -5,10 +5,12 @@
  * @see docs/architecture/decisions/adr-0001-database-migrations.md
  */
 
+const { log } = require("../../../../libs/shared/src/log.js");
+
 const name = "001_initial_schema";
 
 function up(db) {
-  console.log("Running migration up function...");
+  log("info", "Running migration up function", { migration: name });
   db.exec(`
     -- Users table
     CREATE TABLE IF NOT EXISTS users (
@@ -59,7 +61,7 @@ function up(db) {
     CREATE INDEX IF NOT EXISTS idx_votes_bill ON votes(bill_id);
     CREATE INDEX IF NOT EXISTS idx_votes_user ON votes(user_id);
   `);
-  console.log("Migration up function completed");
+  log("info", "Migration up function completed", { migration: name });
 }
 
 function down(db) {

@@ -14,6 +14,7 @@ const {
 	MigrationRollbackError,
 	MigrationValidationError,
 } = require("./migration-error");
+const { log } = require("../../../../libs/shared/src/log.js");
 
 /**
  * Initialize the database connection
@@ -118,7 +119,7 @@ function validateSchema(db) {
 		//     "schema_validation",
 		//   );
 		// }
-		console.log("Schema validation passed (FK check skipped for now)");
+		log("info", "Schema validation passed (FK check skipped for now)");
 	} catch (error) {
 		if (error instanceof MigrationValidationError) {
 			throw error;
@@ -139,10 +140,10 @@ function validateSchema(db) {
  */
 async function rollbackMigration(db, migration) {
 	try {
-		console.log(`Rolling back migration: ${migration.name}`);
+		log("info", "Rolling back migration", { migration: migration.name });
 		await migration.down(db);
 		db.prepare("DELETE FROM _migrations WHERE name = ?").run(migration.name);
-		console.log(`Successfully rolled back migration: ${migration.name}`);
+		log("info", "Successfully rolled back migration", { migration: migration.name });
 	} catch (error) {
 		throw new MigrationRollbackError(
 			`Rollback failed for ${migration.name}: ${error.message}`,
@@ -173,16 +174,16 @@ async function runMigrations(db, rollbackOnError = true) {
 
 	// Apply migrations
 	for (const migration of migrations) {
-		console.log(`Checking migration: ${migration.name}`);
-		console.log("DB open before prepare:", db.open);
+		log("info", "Checking migration", { migration: migration.name });
+		log("info", "DB open before prepare", { open: db.open });
 		const existing = db
 			.prepare("SELECT name FROM _migrations WHERE name = ?")
 			.get(migration.name);
-		console.log("Prepare succeeded for existing check");
+		log("info", "Prepare succeeded for existing check");
 
 		if (!existing) {
 			try {
-				console.log(`Applying migration: ${migration.name}`);
+				log("info", "Applying migration", { migration: migration.name });
 				const startTime = Date.now();
 				migration.up(db);
 				const duration = Date.now() - startTime;
@@ -190,20 +191,16 @@ async function runMigrations(db, rollbackOnError = true) {
 					migration.name,
 				);
 				appliedMigrations.push(migration);
-				console.log(
-					`Migration ${migration.name} applied successfully in ${duration}ms`,
-				);
+				log("info", "Migration applied successfully", { migration: migration.name, duration: `${duration}ms` });
 			} catch (error) {
-				console.error(`Migration ${migration.name} failed: ${error.message}`);
+				log("error", "Migration failed", { migration: migration.name, error: error.message });
 				if (rollbackOnError) {
 					// Rollback applied migrations in reverse order
 					for (const applied of appliedMigrations.reverse()) {
 						try {
 							await rollbackMigration(db, applied);
 						} catch (rollbackError) {
-							console.error(
-								`Rollback also failed for ${applied.name}: ${rollbackError.message}`,
-							);
+							log("error", "Rollback also failed", { migration: applied.name, error: rollbackError.message });
 						}
 					}
 				}
@@ -214,13 +211,13 @@ async function runMigrations(db, rollbackOnError = true) {
 				);
 			}
 		} else {
-			console.log(`Migration ${migration.name} already applied, skipping`);
+			log("info", "Migration already applied, skipping", { migration: migration.name });
 		}
 	}
 
 	// Temporarily skip validation due to connection state issue
 	// validateSchema(db);
-	console.log("All migrations applied (validation skipped for now)");
+	log("info", "All migrations applied (validation skipped for now)");
 }
 
 /**
@@ -239,13 +236,11 @@ async function rollbackAllMigrations(db) {
 		if (migration) {
 			await rollbackMigration(db, migration);
 		} else {
-			console.warn(
-				`Migration file not found for ${row.name}, skipping rollback`,
-			);
+			log("warn", "Migration file not found, skipping rollback", { migration: row.name });
 		}
 	}
 
-	console.log("All migrations rolled back successfully");
+	log("info", "All migrations rolled back successfully");
 }
 
 module.exports = {

@@ -86,7 +86,7 @@
     "acorn": "^8.15.0",
     "acorn-walk": "^8.3.4",
     "axe-core": "^4.6.3",
-    "jsdom": "^23.0.0",
+    "jsdom": "^27.1.0",
     "mcp-framework": "^0.2.15",
     "nx": "^22.0.2",
     "playwright": "^1.56.1",

@@ -1,10 +1,10 @@
-import Database from 'better-sqlite3';
-import { initializeDatabase, runMigrations } from './migrations';
-import { UserStore } from './user-store';
-import { PartyStore } from './party-store';
-import { BillStore } from './bill-store';
-import { VoteStore } from './vote-store';
-import { CacheService } from '../cache.js';
+import type Database from "better-sqlite3";
+import { CacheService } from "../cache.js";
+import { BillStore } from "./bill-store";
+import { initializeDatabase, runMigrations } from "./migrations";
+import { PartyStore } from "./party-store";
+import { UserStore } from "./user-store";
+import { VoteStore } from "./vote-store";
 
 interface DatabaseOptions {
   cache?: CacheService;
@@ -12,13 +12,13 @@ interface DatabaseOptions {
 }
 
 function shouldEnableCache(): boolean {
-  if (process.env.NODE_ENV === 'test') {
+  if (process.env.NODE_ENV === "test") {
     return false;
   }
-  if (process.env.API_ENABLE_CACHE === 'true') {
+  if (process.env.API_ENABLE_CACHE === "true") {
     return true;
   }
-  if (process.env.API_ENABLE_CACHE === 'false') {
+  if (process.env.API_ENABLE_CACHE === "false") {
     return false;
   }
   return Boolean(process.env.REDIS_URL);

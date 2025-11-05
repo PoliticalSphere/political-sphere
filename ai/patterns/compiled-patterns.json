@@ -1,0 +1,62 @@
+{
+  "security": [
+    {
+      "pattern": "password\\s*=\\s*['\"][^'\"]+['\"]",
+      "flags": "gi",
+      "severity": "critical",
+      "message": "Hardcoded password"
+    },
+    {
+      "pattern": "api[_-]?key\\s*=\\s*['\"][^'\"]+['\"]",
+      "flags": "gi",
+      "severity": "critical",
+      "message": "Hardcoded API key"
+    },
+    {
+      "pattern": "secret\\s*=\\s*['\"][^'\"]+['\"]",
+      "flags": "gi",
+      "severity": "critical",
+      "message": "Hardcoded secret"
+    },
+    {
+      "pattern": "eval\\s*\\(",
+      "flags": "gi",
+      "severity": "critical",
+      "message": "eval() usage"
+    },
+    {
+      "pattern": "\\.innerHTML\\s*=",
+      "flags": "gi",
+      "severity": "high",
+      "message": "innerHTML (XSS risk)"
+    }
+  ],
+  "quality": [
+    {
+      "pattern": "console\\.log\\(",
+      "flags": "gi",
+      "severity": "low",
+      "message": "console.log found"
+    },
+    {
+      "pattern": "debugger",
+      "flags": "gi",
+      "severity": "medium",
+      "message": "debugger statement"
+    },
+    {
+      "pattern": "var\\s+",
+      "flags": "g",
+      "severity": "low",
+      "message": "Use let/const instead of var"
+    }
+  ],
+  "performance": [
+    {
+      "pattern": "for\\s*\\(.*\\.length",
+      "flags": "gi",
+      "severity": "low",
+      "message": "Cache .length in loop"
+    }
+  ]
+}

@@ -1,0 +1,288 @@
+#!/usr/bin/env node
+/**
+ * Lightning-Fast Pattern Matcher
+ * Pre-computed pattern matching for instant code analysis
+ */
+
+const fs = require("fs");
+const path = require("path");
+
+const PATTERNS_DIR = path.join(__dirname, "../../../ai/patterns");
+const COMPILED_PATTERNS = path.join(PATTERNS_DIR, "compiled-patterns.json");
+
+class PatternMatcher {
+	constructor() {
+		this.patterns = this.loadPatterns();
+	}
+
+	loadPatterns() {
+		if (fs.existsSync(COMPILED_PATTERNS)) {
+			return JSON.parse(fs.readFileSync(COMPILED_PATTERNS, "utf8"));
+		}
+		return this.compilePatterns();
+	}
+
+	compilePatterns() {
+		return {
+			antiPatterns: {
+				security: [
+					{
+						pattern: /password\s*=\s*['"][^'"]+['"]/,
+						severity: "critical",
+						message: "Hardcoded password detected",
+					},
+					{
+						pattern: /api[_-]?key\s*=\s*['"][^'"]+['"]/,
+						severity: "critical",
+						message: "Hardcoded API key",
+					},
+					{
+						pattern: /eval\(/,
+						severity: "high",
+						message: "eval() is dangerous - avoid",
+					},
+					{
+						pattern: /innerHTML\s*=/,
+						severity: "medium",
+						message: "Potential XSS - use textContent or sanitize",
+					},
+					{
+						pattern: /Math\.random\(\)/,
+						severity: "low",
+						message: "Use crypto.randomBytes for security",
+					},
+				],
+				performance: [
+					{
+						pattern: /for\s*\([^)]+\)\s*{[^}]*for\s*\([^)]+\)/,
+						severity: "medium",
+						message: "Nested loops - O(n²) complexity",
+					},
+					{
+						pattern: /await\s+[^;]+;\s*await/,
+						severity: "low",
+						message: "Sequential awaits - use Promise.all",
+					},
+					{
+						pattern: /\.map\([^)]+\)\.filter\(/,
+						severity: "low",
+						message: "Chained map+filter - combine or use reduce",
+					},
+				],
+				codeQuality: [
+					{
+						pattern: /console\.log\(/,
+						severity: "low",
+						message: "Remove console.log before commit",
+					},
+					{
+						pattern: /var\s+/,
+						severity: "low",
+						message: "Use const/let instead of var",
+					},
+					{
+						pattern: /==(?!=)/,
+						severity: "low",
+						message: "Use === for strict equality",
+					},
+				],
+			},
+			goodPatterns: {
+				errorHandling: [
+					{
+						pattern: /try\s*{[\s\S]*}\s*catch/,
+						score: 10,
+						message: "Proper error handling",
+					},
+					{ pattern: /\.catch\(/, score: 5, message: "Promise error handling" },
+				],
+				testing: [
+					{
+						pattern: /describe\(|test\(|it\(/,
+						score: 15,
+						message: "Test coverage",
+					},
+					{
+						pattern: /expect\([\s\S]*\)\.to/,
+						score: 5,
+						message: "Assertions present",
+					},
+				],
+				documentation: [
+					{ pattern: /\/\*\*[\s\S]*\*\//, score: 8, message: "JSDoc comments" },
+					{
+						pattern: /\/\/\s*@param/,
+						score: 3,
+						message: "Parameter documentation",
+					},
+				],
+			},
+			codeSmells: [
+				{
+					pattern: /function\s+\w+\([^)]{50,}\)/,
+					message: "Too many parameters - consider object",
+				},
+				{
+					pattern: /(?:if|else|for|while)[^{]*\n[^{]/,
+					message: "Missing braces - add for clarity",
+				},
+				{
+					pattern: /[a-z]{30,}/,
+					message: "Very long variable name - simplify",
+				},
+			],
+			projectSpecific: {
+				politicalSphere: [
+					{
+						pattern: /@political-sphere\/shared/,
+						message: "Using shared library ✓",
+					},
+					{ pattern: /WCAG/, message: "Accessibility consideration ✓" },
+					{ pattern: /\.test\.|\.spec\./, message: "Test file ✓" },
+				],
+			},
+			compiled: Date.now(),
+		};
+	}
+
+	save() {
+		fs.mkdirSync(path.dirname(COMPILED_PATTERNS), { recursive: true });
+		fs.writeFileSync(COMPILED_PATTERNS, JSON.stringify(this.patterns, null, 2));
+	}
+
+	analyzeCode(code, filename = "unknown") {
+		const results = {
+			file: filename,
+			issues: [],
+			strengths: [],
+			suggestions: [],
+			score: 100,
+		};
+
+			// Check anti-patterns
+		Object.entries(this.patterns.antiPatterns).forEach(
+			([category, patterns]) => {
+				patterns.forEach(({ pattern, severity, message }) => {
+					// Pattern is stored as string, convert to regex
+					const regex = new RegExp(pattern, 'g');
+					const matches = [...code.matchAll(regex)];
+					if (matches.length > 0) {
+						results.issues.push({
+							category,
+							severity,
+							message,
+							count: matches.length,
+							lines: this.findLineNumbers(code, matches),
+						});
+
+						// Deduct score based on severity
+						const penalties = { critical: 20, high: 10, medium: 5, low: 2 };
+						results.score -= penalties[severity] * matches.length;
+					}
+				});
+			},
+		);
+
+		// Check good patterns
+		Object.entries(this.patterns.goodPatterns).forEach(
+			([category, patterns]) => {
+				patterns.forEach(({ pattern, score, message }) => {
+					const regex = new RegExp(pattern, 'g');
+					const matches = [...code.matchAll(regex)];
+					if (matches.length > 0) {
+						results.strengths.push({
+							category,
+							message,
+							count: matches.length,
+						});
+						results.score += Math.min(score * matches.length, score * 3); // Cap bonuses
+					}
+				});
+			},
+		);
+
+		// Check code smells
+		this.patterns.codeSmells.forEach(({ pattern, message }) => {
+			const regex = new RegExp(pattern, 'g');
+			const matches = [...code.matchAll(regex)];
+			if (matches.length > 0) {
+				results.suggestions.push({
+					type: "improvement",
+					message,
+					count: matches.length,
+				});
+			}
+		});		// Cap score 0-100
+		results.score = Math.max(0, Math.min(100, results.score));
+
+		return results;
+	}
+
+	findLineNumbers(code, matches) {
+		return matches.slice(0, 3).map((match) => {
+			const upToMatch = code.substring(0, match.index);
+			return upToMatch.split("\n").length;
+		});
+	}
+
+	quickScan(filePath) {
+		if (!fs.existsSync(filePath)) {
+			return { error: "File not found" };
+		}
+
+		const code = fs.readFileSync(filePath, "utf8");
+		return this.analyzeCode(code, filePath);
+	}
+}
+
+// CLI
+if (require.main === module) {
+	const matcher = new PatternMatcher();
+	const command = process.argv[2];
+
+	switch (command) {
+		case "init":
+			matcher.save();
+			console.log(
+				"Pattern matcher initialized with",
+				Object.keys(matcher.patterns.antiPatterns).length,
+				"pattern categories",
+			);
+			break;
+		case "scan": {
+			const file = process.argv[3];
+			if (!file) {
+				console.log("Usage: pattern-matcher.cjs scan <file>");
+				process.exit(1);
+			}
+			const result = matcher.quickScan(file);
+			console.log("\n=== Code Analysis ===");
+			console.log("File:", result.file);
+			console.log("Score:", result.score, "/100");
+			if (result.issues.length > 0) {
+				console.log("\n🚨 Issues:");
+				result.issues.forEach((i) =>
+					console.log(`  [${i.severity}] ${i.message} (${i.count}x)`),
+				);
+			}
+			if (result.strengths.length > 0) {
+				console.log("\n✅ Strengths:");
+				result.strengths.forEach((s) =>
+					console.log(`  ${s.message} (${s.count}x)`),
+				);
+			}
+			if (result.suggestions.length > 0) {
+				console.log("\n💡 Suggestions:");
+				result.suggestions.forEach((s) => console.log(`  ${s.message}`));
+			}
+			break;
+		}
+		default:
+			console.log("Pattern Matcher - Lightning-fast code analysis");
+			console.log("Commands:");
+			console.log("  init         - Initialize pattern database");
+			console.log("  scan <file>  - Analyze code file");
+	}
+}
+
+module.exports = PatternMatcher;

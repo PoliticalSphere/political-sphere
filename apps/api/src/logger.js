@@ -30,4 +30,10 @@ if (process.env.NODE_ENV !== "production") {
 	);
 }
 
+// Provide an explicit audit method used by GDPR-related routes.
+// This logs at info level with an `audit: true` flag for downstream processors.
+logger.audit = (message, meta = {}) => {
+	logger.log({ level: "info", message, audit: true, ...meta });
+};
+
 module.exports = logger;

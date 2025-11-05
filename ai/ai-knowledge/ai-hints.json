@@ -1,0 +1,46 @@
+{
+  "preContextHooks": [
+    {
+      "name": "Load Recent Context",
+      "file": "ai/context-bundles/recent-changes.md",
+      "when": "before_large_changes",
+      "priority": "high"
+    },
+    {
+      "name": "Check Active Tasks",
+      "file": "docs/TODO.md",
+      "when": "before_suggesting_work",
+      "priority": "high"
+    },
+    {
+      "name": "Review Error Patterns",
+      "file": "ai/context-bundles/error-patterns.md",
+      "when": "debugging",
+      "priority": "medium"
+    }
+  ],
+  "quickAccess": {
+    "documentation": "docs/",
+    "tests": "**/__tests__/",
+    "configs": "**/*.config.{js,ts}",
+    "source": "{apps,libs}/*/src/"
+  },
+  "commonCommands": {
+    "test_changed": "npm run test:changed",
+    "cleanup": "npm run cleanup",
+    "build_context": "npm run ai:context",
+    "check_performance": "npm run perf:monitor"
+  },
+  "decisionTree": {
+    "performance_issue": "Run perf:monitor → cleanup → reload VS Code",
+    "need_context": "Run ai:context → read context-bundles/INDEX.md",
+    "debugging": "Check error-patterns.md → review recent-changes.md",
+    "new_feature": "Check TODO.md → review architecture.md → check ADRs"
+  },
+  "fileTemplates": {
+    "test": "**/__tests__/**/*.{test,spec}.{js,ts}",
+    "component": "apps/*/src/**/*.{jsx,tsx}",
+    "api": "apps/api/src/**/*.{js,ts}",
+    "config": "**/*.config.{js,ts,json}"
+  }
+}

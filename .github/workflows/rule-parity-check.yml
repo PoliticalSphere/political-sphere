@@ -1,0 +1,44 @@
+name: Rule Parity Check
+
+on:
+  pull_request:
+    types: [opened, synchronize, edited, reopened]
+
+jobs:
+  parity:
+    name: Enforce rule file parity
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Parity check for rule files
+        run: |
+          set -euo pipefail
+          echo "Base: ${{ github.event.pull_request.base.sha }}"
+          echo "Head: ${{ github.event.pull_request.head.sha }}"
+          # Ensure we have the commits available
+          git fetch --no-tags --prune origin ${{ github.event.pull_request.base.ref }} || true
+          git fetch --no-tags --prune origin ${{ github.event.pull_request.head.ref }} || true
+
+          CHANGED=$(git diff --name-only ${{ github.event.pull_request.base.sha }}...${{ github.event.pull_request.head.sha }} || true)
+          echo "Changed files:\n$CHANGED"
+
+          F1=".github/copilot-instructions/copilot-instructions.md"
+          F2=".blackboxrules"
+          has1=0
+          has2=0
+          for f in $CHANGED; do
+            if [ "$f" = "$F1" ]; then has1=1; fi
+            if [ "$f" = "$F2" ]; then has2=1; fi
+          done
+
+          if [ "$has1" -ne "$has2" ]; then
+            echo "::error ::Rule parity check failed: edits to one governance rule file must include corresponding edits to the other file." 
+            echo "Guidance: Update both files, bump 'Last updated' and 'Version' in both, add an entry to docs/CHANGELOG.md and update docs/TODO.md. Use .github/PULL_REQUEST_TEMPLATE/rule-update.md."
+            echo "Changed files: $CHANGED"
+            exit 1
+          fi
+          echo "Rule parity check passed."

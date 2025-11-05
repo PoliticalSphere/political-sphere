@@ -1,0 +1,49 @@
+{
+  "entries": {
+    "fbaff69f46386b74": {
+      "query": "How do I run tests?",
+      "response": "npm run test:changed",
+      "timestamp": 1762298011445,
+      "lastAccessed": 1762298011445,
+      "hits": 0
+    },
+    "62a224cca1cf1e15": {
+      "query": "Where are the main docs?",
+      "response": "docs/TODO.md, docs/architecture.md, docs/VSCODE-PERFORMANCE.md",
+      "timestamp": 1762298011445,
+      "lastAccessed": 1762298011445,
+      "hits": 0
+    },
+    "235908ca09f8c0d0": {
+      "query": "How to check performance?",
+      "response": "npm run perf:monitor",
+      "timestamp": 1762298011446,
+      "lastAccessed": 1762298011446,
+      "hits": 0
+    },
+    "cf81e3a7db75708d": {
+      "query": "Where is the API code?",
+      "response": "apps/api/src/",
+      "timestamp": 1762298011446,
+      "lastAccessed": 1762298011446,
+      "hits": 0
+    },
+    "9757410a0ab120a5": {
+      "query": "How to cleanup processes?",
+      "response": "npm run cleanup",
+      "timestamp": 1762298011447,
+      "lastAccessed": 1762298011447,
+      "hits": 0
+    },
+    "44b248f88ec23e74": {
+      "query": "Where are test files?",
+      "response": "**/__tests__/**/*.{test,spec}.{js,ts}",
+      "timestamp": 1762298011447,
+      "lastAccessed": 1762298011447,
+      "hits": 0
+    }
+  },
+  "metadata": {
+    "created": 1762298011443
+  }
+}

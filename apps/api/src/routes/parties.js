@@ -1,5 +1,6 @@
 const express = require("express");
-const { CreatePartySchema } = require("@political-sphere/shared");
+// Use local CJS shim for shared schemas in test/runtime
+const { CreatePartySchema } = require("../shared-shim.js");
 const { getDatabase } = require("../index");
 const { validate } = require("../middleware/validation");
 const logger = require("../logger");

@@ -1,114 +1,82 @@
-# Security & Trust (Zero-Trust Model)
+# Security Policy
 
-## Identity & Access
+This repository enforces a fail-closed secrets scanning policy and documents how to report and respond to security issues.
 
-Apply zero-trust principles:
+## Reporting
 
-- NEVER assume trust → Always verify
-- Use least-privilege access
-- Implement strong authentication
-- Apply context-aware controls
-- Validate ALL inputs
+- If you discover a security vulnerability, open a private issue in this repository or contact the maintainers listed in CODEOWNERS.
 
-## Data Classification
+## Required Secrets & Credentials
 
-Classify and protect data appropriately:
+### Application Secrets (Required for Runtime)
 
-| Level            | Examples                                | Protection                            |
-| ---------------- | --------------------------------------- | ------------------------------------- |
-| **Public**       | Docs, public APIs                       | Standard                              |
-| **Internal**     | Source code, internal docs              | Access control                        |
-| **Confidential** | User data, analytics                    | Encryption + audit logs               |
-| **Restricted**   | Credentials, PII, political preferences | Full encryption + tamper-evident logs |
+**JWT Authentication**:
 
-### Secrets Management (Critical)
+- `JWT_SECRET` - Secret key for access tokens (minimum 32 characters, enforced)
+- `JWT_REFRESH_SECRET` - Secret key for refresh tokens (minimum 32 characters, enforced)
+- `JWT_EXPIRES_IN` - Access token expiry (default: '15m')
+- `JWT_REFRESH_EXPIRES_IN` - Refresh token expiry (default: '7d')
 
-Secrets are never stored in the repository. Follow these patterns:
+Generate secure secrets with:
 
-- ❌ Do NOT commit secrets, encrypted or not, into source control.
-- ✅ Use managed secret stores: AWS Secrets Manager, GCP Secret Manager, HashiCorp Vault, or cloud KMS-backed secrets.
-- ✅ CI and automation must retrieve secrets using short-lived OIDC tokens or least-privilege service accounts/roles.
-- ✅ For local development, use git-ignored `.env.local` or `.env` files managed by tools like `direnv`, `doppler`, or local secret tooling; never commit those files.
-- ✅ Rotate keys on compromise and on a regular cadence (policy defined by security team).
-- ✅ Add `.gitignore` entries to prevent accidental commit of local secret artefacts and secret-tooling caches.
-- ✅ Flag potential leaks immediately and follow the incident response runbook.
+```bash
+node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+```
 
-### Supply Chain Security
+### GitHub Repository Secrets (Required for CI/CD)
 
-Protect the software supply chain:
+Configure these secrets in GitHub repository settings (`Settings > Secrets and variables > Actions`):
 
-- Maintain SBOMs (Software Bill of Materials)
-- Verify artifact integrity (checksums, signatures)
-- Scan dependencies continuously
-- Use trusted registries only
-- Track provenance
+**Testing & Coverage**:
 
-### Vulnerability Management
+- `CODECOV_TOKEN` - Token for uploading coverage reports to Codecov
 
-Prioritize security fixes by severity:
+**Security Scanning**:
 
-- 🔴 **Critical** → Fix immediately (same day)
-- 🟠 **High** → Fix within 7 days
-- 🟡 **Medium** → Fix within 30 days
-- 🟢 **Low** → Address in maintenance cycle
+- `SNYK_TOKEN` - Snyk API token for vulnerability scanning
+- `SEMGREP_APP_TOKEN` - Semgrep Cloud token for SAST
 
-Always consider political manipulation attack vectors.
+**Deployment**:
 
-### Privacy by Design
+- `AWS_ROLE_TO_ASSUME` - AWS IAM role ARN for OIDC authentication (format: `arn:aws:iam::ACCOUNT:role/ROLE_NAME`)
 
-Embed privacy from the start:
+**Monitoring & Alerts** (Optional):
 
-- Collect minimum necessary data only
-- Document purpose and lawful basis
-- Support data subject rights (GDPR/CCPA):
-  - Access, deletion, correction, portability
-- Conduct Privacy Impact Assessments (PIAs) for sensitive features
-- Apply purpose limitation strictly
+- `API_HEALTH_URL` - API health check endpoint (default: https://api-staging.political-sphere.com/healthz)
+- `FRONTEND_HEALTH_URL` - Frontend health check endpoint (default: https://www-staging.political-sphere.com)
+- `LHCI_GITHUB_APP_TOKEN` - Lighthouse CI GitHub app token
+- `SLACK_WEBHOOK_URL` - Slack webhook for deployment notifications
 
-### Cryptographic Standards
+### Environment Variable Validation
 
-Cryptographic guidance (modern and precise):
+The application validates required secrets on startup and will fail fast if they are missing or insufficient:
 
-- Transport: TLS 1.3+ (use secure ciphersuites only)
-- At-rest: AES-256-GCM or equivalent authenticated encryption
-- Signatures: Ed25519 preferred; ECDSA P-256 acceptable. Avoid new RSA deployments; if required for legacy interop, RSA-2048+ only.
-- Key storage: Keys must be stored in KMS/HSM solutions and not in source control or plaintext config.
-- Key rotation: rotate keys on exposure and at least annually for long-lived keys (policy-controlled).
-- NEVER roll your own crypto; use well-vetted libraries and follow platform guidance.
+- JWT secrets must be at least 32 characters long
+- Missing secrets will log a FATAL error and prevent application start
+- This prevents runtime failures and token invalidation issues
 
-### Security Auditability
+### Secret Rotation Policy
 
-Make security events traceable:
+- **JWT Secrets**: Rotate quarterly or immediately if compromised
+- **API Tokens**: Rotate according to provider recommendations (typically 90 days)
+- **AWS Credentials**: Use OIDC for ephemeral credentials (no rotation needed)
 
-- Log all security-relevant events
-- Use tamper-evident logging
-- Balance auditability with privacy
-- Retain logs per compliance requirements
-- Enable forensic analysis
+## Secrets Scanning
 
-### Third-Party Risk
+- We run automated Gitleaks checks in CI and a fast staged scan locally via lefthook.
+- If the scanner finds a secret in a PR, CI will fail and a report will be posted to the PR with details.
 
-Govern external dependencies:
+Immediate Response (if you committed secrets):
 
-- Assess vendor security posture
-- Document integration points clearly
-- Monitor third-party service health
-- Define SLAs and contracts
-- Plan for vendor failure scenarios
+1. Revoke the leaked credential immediately (rotate the key, disconnect tokens, change passwords).
+2. Remove the secret from the git history (use git filter-repo or BFG) and force-push the cleaned branch.
+3. Add the new, rotated credential via secured secret storage (e.g., GitHub Secrets, Vault) — never commit it.
+4. Update this repository's .gitleaks.toml allowlist only if the finding is a false positive; document the reason.
 
-### Secure Defaults
+CI and Allowlist
 
-Design secure by default:
+- The `.gitleaks.toml` file contains allowlist entries for known test fixtures. Do not add real secrets to allowlist entries.
 
-- Isolate environments (dev/staging/prod)
-- Use least-privilege IAM roles
-- Verify content integrity
-- Implement abuse prevention
-- Fail secure (NOT fail open)
+Contact
 
----
-
-**Last updated**: 2025-01-10
-**Version**: 1.3.2
-**Owned by**: Technical Governance Committee
-**Review cycle**: Quarterly
+- For urgent incidents, contact the security team as described in CODE_OF_CONDUCT or your org's security processes.

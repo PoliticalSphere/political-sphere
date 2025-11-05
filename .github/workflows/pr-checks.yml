@@ -1,3 +1,20 @@
+# ==============================================================================
+# AI-ASSISTABLE METADATA
+# ==============================================================================
+# @workflow-name: Pull Request Checks
+# @workflow-purpose: Comprehensive PR validation including change budget, tests, coverage
+# @workflow-category: ci
+# @workflow-criticality: high
+# @workflow-owner: platform-engineering
+# @workflow-slo: 98% success rate, <8min P95 duration
+# @workflow-maturity: 4
+# @workflow-dependencies: [guard-change-budget, vitest, eslint]
+# @workflow-triggers: [pull_request:main]
+# @workflow-stages: [guard-check, tests, coverage, lint, typecheck]
+# @workflow-architecture-ref: docs/architecture/cicd-flow.md
+# @workflow-security-controls: [dependency-check, code-quality-gates]
+# ==============================================================================
+
 name: PR Checks
 
 on:

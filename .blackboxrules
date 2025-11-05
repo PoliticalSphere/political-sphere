@@ -51,7 +51,7 @@ You are assisting with Political Sphere, a democratically-governed multiplayer p
 - Use automation and reproducible scripts for builds, tests, migrations, and validations instead of manual runs.
 - Stage work to enable early feedback (draft PRs, toggles, progressive rollout) and keep change budgets healthy.
 - Cache expensive operations locally/CI (indexes, dependencies, fixtures) and reuse generated artefacts safely.
-- Continuously harvest insights and add improvements to `.github/copilot-instructions.md` and `.blackboxrules` to strengthen future iterations.
+- Continuously harvest insights and add improvements to `.github/copilot-instructions/copilot-instructions.md` and `.blackboxrules` to strengthen future iterations.
 
 ### Secure Delivery Lifecycle
 
@@ -88,7 +88,7 @@ Generate code, documentation, and infrastructure that:
 
 ## Meta-Rule: Self-Improving Rule Sets
 
-**CRITICAL**: Identify patterns, best practices, or guidelines that benefit future work. Always update BOTH rule sets simultaneously: `.blackboxrules` and `.github/copilot-instructions.md`.
+**CRITICAL**: Identify patterns, best practices, or guidelines that benefit future work. Always update BOTH rule sets simultaneously: `.blackboxrules` and `.github/copilot-instructions/copilot-instructions.md`.
 
 **Update Triggers**:
 
@@ -114,7 +114,7 @@ Generate code, documentation, and infrastructure that:
 
 Follow this process to preserve parity, traceability, and auditability:
 
-1. Make coordinated edits to BOTH files: `.github/copilot-instructions.md` and `.blackboxrules`.
+1. Make coordinated edits to BOTH files: `.github/copilot-instructions/copilot-instructions.md` and `.blackboxrules`.
 2. Update the `Last updated` date and increment the `Version` field in both files.
 3. Add a short entry to `docs/CHANGELOG.md` under the `Unreleased` section (e.g., "2025-11-04 - BlackboxAI - Changed: Improved readability and structure of governance rules").
 4. Add or update `docs/TODO.md` with a task reflecting the change.
@@ -165,7 +165,7 @@ Use this template for CHANGELOG/TODO entries during rule updates:
 
 - Date: YYYY-MM-DD
 - Author: <GitHub handle or automation name>
-- Files changed: `.blackboxrules`, `.github/copilot-instructions.md`
+- Files changed: `.blackboxrules`, `.github/copilot-instructions/copilot-instructions.md`
 - Type: Added / Changed / Fixed / Removed
 - Summary: 1-2 line summary
 - Impact: Short note (e.g., tools, CI, owners to review)

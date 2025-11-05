@@ -5,7 +5,7 @@ const {
 	validateCategory,
 	validateTag,
 	isValidUrl,
-} = require("@political-sphere/shared");
+} = require("./shared-shim.js");
 
 const ALLOWED_CATEGORIES = [
 	"politics",
@@ -171,6 +171,8 @@ class NewsService {
 			return (await this.store.read()) || [];
 		if (typeof this.store.getAll === "function")
 			return (await this.store.getAll()) || [];
+		if (typeof this.store.readAll === "function")
+			return (await this.store.readAll()) || [];
 		return [];
 	}
 
@@ -180,6 +182,10 @@ class NewsService {
 			return await this.store.write(items);
 		if (typeof this.store.save === "function")
 			return await this.store.save(items);
+		if (typeof this.store.writeAll === "function")
+			return await this.store.writeAll(items);
+		if (typeof this.store.setAll === "function")
+			return await this.store.setAll(items);
 		throw new Error("Store does not support write/save APIs");
 	}
 
@@ -315,14 +321,30 @@ class NewsService {
 
 	async analyticsSummary() {
 		const items = (await this._readItems()) || [];
-		const total = items.length;
-		const categories = items.reduce((acc, it) => {
-			if (it.category) acc[it.category] = (acc[it.category] || 0) + 1;
+		const validItems = items.filter((item) => {
+			if (!item || typeof item !== "object") return false;
+			// Only count published items; skip drafts or malformed entries from legacy data
+			if (item.status !== "published") return false;
+			try {
+				resolveCategory(item.category);
+			} catch {
+				return false;
+			}
+			return true;
+		});
+		const total = validItems.length;
+		const categories = validItems.reduce((acc, it) => {
+			const category = resolveCategory(it.category);
+			acc[category] = (acc[category] || 0) + 1;
 			return acc;
 		}, {});
-		const recent = items
+		const recent = validItems
 			.slice()
-			.filter((i) => i.createdAt)
+			.filter((i) => {
+				if (!i.createdAt) return false;
+				const timestamp = new Date(i.createdAt).getTime();
+				return Number.isFinite(timestamp);
+			})
 			.sort(
 				(a, b) =>
 					new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),

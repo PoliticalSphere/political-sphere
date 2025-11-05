@@ -52,17 +52,41 @@
     },
     "test": {
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
+      "cache": true,
+      "configurations": {
+        "ci": {
+          "coverageThreshold": {
+            "global": {
+              "branches": 80,
+              "functions": 80,
+              "lines": 80,
+              "statements": 80
+            }
+          }
+        }
+      }
+    },
+    "test:e2e": {
+      "inputs": ["default", "^production"],
       "cache": true
     },
-    "test:e2e": { "inputs": ["default", "^production"], "cache": true },
     "lint:boundaries": {
       "inputs": ["default", "{workspaceRoot}/.eslintrc.json"],
       "cache": true
     }
   },
   "generators": {
-    "@nx/next": { "application": { "style": "css", "linter": "eslint" } },
-    "@nx/react": { "library": { "linter": "eslint" } }
+    "@nx/next": {
+      "application": {
+        "style": "css",
+        "linter": "eslint"
+      }
+    },
+    "@nx/react": {
+      "library": {
+        "linter": "eslint"
+      }
+    }
   },
   "nxCloudAccessToken": "ZmQ1YmJjMDEtNmQ5OS00ZmY0LWJjNDUtZmIyNjQ1Yzg1ODQyfHJlYWQtd3JpdGU=",
   "tasksRunnerOptions": {
@@ -72,7 +96,8 @@
         "cacheableOperations": ["build", "lint", "test", "e2e", "test:e2e", "lint:boundaries"],
         "parallel": 6,
         "maxParallel": 8,
-        "runtimeCacheInputs": ["node -v"]
+        "runtimeCacheInputs": ["node -v"],
+        "analytics": true
       }
     }
   },
@@ -117,7 +142,10 @@
           "sourceTag": "scope:worker",
           "onlyDependOnLibsWithTags": ["*"]
         },
-        { "sourceTag": "scope:core", "onlyDependOnLibsWithTags": ["scope:core"] }
+        {
+          "sourceTag": "scope:core",
+          "onlyDependOnLibsWithTags": ["scope:core"]
+        }
       ]
     }
   },

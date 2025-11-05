@@ -1,16 +1,20 @@
 const express = require("express");
-const { CreateBillSchema } = require("@political-sphere/shared");
+// Use local CJS shim for shared schemas in test/runtime
+const { CreateBillSchema } = require("../shared-shim.js");
 const { getDatabase } = require("../index");
 
 const router = express.Router();
 
 router.post("/bills", async (req, res) => {
 	try {
+		console.log("[DEBUG] POST /bills request body:", JSON.stringify(req.body));
 		const input = CreateBillSchema.parse(req.body);
+		console.log("[DEBUG] Parsed input:", JSON.stringify(input));
 		const db = getDatabase();
 		const bill = await db.bills.create(input);
 		res.status(201).json(bill);
 	} catch (error) {
+		console.error("[ERROR] POST /bills failed:", error);
 		const message = error instanceof Error ? error.message : "Invalid request";
 		res.status(400).json({ error: message });
 	}

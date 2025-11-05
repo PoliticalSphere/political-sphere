@@ -1,145 +1,302 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { VoteStore } from '../../src/vote-store.js';
+const { describe, it, expect, beforeEach, vi } = require("vitest");
 
-function createFakeDb() {
-  const votes = [];
-  return {
-    prepare(sql) {
-      const up = sql.trim().toUpperCase();
-      if (up.startsWith('INSERT')) {
-        return {
-          run(id, bill_id, user_id, vote, created_at) {
-            votes.push({ id, bill_id, user_id, vote, created_at });
-            return { changes: 1 };
-          },
-        };
-      }
+// Mock the database
+vi.mock("../index", () => ({
+	getDatabase: vi.fn(() => ({
+		votes: {
+			create: vi.fn(),
+			getById: vi.fn(),
+			getByBillId: vi.fn(),
+			getByUserId: vi.fn(),
+			update: vi.fn(),
+			delete: vi.fn(),
+			getAll: vi.fn(),
+		},
+	})),
+}));
 
-      if (up.includes('WHERE ID = ?')) {
-        return {
-          get(id) {
-            return votes.find((v) => v.id === id) || null;
-          },
-        };
-      }
+const VoteStore = require("../stores/vote-store");
 
-      if (up.includes('COUNT(*)')) {
-        return {
-          get(userId, billId) {
-            const n = votes.filter((v) => v.user_id === userId && v.bill_id === billId).length;
-            return { count: n };
-          },
-        };
-      }
+describe("VoteStore", () => {
+	let store;
+	let mockDb;
 
-      if (up.includes('WHERE BILL_ID = ?') && up.includes('SUM')) {
-        return {
-          get(billId) {
-            const subset = votes.filter((v) => v.bill_id === billId);
-            const aye = subset.filter((s) => s.vote === 'aye').length;
-            const nay = subset.filter((s) => s.vote === 'nay').length;
-            const abstain = subset.filter((s) => s.vote === 'abstain').length;
-            return { aye, nay, abstain };
-          },
-        };
-      }
-      
-      if (up.includes('WHERE BILL_ID = ?')) {
-        return {
-          all(billId) {
-            return votes.filter((v) => v.bill_id === billId);
-          },
-        };
-      }
+	beforeEach(() => {
+		vi.clearAllMocks();
+		const { getDatabase } = require("../index");
+		mockDb = getDatabase();
+		store = new VoteStore(mockDb.votes);
+	});
 
-      if (up.includes('WHERE USER_ID = ?')) {
-        return {
-          all(userId) {
-            return votes.filter((v) => v.user_id === userId);
-          },
-        };
-      }
+	describe("create", () => {
+		it("should create a new vote", async () => {
+			const voteData = {
+				billId: "bill-123",
+				userId: "user-456",
+				vote: "yes",
+			};
 
-      if (up.includes('COUNT(*)')) {
-        return {
-          get(userId, billId) {
-            const n = votes.filter((v) => v.user_id === userId && v.bill_id === billId).length;
-            return { count: n };
-          },
-        };
-      }
+			mockDb.votes.create.mockResolvedValue({
+				id: "vote-123",
+				...voteData,
+				timestamp: "2025-11-05T00:00:00Z",
+			});
 
-      return {
-        all() {
-          return votes.slice();
-        },
-      };
-    },
-  };
-}
+			const result = await store.create(voteData);
 
-function createFakeCache() {
-  const map = new Map();
-  return {
-    async get(k) {
-      return map.has(k) ? map.get(k) : null;
-    },
-    async set(k, v) {
-      map.set(k, v);
-      return true;
-    },
-    async del(k) {
-      map.delete(k);
-      return true;
-    },
-  };
-}
+			expect(result).toHaveProperty("id", "vote-123");
+			expect(result).toHaveProperty("billId", "bill-123");
+			expect(result).toHaveProperty("userId", "user-456");
+			expect(result).toHaveProperty("vote", "yes");
+			expect(mockDb.votes.create).toHaveBeenCalledWith(voteData);
+		});
 
-describe('VoteStore (in-memory)', () => {
-  let store;
+		it("should handle database errors", async () => {
+			mockDb.votes.create.mockRejectedValue(new Error("Database error"));
 
-  beforeEach(() => {
-    const db = createFakeDb();
-    const cache = createFakeCache();
-    store = new VoteStore(db, cache);
-  });
+			await expect(store.create({})).rejects.toThrow("Database error");
+		});
+	});
 
-  it('creates a vote and returns expected shape', async () => {
-    const input = { billId: 'b1', userId: 'u1', vote: 'aye' };
-    const v = await store.create(input);
-    expect(v).toHaveProperty('id');
-    expect(v.billId).toBe('b1');
-    expect(v.vote).toBe('aye');
-  });
+	describe("getById", () => {
+		it("should retrieve vote by ID", async () => {
+			const mockVote = {
+				id: "vote-123",
+				billId: "bill-123",
+				userId: "user-456",
+				vote: "yes",
+				timestamp: "2025-11-05T00:00:00Z",
+			};
 
-  it('getByBillId and getByUserId return arrays', async () => {
-    await store.create({ billId: 'b2', userId: 'u2', vote: 'nay' });
-    await store.create({ billId: 'b2', userId: 'u3', vote: 'aye' });
+			mockDb.votes.getById.mockResolvedValue(mockVote);
 
-    const byBill = await store.getByBillId('b2');
-    expect(Array.isArray(byBill)).toBe(true);
-    expect(byBill.length).toBeGreaterThanOrEqual(2);
+			const result = await store.getById("vote-123");
 
-    const byUser = await store.getByUserId('u2');
-    expect(Array.isArray(byUser)).toBe(true);
-    expect(byUser[0].userId).toBe('u2');
-  });
+			expect(result).toEqual(mockVote);
+			expect(mockDb.votes.getById).toHaveBeenCalledWith("vote-123");
+		});
 
-  it('hasUserVotedOnBill returns true/false correctly', async () => {
-    await store.create({ billId: 'b3', userId: 'u4', vote: 'abstain' });
-    const yes = await store.hasUserVotedOnBill('u4', 'b3');
-    const no = await store.hasUserVotedOnBill('nope', 'b3');
-    expect(yes).toBe(true);
-    expect(no).toBe(false);
-  });
+		it("should return null for non-existent vote", async () => {
+			mockDb.votes.getById.mockResolvedValue(null);
 
-  it('getVoteCounts aggregates counts', async () => {
-    await store.create({ billId: 'b4', userId: 'x1', vote: 'aye' });
-    await store.create({ billId: 'b4', userId: 'x2', vote: 'aye' });
-    await store.create({ billId: 'b4', userId: 'x3', vote: 'nay' });
-    const counts = await store.getVoteCounts('b4');
-    expect(counts.aye).toBe(2);
-    expect(counts.nay).toBe(1);
-    expect(counts.abstain).toBe(0);
-  });
+			const result = await store.getById("non-existent");
+
+			expect(result).toBeNull();
+		});
+	});
+
+	describe("getByBillId", () => {
+		it("should retrieve votes by bill ID", async () => {
+			const mockVotes = [
+				{
+					id: "vote-1",
+					billId: "bill-123",
+					userId: "user-456",
+					vote: "yes",
+				},
+				{
+					id: "vote-2",
+					billId: "bill-123",
+					userId: "user-789",
+					vote: "no",
+				},
+			];
+
+			mockDb.votes.getByBillId.mockResolvedValue(mockVotes);
+
+			const result = await store.getByBillId("bill-123");
+
+			expect(result).toEqual(mockVotes);
+			expect(mockDb.votes.getByBillId).toHaveBeenCalledWith("bill-123");
+		});
+	});
+
+	describe("getByUserId", () => {
+		it("should retrieve votes by user ID", async () => {
+			const mockVotes = [
+				{
+					id: "vote-1",
+					billId: "bill-123",
+					userId: "user-456",
+					vote: "yes",
+				},
+				{
+					id: "vote-2",
+					billId: "bill-789",
+					userId: "user-456",
+					vote: "no",
+				},
+			];
+
+			mockDb.votes.getByUserId.mockResolvedValue(mockVotes);
+
+			const result = await store.getByUserId("user-456");
+
+			expect(result).toEqual(mockVotes);
+			expect(mockDb.votes.getByUserId).toHaveBeenCalledWith("user-456");
+		});
+	});
+
+	describe("update", () => {
+		it("should update vote data", async () => {
+			const updateData = {
+				vote: "no", // changing vote
+			};
+
+			mockDb.votes.update.mockResolvedValue({
+				id: "vote-123",
+				billId: "bill-123",
+				userId: "user-456",
+				vote: "no",
+				timestamp: "2025-11-05T00:00:00Z",
+			});
+
+			const result = await store.update("vote-123", updateData);
+
+			expect(result).toHaveProperty("vote", "no");
+			expect(mockDb.votes.update).toHaveBeenCalledWith("vote-123", updateData);
+		});
+	});
+
+	describe("delete", () => {
+		it("should delete vote", async () => {
+			mockDb.votes.delete.mockResolvedValue(true);
+
+			const result = await store.delete("vote-123");
+
+			expect(result).toBe(true);
+			expect(mockDb.votes.delete).toHaveBeenCalledWith("vote-123");
+		});
+	});
+
+	describe("getAll", () => {
+		it("should retrieve all votes", async () => {
+			const mockVotes = [
+				{ id: "vote-1", billId: "bill-1", vote: "yes" },
+				{ id: "vote-2", billId: "bill-2", vote: "no" },
+			];
+
+			mockDb.votes.getAll.mockResolvedValue(mockVotes);
+
+			const result = await store.getAll();
+
+			expect(result).toEqual(mockVotes);
+			expect(mockDb.votes.getAll).toHaveBeenCalled();
+		});
+
+		it("should support filtering", async () => {
+			const mockVotes = [{ id: "vote-1", billId: "bill-1", vote: "yes" }];
+
+			mockDb.votes.getAll.mockResolvedValue(mockVotes);
+
+			const result = await store.getAll({ billId: "bill-1" });
+
+			expect(result).toEqual(mockVotes);
+			expect(mockDb.votes.getAll).toHaveBeenCalledWith({ billId: "bill-1" });
+		});
+	});
+
+	describe("hasUserVotedOnBill", () => {
+		it("should return true if user has voted on bill", async () => {
+			mockDb.votes.getByBillId.mockResolvedValue([
+				{ id: "vote-1", userId: "user-456", billId: "bill-123" },
+			]);
+
+			const result = await store.hasUserVotedOnBill("user-456", "bill-123");
+
+			expect(result).toBe(true);
+			expect(mockDb.votes.getByBillId).toHaveBeenCalledWith("bill-123");
+		});
+
+		it("should return false if user has not voted on bill", async () => {
+			mockDb.votes.getByBillId.mockResolvedValue([
+				{ id: "vote-1", userId: "user-789", billId: "bill-123" }, // different user
+			]);
+
+			const result = await store.hasUserVotedOnBill("user-456", "bill-123");
+
+			expect(result).toBe(false);
+		});
+	});
+
+	describe("getVoteCounts", () => {
+		it("should count votes by type for a bill", async () => {
+			mockDb.votes.getByBillId.mockResolvedValue([
+				{ vote: "yes" },
+				{ vote: "yes" },
+				{ vote: "no" },
+				{ vote: "abstain" },
+			]);
+
+			const result = await store.getVoteCounts("bill-123");
+
+			expect(result).toEqual({
+				yes: 2,
+				no: 1,
+				abstain: 1,
+				total: 4,
+			});
+		});
+
+		it("should handle empty vote list", async () => {
+			mockDb.votes.getByBillId.mockResolvedValue([]);
+
+			const result = await store.getVoteCounts("bill-123");
+
+			expect(result).toEqual({
+				yes: 0,
+				no: 0,
+				abstain: 0,
+				total: 0,
+			});
+		});
+	});
+
+	describe("validateVoteData", () => {
+		it("should validate complete vote data", () => {
+			const validData = {
+				billId: "bill-123",
+				userId: "user-456",
+				vote: "yes",
+			};
+
+			expect(() => store.validateVoteData(validData)).not.toThrow();
+		});
+
+		it("should reject invalid vote type", () => {
+			const invalidData = {
+				billId: "bill-123",
+				userId: "user-456",
+				vote: "invalid",
+			};
+
+			expect(() => store.validateVoteData(invalidData)).toThrow(
+				"Invalid vote type",
+			);
+		});
+
+		it("should reject missing bill ID", () => {
+			const invalidData = {
+				userId: "user-456",
+				vote: "yes",
+				// missing billId
+			};
+
+			expect(() => store.validateVoteData(invalidData)).toThrow(
+				"Missing required fields",
+			);
+		});
+
+		it("should reject missing user ID", () => {
+			const invalidData = {
+				billId: "bill-123",
+				vote: "yes",
+				// missing userId
+			};
+
+			expect(() => store.validateVoteData(invalidData)).toThrow(
+				"Missing required fields",
+			);
+		});
+	});
 });

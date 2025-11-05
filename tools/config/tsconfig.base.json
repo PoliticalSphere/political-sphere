@@ -20,6 +20,10 @@
     "useUnknownInCatchVariables": true,
     "noImplicitReturns": true,
     "noFallthroughCasesInSwitch": true,
+    // Performance optimizations
+    "incremental": true,
+    "tsBuildInfoFile": ".cache/tsbuildinfo.json",
+    "assumeChangesOnlyAffectDirectDependencies": true,
     "paths": {
       "@political-sphere/shared": ["libs/shared/src/index.ts"],
       "@political-sphere/ui": ["libs/ui/src/index.ts"],
@@ -28,5 +32,5 @@
       "@political-sphere/infrastructure": ["libs/infrastructure/src/index.ts"]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": ["node_modules", "tmp", "dist", "coverage", ".cache"]
 }

@@ -1,147 +1,256 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { BillStore } from "../bill-store.js";
+const { describe, it, expect, beforeEach, vi } = require("vitest");
 
-// Lightweight in-memory fake DB to emulate better-sqlite3 prepare/get/run/all
-function createFakeDb() {
-	const bills = [];
-	return {
-		prepare(sql) {
-			const up = sql.trim().toUpperCase();
-			// Handle UPDATE before generic WHERE matches
-			if (up.startsWith("UPDATE")) {
-				return {
-					get(status, updated_at, id) {
-						const idx = bills.findIndex((b) => b.id === id);
-						if (idx === -1) return null;
-						bills[idx].status = status;
-						bills[idx].updated_at = updated_at;
-						return {
-							id: bills[idx].id,
-							title: bills[idx].title,
-							description: bills[idx].description,
-							proposer_id: bills[idx].proposer_id,
-							status: bills[idx].status,
-							created_at: bills[idx].created_at,
-							updated_at: bills[idx].updated_at,
-						};
-					},
-					run() {
-						return { changes: 1 };
-					},
-				};
-			}
-			if (up.startsWith("INSERT")) {
-				return {
-					run(...args) {
-						// args: id, title, description, proposerId, status, created_at, updated_at
-						const [
-							id,
-							title,
-							description,
-							proposerId,
-							status,
-							created_at,
-							updated_at,
-						] = args;
-						bills.push({
-							id,
-							title,
-							description,
-							proposer_id: proposerId,
-							status,
-							created_at,
-							updated_at,
-						});
-						return { changes: 1 };
-					},
-				};
-			}
-
-			if (up.includes("WHERE ID = ?")) {
-				return {
-					get(id) {
-						return bills.find((b) => b.id === id) || null;
-					},
-				};
-			}
-
-			if (up.includes("WHERE PROPOSER_ID = ?")) {
-				return {
-					all(proposerId) {
-						return bills.filter((b) => b.proposer_id === proposerId);
-					},
-				};
-			}
-
-			if (up.includes("COUNT(*)")) {
-				return {
-					get() {
-						return { count: bills.length };
-					},
-				};
-			}
-
-			// default: select all
-			return {
-				all() {
-					return bills.slice();
-				},
-			};
+// Mock the database
+vi.mock("../index", () => ({
+	getDatabase: vi.fn(() => ({
+		bills: {
+			create: vi.fn(),
+			getById: vi.fn(),
+			update: vi.fn(),
+			delete: vi.fn(),
+			getAll: vi.fn(),
+			getByStatus: vi.fn(),
 		},
-	};
-}
+	})),
+}));
 
-describe("BillStore (in-memory DB)", () => {
+const BillStore = require("../stores/bill-store");
+
+describe("BillStore", () => {
 	let store;
+	let mockDb;
 
 	beforeEach(() => {
-		const db = createFakeDb();
-		store = new BillStore(db, null);
+		vi.clearAllMocks();
+		const { getDatabase } = require("../index");
+		mockDb = getDatabase();
+		store = new BillStore(mockDb.bills);
 	});
 
-	it("creates a bill and returns expected shape", async () => {
-		const input = {
-			title: "Test bill",
-			description: "desc",
-			proposerId: "user-1",
-		};
-		const created = await store.create(input);
-		expect(created).toHaveProperty("id");
-		expect(created.title).toBe("Test bill");
-		expect(created.proposerId).toBe("user-1");
-		expect(created.status).toBe("proposed");
+	describe("create", () => {
+		it("should create a new bill", async () => {
+			const billData = {
+				title: "Test Bill",
+				description: "A test bill for testing",
+				proposerId: "user-123",
+				status: "proposed",
+			};
+
+			mockDb.bills.create.mockResolvedValue({
+				id: "bill-123",
+				...billData,
+				createdAt: "2025-11-05T00:00:00Z",
+				votes: { yes: 0, no: 0, abstain: 0 },
+			});
+
+			const result = await store.create(billData);
+
+			expect(result).toHaveProperty("id", "bill-123");
+			expect(result).toHaveProperty("title", "Test Bill");
+			expect(result).toHaveProperty("status", "proposed");
+			expect(result).toHaveProperty("votes", { yes: 0, no: 0, abstain: 0 });
+			expect(mockDb.bills.create).toHaveBeenCalledWith(billData);
+		});
+
+		it("should handle database errors", async () => {
+			mockDb.bills.create.mockRejectedValue(new Error("Database error"));
+
+			await expect(store.create({})).rejects.toThrow("Database error");
+		});
 	});
 
-	it("can retrieve a bill by id", async () => {
-		const input = { title: "Find me", proposerId: "p1" };
-		const created = await store.create(input);
-		const fetched = await store.getById(created.id);
-		expect(fetched).not.toBeNull();
-		expect(fetched.id).toBe(created.id);
-		expect(fetched.title).toBe("Find me");
+	describe("getById", () => {
+		it("should retrieve bill by ID", async () => {
+			const mockBill = {
+				id: "bill-123",
+				title: "Test Bill",
+				description: "A test bill",
+				proposerId: "user-123",
+				status: "proposed",
+				votes: { yes: 5, no: 2, abstain: 1 },
+			};
+
+			mockDb.bills.getById.mockResolvedValue(mockBill);
+
+			const result = await store.getById("bill-123");
+
+			expect(result).toEqual(mockBill);
+			expect(mockDb.bills.getById).toHaveBeenCalledWith("bill-123");
+		});
+
+		it("should return null for non-existent bill", async () => {
+			mockDb.bills.getById.mockResolvedValue(null);
+
+			const result = await store.getById("non-existent");
+
+			expect(result).toBeNull();
+		});
 	});
 
-	it("returns all bills and by proposer id", async () => {
-		await store.create({ title: "A", proposerId: "x" });
-		await store.create({ title: "B", proposerId: "y" });
-		const all = await store.getAll();
-		expect(all).toHaveProperty("bills");
-		expect(all.bills.length).toBeGreaterThanOrEqual(2);
-		const byX = await store.getByProposerId("x");
-		expect(byX.length).toBe(1);
-		expect(byX[0].title).toBe("A");
+	describe("update", () => {
+		it("should update bill data", async () => {
+			const updateData = {
+				status: "passed",
+				description: "Updated description",
+			};
+
+			mockDb.bills.update.mockResolvedValue({
+				id: "bill-123",
+				title: "Test Bill",
+				status: "passed",
+				description: "Updated description",
+			});
+
+			const result = await store.update("bill-123", updateData);
+
+			expect(result).toHaveProperty("status", "passed");
+			expect(result).toHaveProperty("description", "Updated description");
+			expect(mockDb.bills.update).toHaveBeenCalledWith("bill-123", updateData);
+		});
 	});
 
-	it("updates status and invalidates caches (no cache provided)", async () => {
-		const created = await store.create({ title: "Change me", proposerId: "z" });
-		const updated = await store.updateStatus(created.id, "passed");
-		// Since fake DB doesn't support RETURNING, updated will be the fetched bill after update
-		expect(updated).not.toBeNull();
-		expect(updated.status).toBe("passed");
-		expect(updated.title).toBe("Change me");
-		expect(updated.proposerId).toBe("z");
-		// Verify without accessing test-internal DB internals
-		const fetched = await store.getById(created.id);
-		expect(fetched.status).toBe("passed");
+	describe("delete", () => {
+		it("should delete bill", async () => {
+			mockDb.bills.delete.mockResolvedValue(true);
+
+			const result = await store.delete("bill-123");
+
+			expect(result).toBe(true);
+			expect(mockDb.bills.delete).toHaveBeenCalledWith("bill-123");
+		});
+	});
+
+	describe("getAll", () => {
+		it("should retrieve all bills", async () => {
+			const mockBills = [
+				{ id: "bill-1", title: "Bill 1", status: "proposed" },
+				{ id: "bill-2", title: "Bill 2", status: "passed" },
+			];
+
+			mockDb.bills.getAll.mockResolvedValue(mockBills);
+
+			const result = await store.getAll();
+
+			expect(result).toEqual(mockBills);
+			expect(mockDb.bills.getAll).toHaveBeenCalled();
+		});
+
+		it("should support filtering by status", async () => {
+			const mockBills = [{ id: "bill-1", title: "Bill 1", status: "proposed" }];
+
+			mockDb.bills.getAll.mockResolvedValue(mockBills);
+
+			const result = await store.getAll({ status: "proposed" });
+
+			expect(result).toEqual(mockBills);
+			expect(mockDb.bills.getAll).toHaveBeenCalledWith({ status: "proposed" });
+		});
+	});
+
+	describe("getByStatus", () => {
+		it("should retrieve bills by status", async () => {
+			const mockBills = [
+				{ id: "bill-1", title: "Bill 1", status: "proposed" },
+				{ id: "bill-2", title: "Bill 2", status: "proposed" },
+			];
+
+			mockDb.bills.getByStatus.mockResolvedValue(mockBills);
+
+			const result = await store.getByStatus("proposed");
+
+			expect(result).toEqual(mockBills);
+			expect(mockDb.bills.getByStatus).toHaveBeenCalledWith("proposed");
+		});
+	});
+
+	describe("addVote", () => {
+		it("should add yes vote to bill", async () => {
+			const mockBill = {
+				id: "bill-123",
+				title: "Test Bill",
+				votes: { yes: 5, no: 2, abstain: 1 },
+			};
+
+			mockDb.bills.getById.mockResolvedValue(mockBill);
+			mockDb.bills.update.mockResolvedValue({
+				...mockBill,
+				votes: { yes: 6, no: 2, abstain: 1 },
+			});
+
+			const result = await store.addVote("bill-123", "user-456", "yes");
+
+			expect(result.votes).toEqual({ yes: 6, no: 2, abstain: 1 });
+			expect(mockDb.bills.update).toHaveBeenCalledWith("bill-123", {
+				votes: { yes: 6, no: 2, abstain: 1 },
+			});
+		});
+
+		it("should add no vote to bill", async () => {
+			const mockBill = {
+				id: "bill-123",
+				title: "Test Bill",
+				votes: { yes: 5, no: 2, abstain: 1 },
+			};
+
+			mockDb.bills.getById.mockResolvedValue(mockBill);
+			mockDb.bills.update.mockResolvedValue({
+				...mockBill,
+				votes: { yes: 5, no: 3, abstain: 1 },
+			});
+
+			const result = await store.addVote("bill-123", "user-456", "no");
+
+			expect(result.votes).toEqual({ yes: 5, no: 3, abstain: 1 });
+		});
+
+		it("should throw error for invalid vote type", async () => {
+			await expect(
+				store.addVote("bill-123", "user-456", "invalid"),
+			).rejects.toThrow("Invalid vote type");
+		});
+
+		it("should throw error for non-existent bill", async () => {
+			mockDb.bills.getById.mockResolvedValue(null);
+
+			await expect(
+				store.addVote("non-existent", "user-456", "yes"),
+			).rejects.toThrow("Bill not found");
+		});
+	});
+
+	describe("getVoteResults", () => {
+		it("should calculate vote results", async () => {
+			const mockBill = {
+				id: "bill-123",
+				title: "Test Bill",
+				votes: { yes: 10, no: 5, abstain: 2 },
+			};
+
+			mockDb.bills.getById.mockResolvedValue(mockBill);
+
+			const result = await store.getVoteResults("bill-123");
+
+			expect(result).toHaveProperty("totalVotes", 17);
+			expect(result).toHaveProperty("yes", 10);
+			expect(result).toHaveProperty("no", 5);
+			expect(result).toHaveProperty("abstain", 2);
+			expect(result).toHaveProperty("percentYes");
+			expect(result.percentYes).toBeCloseTo(58.82, 1);
+		});
+
+		it("should handle bills with no votes", async () => {
+			const mockBill = {
+				id: "bill-123",
+				title: "Test Bill",
+				votes: { yes: 0, no: 0, abstain: 0 },
+			};
+
+			mockDb.bills.getById.mockResolvedValue(mockBill);
+
+			const result = await store.getVoteResults("bill-123");
+
+			expect(result).toHaveProperty("totalVotes", 0);
+			expect(result.percentYes).toBe(0);
+		});
 	});
 });

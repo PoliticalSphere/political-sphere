@@ -130,4 +130,63 @@ module.exports = {
 	validateCategory,
 	validateTag,
 	isValidUrl,
+
+	// --- Security helpers (test-safe implementations) ---
+	// Minimal CORS and security header helpers to support server.js in tests
+	SECURITY_HEADERS: {
+		"X-Content-Type-Options": "nosniff",
+		"X-Frame-Options": "DENY",
+		"Referrer-Policy": "no-referrer",
+		"X-XSS-Protection": "0",
+		"Permissions-Policy": "geolocation=()",
+		"Cross-Origin-Opener-Policy": "same-origin",
+		"Cross-Origin-Resource-Policy": "same-origin",
+	},
+	getCorsHeaders(origin, options = {}) {
+		const headers = {
+			Vary: "Origin",
+			"Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
+			"Access-Control-Allow-Headers": "Content-Type, Authorization",
+			"Access-Control-Max-Age": "600",
+		};
+		if (origin) headers["Access-Control-Allow-Origin"] = origin;
+		if (
+			Array.isArray(options.exposedHeaders) &&
+			options.exposedHeaders.length
+		) {
+			headers["Access-Control-Expose-Headers"] =
+				options.exposedHeaders.join(", ");
+		}
+		return headers;
+	},
+	// Very simple in-memory rate limiter sufficient for tests
+	_rateState: new Map(),
+	checkRateLimit(key, { maxRequests = 100, windowMs = 15 * 60 * 1000 } = {}) {
+		if (!key) return false;
+		const now = Date.now();
+		const entry = this._rateState.get(key);
+		if (!entry || now - entry.first > windowMs) {
+			this._rateState.set(key, { count: 1, first: now });
+			return true;
+		}
+		if (entry.count < maxRequests) {
+			entry.count += 1;
+			return true;
+		}
+		return false;
+	},
+	getRateLimitInfo(key, { maxRequests = 100, windowMs = 15 * 60 * 1000 } = {}) {
+		const now = Date.now();
+		const entry = this._rateState.get(key) || { count: 0, first: now };
+		const resetInMs = Math.max(0, entry.first + windowMs - now);
+		return {
+			remaining: Math.max(0, maxRequests - entry.count),
+			reset: Math.ceil(resetInMs / 1000),
+			limit: maxRequests,
+		};
+	},
+	isIpAllowed(ip, blocklist = []) {
+		if (!ip || typeof ip !== "string") return false;
+		return !blocklist.includes(ip);
+	},
 };

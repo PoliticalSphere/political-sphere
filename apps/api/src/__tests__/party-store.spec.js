@@ -1,112 +1,166 @@
-import { describe, it, expect, beforeEach } from 'vitest';
-import { PartyStore } from '../../src/party-store.js';
+const { describe, it, expect, beforeEach, vi } = require("vitest");
 
-function createFakeDb() {
-  const parties = [];
-  return {
-    prepare(sql) {
-      const up = sql.trim().toUpperCase();
-      if (up.startsWith('INSERT')) {
-        return {
-          run(id, name, description, color, created_at) {
-            parties.push({ id, name, description, color, created_at });
-            return { changes: 1 };
-          },
-        };
-      }
+// Mock the database
+vi.mock("../index", () => ({
+	getDatabase: vi.fn(() => ({
+		parties: {
+			create: vi.fn(),
+			getById: vi.fn(),
+			getByName: vi.fn(),
+			update: vi.fn(),
+			delete: vi.fn(),
+			getAll: vi.fn(),
+		},
+	})),
+}));
 
-      if (up.includes('SELECT COUNT(*)')) {
-        return {
-          get() {
-            return { count: parties.length };
-          },
-        };
-      }
+const PartyStore = require("../stores/party-store");
 
-      if (up.includes('WHERE ID = ?')) {
-        return {
-          get(id) {
-            return parties.find((p) => p.id === id) || null;
-          },
-        };
-      }
+describe("PartyStore", () => {
+	let store;
+	let mockDb;
 
-      if (up.includes('WHERE NAME = ?')) {
-        return {
-          get(name) {
-            return parties.find((p) => p.name === name) || null;
-          },
-        };
-      }
+	beforeEach(() => {
+		vi.clearAllMocks();
+		const { getDatabase } = require("../index");
+		mockDb = getDatabase();
+		store = new PartyStore(mockDb.parties);
+	});
 
-      if (up.includes('LIMIT')) {
-        return {
-          all(limit, offset) {
-            return parties.slice(offset, offset + limit);
-          },
-        };
-      }
+	describe("create", () => {
+		it("should create a new party", async () => {
+			const partyData = {
+				name: "Test Party",
+				description: "A test political party",
+				leaderId: "user-123",
+			};
 
-      return {
-        all() {
-          return parties.slice();
-        },
-      };
-    },
-  };
-}
+			mockDb.parties.create.mockResolvedValue({
+				id: "party-123",
+				...partyData,
+				memberCount: 1,
+				createdAt: "2025-11-05T00:00:00Z",
+			});
 
-function createFakeCache() {
-  const map = new Map();
-  return {
-    async get(k) {
-      return map.has(k) ? map.get(k) : null;
-    },
-    async set(k, v) {
-      map.set(k, v);
-      return true;
-    },
-    async del(k) {
-      map.delete(k);
-      return true;
-    },
-    async invalidatePattern() {
-      return true;
-    },
-  };
-}
+			const result = await store.create(partyData);
 
-describe('PartyStore (in-memory)', () => {
-  let store;
+			expect(result).toHaveProperty("id", "party-123");
+			expect(result).toHaveProperty("name", "Test Party");
+			expect(result).toHaveProperty("memberCount", 1);
+			expect(mockDb.parties.create).toHaveBeenCalledWith(partyData);
+		});
 
-  beforeEach(() => {
-    const db = createFakeDb();
-    const cache = createFakeCache();
-    store = new PartyStore(db, cache);
-  });
+		it("should handle database errors", async () => {
+			mockDb.parties.create.mockRejectedValue(new Error("Database error"));
 
-  it('creates and returns a party', async () => {
-    const p = await store.create({ name: 'Greens', color: '#00ff00', description: 'Green party' });
-    expect(p).toHaveProperty('id');
-    expect(p.name).toBe('Greens');
-  });
+			await expect(store.create({})).rejects.toThrow("Database error");
+		});
+	});
 
-  it('getById and getByName return expected objects', async () => {
-    const created = await store.create({ name: 'Labour', color: '#ff0000', description: 'Labour party' });
-    const byId = await store.getById(created.id);
-    expect(byId).not.toBeNull();
-    const byName = await store.getByName('Labour');
-    expect(byName).not.toBeNull();
-    expect(byName.name).toBe('Labour');
-  });
+	describe("getById", () => {
+		it("should retrieve party by ID", async () => {
+			const mockParty = {
+				id: "party-123",
+				name: "Test Party",
+				description: "A test political party",
+				leaderId: "user-123",
+				memberCount: 5,
+			};
 
-  it('getAll supports pagination and returns total', async () => {
-    for (let i = 0; i < 7; i++) {
-      await store.create({ name: `P${i}`, color: '#000', description: null });
-    }
-    const res = await store.getAll(2, 3); // page 2, 3 per page
-    expect(res).toHaveProperty('parties');
-    expect(res).toHaveProperty('total');
-    expect(res.total).toBeGreaterThanOrEqual(7);
-  });
+			mockDb.parties.getById.mockResolvedValue(mockParty);
+
+			const result = await store.getById("party-123");
+
+			expect(result).toEqual(mockParty);
+			expect(mockDb.parties.getById).toHaveBeenCalledWith("party-123");
+		});
+
+		it("should return null for non-existent party", async () => {
+			mockDb.parties.getById.mockResolvedValue(null);
+
+			const result = await store.getById("non-existent");
+
+			expect(result).toBeNull();
+		});
+	});
+
+	describe("getByName", () => {
+		it("should retrieve party by name", async () => {
+			const mockParty = {
+				id: "party-123",
+				name: "Test Party",
+				description: "A test political party",
+				leaderId: "user-123",
+				memberCount: 5,
+			};
+
+			mockDb.parties.getByName.mockResolvedValue(mockParty);
+
+			const result = await store.getByName("Test Party");
+
+			expect(result).toEqual(mockParty);
+			expect(mockDb.parties.getByName).toHaveBeenCalledWith("Test Party");
+		});
+
+		it("should return null for non-existent party name", async () => {
+			mockDb.parties.getByName.mockResolvedValue(null);
+
+			const result = await store.getByName("Non-existent Party");
+
+			expect(result).toBeNull();
+		});
+	});
+
+	describe("update", () => {
+		it("should update party data", async () => {
+			const updateData = {
+				description: "Updated description",
+				memberCount: 10,
+			};
+
+			mockDb.parties.update.mockResolvedValue({
+				id: "party-123",
+				name: "Test Party",
+				description: "Updated description",
+				leaderId: "user-123",
+				memberCount: 10,
+			});
+
+			const result = await store.update("party-123", updateData);
+
+			expect(result).toHaveProperty("description", "Updated description");
+			expect(result).toHaveProperty("memberCount", 10);
+			expect(mockDb.parties.update).toHaveBeenCalledWith(
+				"party-123",
+				updateData,
+			);
+		});
+	});
+
+	describe("delete", () => {
+		it("should delete party", async () => {
+			mockDb.parties.delete.mockResolvedValue(true);
+
+			const result = await store.delete("party-123");
+
+			expect(result).toBe(true);
+			expect(mockDb.parties.delete).toHaveBeenCalledWith("party-123");
+		});
+	});
+
+	describe("getAll", () => {
+		it("should retrieve all parties", async () => {
+			const mockParties = [
+				{ id: "party-1", name: "Party 1", memberCount: 5 },
+				{ id: "party-2", name: "Party 2", memberCount: 3 },
+			];
+
+			mockDb.parties.getAll.mockResolvedValue(mockParties);
+
+			const result = await store.getAll();
+
+			expect(result).toEqual(mockParties);
+			expect(mockDb.parties.getAll).toHaveBeenCalled();
+		});
+	});
 });

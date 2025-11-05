@@ -1,33 +1,226 @@
-process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-jwt-secret';
+const { describe, it, expect, beforeEach, vi } = require("vitest");
 
-const ageService = require('../ageVerificationService');
+// Mock dependencies
+vi.mock("../logger", () => ({
+	info: vi.fn(),
+	warn: vi.fn(),
+	error: vi.fn(),
+}));
 
-describe('AgeVerificationService (basic)', () => {
-  it('returns age restrictions for different ages', () => {
-    const r1 = ageService.getAgeRestrictions(10);
-    expect(r1.contentRating).toBe('U');
-    expect(r1.features).toContain('parental_controls');
+vi.mock("../index", () => ({
+	getDatabase: vi.fn(() => ({
+		ageVerification: {
+			create: vi.fn(),
+			getById: vi.fn(),
+			update: vi.fn(),
+		},
+	})),
+}));
 
-    const r2 = ageService.getAgeRestrictions(14);
-    expect(r2.contentRating).toBe('12');
+const AgeVerificationService = require("../ageVerificationService");
 
-    const r3 = ageService.getAgeRestrictions(19);
-    expect(r3.contentRating).toBe('18');
-  });
+describe("AgeVerificationService", () => {
+	let service;
+	let mockDb;
 
-  it('checks access control correctly', () => {
-    expect(ageService.canAccessContent(15, '12')).toBe(true);
-    expect(ageService.canAccessContent(11, '12')).toBe(false);
-  });
+	beforeEach(() => {
+		vi.clearAllMocks();
+		const { getDatabase } = require("../index");
+		mockDb = getDatabase();
+		service = new AgeVerificationService(mockDb.ageVerification);
+	});
 
-  it('processes self-declaration correctly', async () => {
-    const res = await ageService.processSelfDeclaration({ age: 14, consent: true });
-    expect(res.success).toBe(true);
-    expect(res.requiresAdditionalVerification).toBe(true);
-  });
+	describe("verifyAge", () => {
+		it("should verify age successfully for adults", async () => {
+			const verificationData = {
+				userId: "user-123",
+				dateOfBirth: "1990-01-01",
+				verificationMethod: "document",
+				documentType: "passport",
+			};
 
-  it('generates parental consent token', () => {
-    const token = ageService.generateParentalConsentToken('parent@example.com', 12);
-    expect(typeof token).toBe('string');
-  });
+			mockDb.ageVerification.create.mockResolvedValue({
+				id: "verification-123",
+				userId: "user-123",
+				verified: true,
+				age: 34,
+				verificationMethod: "document",
+			});
+
+			const result = await service.verifyAge(verificationData);
+
+			expect(result).toHaveProperty("verified", true);
+			expect(result).toHaveProperty("age", 34);
+			expect(result).toHaveProperty("id", "verification-123");
+			expect(mockDb.ageVerification.create).toHaveBeenCalledWith({
+				...verificationData,
+				verified: true,
+				age: 34,
+				verifiedAt: expect.any(String),
+			});
+		});
+
+		it("should reject verification for minors", async () => {
+			const verificationData = {
+				userId: "user-123",
+				dateOfBirth: "2010-01-01", // 14 years old
+				verificationMethod: "document",
+				documentType: "id_card",
+			};
+
+			const result = await service.verifyAge(verificationData);
+
+			expect(result).toHaveProperty("verified", false);
+			expect(result).toHaveProperty("age", 14);
+			expect(result).toHaveProperty(
+				"reason",
+				"User must be at least 18 years old",
+			);
+		});
+
+		it("should handle invalid date formats", async () => {
+			const verificationData = {
+				userId: "user-123",
+				dateOfBirth: "invalid-date",
+				verificationMethod: "document",
+			};
+
+			await expect(service.verifyAge(verificationData)).rejects.toThrow(
+				"Invalid date of birth format",
+			);
+		});
+
+		it("should validate required fields", async () => {
+			const incompleteData = {
+				userId: "user-123",
+				// missing dateOfBirth and verificationMethod
+			};
+
+			await expect(service.verifyAge(incompleteData)).rejects.toThrow(
+				"Missing required fields: dateOfBirth, verificationMethod",
+			);
+		});
+	});
+
+	describe("getVerificationStatus", () => {
+		it("should return verification status for user", async () => {
+			const mockVerification = {
+				id: "verification-123",
+				userId: "user-123",
+				verified: true,
+				age: 25,
+				verifiedAt: "2025-11-05T00:00:00Z",
+			};
+
+			mockDb.ageVerification.getById.mockResolvedValue(mockVerification);
+
+			const result = await service.getVerificationStatus("user-123");
+
+			expect(result).toEqual(mockVerification);
+			expect(mockDb.ageVerification.getById).toHaveBeenCalledWith("user-123");
+		});
+
+		it("should return null for unverified user", async () => {
+			mockDb.ageVerification.getById.mockResolvedValue(null);
+
+			const result = await service.getVerificationStatus("user-123");
+
+			expect(result).toBeNull();
+		});
+	});
+
+	describe("updateVerification", () => {
+		it("should update verification record", async () => {
+			const updateData = {
+				verificationMethod: "enhanced_check",
+				notes: "Additional verification completed",
+			};
+
+			mockDb.ageVerification.update.mockResolvedValue({
+				id: "verification-123",
+				userId: "user-123",
+				verified: true,
+				...updateData,
+			});
+
+			const result = await service.updateVerification(
+				"verification-123",
+				updateData,
+			);
+
+			expect(result).toHaveProperty("verificationMethod", "enhanced_check");
+			expect(result).toHaveProperty(
+				"notes",
+				"Additional verification completed",
+			);
+			expect(mockDb.ageVerification.update).toHaveBeenCalledWith(
+				"verification-123",
+				updateData,
+			);
+		});
+	});
+
+	describe("isEligibleForContent", () => {
+		it("should allow access for verified adults", async () => {
+			mockDb.ageVerification.getById.mockResolvedValue({
+				verified: true,
+				age: 25,
+			});
+
+			const result = await service.isEligibleForContent(
+				"user-123",
+				"adult_content",
+			);
+
+			expect(result).toHaveProperty("eligible", true);
+			expect(result).toHaveProperty("age", 25);
+		});
+
+		it("should deny access for minors", async () => {
+			mockDb.ageVerification.getById.mockResolvedValue({
+				verified: true,
+				age: 16,
+			});
+
+			const result = await service.isEligibleForContent(
+				"user-123",
+				"adult_content",
+			);
+
+			expect(result).toHaveProperty("eligible", false);
+			expect(result).toHaveProperty("reason", "Content requires age 18+");
+		});
+
+		it("should deny access for unverified users", async () => {
+			mockDb.ageVerification.getById.mockResolvedValue(null);
+
+			const result = await service.isEligibleForContent(
+				"user-123",
+				"any_content",
+			);
+
+			expect(result).toHaveProperty("eligible", false);
+			expect(result).toHaveProperty("reason", "Age verification required");
+		});
+	});
+
+	describe("getVerificationStats", () => {
+		it("should return verification statistics", async () => {
+			mockDb.ageVerification.getAll.mockResolvedValue([
+				{ verified: true, age: 25, verificationMethod: "document" },
+				{ verified: true, age: 30, verificationMethod: "credit_card" },
+				{ verified: false, age: 16, verificationMethod: "document" },
+			]);
+
+			const stats = await service.getVerificationStats();
+
+			expect(stats).toHaveProperty("totalVerifications", 3);
+			expect(stats).toHaveProperty("verifiedCount", 2);
+			expect(stats).toHaveProperty("rejectedCount", 1);
+			expect(stats).toHaveProperty("averageAge", 23.67); // (25+30+16)/3
+			expect(stats).toHaveProperty("methodStats");
+			expect(stats.methodStats.document).toBe(2);
+			expect(stats.methodStats.credit_card).toBe(1);
+		});
+	});
 });

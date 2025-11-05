@@ -26,9 +26,21 @@ logs/
 npm-debug.log*
 yarn-debug.log*
 pnpm-debug.log*
+vitest-output.log
+coverage-runner.log
+npm-ci-output.log
 
 # Test coverage
 coverage/
+.vitest/
+
+# Test databases and artifacts
+test-*.db
+test-*.db-shm
+test-*.db-wal
+*.db
+*.db-shm
+*.db-wal
 
 # Temporary files
 tmp/
@@ -48,6 +60,15 @@ ai/ai-index/
 ai-assets.json
 ai-controls.json
 ai-metrics.json
+
+# Performance optimization caches
+*.tsbuildinfo
+.cache/
+.vitest/
+.playwright/
+.turbo/
+node_modules/.cache/
+node_modules/.vite/
 ai-metrics/
 ai/ai-knowledge/semantic-index.json
 ai/ai-knowledge/semantic-index-*.json

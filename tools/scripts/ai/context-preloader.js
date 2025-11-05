@@ -8,9 +8,9 @@ import {
 	existsSync,
 	readdirSync,
 	readFileSync,
- 	statSync,
- 	writeFileSync,
- 	mkdirSync,
+	statSync,
+	writeFileSync,
+	mkdirSync,
 } from "fs";
 import { extname, join } from "path";
 
@@ -24,9 +24,15 @@ let CACHE_DIR = ROOT_CACHE_DIR;
 try {
 	if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
 } catch (err) {
-	console.warn("Warning: failed to create root cache dir at", CACHE_DIR, "- falling back to ai/ai-cache:", err?.message);
+	console.warn(
+		"Warning: failed to create root cache dir at",
+		CACHE_DIR,
+		"- falling back to ai/ai-cache:",
+		err?.message,
+	);
 	// Fall back to `ai/ai-cache` if root creation fails for any reason.
-	if (!existsSync(FALLBACK_CACHE_DIR)) mkdirSync(FALLBACK_CACHE_DIR, { recursive: true });
+	if (!existsSync(FALLBACK_CACHE_DIR))
+		mkdirSync(FALLBACK_CACHE_DIR, { recursive: true });
 	CACHE_DIR = FALLBACK_CACHE_DIR;
 }
 
@@ -55,7 +61,7 @@ const CONTEXTS = {
 	docs: ["docs/", "README.md", ".blackboxrules"],
 	"rules-awareness": [
 		".blackboxrules",
-		".github/copilot-instructions.md",
+		".github/copilot-instructions/copilot-instructions.md",
 		"docs/architecture/decisions/",
 	],
 	patterns: ["ai/patterns/", "ai-learning/patterns.json", "docs/TODO.md"],
@@ -104,7 +110,12 @@ async function preloadContext(contextName) {
 				const files = walkDir(path);
 				for (const fullPath of files) {
 					const ext = extname(fullPath);
-					if (ext === ".ts" || ext === ".js" || ext === ".json" || ext === ".md") {
+					if (
+						ext === ".ts" ||
+						ext === ".js" ||
+						ext === ".json" ||
+						ext === ".md"
+					) {
 						try {
 							const content = readFileSync(fullPath, "utf8");
 							// Validate content integrity

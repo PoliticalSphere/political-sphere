@@ -1,0 +1,16 @@
+{
+  "antiPatterns": {
+    "security": [
+      {
+        "pattern": "password\\s*=\\s*['\"][^'\"]+['\"]",
+        "severity": "critical",
+        "message": "Hardcoded password"
+      },
+      {
+        "pattern": "console\\.log\\(",
+        "severity": "low",
+        "message": "console.log found"
+      }
+    ]
+  }
+}

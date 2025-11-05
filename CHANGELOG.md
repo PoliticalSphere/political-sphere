@@ -7,6 +7,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **GitHub Copilot Instructions Organization (2025-11-05)**: Reorganized AI governance instruction files into dedicated subfolder:
+
+  - Created `.github/copilot-instructions/` directory
+  - Moved 11 instruction files: `copilot-instructions.md`, `ai-governance.md`, `compliance.md`, `operations.md`, `organization.md`, `quality.md`, `quick-ref.md`, `security.md`, `strategy.md`, `testing.md`, `ux-accessibility.md`
+  - Updated all references in `.blackboxrules`, workflows, and AI tools
+  - Improved organization and discoverability of AI governance documentation
+
+- **Root Directory Organization (2025-11-05)**: Audited and reorganized root-level files for better structure:
+
+  - Moved `.mcp.json` → `tools/config/mcp.json` (configuration belongs in tools)
+  - Moved `test-mcp-imports.js` → `scripts/test-mcp-imports.js` (scripts belong in scripts)
+  - Updated `.github/organization.md` to document all allowed root file exceptions (`.blackboxrules`, `vitest.config.js`, `.lefthook.yml`, `package-lock.json`)
+  - Verified `.env`, `.env.local`, and `.DS_Store` are properly git-ignored
+  - Improved compliance with governance rules and file placement standards
+
+- **GitHub Workflow Cleanup (2025-11-05)**: Consolidated and reorganized `.github` folder structure for improved maintainability:
+  - Removed 6 empty duplicate directories (`ci 2`, `deployment 2`, `maintenance 2`, `monitoring 2`, `security 2`, `testing 2`)
+  - Moved 9 workflow files from `.github/actions/` to `.github/workflows/` (affected-tests.yml, adr-validate.yml, hooks-review.yml, copilot-experiment-summary.yml, integration.yml, docker.yml, guard-check.yml, secret-rotation.yml, ai-maintenance.yml)
+  - Resolved duplicate ai-maintenance.yml files by keeping the comprehensive version with code indexing, embeddings, ANN building, and smoke tests
+  - Removed duplicate `lefthook.yml` template file (kept active `.lefthook.yml` configuration)
+  - Improved discoverability and alignment with GitHub Actions best practices
+
+### Fixed
+
+- Test stability: set `JWT_REFRESH_SECRET` in `tools/test-setup.ts` to satisfy enforced 32+ char requirement during auth module import and prevent early throws in tests (2025-11-05).
+
+### Added
+
+- API logger: introduced `logger.audit(message, meta)` helper in `apps/api/src/logger.js` for GDPR export/deletion routes to emit structured audit logs (2025-11-05).
+
 ### Fixed
 
 - **Unit Test Suite Fixes (2025-11-04)**: Converted failing unit tests to integration tests, improving test reliability:

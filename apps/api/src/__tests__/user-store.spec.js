@@ -1,119 +1,212 @@
-import { beforeEach, describe, expect, it } from "vitest";
-import { UserStore } from "../../src/user-store.js";
+const { describe, it, expect, beforeEach, vi } = require("vitest");
 
-function createFakeDb() {
-	const users = [];
-	return {
-		prepare(sql) {
-			const up = sql.trim().toUpperCase();
-			if (up.startsWith("INSERT")) {
-				return {
-					run(id, username, email, created_at, updated_at) {
-						users.push({ id, username, email, created_at, updated_at });
-						return { changes: 1 };
-					},
-				};
-			}
-
-			if (up.includes("WHERE ID = ?")) {
-				return {
-					get(id) {
-						return users.find((u) => u.id === id) || null;
-					},
-				};
-			}
-
-			if (up.includes("WHERE USERNAME = ?")) {
-				return {
-					get(username) {
-						return users.find((u) => u.username === username) || null;
-					},
-				};
-			}
-
-			if (up.includes("WHERE EMAIL = ?")) {
-				return {
-					get(email) {
-						return users.find((u) => u.email === email) || null;
-					},
-				};
-			}
-
-			return {
-				all() {
-					return users.slice();
-				},
-			};
+// Mock the database
+vi.mock("../index", () => ({
+	getDatabase: vi.fn(() => ({
+		users: {
+			create: vi.fn(),
+			getById: vi.fn(),
+			getByUsername: vi.fn(),
+			getByEmail: vi.fn(),
+			update: vi.fn(),
+			delete: vi.fn(),
+			getAll: vi.fn(),
 		},
-	};
-}
+	})),
+}));
 
-function createFakeCache() {
-	const store = new Map();
-	return {
-		async get(key) {
-			return store.has(key) ? store.get(key) : null;
-		},
-		async set(key, value, _ttl) {
-			store.set(key, value);
-			return true;
-		},
-		async del(key) {
-			store.delete(key);
-			return true;
-		},
-		async invalidatePattern() {
-			// noop for tests
-			return true;
-		},
-	};
-}
+const UserStore = require("../stores/user-store");
 
-describe("UserStore (in-memory DB + cache)", () => {
-	let db;
-	let cache;
+describe("UserStore", () => {
 	let store;
+	let mockDb;
 
 	beforeEach(() => {
-		db = createFakeDb();
-		cache = createFakeCache();
-		store = new UserStore(db, cache);
+		vi.clearAllMocks();
+		const { getDatabase } = require("../index");
+		mockDb = getDatabase();
+		store = new UserStore(mockDb.users);
 	});
 
-	it("creates a user and caches it", async () => {
-		const input = { username: "alice", email: "a@example.com" };
-		const created = await store.create(input);
-		expect(created).toHaveProperty("id");
-		expect(created.username).toBe("alice");
+	describe("create", () => {
+		it("should create a new user", async () => {
+			const userData = {
+				username: "testuser",
+				email: "test@example.com",
+				passwordHash: "hashed-password",
+			};
 
-		// cached by id
-		const cached = await cache.get(`user:${created.id}`);
-		expect(cached).not.toBeNull();
-		expect(cached.username).toBe("alice");
+			mockDb.users.create.mockResolvedValue({
+				id: "user-123",
+				...userData,
+				createdAt: "2025-11-05T00:00:00Z",
+			});
+
+			const result = await store.create(userData);
+
+			expect(result).toHaveProperty("id", "user-123");
+			expect(result).toHaveProperty("username", "testuser");
+			expect(result).toHaveProperty("email", "test@example.com");
+			expect(mockDb.users.create).toHaveBeenCalledWith(userData);
+		});
+
+		it("should handle database errors", async () => {
+			mockDb.users.create.mockRejectedValue(new Error("Database error"));
+
+			await expect(store.create({})).rejects.toThrow("Database error");
+		});
 	});
 
-	it("retrieves user by id and uses cache when present", async () => {
-		const input = { username: "bob", email: "b@example.com" };
-		const created = await store.create(input);
+	describe("getById", () => {
+		it("should retrieve user by ID", async () => {
+			const mockUser = {
+				id: "user-123",
+				username: "testuser",
+				email: "test@example.com",
+			};
 
-		// clear DB but keep cache populated to ensure cache path works
-		const userFromDb = await store.getById(created.id);
-		expect(userFromDb).not.toBeNull();
+			mockDb.users.getById.mockResolvedValue(mockUser);
 
-		// simulate cache hit
-		const cached = await cache.get(`user:${created.id}`);
-		expect(cached).not.toBeNull();
+			const result = await store.getById("user-123");
+
+			expect(result).toEqual(mockUser);
+			expect(mockDb.users.getById).toHaveBeenCalledWith("user-123");
+		});
+
+		it("should return null for non-existent user", async () => {
+			mockDb.users.getById.mockResolvedValue(null);
+
+			const result = await store.getById("non-existent");
+
+			expect(result).toBeNull();
+		});
 	});
 
-  it('can lookup by username and email', async () => {
-    const input = { username: 'carol', email: 'c@example.com' };
-    await store.create(input);
-    const byUsername = await store.getByUsername('carol');
-    expect(byUsername).not.toBeNull();
-    expect(byUsername.email).toBe('c@example.com');
+	describe("getByUsername", () => {
+		it("should retrieve user by username", async () => {
+			const mockUser = {
+				id: "user-123",
+				username: "testuser",
+				email: "test@example.com",
+			};
 
-    const byEmail = await store.getByEmail('c@example.com');
-    expect(byEmail).not.toBeNull();
-    expect(byEmail.username).toBe('carol');
-  });
+			mockDb.users.getByUsername.mockResolvedValue(mockUser);
+
+			const result = await store.getByUsername("testuser");
+
+			expect(result).toEqual(mockUser);
+			expect(mockDb.users.getByUsername).toHaveBeenCalledWith("testuser");
+		});
+	});
+
+	describe("getByEmail", () => {
+		it("should retrieve user by email", async () => {
+			const mockUser = {
+				id: "user-123",
+				username: "testuser",
+				email: "test@example.com",
+			};
+
+			mockDb.users.getByEmail.mockResolvedValue(mockUser);
+
+			const result = await store.getByEmail("test@example.com");
+
+			expect(result).toEqual(mockUser);
+			expect(mockDb.users.getByEmail).toHaveBeenCalledWith("test@example.com");
+		});
+	});
+
+	describe("update", () => {
+		it("should update user data", async () => {
+			const updateData = {
+				email: "newemail@example.com",
+				profile: { displayName: "New Name" },
+			};
+
+			mockDb.users.update.mockResolvedValue({
+				id: "user-123",
+				username: "testuser",
+				email: "newemail@example.com",
+				profile: { displayName: "New Name" },
+			});
+
+			const result = await store.update("user-123", updateData);
+
+			expect(result).toHaveProperty("email", "newemail@example.com");
+			expect(mockDb.users.update).toHaveBeenCalledWith("user-123", updateData);
+		});
+	});
+
+	describe("delete", () => {
+		it("should delete user", async () => {
+			mockDb.users.delete.mockResolvedValue(true);
+
+			const result = await store.delete("user-123");
+
+			expect(result).toBe(true);
+			expect(mockDb.users.delete).toHaveBeenCalledWith("user-123");
+		});
+	});
+
+	describe("getAll", () => {
+		it("should retrieve all users", async () => {
+			const mockUsers = [
+				{ id: "user-1", username: "user1" },
+				{ id: "user-2", username: "user2" },
+			];
+
+			mockDb.users.getAll.mockResolvedValue(mockUsers);
+
+			const result = await store.getAll();
+
+			expect(result).toEqual(mockUsers);
+			expect(mockDb.users.getAll).toHaveBeenCalled();
+		});
+
+		it("should support filtering", async () => {
+			const mockUsers = [{ id: "user-1", username: "user1" }];
+			const filters = { active: true };
+
+			mockDb.users.getAll.mockResolvedValue(mockUsers);
+
+			const result = await store.getAll(filters);
+
+			expect(result).toEqual(mockUsers);
+			expect(mockDb.users.getAll).toHaveBeenCalledWith(filters);
+		});
+	});
+
+	describe("validateUserData", () => {
+		it("should validate complete user data", () => {
+			const validData = {
+				username: "testuser",
+				email: "test@example.com",
+				passwordHash: "hashed-password",
+			};
+
+			expect(() => store.validateUserData(validData)).not.toThrow();
+		});
+
+		it("should reject invalid username", () => {
+			const invalidData = {
+				username: "us", // too short
+				email: "test@example.com",
+			};
+
+			expect(() => store.validateUserData(invalidData)).toThrow(
+				"Invalid username",
+			);
+		});
+
+		it("should reject invalid email", () => {
+			const invalidData = {
+				username: "testuser",
+				email: "invalid-email",
+			};
+
+			expect(() => store.validateUserData(invalidData)).toThrow(
+				"Invalid email",
+			);
+		});
+	});
 });

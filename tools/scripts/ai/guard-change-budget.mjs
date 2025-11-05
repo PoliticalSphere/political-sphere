@@ -42,13 +42,15 @@ console.log(
 );
 console.log("- Update CHANGELOG.md and TODO.md for all changes.");
 console.log(
-	"- Ensure parity between .blackboxrules and .github/copilot-instructions.md",
+	"- Ensure parity between .blackboxrules and .github/copilot-instructions/copilot-instructions.md",
 );
 console.log("- Test changes in CI pipeline.");
 console.log("- Gather feedback from development team.");
 console.log("\nArtefact Checklist:");
 console.log("- Attach or update SBOM/provenance artefacts for the change.");
-console.log("- Capture test evidence (logs, screenshots, reports) when deferring gates.");
+console.log(
+	"- Capture test evidence (logs, screenshots, reports) when deferring gates.",
+);
 console.log("\nBenchmark Mapping Reminders:");
 console.log(
 	"- Map changes to OWASP ASVS, NIST SP 800-53, ISO/IEC 27001, WCAG 2.2 AA+, NIST AI RMF, and GDPR/CCPA as applicable.",

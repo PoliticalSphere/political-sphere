@@ -79,6 +79,32 @@ jobs:
           head: HEAD
           extra_args: --only-verified
 
+      # Governance pre-checks (migrated from governance/guard-check.yml)
+      - name: Setup Node.js for governance checks
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      - name: Install dependencies (if needed)
+        run: |
+          if [ -f package.json ]; then npm ci --omit=dev || npm ci || true; fi
+
+      - name: Run CI tools check
+        run: |
+          node --version
+          node tools/scripts/ci/check-tools.mjs
+
+      - name: Check file placement
+        run: node tools/scripts/ci/check-file-placement.mjs
+
+      - name: Run guard-change-budget (Safe mode)
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          node --version
+          node tools/scripts/ai/guard-change-budget.mjs --mode=Safe --base=origin/${{ github.event.pull_request.base.ref }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   lint-and-typecheck:
     name: Lint & Type Check
     runs-on: ubuntu-latest

@@ -11,8 +11,18 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
 - Consolidated automated and manual changes introduced in November 2025: AI governance updates, test and CI hardening, devcontainer fixes, caching and performance improvements, documentation cleanup, and security/compliance features.
 - Moved scripts from `tools/` to `scripts/` directory for better organization.
 - Added a root TypeScript workspace config to keep language services responsive in large editors.
+- Reorganized `.github/` directory: moved operational docs to `/docs/`, removed duplicate dependency bot configs, and consolidated AI instructions.
 
 ### Changed
+
+- **GitHub Directory Cleanup (2025-11-05)**: Reorganized `.github/` directory to improve discoverability and reduce duplication:
+
+  - Moved `.github/SLO.md` → `docs/observability/SLO.md` (operational docs belong in `/docs/`)
+  - Moved `.github/metrics/` → `docs/metrics/` (metrics dashboards are project documentation)
+  - Moved `.github/audit-trail/` → `docs/audit-trail/` (audit logs are project records)
+  - Removed `.github/dependabot.yml` (keeping Renovate as the single dependency automation tool)
+  - Archived duplicate `.github/copilot-instructions.md` monolith (keeping `.github/copilot-instructions/` directory as canonical source)
+  - Rationale: `.github/` should contain GitHub-specific configs (workflows, templates, CODEOWNERS); broader documentation belongs in `/docs/` for better visibility and version control.
 
 - **Script Organization**: Moved `run-smoke.js`, `run-vitest-coverage.js`, and `test-setup.ts` from `tools/` to `scripts/` directory. Updated `package.json` and `vitest.config.js` references accordingly.
 

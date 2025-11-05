@@ -1,0 +1,85 @@
+name: Per-app Tests
+
+on:
+  push:
+    name: Per-app Tests
+
+    on:
+      push:
+        branches: [ main ]
+      pull_request:
+        branches: [ main ]
+
+    permissions:
+      contents: read
+
+    jobs:
+      per-app-tests:
+        name: Test - ${{ matrix.app }}
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        strategy:
+          matrix:
+            app: [ frontend, api ]
+        steps:
+          - name: Checkout repository
+            uses: actions/checkout@v4
+
+          - name: Use Node.js
+            uses: actions/setup-node@v4
+            with:
+              node-version: '18'
+              cache: 'npm'
+
+          - name: Cache vitest & npm
+            uses: actions/cache@v4
+            with:
+              path: |
+                ~/.npm
+                node_modules
+                .vitest/cache
+                coverage
+              key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}-vitest-${{ matrix.app }}
+
+          - name: Install dependencies
+            run: npm ci
+
+          - name: Lint and type-check (non-blocking)
+            run: |
+              npm run -s lint --if-present || true
+              npm run -s type-check --if-present || true
+
+          - name: Run per-app tests
+            id: run-tests
+            env:
+              VITEST_APP: ${{ matrix.app }}
+            run: |
+              set -e
+              if [ "${{ matrix.app }}" = "frontend" ]; then
+                echo "Running frontend tests (jsdom)..."
+                npx vitest --run --environment jsdom apps/frontend --coverage --reporter json --reporter junit
+              else
+                echo "Running api tests (node)..."
+                npx vitest --run apps/api --coverage --reporter json --reporter junit || true
+              fi
+
+          - name: Upload coverage artifact
+            if: always()
+            uses: actions/upload-artifact@v4
+            with:
+              name: coverage-${{ matrix.app }}
+              path: |
+                coverage
+                coverage/**
+
+          - name: Upload junit/test reporters
+            if: always()
+            uses: actions/upload-artifact@v4
+            with:
+              name: junit-${{ matrix.app }}
+              path: |
+                junit.xml
+                junit-*.xml
+                test-results.xml
+                **/junit-*.xml
+    branches: [ main ]

@@ -49,12 +49,20 @@ class UserStore {
 		return this._real.getAll ? this._real.getAll(...args) : { users: [] };
 	}
 
-	async validateUserData(data) {
-		if (this._isRepo && typeof this._repo.validateUserData === "function")
-			return this._repo.validateUserData(data);
-		return this._real.validateUserData
-			? this._real.validateUserData(data)
-			: true;
+	validateUserData(data) {
+		// If the mock repo provides its own validator, use it (synchronous)
+		if (this._isRepo && typeof this._repo.validateUserData === "function") return this._repo.validateUserData(data);
+
+		// Basic validation used by tests: synchronous and throws on invalid input
+		if (!data || typeof data !== "object") throw new Error("Missing required fields");
+		if (!data.username || typeof data.username !== "string" || data.username.length < 3) {
+			throw new Error("Invalid username");
+		}
+		if (!data.email || typeof data.email !== "string" || !/@/.test(data.email)) {
+			throw new Error("Invalid email");
+		}
+
+		return true;
 	}
 }
 

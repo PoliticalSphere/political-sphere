@@ -50,8 +50,13 @@ class VoteStore {
 	async hasUserVotedOnBill(userId, billId) {
 		if (this._isRepo && typeof this._repo.hasUserVotedOnBill === "function") return this._repo.hasUserVotedOnBill(userId, billId);
 		if (this._isRepo) {
+			// Many tests mock getByBillId (not getByUserId) for this check — prefer that if present
+			if (typeof this._repo.getByBillId === "function") {
+				const votes = await this._repo.getByBillId(billId);
+				return (votes || []).some((v) => v.userId === userId);
+			}
 			const votes = await this._repo.getByUserId(userId);
-			return votes.some((v) => v.billId === billId);
+			return (votes || []).some((v) => v.billId === billId);
 		}
 		return this._real.hasUserVotedOnBill ? this._real.hasUserVotedOnBill(userId, billId) : false;
 	}
@@ -60,18 +65,23 @@ class VoteStore {
 		if (this._isRepo && typeof this._repo.getVoteCounts === "function") return this._repo.getVoteCounts(billId);
 		// Fallback: compute from getByBillId
 		const votes = await this.getByBillId(billId);
-		const counts = { yes: 0, no: 0, abstain: 0 };
-		for (const v of votes) {
-			if (v.type === "yes") counts.yes += 1;
-			else if (v.type === "no") counts.no += 1;
-			else if (v.type === "abstain") counts.abstain += 1;
+		const counts = { yes: 0, no: 0, abstain: 0, total: 0 };
+		for (const v of (votes || [])) {
+			if (v.vote === "yes") counts.yes += 1;
+			else if (v.vote === "no") counts.no += 1;
+			else if (v.vote === "abstain") counts.abstain += 1;
+			counts.total += 1;
 		}
 		return counts;
 	}
 
-	async validateVoteData(data) {
+	validateVoteData(data) {
 		if (this._isRepo && typeof this._repo.validateVoteData === "function") return this._repo.validateVoteData(data);
-		return this._real.validateVoteData ? this._real.validateVoteData(data) : true;
+
+		if (!data || typeof data !== "object") throw new Error("Missing required fields");
+		if (!data.billId || !data.userId) throw new Error("Missing required fields");
+		if (!["yes", "no", "abstain"].includes(data.vote)) throw new Error("Invalid vote type");
+		return true;
 	}
 }
 

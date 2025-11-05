@@ -54,6 +54,11 @@ class BillStore {
 	}
 
 	async addVote(id, userId, voteType) {
+		// Validate vote type first (tests expect this to be checked before existence)
+		if (!["yes", "no", "abstain"].includes(voteType)) {
+			throw new Error("Invalid vote type");
+		}
+
 		if (this._isRepo) {
 			const bill = await this._repo.getById(id);
 			if (!bill) throw new Error("Bill not found");
@@ -64,7 +69,6 @@ class BillStore {
 			if (voteType === "yes") votes.yes += 1;
 			else if (voteType === "no") votes.no += 1;
 			else if (voteType === "abstain") votes.abstain += 1;
-			else throw new Error("Invalid vote type");
 
 			const updated = await this._repo.update(id, { votes });
 			return updated;

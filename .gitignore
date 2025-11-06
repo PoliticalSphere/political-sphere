@@ -8,6 +8,10 @@ out/
 
 # Editor directories and files
 .vscode/
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/*.md
+!.vscode/*.code-snippets
 .idea/
 *.sublime-workspace
 

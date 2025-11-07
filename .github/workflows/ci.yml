@@ -8,7 +8,7 @@
 # @workflow-owner: platform-engineering
 # @workflow-slo: 95% success rate, <10min P95 duration
 # @workflow-maturity: 4 (sovereign-grade in progress)
-# @workflow-dependencies: [nx-cloud, trufflehog, semgrep, vitest]
+# @workflow-dependencies: [nx-cloud, gitleaks, semgrep, vitest]
 # @workflow-triggers: [push:main, pull_request:main, manual]
 # @workflow-stages: [preflight, lint-typecheck, test, security, integration, deploy-preview]
 # @workflow-architecture-ref: docs/architecture/cicd-flow.md

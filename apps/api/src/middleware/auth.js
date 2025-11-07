@@ -4,7 +4,7 @@
  */
 
 const jwt = require('jsonwebtoken');
-const logger = require('../logger');
+const logger = require('../utils/logger.js');
 
 // JWT configuration
 const JWT_SECRET = process.env.JWT_SECRET;

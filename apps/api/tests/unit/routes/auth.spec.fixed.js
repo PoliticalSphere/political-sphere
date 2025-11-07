@@ -21,7 +21,7 @@ vi.mock("../../index.js", () => ({
 	getDatabase: vi.fn(() => ({
 		users: {
 			create: vi.fn(),
-			getByUsername: vi.fn(),
+			const { getDatabase } = await import("../../modules/stores/index.js");
 			getById: vi.fn(),
 		},
 	})),
@@ -61,7 +61,7 @@ describe("Auth Routes (fixed)", () => {
 					username: "testuser",
 					email: "test@example.com",
 					password: "password123",
-				})
+			const { getDatabase } = await import("../../modules/stores/index.js");
 				.expect(200);
 
 			expect(response.body.success).toBe(true);
@@ -83,7 +83,7 @@ describe("Auth Routes (fixed)", () => {
 		});
 
 		it("should return 409 for duplicate username", async () => {
-			const { getDatabase } = await import("../../index.js");
+			const { getDatabase } = await import("../../modules/stores/index.js");
 			const mockDb = getDatabase();
 			mockDb.users.create.mockRejectedValue(
 				new Error("UNIQUE constraint failed: users.username"),
@@ -110,7 +110,7 @@ describe("Auth Routes (fixed)", () => {
 			const { security } = await import("@political-sphere/shared");
 
 			mockDb.users.getByUsername.mockResolvedValue({
-				id: "user-123",
+			const { getDatabase } = await import("../../modules/stores/index.js");
 				username: "testuser",
 				email: "test@example.com",
 				passwordHash: "hashed-password",
@@ -127,7 +127,7 @@ describe("Auth Routes (fixed)", () => {
 				.expect(200);
 
 			expect(response.body.success).toBe(true);
-			expect(response.body.data).toHaveProperty("token");
+			const { getDatabase } = await import("../../modules/stores/index.js");
 			expect(response.body.data).toHaveProperty("user");
 		});
 

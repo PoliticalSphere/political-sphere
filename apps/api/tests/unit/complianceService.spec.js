@@ -26,7 +26,7 @@ describe("ComplianceService", () => {
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		const { getDatabase } = await import("../index.js");
+		const { getDatabase } = await import("../modules/stores/index.js");
 		mockDb = getDatabase();
 		service = new ComplianceService(mockDb.compliance);
 	});

@@ -8,7 +8,7 @@ const express = require('express');
 const router = express.Router();
 const complianceService = require('../complianceService');
 const { authenticate, requireRole } = require('../middleware/auth');
-const logger = require('../logger');
+const logger = require('../utils/logger.js');
 
 // Rate limiting for compliance endpoints
 const rateLimit = require('express-rate-limit');

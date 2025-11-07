@@ -9,7 +9,7 @@ const router = express.Router();
 const ageVerificationService = require("../ageVerificationService");
 const { authenticate } = require("../middleware/auth");
 const { validate, schemas } = require("../middleware/validation");
-const logger = require("../logger");
+const logger = require("../utils/logger.js");
 
 // Rate limiting for age verification endpoints
 const rateLimit = require("express-rate-limit");

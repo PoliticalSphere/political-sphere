@@ -5,11 +5,13 @@ This directory contains runtime data, seed data, and test fixtures for the Polit
 ## Structure
 
 - **`seeds/`** - Seed data for initializing the application with default content
+
   - `users.json` - Default user accounts
   - `parties.json` - Political parties
   - `scenarios.json` - Game scenarios
 
 - **`fixtures/`** - Test fixtures for automated testing
+
   - `test-users.json` - Test user data
   - `test-scenarios.json` - Test scenario data
 

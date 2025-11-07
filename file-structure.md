@@ -91,7 +91,7 @@ political-sphere/
 │ │ │ ├── **modules/**
 │ │ │ ├── **middleware/**
 │ │ │ ├── **utils/**
-│ │ │ └── server.ts
+│ │ │ └── **server.ts**
 │ │ ├── **tests/**
 │ │ │ ├── unit/
 │ │ │ ├── integration/
@@ -109,7 +109,7 @@ political-sphere/
 │ │ ├── .env.example
 │ │ └── README.md
 │ │
-│ ├── web/ # Main web application ⚡ RENAMED (was frontend)
+│ ├── **web/** # Main web application ⚡ RENAMED (was frontend)
 │ │ ├── src/
 │ │ │ ├── components/
 │ │ │ ├── pages/
@@ -128,7 +128,7 @@ political-sphere/
 │ │ ├── .env.example
 │ │ └── README.md
 │ │
-│ ├── game-server/ # Real-time game simulation
+│ ├── **game-server/** # Real-time game simulation
 │ │ ├── src/
 │ │ │ ├── engine/
 │ │ │ ├── simulation/
@@ -139,7 +139,7 @@ political-sphere/
 │ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
-│ ├── worker/ # Background job processor
+│ ├── **worker/** # Background job processor
 │ │ ├── src/
 │ │ │ ├── jobs/
 │ │ │ ├── queues/
@@ -149,7 +149,7 @@ political-sphere/
 │ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
-│ ├── shell/ # Module federation shell ⚡ RENAMED (was host)
+│ ├── **shell/** # Module federation shell ⚡ RENAMED (was host)
 │ │ ├── src/
 │ │ │ ├── bootstrap.tsx
 │ │ │ └── remotes/
@@ -157,7 +157,7 @@ political-sphere/
 │ │ ├── webpack.config.js
 │ │ └── README.md
 │ │
-│ ├── feature-auth-remote/ # Auth micro-frontend ⚡ RENAMED (was remote)
+│ ├── **feature-auth-remote/** # Auth micro-frontend ⚡ RENAMED (was remote)
 │ │ ├── src/
 │ │ │ ├── components/
 │ │ │ └── index.tsx
@@ -165,12 +165,12 @@ political-sphere/
 │ │ ├── webpack.config.js
 │ │ └── README.md
 │ │
-│ ├── feature-dashboard-remote/ # Dashboard micro-frontend ✨ NEW
+│ ├── **feature-dashboard-remote/** # Dashboard micro-frontend ✨ NEW
 │ │ ├── src/
 │ │ ├── project.json
 │ │ └── README.md
 │ │
-│ ├── e2e/ # End-to-end tests ✨ NEW
+│ ├── **e2e/** # End-to-end tests ✨ NEW
 │ │ ├── web/
 │ │ │ ├── home.spec.ts
 │ │ │ ├── login.spec.ts
@@ -185,7 +185,7 @@ political-sphere/
 │ │ ├── project.json
 │ │ └── README.md
 │ │
-│ ├── load-test/ # Performance testing ✨ NEW
+│ ├── **load-test/** # Performance testing ✨ NEW
 │ │ ├── scenarios/
 │ │ │ ├── api-load.js
 │ │ │ ├── game-simulation.js
@@ -196,7 +196,7 @@ political-sphere/
 │ │ ├── project.json
 │ │ └── README.md
 │ │
-│ ├── data/ # Data processing and ETL service
+│ ├── **data/** # Data processing and ETL service
 │ │ ├── src/
 │ │ │ ├── pipelines/
 │ │ │ │ ├── user-data-pipeline.ts
@@ -227,7 +227,7 @@ political-sphere/
 │ │ ├── .env.example
 │ │ └── README.md
 │ │
-│ ├── dev/ # Development tools and experimental features
+│ ├── **dev/** # Development tools and experimental features
 │ │ ├── src/
 │ │ │ ├── experiments/
 │ │ │ │ ├── feature-prototypes/
@@ -250,7 +250,7 @@ political-sphere/
 │ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
-│ ├── docs/ # Documentation site (Docusaurus/VitePress)
+│ ├── **docs/** # Documentation site (Docusaurus/VitePress)
 │ │ ├── docs/
 │ │ │ ├── getting-started/
 │ │ │ │ ├── introduction.md
@@ -286,7 +286,7 @@ political-sphere/
 │ │ ├── package.json
 │ │ └── README.md
 │ │
-│ ├── infrastructure/ # Infrastructure provisioning and management
+│ ├── **infrastructure/** # Infrastructure provisioning and management
 │ │ ├── src/
 │ │ │ ├── provisioning/
 │ │ │ │ ├── aws-setup.ts

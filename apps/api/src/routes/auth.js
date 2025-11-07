@@ -75,11 +75,11 @@ async function getLogger() {
 async function getDb() {
 	if (getDatabase) return getDatabase;
 	try {
-		const indexModule = await import("../index.js");
+		const indexModule = await import("../modules/stores/index.js");
 		getDatabase = indexModule.getDatabase;
 	} catch {
 		try {
-			const indexModule = await import("../../index.js");
+			const indexModule = await import("../../modules/stores/index.js");
 			getDatabase = indexModule.getDatabase;
 		} catch {
 			getDatabase = null;

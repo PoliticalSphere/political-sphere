@@ -4,7 +4,7 @@
  * Implements Online Safety Act and COPPA compliance
  */
 
-const logger = require("../logger");
+const logger = require("../utils/logger.js");
 const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
 

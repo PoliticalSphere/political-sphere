@@ -27,7 +27,7 @@ describe("AgeVerificationService", () => {
 
 	beforeEach(async () => {
 		vi.clearAllMocks();
-		const { getDatabase } = await import("../index.js");
+		const { getDatabase } = await import("../modules/stores/index.js");
 		mockDb = getDatabase();
 		service = new AgeVerificationService(mockDb.ageVerification);
 	});

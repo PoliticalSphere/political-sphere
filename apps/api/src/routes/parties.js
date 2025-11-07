@@ -1,9 +1,9 @@
 import express from "express";
+import logger from "../logger.js";
+import { validate } from "../middleware/validation.js";
+import { getDatabase } from "../modules/stores/index.js";
 // Use local CJS shim for shared schemas in test/runtime
 import { CreatePartySchema } from "../shared-shim.js";
-import { getDatabase } from "../index.js";
-import { validate } from "../middleware/validation.js";
-import logger from "../logger.js";
 
 const router = express.Router();
 
@@ -18,7 +18,7 @@ router.post("/parties", validate(CreatePartySchema), async (req, res) => {
 			message: "Party created successfully",
 		});
 	} catch (error) {
-		if (error.message && error.message.includes("UNIQUE constraint failed")) {
+		if (error?.message?.includes("UNIQUE constraint failed")) {
 			logger.warn("Party creation failed - duplicate name", {
 				name: req.body.name,
 			});

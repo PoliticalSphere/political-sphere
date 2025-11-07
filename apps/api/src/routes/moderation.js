@@ -9,7 +9,7 @@ const router = express.Router();
 const moderationService = require('../moderationService');
 const { authenticate, requireRole } = require('../middleware/auth');
 const { validateContent, validateReport } = require('../middleware/validation');
-const logger = require('../logger');
+const logger = require('../utils/logger.js');
 
 // Rate limiting for moderation endpoints
 const rateLimit = require('express-rate-limit');

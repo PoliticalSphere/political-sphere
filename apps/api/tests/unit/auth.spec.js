@@ -93,7 +93,7 @@ describe("Auth Routes", () => {
 		});
 
 		it("should return 409 for duplicate username", async () => {
-			const { getDatabase } = await import("../index.js");
+			const { getDatabase } = await import("../modules/stores/index.js");
 			const mockDb = getDatabase();
 			mockDb.users.create.mockRejectedValue(
 				new Error("UNIQUE constraint failed: users.username"),

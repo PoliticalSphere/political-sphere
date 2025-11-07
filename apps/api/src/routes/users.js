@@ -1,8 +1,8 @@
 import crypto from "crypto";
 import express from "express";
-import { getDatabase } from "../index.js";
 import logger from "../logger.js";
 import { validate } from "../middleware/validation.js";
+import { getDatabase } from "../modules/stores/index.js";
 // Use local CJS shim for shared schemas in test/runtime
 import { CreateUserSchema } from "../shared-shim.js";
 

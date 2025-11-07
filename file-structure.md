@@ -1,12 +1,16 @@
 political-sphere/
+├── **.devcontainer/** # Development containers (at repo root)
+│ ├── devcontainer.json
+│ ├── Dockerfile
+│ └── docker-compose.dev.yml
+│
 ├── **.github/** # GitHub configuration
 │ ├── **workflows/** # CI/CD pipelines
 │ │ ├── **ci.yml**
-│ │ ├── **deploy.yml**
-│ │ ├── **security.yml**
 │ │ ├── **release.yml**
-│ │ ├── **dependency-review.yml**
-│ │ └── **codeql.yml**
+│ │ ├── **security.yml**
+│ │ ├── **test-run-tests-action.yml**
+│ │ └── **test-setup-node-action.yml**
 │ ├── **actions/** # Reusable actions
 │ │ ├── **setup-node/**
 │ │ │ ├── **action.yml**
@@ -19,6 +23,8 @@ political-sphere/
 │ │ │ ├── **upload-artifacts.sh** # uploads coverage/test reports
 │ │ │ ├── **coverage.config.json** # Shared coverage thresholds
 │ │ │ └── **README.md**
+│ │ ├── **setup-node-deps/** # Install dependencies (separate composite)
+│ │ ├── **quality-checks/** # Linting/type/security meta action
 │ │ └── **deploy/**
 │ │ ├── **action.yml**
 │ │ ├── **run-deploy.sh** # main, idempotent deploy orchestration script
@@ -62,17 +68,22 @@ political-sphere/
 │ └── **other/** # Miscellaneous files
 │ ├── **nx_files.nxt**
 │ └── **d/**
+│
+├── **.vitest/** # Vitest cache (generated)
+│ ├── **cache/**
+│ │ └── **vitest/**
+│ │ └── **[hash]/**
+│ │ └── **results.json**
+│ └── **cache-temp/**
+│ └── **vitest/**
+│ └── **[hash]/**
+│ └── **results.json**
 |
 ├── **.vscode/** # VS Code workspace settings
 │ ├── **extensions.json**
 │ ├── **settings.json**
 │ ├── **tasks.json**
 │ └── **launch.json**
-│
-├── **.devcontainer/** # Development containers ✨ NEW
-│ ├── devcontainer.json
-│ ├── Dockerfile
-│ └── docker-compose.dev.yml
 │
 ├── apps/ # Application projects
 │ ├── api/ # Backend API service
@@ -185,6 +196,132 @@ political-sphere/
 │ │ ├── project.json
 │ │ └── README.md
 │ │
+│ ├── data/ # Data processing and ETL service
+│ │ ├── src/
+│ │ │ ├── pipelines/
+│ │ │ │ ├── user-data-pipeline.ts
+│ │ │ │ ├── analytics-pipeline.ts
+│ │ │ │ └── game-state-sync.ts
+│ │ │ ├── transformers/
+│ │ │ │ ├── normalize-user-data.ts
+│ │ │ │ ├── aggregate-metrics.ts
+│ │ │ │ └── sanitize-inputs.ts
+│ │ │ ├── connectors/
+│ │ │ │ ├── database-connector.ts
+│ │ │ │ ├── api-connector.ts
+│ │ │ │ └── external-sources.ts
+│ │ │ ├── jobs/
+│ │ │ │ ├── scheduled-imports.ts
+│ │ │ │ ├── data-cleanup.ts
+│ │ │ │ └── export-reports.ts
+│ │ │ └── server.ts
+│ │ ├── tests/
+│ │ │ ├── unit/
+│ │ │ ├── integration/
+│ │ │ └── fixtures/
+│ │ ├── config/
+│ │ │ ├── pipeline.config.json
+│ │ │ └── sources.config.json
+│ │ ├── project.json
+│ │ ├── tsconfig.json
+│ │ ├── .env.example
+│ │ └── README.md
+│ │
+│ ├── dev/ # Development tools and experimental features
+│ │ ├── src/
+│ │ │ ├── experiments/
+│ │ │ │ ├── feature-prototypes/
+│ │ │ │ ├── ai-playground/
+│ │ │ │ └── performance-tests/
+│ │ │ ├── tools/
+│ │ │ │ ├── data-generators/
+│ │ │ │ ├── mock-servers/
+│ │ │ │ └── test-harnesses/
+│ │ │ ├── sandbox/
+│ │ │ │ ├── component-demos/
+│ │ │ │ ├── api-exploration/
+│ │ │ │ └── integration-tests/
+│ │ │ └── main.ts
+│ │ ├── scripts/
+│ │ │ ├── seed-dev-data.ts
+│ │ │ ├── reset-environment.ts
+│ │ │ └── benchmark-features.ts
+│ │ ├── project.json
+│ │ ├── tsconfig.json
+│ │ └── README.md
+│ │
+│ ├── docs/ # Documentation site (Docusaurus/VitePress)
+│ │ ├── docs/
+│ │ │ ├── getting-started/
+│ │ │ │ ├── introduction.md
+│ │ │ │ ├── installation.md
+│ │ │ │ └── quick-start.md
+│ │ │ ├── guides/
+│ │ │ │ ├── architecture.md
+│ │ │ │ ├── development.md
+│ │ │ │ ├── deployment.md
+│ │ │ │ └── testing.md
+│ │ │ ├── api/
+│ │ │ │ ├── rest-api.md
+│ │ │ │ ├── websocket-api.md
+│ │ │ │ └── graphql-schema.md
+│ │ │ ├── game/
+│ │ │ │ ├── mechanics.md
+│ │ │ │ ├── gameplay.md
+│ │ │ │ └── rules.md
+│ │ │ └── contributing/
+│ │ │ ├── code-style.md
+│ │ │ ├── pull-requests.md
+│ │ │ └── security.md
+│ │ ├── src/
+│ │ │ ├── components/
+│ │ │ ├── pages/
+│ │ │ └── css/
+│ │ ├── static/
+│ │ │ ├── img/
+│ │ │ └── files/
+│ │ ├── docusaurus.config.js
+│ │ ├── sidebars.js
+│ │ ├── project.json
+│ │ ├── package.json
+│ │ └── README.md
+│ │
+│ ├── infrastructure/ # Infrastructure provisioning and management
+│ │ ├── src/
+│ │ │ ├── provisioning/
+│ │ │ │ ├── aws-setup.ts
+│ │ │ │ ├── kubernetes-bootstrap.ts
+│ │ │ │ ├── database-init.ts
+│ │ │ │ └── network-config.ts
+│ │ │ ├── deployment/
+│ │ │ │ ├── deploy-staging.ts
+│ │ │ │ ├── deploy-production.ts
+│ │ │ │ ├── rollback.ts
+│ │ │ │ └── blue-green-switch.ts
+│ │ │ ├── monitoring/
+│ │ │ │ ├── setup-metrics.ts
+│ │ │ │ ├── configure-alerts.ts
+│ │ │ │ └── dashboard-builder.ts
+│ │ │ ├── cli/
+│ │ │ │ ├── commands/
+│ │ │ │ ├── prompts/
+│ │ │ │ └── index.ts
+│ │ │ └── utils/
+│ │ │ ├── aws-client.ts
+│ │ │ ├── kubectl-wrapper.ts
+│ │ │ └── terraform-runner.ts
+│ │ ├── tests/
+│ │ │ ├── unit/
+│ │ │ └── integration/
+│ │ ├── scripts/
+│ │ │ ├── validate-config.sh
+│ │ │ ├── smoke-tests.sh
+│ │ │ └── disaster-recovery.sh
+│ │ ├── project.json
+│ │ ├── tsconfig.json
+│ │ ├── .env.example
+│ │ └── README.md
+│ │
 │ └── README.md
 │
 ├── libs/ # Shared libraries
@@ -240,65 +377,211 @@ political-sphere/
 │ ├── testing/ # Shared test utilities
 │ │ ├── src/
 │ │ │ ├── fixtures/
+│ │ │ │ ├── user-fixtures.ts
+│ │ │ │ ├── game-state-fixtures.ts
+│ │ │ │ ├── api-response-fixtures.ts
+│ │ │ │ └── database-fixtures.ts
 │ │ │ ├── mocks/
+│ │ │ │ ├── api-mocks.ts
+│ │ │ │ ├── service-mocks.ts
+│ │ │ │ ├── websocket-mocks.ts
+│ │ │ │ └── storage-mocks.ts
 │ │ │ ├── helpers/
-│ │ │ └── factories/
+│ │ │ │ ├── test-environment.ts
+│ │ │ │ ├── async-helpers.ts
+│ │ │ │ ├── dom-helpers.ts
+│ │ │ │ └── assertion-helpers.ts
+│ │ │ ├── factories/
+│ │ │ │ ├── user-factory.ts
+│ │ │ │ ├── game-factory.ts
+│ │ │ │ ├── event-factory.ts
+│ │ │ │ └── entity-factory.ts
+│ │ │ └── index.ts
+│ │ ├── tests/
 │ │ ├── project.json
+│ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
 │ ├── observability/ # OpenTelemetry setup ✨ NEW
 │ │ ├── src/
 │ │ │ ├── tracing/
+│ │ │ │ ├── tracer.ts
+│ │ │ │ ├── span-processor.ts
+│ │ │ │ ├── context-propagation.ts
+│ │ │ │ └── instrumentation.ts
 │ │ │ ├── metrics/
+│ │ │ │ ├── meter.ts
+│ │ │ │ ├── counters.ts
+│ │ │ │ ├── gauges.ts
+│ │ │ │ ├── histograms.ts
+│ │ │ │ └── custom-metrics.ts
 │ │ │ ├── logging/
-│ │ │ └── exporters/
+│ │ │ │ ├── structured-logger.ts
+│ │ │ │ ├── log-formatter.ts
+│ │ │ │ ├── log-levels.ts
+│ │ │ │ └── correlation.ts
+│ │ │ ├── exporters/
+│ │ │ │ ├── jaeger-exporter.ts
+│ │ │ │ ├── prometheus-exporter.ts
+│ │ │ │ ├── console-exporter.ts
+│ │ │ │ └── otlp-exporter.ts
+│ │ │ └── index.ts
+│ │ ├── tests/
 │ │ ├── project.json
+│ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
 │ ├── feature-flags/ # Feature flag system ✨ NEW
 │ │ ├── src/
 │ │ │ ├── config/
+│ │ │ │ ├── flag-definitions.ts
+│ │ │ │ ├── environments.ts
+│ │ │ │ └── default-flags.json
 │ │ │ ├── providers/
+│ │ │ │ ├── local-provider.ts
+│ │ │ │ ├── remote-provider.ts
+│ │ │ │ ├── launchdarkly-provider.ts
+│ │ │ │ └── split-provider.ts
 │ │ │ ├── hooks/
+│ │ │ │ ├── use-feature-flag.ts
+│ │ │ │ ├── use-flag-value.ts
+│ │ │ │ └── use-variation.ts
+│ │ │ ├── client/
+│ │ │ │ ├── flag-client.ts
+│ │ │ │ ├── cache.ts
+│ │ │ │ └── evaluator.ts
 │ │ │ └── index.ts
 │ │ ├── tests/
 │ │ ├── project.json
+│ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
 │ ├── i18n/ # Internationalization ✨ NEW
 │ │ ├── src/
 │ │ │ ├── messages/
 │ │ │ │ ├── en/
+│ │ │ │ │ ├── common.json
+│ │ │ │ │ ├── game.json
+│ │ │ │ │ ├── auth.json
+│ │ │ │ │ └── errors.json
 │ │ │ │ ├── es/
+│ │ │ │ │ ├── common.json
+│ │ │ │ │ ├── game.json
+│ │ │ │ │ ├── auth.json
+│ │ │ │ │ └── errors.json
 │ │ │ │ ├── fr/
+│ │ │ │ │ ├── common.json
+│ │ │ │ │ ├── game.json
+│ │ │ │ │ ├── auth.json
+│ │ │ │ │ └── errors.json
 │ │ │ │ └── de/
+│ │ │ │ ├── common.json
+│ │ │ │ ├── game.json
+│ │ │ │ ├── auth.json
+│ │ │ │ └── errors.json
 │ │ │ ├── locales/
+│ │ │ │ ├── locale-config.ts
+│ │ │ │ ├── date-formats.ts
+│ │ │ │ ├── number-formats.ts
+│ │ │ │ └── currency-formats.ts
 │ │ │ ├── extraction/
+│ │ │ │ ├── extract-messages.ts
+│ │ │ │ ├── compile-messages.ts
+│ │ │ │ └── validate-translations.ts
+│ │ │ ├── hooks/
+│ │ │ │ ├── use-translation.ts
+│ │ │ │ ├── use-locale.ts
+│ │ │ │ └── use-format.ts
 │ │ │ └── index.ts
 │ │ ├── tests/
 │ │ ├── project.json
+│ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
 │ ├── domain-governance/ # Governance domain ✨ NEW (vertical slice)
 │ │ ├── src/
 │ │ │ ├── entities/
+│ │ │ │ ├── proposal.entity.ts
+│ │ │ │ ├── vote.entity.ts
+│ │ │ │ ├── committee.entity.ts
+│ │ │ │ └── motion.entity.ts
 │ │ │ ├── use-cases/
-│ │ │ └── repositories/
+│ │ │ │ ├── create-proposal.use-case.ts
+│ │ │ │ ├── cast-vote.use-case.ts
+│ │ │ │ ├── tally-votes.use-case.ts
+│ │ │ │ └── amend-proposal.use-case.ts
+│ │ │ ├── repositories/
+│ │ │ │ ├── proposal.repository.ts
+│ │ │ │ ├── vote.repository.ts
+│ │ │ │ └── committee.repository.ts
+│ │ │ ├── value-objects/
+│ │ │ │ ├── vote-count.vo.ts
+│ │ │ │ ├── quorum.vo.ts
+│ │ │ │ └── voting-period.vo.ts
+│ │ │ └── index.ts
 │ │ ├── tests/
+│ │ │ ├── unit/
+│ │ │ └── integration/
 │ │ ├── project.json
+│ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
 │ ├── domain-election/ # Election domain ✨ NEW (vertical slice)
 │ │ ├── src/
 │ │ │ ├── entities/
+│ │ │ │ ├── election.entity.ts
+│ │ │ │ ├── candidate.entity.ts
+│ │ │ │ ├── ballot.entity.ts
+│ │ │ │ └── constituency.entity.ts
 │ │ │ ├── use-cases/
-│ │ │ └── repositories/
+│ │ │ │ ├── create-election.use-case.ts
+│ │ │ │ ├── register-candidate.use-case.ts
+│ │ │ │ ├── cast-ballot.use-case.ts
+│ │ │ │ ├── count-ballots.use-case.ts
+│ │ │ │ └── certify-results.use-case.ts
+│ │ │ ├── repositories/
+│ │ │ │ ├── election.repository.ts
+│ │ │ │ ├── candidate.repository.ts
+│ │ │ │ └── ballot.repository.ts
+│ │ │ ├── value-objects/
+│ │ │ │ ├── electoral-system.vo.ts
+│ │ │ │ ├── vote-share.vo.ts
+│ │ │ │ └── term-length.vo.ts
+│ │ │ └── index.ts
 │ │ ├── tests/
+│ │ │ ├── unit/
+│ │ │ └── integration/
 │ │ ├── project.json
+│ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
 │ ├── domain-legislation/ # Legislation domain ✨ NEW (vertical slice)
 │ │ ├── src/
+│ │ │ ├── entities/
+│ │ │ │ ├── bill.entity.ts
+│ │ │ │ ├── law.entity.ts
+│ │ │ │ ├── amendment.entity.ts
+│ │ │ │ └── statute.entity.ts
+│ │ │ ├── use-cases/
+│ │ │ │ ├── draft-bill.use-case.ts
+│ │ │ │ ├── propose-amendment.use-case.ts
+│ │ │ │ ├── pass-legislation.use-case.ts
+│ │ │ │ └── repeal-law.use-case.ts
+│ │ │ ├── repositories/
+│ │ │ │ ├── bill.repository.ts
+│ │ │ │ ├── law.repository.ts
+│ │ │ │ └── amendment.repository.ts
+│ │ │ ├── value-objects/
+│ │ │ │ ├── reading-stage.vo.ts
+│ │ │ │ ├── legal-text.vo.ts
+│ │ │ │ └── effective-date.vo.ts
+│ │ │ └── index.ts
+│ │ ├── tests/
+│ │ │ ├── unit/
+│ │ │ └── integration/
+│ │ ├── project.json
+│ │ ├── tsconfig.json
+│ │ └── README.md
 │ │ ├── tests/
 │ │ ├── project.json
 │ │ └── README.md
@@ -306,19 +589,68 @@ political-sphere/
 │ ├── data-user/ # User data layer ✨ NEW (vertical slice)
 │ │ ├── src/
 │ │ │ ├── repositories/
+│ │ │ │ ├── user.repository.ts
+│ │ │ │ ├── profile.repository.ts
+│ │ │ │ ├── preferences.repository.ts
+│ │ │ │ └── session.repository.ts
 │ │ │ ├── models/
-│ │ │ └── migrations/
+│ │ │ │ ├── user.model.ts
+│ │ │ │ ├── profile.model.ts
+│ │ │ │ ├── role.model.ts
+│ │ │ │ └── permission.model.ts
+│ │ │ ├── migrations/
+│ │ │ │ ├── 001-create-users-table.ts
+│ │ │ │ ├── 002-add-roles.ts
+│ │ │ │ ├── 003-add-profiles.ts
+│ │ │ │ └── index.ts
+│ │ │ ├── queries/
+│ │ │ │ ├── find-user-by-id.query.ts
+│ │ │ │ ├── search-users.query.ts
+│ │ │ │ └── get-user-stats.query.ts
+│ │ │ └── index.ts
 │ │ ├── tests/
+│ │ │ ├── unit/
+│ │ │ └── integration/
 │ │ ├── project.json
+│ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
 │ ├── data-game-state/ # Game state data ✨ NEW (vertical slice)
 │ │ ├── src/
 │ │ │ ├── repositories/
+│ │ │ │ ├── game-state.repository.ts
+│ │ │ │ ├── player-state.repository.ts
+│ │ │ │ ├── world-state.repository.ts
+│ │ │ │ └── event.repository.ts
 │ │ │ ├── models/
-│ │ │ └── event-sourcing/
+│ │ │ │ ├── game-state.model.ts
+│ │ │ │ ├── player-state.model.ts
+│ │ │ │ ├── world-state.model.ts
+│ │ │ │ └── snapshot.model.ts
+│ │ │ ├── event-sourcing/
+│ │ │ │ ├── event-store.ts
+│ │ │ │ ├── event-handlers/
+│ │ │ │ │ ├── player-action.handler.ts
+│ │ │ │ │ ├── world-event.handler.ts
+│ │ │ │ │ └── system-event.handler.ts
+│ │ │ │ ├── projections/
+│ │ │ │ │ ├── game-state.projection.ts
+│ │ │ │ │ ├── player-stats.projection.ts
+│ │ │ │ │ └── world-summary.projection.ts
+│ │ │ │ ├── snapshots/
+│ │ │ │ │ ├── snapshot-manager.ts
+│ │ │ │ │ └── snapshot-strategy.ts
+│ │ │ │ └── index.ts
+│ │ │ ├── queries/
+│ │ │ │ ├── get-game-state.query.ts
+│ │ │ │ ├── replay-events.query.ts
+│ │ │ │ └── aggregate-stats.query.ts
+│ │ │ └── index.ts
 │ │ ├── tests/
+│ │ │ ├── unit/
+│ │ │ └── integration/
 │ │ ├── project.json
+│ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
 │ └── README.md

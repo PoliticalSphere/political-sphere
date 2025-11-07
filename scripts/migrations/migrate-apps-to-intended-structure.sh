@@ -95,19 +95,24 @@ commit_current_changes() {
     fi
 }
 
-# Phase 1: Rename existing apps using Nx move generator
+# Phase 1: Rename existing apps using git mv (preserves history)
 migrate_existing_apps() {
-    log_info "Phase 1: Migrating existing apps with Nx move generator..."
+    log_info "Phase 1: Migrating existing apps with git mv..."
     
     cd "${PROJECT_ROOT}"
     
     # frontend → web
     if [ -d "apps/frontend" ]; then
         log_info "Renaming frontend → web..."
-        npx nx g move --projectName=frontend --destination=web --skipFormat || {
-            log_error "Failed to move frontend to web"
-            return 1
-        }
+        git mv apps/frontend apps/web
+        
+        # Update project.json
+        if [ -f "apps/web/project.json" ]; then
+            sed -i.bak 's/"name": "frontend"/"name": "web"/g' apps/web/project.json
+            sed -i.bak 's/"sourceRoot": "apps\/frontend/"sourceRoot": "apps\/web/g' apps/web/project.json
+            rm -f apps/web/project.json.bak
+        fi
+        
         log_success "Renamed frontend → web"
     else
         log_warning "apps/frontend not found, skipping"
@@ -116,10 +121,15 @@ migrate_existing_apps() {
     # host → shell
     if [ -d "apps/host" ]; then
         log_info "Renaming host → shell..."
-        npx nx g move --projectName=host --destination=shell --skipFormat || {
-            log_error "Failed to move host to shell"
-            return 1
-        }
+        git mv apps/host apps/shell
+        
+        # Update project.json
+        if [ -f "apps/shell/project.json" ]; then
+            sed -i.bak 's/"name": "host"/"name": "shell"/g' apps/shell/project.json
+            sed -i.bak 's/"sourceRoot": "apps\/host/"sourceRoot": "apps\/shell/g' apps/shell/project.json
+            rm -f apps/shell/project.json.bak
+        fi
+        
         log_success "Renamed host → shell"
     else
         log_warning "apps/host not found, skipping"
@@ -128,13 +138,27 @@ migrate_existing_apps() {
     # remote → feature-auth-remote
     if [ -d "apps/remote" ]; then
         log_info "Renaming remote → feature-auth-remote..."
-        npx nx g move --projectName=remote --destination=feature-auth-remote --skipFormat || {
-            log_error "Failed to move remote to feature-auth-remote"
-            return 1
-        }
+        git mv apps/remote apps/feature-auth-remote
+        
+        # Update project.json
+        if [ -f "apps/feature-auth-remote/project.json" ]; then
+            sed -i.bak 's/"name": "remote"/"name": "feature-auth-remote"/g' apps/feature-auth-remote/project.json
+            sed -i.bak 's/"sourceRoot": "apps\/remote/"sourceRoot": "apps\/feature-auth-remote/g' apps/feature-auth-remote/project.json
+            rm -f apps/feature-auth-remote/project.json.bak
+        fi
+        
         log_success "Renamed remote → feature-auth-remote"
     else
         log_warning "apps/remote not found, skipping"
+    fi
+    
+    # Update nx.json if it references these apps
+    log_info "Updating nx.json references..."
+    if [ -f "nx.json" ]; then
+        sed -i.bak 's/"apps\/frontend/"apps\/web/g' nx.json
+        sed -i.bak 's/"apps\/host/"apps\/shell/g' nx.json
+        sed -i.bak 's/"apps\/remote/"apps\/feature-auth-remote/g' nx.json
+        rm -f nx.json.bak
     fi
     
     # Commit renames

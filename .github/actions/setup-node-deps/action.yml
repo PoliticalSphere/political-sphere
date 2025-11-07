@@ -43,7 +43,7 @@ runs:
         INSTALL_COMMAND: ${{ inputs.install-command }}
       run: |
         echo "📦 Installing dependencies..."
-        "$INSTALL_COMMAND"
+        $INSTALL_COMMAND
         echo "✅ Dependencies installed successfully"
 
     - name: Verify installation

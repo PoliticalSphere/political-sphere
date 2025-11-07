@@ -7,7 +7,7 @@
       "requests_per_second": 100,
       "error_rate": 0.01
     },
-    "frontend": {
+    "web": {
       "performance_score": 95,
       "accessibility_score": 95,
       "best_practices_score": 95,
@@ -20,7 +20,7 @@
       "requests_per_second_min": 80,
       "error_rate_max": 0.05
     },
-    "frontend": {
+    "web": {
       "performance_score_min": 90,
       "accessibility_score_min": 90,
       "best_practices_score_min": 90,

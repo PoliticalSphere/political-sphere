@@ -24,7 +24,7 @@ Key question: How do we implement comprehensive security scanning that is both t
 
 ## Considered Options
 
-- **Option 1**: Multi-layer approach (TruffleHog + Semgrep + Trivy + OWASP + Snyk + npm audit)
+- **Option 1**: Multi-layer approach (Gitleaks + Semgrep + Trivy + OWASP + Snyk + npm audit)
 - **Option 2**: Single commercial solution (e.g., Snyk only, Veracode only)
 - **Option 3**: Minimal approach (npm audit + Dependabot only)
 - **Option 4**: GitHub-native only (Code Scanning + Dependabot + Secret Scanning)
@@ -37,7 +37,7 @@ Chosen option: "Multi-layer approach with 6 complementary tools", because it pro
 
 | Layer            | Tool                   | Purpose                                 | Schedule          |
 | ---------------- | ---------------------- | --------------------------------------- | ----------------- |
-| **Secrets**      | TruffleHog             | Secret leak detection                   | Every commit      |
+| **Secrets**      | Gitleaks               | Secret leak detection                   | Every commit      |
 | **Code**         | Semgrep                | Static analysis security testing (SAST) | Every PR          |
 | **Dependencies** | npm audit              | Known vulnerabilities in npm packages   | Every PR + Weekly |
 | **Dependencies** | Snyk                   | Advanced vulnerability detection        | Every PR + Weekly |
@@ -116,12 +116,12 @@ Chosen option: "Multi-layer approach with 6 complementary tools", because it pro
 ```yaml
 # Lefthook configuration
 secrets:
-  run: git diff --staged | docker run trufflesecurity/trufflehog:latest stdin
+  run: git diff --staged | docker run zricethezav/gitleaks:latest detect --stdin
 ```
 
 #### Pull Request (CI)
 
-- TruffleHog: Scan diff against main
+- Gitleaks: Scan diff against main
 - Semgrep: Security rules only
 - npm audit: Production dependencies
 - Snyk: All dependencies
@@ -141,11 +141,13 @@ secrets:
 
 ### Tool-Specific Configuration
 
-**TruffleHog**
+**Gitleaks**
 
 ```yaml
-# Only verified secrets to reduce false positives
-extra_args: --only-verified
+# Use GitHub Action with default configuration
+uses: gitleaks/gitleaks-action@v2
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
 **Semgrep**
@@ -183,15 +185,15 @@ format: sarif # Upload to GitHub Security
 
 ## Cost Analysis
 
-| Tool       | Tier | Monthly Cost | Notes                |
-| ---------- | ---- | ------------ | -------------------- |
-| TruffleHog | Free | $0           | Open source          |
-| Semgrep    | Free | $0           | Community rules      |
-| npm audit  | Free | $0           | Built-in             |
-| Snyk       | Free | $0           | Free for open source |
-| OWASP      | Free | $0           | Open source          |
-| Trivy      | Free | $0           | Open source          |
-| **Total**  |      | **$0**       | Sustainable          |
+| Tool      | Tier | Monthly Cost | Notes                |
+| --------- | ---- | ------------ | -------------------- |
+| Gitleaks  | Free | $0           | Open source          |
+| Semgrep   | Free | $0           | Community rules      |
+| npm audit | Free | $0           | Built-in             |
+| Snyk      | Free | $0           | Free for open source |
+| OWASP     | Free | $0           | Open source          |
+| Trivy     | Free | $0           | Open source          |
+| **Total** |      | **$0**       | Sustainable          |
 
 ## Links
 

@@ -8,7 +8,7 @@
 # @workflow-owner: platform-engineering
 # @workflow-slo: 95% success rate, <10min P95 duration
 # @workflow-maturity: 4 (sovereign-grade in progress)
-# @workflow-dependencies: [nx-cloud, trufflehog, semgrep, vitest]
+# @workflow-dependencies: [nx-cloud, gitleaks, semgrep, vitest]
 # @workflow-triggers: [push:main, pull_request:main, manual]
 # @workflow-stages: [preflight, lint-typecheck, test, security, integration, deploy-preview]
 # @workflow-architecture-ref: docs/architecture/cicd-flow.md
@@ -76,12 +76,9 @@ jobs:
           done
 
       - name: Check for secrets in code
-        uses: trufflesecurity/trufflehog@main
-        with:
-          path: ./
-          base: ${{ github.event.repository.default_branch }}
-          head: HEAD
-          extra_args: --only-verified
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       # Governance pre-checks (migrated from governance/guard-check.yml)
       - name: Setup Node.js for governance checks
@@ -162,6 +159,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [pre-flight]
     timeout-minutes: 15
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     strategy:
       fail-fast: false # Prevent race conditions from failing entire matrix
       matrix:
@@ -207,6 +205,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [test]
     timeout-minutes: 5
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
 
@@ -271,6 +270,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [lint-and-typecheck, coverage-aggregation]
     timeout-minutes: 20
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -376,6 +376,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     timeout-minutes: 20
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     services:
       postgres:
         image: postgres:16-alpine
@@ -435,6 +436,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     timeout-minutes: 30
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -490,6 +492,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     timeout-minutes: 20
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -561,7 +564,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: [build]
     timeout-minutes: 15
-    if: github.event_name == 'pull_request'
+    if: (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository)
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5.0.0
         with:
@@ -685,16 +688,41 @@ jobs:
     steps:
       - name: Check if all jobs passed
         run: |
+          # For fork PRs, allow skipped jobs that require secrets
+          IS_FORK_PR=false
+          if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]]; then
+            IS_FORK_PR=true
+          fi
+
+          # Check required jobs
           if [[ "${{ needs.lint-and-typecheck.result }}" != "success" ]] || \
-             [[ "${{ needs.test.result }}" != "success" ]] || \
-             [[ "${{ needs.build.result }}" != "success" ]] || \
-             [[ "${{ needs.security-scan.result }}" != "success" ]] || \
-             [[ "${{ needs.integration-test.result }}" != "success" ]] || \
-             [[ "${{ needs.e2e-test.result }}" != "success" ]] || \
-             [[ "${{ needs.accessibility-test.result }}" != "success" ]]; then
+             [[ "${{ needs.security-scan.result }}" != "success" ]]; then
             echo "❌ One or more CI checks failed"
             exit 1
           fi
+
+          # For fork PRs, allow skipped for jobs requiring secrets
+          if [[ "$IS_FORK_PR" == "true" ]]; then
+            if [[ "${{ needs.test.result }}" != "success" && "${{ needs.test.result }}" != "skipped" ]] || \
+               [[ "${{ needs.build.result }}" != "success" && "${{ needs.build.result }}" != "skipped" ]] || \
+               [[ "${{ needs.integration-test.result }}" != "success" && "${{ needs.integration-test.result }}" != "skipped" ]] || \
+               [[ "${{ needs.e2e-test.result }}" != "success" && "${{ needs.e2e-test.result }}" != "skipped" ]] || \
+               [[ "${{ needs.accessibility-test.result }}" != "success" && "${{ needs.accessibility-test.result }}" != "skipped" ]]; then
+              echo "❌ One or more CI checks failed"
+              exit 1
+            fi
+          else
+            # For non-fork PRs and pushes, require all jobs to succeed
+            if [[ "${{ needs.test.result }}" != "success" ]] || \
+               [[ "${{ needs.build.result }}" != "success" ]] || \
+               [[ "${{ needs.integration-test.result }}" != "success" ]] || \
+               [[ "${{ needs.e2e-test.result }}" != "success" ]] || \
+               [[ "${{ needs.accessibility-test.result }}" != "success" ]]; then
+              echo "❌ One or more CI checks failed"
+              exit 1
+            fi
+          fi
+
           echo "✅ All CI checks passed successfully!"
 
       - name: Post success comment to PR

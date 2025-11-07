@@ -12,6 +12,7 @@ Migrate Political Sphere apps from current structure to intended structure as de
 ## Current State
 
 **Existing Apps** (8):
+
 - `api` - Backend API service ✅ (no change needed)
 - `worker` - Background job processor ✅ (no change needed)
 - `game-server` - Real-time game simulation ✅ (no change needed)
@@ -23,6 +24,7 @@ Migrate Political Sphere apps from current structure to intended structure as de
 - `ci-automation` ⚠️ (not in intended structure, will remain)
 
 **Missing Apps** (5 planned):
+
 - `data` - Data processing/ETL service
 - `infrastructure` - IaC provisioning/management
 - `e2e` - End-to-end tests (Playwright)
@@ -32,13 +34,16 @@ Migrate Political Sphere apps from current structure to intended structure as de
 ## Migration Strategy
 
 ### Phase 1: Rename Existing Apps
+
 Use `nx g @nx/workspace:move` to rename apps. This automatically:
+
 - Updates all import paths across the codebase
 - Updates `project.json` references
 - Updates `nx.json` configuration
 - Preserves git history
 
 **Renames**:
+
 ```bash
 frontend → apps/web
 host → apps/shell
@@ -46,6 +51,7 @@ remote → apps/feature-auth-remote
 ```
 
 ### Phase 2: Generate New Apps
+
 Use Nx generators to scaffold new apps with proper structure:
 
 ```bash
@@ -66,6 +72,7 @@ nx g @nx/react:application feature-dashboard-remote --directory=apps/feature-das
 ```
 
 ### Phase 3: Verification
+
 - Build all apps: `nx run-many --target=build --all`
 - Run all tests: `nx run-many --target=test --all`
 - Generate dependency graph: `nx graph`
@@ -88,6 +95,7 @@ If migration fails or causes issues:
 ```
 
 This will:
+
 - Return to `main` branch
 - Reset to backup tag
 - Delete migration branch
@@ -109,13 +117,13 @@ This will:
 
 ## Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| Import path breaks | Low | High | Nx move generator handles automatically |
-| Build failures | Medium | Medium | Verification phase catches before merge |
-| Config mismatches | Low | Low | Nx generators create proper configs |
-| Lost git history | Very Low | High | Using `git mv` via Nx, history preserved |
-| Production impact | Very Low | Critical | Migration on branch, tested before deploy |
+| Risk               | Likelihood | Impact   | Mitigation                                |
+| ------------------ | ---------- | -------- | ----------------------------------------- |
+| Import path breaks | Low        | High     | Nx move generator handles automatically   |
+| Build failures     | Medium     | Medium   | Verification phase catches before merge   |
+| Config mismatches  | Low        | Low      | Nx generators create proper configs       |
+| Lost git history   | Very Low   | High     | Using `git mv` via Nx, history preserved  |
+| Production impact  | Very Low   | Critical | Migration on branch, tested before deploy |
 
 ## Success Criteria
 

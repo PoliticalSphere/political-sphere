@@ -1,8 +1,8 @@
 # GitHub Copilot Custom Instructions: Political Sphere
 
-**Version:** 2.1.0  
-**Last Reviewed:** 2025-11-06  
-**Next Review:** 2026-05-06
+**Version:** 2.2.0  
+**Last Reviewed:** 2025-11-07  
+**Next Review:** 2026-05-07
 
 ## Executive summary
 
@@ -32,6 +32,7 @@ Political Sphere is a UK‑focused web multiplayer political simulation that res
 
 | Version | Date       | Author   | Key Changes                                                                                        | Impact              |
 | ------- | ---------- | -------- | -------------------------------------------------------------------------------------------------- | ------------------- |
+| 2.2.0   | 2025-11-07 | AI Agent | Updated project structure section to align with new file-structure.md Mermaid diagram design      | Documentation       |
 | 2.1.0   | 2025-11-06 | AI Agent | Added Function Feasibility and Implementation Status rules; Added external source usage guidelines | Quality enhancement |
 | 2.0.0   | 2025-11-05 | AI Agent | Complete restructure with testing infrastructure, AI persona, glossary                             | Major improvement   |
 | 1.7.0   | 2025-11-03 | AI Agent | Improved readability, rule organization                                                            | Documentation       |
@@ -362,40 +363,132 @@ When proposing significant changes, structure your response as:
 
 ## Project Structure and Organization
 
+> **Complete structure reference**: See `file-structure.md` for comprehensive Mermaid diagrams showing all directories and files organized by category.
+
 ### Directory Layout
 
-**Applications** (`/apps`):
+The project follows industry-standard organization with clear separation of concerns:
 
-- `frontend/` - User-facing web application
-- `api/` - Backend API services
+**Applications** (`/apps`) - 12+ specialized applications:
+
+**Core Services:**
+- `api/` - REST API and backend services
+- `game-server/` - Real-time simulation engine
 - `worker/` - Background job processing
-- `game-server/` - Real-time game simulation
-- `infrastructure/` - Infrastructure as code
-- `dev/` - Development tools and experimental features
 
-**Libraries** (`/libs`):
+**Frontend Applications:**
+- `web/` - Main web application (React 19, Vite)
+- `shell/` - Module federation host
+- `feature-auth-remote/` - Authentication microfrontend
+- `feature-dashboard-remote/` - Dashboard microfrontend
 
-- `shared/` - Shared utilities and common code
-- `ui/` - Reusable UI components
-- `platform/` - Core platform services
-- `infrastructure/` - Infrastructure libraries
+**Support & Infrastructure:**
+- `infrastructure/` - IaC (Terraform, Kubernetes manifests)
+- `load-test/` - Performance and load testing
+- `e2e/` - End-to-end testing suite
+- `docs/` - Documentation site
+- `dev/` - Experimental features and development tools
 
-- **Documentation** (`/docs`):
+**Libraries** (`/libs`) - 17+ reusable modules:
 
-- Check `/docs/TODO.md` for current work items before starting
-- Update `/docs/CHANGELOG.md` for all user-facing changes
-- Reference ADRs in `/docs/adr/` (Architecture Decision Records) for context
-- See `/docs/standards-overview.md` for complete standards reference
-- Security policies: `/docs/security/`
-- Governance framework: `/docs/governance/`
+**Shared Utilities:**
+- `shared/utils/` - Common utilities
+- `shared/types/` - Shared TypeScript types
+- `shared/constants/` - Application constants
+- `shared/config/` - Configuration management
 
-**AI Assets** (`/ai`):
+**Platform Services:**
+- `platform/auth/` - Authentication services
+- `platform/api-client/` - API client library
+- `platform/state/` - State management
+- `platform/routing/` - Routing utilities
 
-- All AI-related assets live here (cache, context, prompts, metrics)
+**Domain Logic:**
+- `game-engine/core/` - Game logic
+- `game-engine/simulation/` - Simulation algorithms
+- `game-engine/events/` - Event system
 
-**Tools** (`/tools`):
+**Data & Infrastructure:**
+- `infrastructure/database/` - Database utilities
+- `infrastructure/monitoring/` - Observability tools
+- `infrastructure/deployment/` - Deployment helpers
 
-- Build tools, scripts, and automation
+**UI Components:**
+- `ui/components/` - Reusable React components
+- `ui/design-system/` - Design tokens and patterns
+- `ui/accessibility/` - Accessibility utilities
+
+**Documentation** (`/docs`) - 12+ organized sections:
+
+**Foundation & Strategy:**
+- `00-foundation/` - Core principles, organization, standards
+- `01-strategy/` - Product roadmap, vision, strategy
+
+**Governance & Legal:**
+- `02-governance/` - Governance framework, policies
+- `03-legal-and-compliance/` - Legal requirements, GDPR, CCPA
+
+**Technical Documentation:**
+- `04-architecture/` - System architecture, ADRs
+- `05-engineering-and-devops/` - Development guides, testing
+- `06-security-and-risk/` - Security policies, risk management
+
+**Product & Operations:**
+- `07-ai-and-simulation/` - AI governance, model docs
+- `08-game-design-and-mechanics/` - Game design documentation
+- `09-observability-and-ops/` - Operations, monitoring, runbooks
+
+**Meta Documentation:**
+- `audit-trail/` - Audit logs and compliance records
+- `document-control/` - Version control, review process
+
+> 📋 **Always check** `/docs/TODO.md` for current work items before starting new work
+
+**Infrastructure** (`/apps/infrastructure`):
+
+**Cloud Resources:**
+- `terraform/` - Infrastructure as Code
+- `kubernetes/` - K8s manifests and Helm charts
+- `docker/` - Dockerfile templates and compose files
+
+**Configuration:**
+- `environments/` - Environment-specific configs (dev, staging, prod)
+- `secrets/` - Secret management (encrypted, never committed)
+
+**AI Assets** (`/ai`) - AI development tools:
+
+**Context & Knowledge:**
+- `ai-cache/` - AI assistant cache
+- `ai-knowledge/` - Knowledge base articles
+- `context-bundles/` - Pre-built context packages
+
+**Tools & Metrics:**
+- `prompts/` - AI prompt templates
+- `patterns/` - Code patterns and examples
+- `metrics/` - AI performance metrics
+- `governance/` - AI governance rules
+
+**Scripts & Tools** (`/scripts`, `/tools`):
+
+**Automation:**
+- `scripts/ci/` - CI/CD automation scripts
+- `scripts/migrations/` - Database and data migrations
+- `tools/scripts/` - Development utilities
+
+**Configuration:**
+- `tools/config/` - Tool configurations
+- `tools/docker/` - Docker utilities
+
+### Visual Structure Reference
+
+For a comprehensive visual overview of the entire project structure:
+
+📊 **See `file-structure.md`** - Interactive Mermaid diagrams showing:
+- Complete directory hierarchy with all subdirectories
+- Organized by functional area (Apps, Libs, Docs, Infrastructure)
+- Color-coded by component type (Core Services, Frontend, Support, etc.)
+- Quick navigation index for all major sections
+- Material Design color palette for clarity and professionalism
 
 ### Naming Conventions
 
@@ -404,16 +497,23 @@ When proposing significant changes, structure your response as:
 - **Functions and variables**: `camelCase` (e.g., `getUserProfile`, `apiClient`)
 - **Constants**: `SCREAMING_SNAKE_CASE` (e.g., `MAX_RETRY_COUNT`, `API_BASE_URL`)
 
-### Exceptions to Root Placement
+### File Placement Rules
 
-These standard files may live in the repository root:
+**NEVER place files in repository root.** Always use structured locations:
 
-- README.md, LICENSE, CHANGELOG.md, CONTRIBUTING.md
-- package.json, pnpm-workspace.yaml, nx.json, tsconfig.base.json
-- .editorconfig, .gitignore, .gitattributes
-- .github/ (workflows, templates, instructions)
-- .vscode/ (IDE settings)
-- ai-controls.json, ai-metrics.json (legacy - should migrate to /ai/)
+✅ **Allowed in root** (standard project files only):
+- Documentation: `README.md`, `LICENSE`, `CHANGELOG.md`, `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md`
+- Build configuration: `package.json`, `pnpm-workspace.yaml`, `nx.json`, `tsconfig.json`, `vitest.config.js`
+- Tooling: `.prettierrc`, `.eslintrc`, `.editorconfig`, `.gitignore`, `.lefthook.yml`
+- IDE/CI directories: `.github/`, `.vscode/`, `.devcontainer/`
+
+❌ **Never in root** (use proper directories):
+- Application code → `/apps/{app-name}/`
+- Library code → `/libs/{category}/{lib-name}/`
+- Documentation → `/docs/{section}/`
+- Scripts → `/scripts/` or `/tools/scripts/`
+- Infrastructure → `/apps/infrastructure/` or `/tools/docker/`
+- AI assets → `/ai/{category}/`
 
 ## Code Quality Standards
 

@@ -1,6 +1,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import type BetterSqlite3 from "better-sqlite3";
+import { Logger } from "../../../libs/shared/src/logger";
+
+const logger = new Logger({ service: "game-server-db" });
 
 /**
  * Game data structure stored in the database
@@ -226,11 +229,9 @@ function initJsonFallback(): DatabaseAdapter {
       fs.writeFileSync(DATA_FILE, JSON.stringify(obj, null, 2), "utf8");
     } catch (err) {
       const error = err as Error;
-      // eslint-disable-next-line no-console
-      console.warn(
-        "Failed to persist games store (fallback):",
-        error.message || error
-      );
+      logger.warn("Failed to persist games store (fallback)", {
+        error: error.message || String(error),
+      });
     }
   }
 
@@ -291,21 +292,16 @@ if (Database) {
     adapter = initWithBetterSqlite();
   } catch (err) {
     const error = err as Error;
-    // eslint-disable-next-line no-console
-    console.warn(
-      "better-sqlite3 initialisation failed, falling back to sqlite3/json:",
-      error?.message ?? error
-    );
+    logger.warn("better-sqlite3 initialisation failed, falling back to sqlite3/json", {
+      error: error?.message ?? String(error),
+    });
     Database = null; // allow fallback to continue
     // Retry with sqlite3 or JSON fallback
     try {
       require.resolve("sqlite3");
       adapter = initWithSqlite3();
     } catch {
-      // eslint-disable-next-line no-console
-      console.warn(
-        "No sqlite native modules found, using JSON file fallback for persistence"
-      );
+      logger.warn("No sqlite native modules found, using JSON file fallback for persistence");
       adapter = initJsonFallback();
     }
   }
@@ -316,10 +312,7 @@ if (Database) {
     // initialize async sqlite3 adapter
     adapter = initWithSqlite3();
   } catch {
-    // eslint-disable-next-line no-console
-    console.warn(
-      "No sqlite native modules found, using JSON file fallback for persistence"
-    );
+    logger.warn("No sqlite native modules found, using JSON file fallback for persistence");
     adapter = initJsonFallback();
   }
 }

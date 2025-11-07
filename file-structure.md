@@ -40,16 +40,34 @@ political-sphere/
 │ ├── **CODEOWNERS** # Code ownership ✨ NEW
 │ ├── **FUNDING.yml** # Sponsorship info ✨ NEW
 │ ├── **dependabot.yml** # Dependency updates ✨ NEW
-│ └── **copilot-instructions.md**
+│ ├── **copilot-instructions.md**
+│ └── **README.md** # ✨ NEW
 |
 ├── **.nx/** # Nx cache and workspace data
-│ └── workspace-data/ # Project graphs and dependency analysis
+│ └── **workspace-data/** # Project graphs and dependency analysis
+│ ├── **graphs/** # Project graph files
+│ │ ├── **project-graph.json**
+│ │ └── **project-graph.lock**
+│ ├── **locks/** # Lockfile hash files
+│ │ ├── **lockfile-dependencies.hash**
+│ │ └── **lockfile-nodes.hash**
+│ ├── **maps/** # Mapping files
+│ │ ├── **file-map.json**
+│ │ └── **source-maps.json**
+│ ├── **parsed/** # Parsed lock files
+│ │ ├── **parsed-lock-file.dependencies.json**
+│ │ └── **parsed-lock-file.nodes.json**
+│ ├── **db/** # Database files
+│ │ └── **[UUID].db**
+│ └── **other/** # Miscellaneous files
+│ ├── **nx_files.nxt**
+│ └── **d/**
 |
-├── .vscode/ # VS Code workspace settings
-│ ├── extensions.json
-│ ├── settings.json
-│ ├── tasks.json
-│ └── launch.json
+├── **.vscode/** # VS Code workspace settings
+│ ├── **extensions.json**
+│ ├── **settings.json**
+│ ├── **tasks.json**
+│ └── **launch.json**
 │
 ├── .devcontainer/ # Development containers ✨ NEW
 │ ├── devcontainer.json

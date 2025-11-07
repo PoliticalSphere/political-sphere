@@ -1,0 +1,61 @@
+{
+  "name": "Political Sphere Development",
+  "dockerComposeFile": ["docker-compose.dev.yml"],
+  "service": "dev",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+  "shutdownAction": "stopCompose",
+  "forwardPorts": [3000, 4000, 5000, 8080],
+  "portsAttributes": {
+    "3000": {
+      "label": "Web App",
+      "onAutoForward": "notify"
+    },
+    "4000": {
+      "label": "API Server",
+      "onAutoForward": "notify"
+    },
+    "5000": {
+      "label": "Game Server",
+      "onAutoForward": "notify"
+    },
+    "8080": {
+      "label": "Worker",
+      "onAutoForward": "notify"
+    }
+  },
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "ms-vscode.vscode-typescript-next",
+        "vitest.explorer",
+        "ms-playwright.playwright",
+        "eamodio.gitlens",
+        "github.copilot",
+        "github.copilot-chat",
+        "yoavbls.pretty-ts-errors",
+        "redhat.vscode-yaml",
+        "bradlc.vscode-tailwindcss",
+        "ms-vscode.vscode-json",
+        "ms-vscode-remote.remote-containers"
+      ],
+      "settings": {
+        "typescript.preferences.importModuleSpecifier": "relative",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        }
+      }
+    }
+  },
+  "remoteUser": "node",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {}
+  }
+}

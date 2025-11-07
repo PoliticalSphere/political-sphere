@@ -69,7 +69,7 @@ political-sphere/
 │ ├── **tasks.json**
 │ └── **launch.json**
 │
-├── .devcontainer/ # Development containers ✨ NEW
+├── **.devcontainer/** # Development containers ✨ NEW
 │ ├── devcontainer.json
 │ ├── Dockerfile
 │ └── docker-compose.dev.yml

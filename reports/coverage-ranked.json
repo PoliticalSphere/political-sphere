@@ -1,7 +1,7 @@
 [
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/ageVerificationService.js",
-    "total": 119,
+    "total": 180,
     "covered": 0,
     "pct": 0
   },
@@ -37,7 +37,7 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/complianceService.js",
-    "total": 121,
+    "total": 150,
     "covered": 0,
     "pct": 0
   },
@@ -55,7 +55,7 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/database-backup.js",
-    "total": 162,
+    "total": 161,
     "covered": 0,
     "pct": 0
   },
@@ -73,7 +73,7 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/database-export-import.js",
-    "total": 222,
+    "total": 229,
     "covered": 0,
     "pct": 0
   },
@@ -85,13 +85,19 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/database-seeder.js",
-    "total": 120,
+    "total": 129,
     "covered": 0,
     "pct": 0
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/database-transactions.js",
-    "total": 103,
+    "total": 107,
+    "covered": 0,
+    "pct": 0
+  },
+  {
+    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/error-handler.js",
+    "total": 29,
     "covered": 0,
     "pct": 0
   },
@@ -127,7 +133,13 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/moderationService.js",
-    "total": 133,
+    "total": 203,
+    "covered": 0,
+    "pct": 0
+  },
+  {
+    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/news-service.js",
+    "total": 169,
     "covered": 0,
     "pct": 0
   },
@@ -181,7 +193,7 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/user-store.js",
-    "total": 52,
+    "total": 86,
     "covered": 0,
     "pct": 0
   },
@@ -205,7 +217,7 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/domain/user-service.ts",
-    "total": 11,
+    "total": 10,
     "covered": 0,
     "pct": 0
   },
@@ -235,7 +247,7 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/middleware/validation.js",
-    "total": 19,
+    "total": 21,
     "covered": 0,
     "pct": 0
   },
@@ -253,7 +265,7 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/routes/auth.js",
-    "total": 88,
+    "total": 169,
     "covered": 0,
     "pct": 0
   },
@@ -301,7 +313,7 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/stores/bill-store.js",
-    "total": 1,
+    "total": 59,
     "covered": 0,
     "pct": 0
   },
@@ -319,7 +331,7 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/stores/party-store.js",
-    "total": 1,
+    "total": 26,
     "covered": 0,
     "pct": 0
   },
@@ -331,19 +343,19 @@
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/stores/user-store.js",
-    "total": 1,
+    "total": 38,
     "covered": 0,
     "pct": 0
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/stores/user-store.ts",
-    "total": 46,
+    "total": 43,
     "covered": 0,
     "pct": 0
   },
   {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/stores/vote-store.js",
-    "total": 1,
+    "total": 62,
     "covered": 0,
     "pct": 0
   },
@@ -366,8 +378,8 @@
     "pct": 0
   },
   {
-    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/game-server/src/db.js",
-    "total": 104,
+    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/game-server/src/db.ts",
+    "total": 110,
     "covered": 0,
     "pct": 0
   },
@@ -450,32 +462,14 @@
     "pct": 0
   },
   {
-    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/libs/shared/src/logger.js",
-    "total": 50,
-    "covered": 0,
-    "pct": 0
-  },
-  {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/libs/shared/src/logger.ts",
     "total": 53,
     "covered": 0,
     "pct": 0
   },
   {
-    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/libs/shared/src/security.js",
-    "total": 161,
-    "covered": 0,
-    "pct": 0
-  },
-  {
     "file": "/Users/morganlowman/Documents/GitHub/political-sphere/libs/shared/src/security.ts",
     "total": 116,
-    "covered": 0,
-    "pct": 0
-  },
-  {
-    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/libs/shared/src/telemetry.ts",
-    "total": 30,
     "covered": 0,
     "pct": 0
   },
@@ -552,9 +546,21 @@
     "pct": 0
   },
   {
-    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/apps/api/src/news-service.js",
-    "total": 169,
-    "covered": 141,
-    "pct": 83.43
+    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/libs/shared/src/telemetry.ts",
+    "total": 30,
+    "covered": 14,
+    "pct": 46.67
+  },
+  {
+    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/libs/shared/src/security.js",
+    "total": 161,
+    "covered": 144,
+    "pct": 89.44
+  },
+  {
+    "file": "/Users/morganlowman/Documents/GitHub/political-sphere/libs/shared/src/logger.js",
+    "total": 50,
+    "covered": 48,
+    "pct": 96
   }
 ]

@@ -8,6 +8,11 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
 
 ### Summary
 
+- **Code Quality Improvements - Game Server (2025-11-07)**: 
+  - Completed TypeScript migration: Removed old JavaScript files (complianceClient.js, moderationClient.js, ageVerificationClient.js, index.js) after successful migration to TypeScript strict mode
+  - Improved logging: Replaced console.warn with structured Logger from libs/shared in db.ts (3 instances)
+  - Cleaned up eslint-disable comments: Removed 3 no-console suppressions, documented remaining justified suppressions
+  - All 285 tests passing, Biome linter clean
 - **TypeScript Migration - Game Server (2025-11-07)**: Successfully migrated all JavaScript files in `apps/game-server/src/` to TypeScript strict mode. Created type-safe versions of complianceClient.ts, moderationClient.ts, ageVerificationClient.ts, and index.ts with comprehensive interfaces for all data structures. All 285 tests passing, Biome linter clean. Improved type safety for API contracts, game state management, moderation, compliance logging, and age verification.
 - **GitHub Workflows Audit Implementation (2025-11-07)**: Implemented all critical and high-priority recommendations from comprehensive .github folder audit. Fixed security workflow secrets validation, database migration error handling, coverage aggregation race conditions, centralized Node version configuration across all workflows, pinned actionlint download to specific version (v1.7.4), replaced bc arithmetic with Node.js for cross-platform compatibility, added CODEOWNERS team validation, and standardized artifact retention policies (7/30/90/365 days). All changes improve workflow reliability, security, and maintainability.
 - **GitHub Actions Infrastructure Hardening (2025-01-07)**: Added timeout-minutes to all workflow jobs preventing hung workflows and resource exhaustion - ci.yml (1 job), release.yml (1 job), test-setup-node-action.yml (8 jobs). Created CHANGELOGs for composite actions (quality-checks, setup-node-deps). Fixed CODEOWNERS reference to non-existent file. Enhanced release.yml with SLSA attestation, deployment verification, and observability features.

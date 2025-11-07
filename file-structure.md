@@ -42,7 +42,7 @@ political-sphere/
 │ ├── **dependabot.yml** # Dependency updates ✨ NEW
 │ └── **copilot-instructions.md**
 |
-├── .nx/ # Nx cache and workspace data
+├── **.nx/** # Nx cache and workspace data
 │ └── workspace-data/ # Project graphs and dependency analysis
 |
 ├── .vscode/ # VS Code workspace settings

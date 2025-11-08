@@ -1,30 +1,20 @@
 # Political Sphere - File Structure# Political Sphere - File Structure
 
-
-
 > **Click to expand sections and explore the codebase hierarchy**> **Click to expand sections and explore the codebase hierarchy**
 
-
-
 ## 📋 Quick Navigation## 📋 Quick Navigation
-
-
 
 <details open><details open>
 
 <summary><strong>🎯 How to Use This Document</strong></summary><summary><strong>🎯 How to Use This Document</strong></summary>
 
-
-
 Click on any section heading (with the triangle ▶) to expand/collapse it. Each section contains Mermaid diagrams showing the file structure for that area.Click on any section heading (with the triangle ▶) to expand/collapse it. Each section contains Mermaid diagrams showing the file structure for that area.
 
-
-
-**Color Legend:****Color Legend:**
+**Color Legend:\*\***Color Legend:\*\*
 
 - 🔵 Blue - Root/Primary containers- 🔵 Blue - Root/Primary containers
 
-- 🟢 Green - Applications & Services  - 🟢 Green - Applications & Services  
+- 🟢 Green - Applications & Services - 🟢 Green - Applications & Services
 
 - 🟠 Orange - Libraries & Utilities- 🟠 Orange - Libraries & Utilities
 
@@ -32,7 +22,7 @@ Click on any section heading (with the triangle ▶) to expand/collapse it. Each
 
 - 🔷 Cyan - Infrastructure & DevOps
 
-- 🟤 Brown - Scripts & Tools        { name: ".gitignore", type: "config" },.tree ul {- 🔷 Cyan - Infrastructure & DevOps
+- 🟤 Brown - Scripts & Tools { name: ".gitignore", type: "config" },.tree ul {- 🔷 Cyan - Infrastructure & DevOps
 
 - 🔴 Pink - AI Assets & Models
 
@@ -70,7 +60,7 @@ graph LR      name: ".devcontainer",
 
     Root --> AI[🤖 AI Assets<br/>Context & Tools]        { name: "Dockerfile", type: "file" },
 
-    
+
 
     style Root fill:#2196F3,stroke:#1565C0,stroke-width:3px,color:#fff        { name: "docker-compose.dev.yml", type: "config" }
 
@@ -98,19 +88,15 @@ graph LR      name: ".devcontainer",
 
 <summary><h2>📦 Root Configuration Files</h2></summary>      children: [  padding-left: 20px;## 📊 Project Overview
 
+### Standard Project Files { name: "extensions.json", type: "config" },
 
-
-### Standard Project Files        { name: "extensions.json", type: "config" },
-
-
-
-```mermaid        { name: "settings.json", type: "config" },  margin: 2px 0;
+````mermaid { name: "settings.json", type: "config" },  margin: 2px 0;
 
 graph TB
 
     Root[Root Files]        { name: "tasks.json", type: "config" },
 
-    
+
 
     Root --> Docs[📄 Documentation]        { name: "launch.json", type: "config" }}```mermaid
 
@@ -138,7 +124,7 @@ graph TB
 
     Config --> pnpm[pnpm-workspace.yaml]      children: [  content: '├─';
 
-    
+
 
     Root --> Tooling[🔧 Tooling]        {
 
@@ -162,7 +148,7 @@ graph TB
 
     style Tooling fill:#AB47BC,stroke:#7B1FA2,stroke-width:2px            { name: "release.yml", type: "file" },  color: #8b949e;    Root --> Docs[📖 Docs<br/>12 sections]
 
-```
+````
 
             { name: "security.yml", type: "file" },
 
@@ -178,19 +164,15 @@ graph TB
 
 <summary><h2>🔧 Development Environment</h2></summary>          ]    Root --> Scripts[🔧 Scripts<br/>Automation]
 
+### IDE and Container Setup },
 
-
-### IDE and Container Setup        },
-
-
-
-```mermaid        {.tree li:last-child::before {    Root --> AI[🤖 AI Assets<br/>Context & Tools]
+```mermaid {.tree li:last-child::before {    Root --> AI[🤖 AI Assets<br/>Context & Tools]
 
 graph LR
 
     DevEnv[Development Environment]          name: "actions",
 
-    
+
 
     DevEnv --> Container[🐳 .devcontainer/]          type: "folder",  content: '└─';
 
@@ -246,19 +228,15 @@ graph LR
 
 <summary><h2>🤖 GitHub & CI/CD</h2></summary>    },
 
+### Workflows {.tree summary { style AI fill:#E91E63,stroke:#880E4F,stroke-width:2px,color:#fff
 
-
-### Workflows    {.tree summary {    style AI fill:#E91E63,stroke:#880E4F,stroke-width:2px,color:#fff
-
-
-
-```mermaid      name: "📱 apps (12 applications)",
+````mermaid name: "📱 apps (12 applications)",
 
 graph TB
 
     GitHub[.github/]      type: "app",  cursor: pointer;```
 
-    
+
 
     GitHub --> Workflows[workflows/]      children: [
 
@@ -270,7 +248,7 @@ graph TB
 
     Workflows --> tests[test-*.yml]          name: "api",
 
-    
+
 
     GitHub --> Actions[actions/]          type: "app",  padding: 2px 0;---
 
@@ -342,7 +320,7 @@ graph TB
 
     Core[Core Services]        },
 
-    
+
 
     Core --> API[api/]        {}    Root[Root Files]
 
@@ -362,7 +340,7 @@ graph TB
 
     GameServer --> gsTests[__tests__/]            { name: "src/", type: "folder" },.tree summary::marker {    Root --> Docs[📄 Documentation]
 
-    
+
 
     Core --> Worker[worker/]            { name: "jobs/", type: "folder" },
 
@@ -382,7 +360,7 @@ graph TB
 
     style Worker fill:#66BB6A,stroke:#388E3C,stroke-width:2px        },
 
-```
+````
 
         {}    Docs --> contrib[CONTRIBUTING.md]
 
@@ -398,15 +376,13 @@ graph TB
 
 <summary><strong>Web & Microfrontends</strong></summary>          children: [
 
-
-
-```mermaid            { name: "src/", type: "folder" },.tree .folder {    Docs --> conduct[CODE_OF_CONDUCT.md]
+````mermaid { name: "src/", type: "folder" },.tree .folder {    Docs --> conduct[CODE_OF_CONDUCT.md]
 
 graph TB
 
     Frontend[Frontend Apps]            { name: "pages/", type: "folder" },
 
-    
+
 
     Frontend --> Web[web/]            { name: "components/", type: "folder" },  font-weight: 600;
 
@@ -486,7 +462,7 @@ graph TB          name: "feature-auth-remote",    Root --> Tooling[🔧 Tooling]
 
     E2E --> e2eConfig[playwright.config.ts]            { name: "src/", type: "folder" },
 
-    
+
 
     Support --> LoadTest[load-test/]            { name: "components/", type: "folder" },  color: #FF9800;    Tooling --> eslint[.eslintrc]
 
@@ -494,7 +470,7 @@ graph TB          name: "feature-auth-remote",    Root --> Tooling[🔧 Tooling]
 
     LoadTest --> ltScenarios[scenarios/]            { name: "project.json", type: "config" }
 
-    
+
 
     Support --> DocsApp[docs/]          ]  font-weight: 600;    Tooling --> editor[.editorconfig]
 
@@ -502,7 +478,7 @@ graph TB          name: "feature-auth-remote",    Root --> Tooling[🔧 Tooling]
 
     DocsApp --> docsPublic[public/]        },
 
-    
+
 
     Support --> Dev[dev/]        {}    Tooling --> git[.gitignore]
 
@@ -510,7 +486,7 @@ graph TB          name: "feature-auth-remote",    Root --> Tooling[🔧 Tooling]
 
     Dev --> devPrototypes[prototypes/]          name: "feature-dashboard-remote",
 
-    
+
 
     Support --> Infra[infrastructure/]          type: "app",    Tooling --> lefthook[.lefthook.yml]
 
@@ -534,7 +510,7 @@ graph TB          name: "feature-auth-remote",    Root --> Tooling[🔧 Tooling]
 
     style Infra fill:#A5D6A7,stroke:#66BB6A,stroke-width:2px          ]
 
-```
+````
 
         },  font-weight: 600;    style Docs fill:#66BB6A,stroke:#388E3C,stroke-width:2px
 
@@ -554,11 +530,7 @@ graph TB          name: "feature-auth-remote",    Root --> Tooling[🔧 Tooling]
 
 <summary><h2>📚 Libraries (17+ Modules)</h2></summary>          children: [    style Tooling fill:#AB47BC,stroke:#7B1FA2,stroke-width:2px
 
-
-
-### Shared Utilities            { name: "tests/", type: "folder" },
-
-
+### Shared Utilities { name: "tests/", type: "folder" },
 
 <details>            { name: "fixtures/", type: "folder" },.tree .infra {```
 
@@ -566,7 +538,7 @@ graph TB          name: "feature-auth-remote",    Root --> Tooling[🔧 Tooling]
 
             { name: "playwright.config.ts", type: "config" }
 
-```mermaid
+````mermaid
 
 graph TB          ]  color: #00BCD4;
 
@@ -582,7 +554,7 @@ graph TB          ]  color: #00BCD4;
 
     Utils --> helpers[helpers/]          name: "load-test",
 
-    
+
 
     Shared --> Types[types/]          type: "app",}
 
@@ -654,7 +626,7 @@ graph TB          ].tree .ai {
 
     Auth --> authTokens[tokens/]          name: "dev",
 
-    
+
 
     Platform --> APIClient[api-client/]          type: "app",  font-weight: 600;graph LR
 
@@ -662,7 +634,7 @@ graph TB          ].tree .ai {
 
     APIClient --> apiInterceptors[interceptors/]          children: [
 
-    
+
 
     Platform --> State[state/]            { name: "experiments/", type: "folder" },}    DevEnv[Development Environment]
 
@@ -726,7 +698,7 @@ graph TB                { name: "modules/", type: "folder" },.tree .config {
 
     Core --> systems[systems/]                { name: "variables.tf", type: "file" }
 
-    
+
 
     GameEngine --> Simulation[simulation/]              ]  font-style: italic;    VSCode --> extensions[extensions.json]
 
@@ -746,7 +718,7 @@ graph TB                { name: "modules/", type: "folder" },.tree .config {
 
     Events --> listeners[listeners/]              type: "infra",    VSCode --> tasks[tasks.json]
 
-    
+
 
     style GameEngine fill:#FF9800,stroke:#E65100,stroke-width:3px,color:#fff              children: [
 
@@ -790,7 +762,7 @@ graph TB              name: "docker",  border-radius: 6px;    Cache --> nx[.nx/w
 
     Database --> seeds[seeds/]                { name: "images/", type: "folder" },
 
-    
+
 
     Infrastructure --> Monitoring[monitoring/]                { name: "docker-compose.yml", type: "config" }  margin: 20px 0;
 
@@ -818,7 +790,7 @@ graph TB              name: "docker",  border-radius: 6px;    Cache --> nx[.nx/w
 
     style Deployment fill:#FFAB91,stroke:#FF7043,stroke-width:2px        }    style VSCode fill:#5C6BC0,stroke:#3949AB,stroke-width:2px
 
-```
+````
 
       ]
 
@@ -834,15 +806,13 @@ graph TB              name: "docker",  border-radius: 6px;    Cache --> nx[.nx/w
 
 <summary><strong>Design System & Accessibility</strong></summary>      name: "📚 libs (17+ libraries)",  display: inline-block;```
 
-
-
-```mermaid      type: "lib",
+```mermaid type: "lib",
 
 graph TB
 
     UI[ui/]      children: [  margin-right: 20px;
 
-    
+
 
     UI --> Components[components/]        {
 
@@ -862,7 +832,7 @@ graph TB
 
     DesignSystem --> patterns[patterns/]            {
 
-    
+
 
     UI --> Accessibility[accessibility/]              name: "utils",---
 
@@ -902,11 +872,7 @@ graph TB
 
 <summary><h2>📖 Documentation (12 Sections)</h2></summary>              name: "types",
 
-
-
-### Foundation & Strategy              type: "folder",}### Workflows
-
-
+### Foundation & Strategy type: "folder",}### Workflows
 
 <details>              children: [
 
@@ -914,7 +880,7 @@ graph TB
 
                 { name: "models/", type: "folder" },</style>
 
-```mermaid
+`````mermaid
 
 graph TB                { name: "interfaces/", type: "folder" },
 
@@ -930,7 +896,7 @@ graph TB                { name: "interfaces/", type: "folder" },
 
     F00 --> standards[standards/]            },<div class="legend">graph TB
 
-    
+
 
     Foundation --> F01[01-strategy/]            { name: "constants/", type: "folder" },
 
@@ -982,7 +948,7 @@ graph TB              name: "auth",  <span class="legend-item" style="color: #9C
 
     F02 --> constitution[constitution.md]                { name: "services/", type: "folder" },
 
-    
+
 
     Governance --> F03[03-legal-and-compliance/]                { name: "guards/", type: "folder" },  <span class="legend-item" style="color: #795548;">🔧 Scripts</span>    Workflows --> tests[test-*.yml]
 
@@ -1034,7 +1000,7 @@ graph TB                { name: "interceptors/", type: "folder" }
 
     F04 --> patterns[patterns/]            {  <li><details open>
 
-    
+
 
     Technical --> F05[05-engineering-and-devops/]              name: "state",
 
@@ -1054,7 +1020,7 @@ graph TB                { name: "interceptors/", type: "folder" }
 
     F06 --> incidents[incidents/]                { name: "slices/", type: "folder" },
 
-    
+
 
     style Technical fill:#9C27B0,stroke:#6A1B9A,stroke-width:3px,color:#fff                { name: "middleware/", type: "folder" }      <li><details>    Templates --> pr[PULL_REQUEST_TEMPLATE.md]
 
@@ -1098,7 +1064,7 @@ graph TB          name: "game-engine",
 
     F07 --> ethics[ethics/]            {          <li><span class="file">CHANGELOG.md</span></li>
 
-    
+
 
     Product --> F08[08-game-design-and-mechanics/]              name: "core",
 
@@ -1118,7 +1084,7 @@ graph TB          name: "game-engine",
 
     F09 --> sre[sre/]                { name: "mechanics/", type: "folder" },
 
-    
+
 
     style Product fill:#9C27B0,stroke:#6A1B9A,stroke-width:3px,color:#fff                { name: "systems/", type: "folder" }          <li><span class="config">package.json</span></li>    style Actions fill:#5C6BC0,stroke:#3949AB,stroke-width:2px
 
@@ -1214,7 +1180,7 @@ graph TB
 
     Terraform[apps/infrastructure/terraform/]        {
 
-    
+
 
     Terraform --> Modules[modules/]          name: "infrastructure",      ### Core Services
 
@@ -1234,7 +1200,7 @@ graph TB
 
     Environments --> prod[prod/]              name: "database",        <summary><span class="folder">🔧 .devcontainer/</span></summary><details>
 
-    
+
 
     Terraform --> State[state/]              type: "folder",
 
@@ -1242,7 +1208,7 @@ graph TB
 
     State --> locks[locks/]              children: [        <ul><summary><strong>Backend & Game Engine</strong></summary>
 
-    
+
 
     style Terraform fill:#00BCD4,stroke:#00838F,stroke-width:3px,color:#fff                { name: "repositories/", type: "folder" },
 
@@ -1286,7 +1252,7 @@ graph TB              type: "folder",        </ul>    Core[Core Services]
 
     Base --> deployments[deployments/]                { name: "logging/", type: "folder" },
 
-    
+
 
     K8s --> Helm[helm/]                { name: "tracing/", type: "folder" }          Core --> API[api/]
 
@@ -1294,7 +1260,7 @@ graph TB              type: "folder",        </ul>    Core[Core Services]
 
     Helm --> values[values/]              ]
 
-    
+
 
     K8s --> Overlays[overlays/]            },      <li><details>    API --> apiSrc[src/]
 
@@ -1302,7 +1268,7 @@ graph TB              type: "folder",        </ul>    Core[Core Services]
 
     Overlays --> prodOverlay[prod/]            { name: "deployment/", type: "folder" }
 
-    
+
 
     Docker[apps/infrastructure/docker/]          ]        <summary><span class="folder">💻 .vscode/</span></summary>    API --> apiTest[__tests__/]
 
@@ -1310,7 +1276,7 @@ graph TB              type: "folder",        </ul>    Core[Core Services]
 
     Docker --> compose[docker-compose/]        },
 
-    
+
 
     style K8s fill:#00BCD4,stroke:#00838F,stroke-width:3px,color:#fff        {        <ul>    API --> apiConfig[config/]
 
@@ -1322,7 +1288,7 @@ graph TB              type: "folder",        </ul>    Core[Core Services]
 
     style Overlays fill:#4DD0E1,stroke:#26C6DA,stroke-width:2px          type: "lib",          <li><span class="config">extensions.json</span></li>
 
-```
+`````
 
           children: [
 
@@ -1338,15 +1304,13 @@ graph TB              type: "folder",        </ul>    Core[Core Services]
 
 <summary><strong>Environment Management</strong></summary>              type: "folder",          <li><span class="config">tasks.json</span></li>    GameServer --> gsSrc[src/]
 
-
-
-```mermaid              children: [
+````mermaid children: [
 
 graph TB
 
     Config[Configuration]                { name: "atoms/", type: "folder" },          <li><span class="config">launch.json</span></li>    GameServer --> gsEngine[engine/]
 
-    
+
 
     Config --> Secrets[secrets/]                { name: "molecules/", type: "folder" },
 
@@ -1354,7 +1318,7 @@ graph TB
 
     Secrets --> templates[templates/]                { name: "organisms/", type: "folder" }        </ul>    GameServer --> gsTests[__tests__/]
 
-    
+
 
     Config --> Envs[environments/]              ]
 
@@ -1410,7 +1374,7 @@ graph TB
 
     Scripts[scripts/]        },            <summary><span class="folder">workflows/</span></summary>    style Core fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
 
-    
+
 
     Scripts --> CI[ci/]        { name: "ci/", type: "folder" }
 
@@ -1438,7 +1402,7 @@ graph TB
 
     Utils --> monitor[perf-monitor.sh]      children: [
 
-    
+
 
     style Scripts fill:#795548,stroke:#4E342E,stroke-width:3px,color:#fff        { name: "README.md", type: "file" },              <li><span class="file">security.yml</span></li>```
 
@@ -1482,7 +1446,7 @@ graph TB            { name: "principles.md", type: "file" },
 
     Config --> vitest[vitest/]          ]          <li><details>
 
-    
+
 
     Tools --> Scripts[scripts/]        },
 
@@ -1490,7 +1454,7 @@ graph TB            { name: "principles.md", type: "file" },
 
     Scripts --> test[test/]        {            <summary><span class="folder">actions/</span></summary><details>
 
-    
+
 
     Tools --> Docker[docker/]          name: "01-strategy",
 
@@ -1498,7 +1462,7 @@ graph TB            { name: "principles.md", type: "file" },
 
     Docker --> compose[compose/]          type: "doc",            <ul><summary><strong>Web & Microfrontends</strong></summary>
 
-    
+
 
     style Tools fill:#795548,stroke:#4E342E,stroke-width:3px,color:#fff          children: [
 
@@ -1546,7 +1510,7 @@ graph TB
 
     AIContext[AI Context]            { name: "policies/", type: "folder" },          </details></li>    Frontend --> Web[web/]
 
-    
+
 
     AIContext --> Cache[ai-cache/]            { name: "constitution.md", type: "file" }
 
@@ -1566,7 +1530,7 @@ graph TB
 
     Knowledge --> patterns[patterns/]          name: "03-legal-and-compliance",
 
-    
+
 
     AIContext --> Bundles[context-bundles/]          type: "doc",          <li><span class="file">copilot-instructions.md</span></li>    Web --> webComponents[components/]
 
@@ -1574,7 +1538,7 @@ graph TB
 
     Bundles --> minimal[minimal/]          children: [
 
-    
+
 
     style AIContext fill:#E91E63,stroke:#880E4F,stroke-width:3px,color:#fff            { name: "gdpr/", type: "folder" },          <li><span class="file">CODEOWNERS</span></li>
 
@@ -1618,7 +1582,7 @@ graph TB          type: "doc",
 
     Prompts --> examples[examples/]            { name: "diagrams/", type: "folder" },        <summary><span class="app">📱 apps/</span> <em>(12 applications)</em></summary>    Frontend --> AuthRemote[feature-auth-remote/]
 
-    
+
 
     AITools --> Patterns[patterns/]            { name: "patterns/", type: "folder" }
 
@@ -1626,7 +1590,7 @@ graph TB          type: "doc",
 
     Patterns --> arch[architecture/]          ]        <ul>    AuthRemote --> authSrc[src/]
 
-    
+
 
     AITools --> Metrics[metrics/]        },
 
@@ -1634,7 +1598,7 @@ graph TB          type: "doc",
 
     Metrics --> quality[quality/]        {          <li><details>    AuthRemote --> authComponents[components/]
 
-    
+
 
     AITools --> Governance[governance/]          name: "05-engineering-and-devops",
 
@@ -1642,7 +1606,7 @@ graph TB          type: "doc",
 
     Governance --> policies[policies/]          type: "doc",            <summary><span class="app">api/</span> <em>REST API services</em></summary>
 
-    
+
 
     style AITools fill:#E91E63,stroke:#880E4F,stroke-width:3px,color:#fff          children: [
 
@@ -1654,7 +1618,7 @@ graph TB          type: "doc",
 
     style Governance fill:#EC407A,stroke:#AD1457,stroke-width:2px            { name: "testing.md", type: "file" },
 
-```
+````
 
             { name: "languages/", type: "folder" },              <li><span class="folder">src/</span></li>    DashRemote --> dashSrc[src/]
 
@@ -1678,19 +1642,15 @@ graph TB          type: "doc",
 
 <summary><h3>Data & Configuration</h3></summary>          name: "06-security-and-risk",
 
+### Runtime Data type: "doc", <li><span class="config">project.json</span></li> style Frontend fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
 
-
-### Runtime Data          type: "doc",              <li><span class="config">project.json</span></li>    style Frontend fill:#4CAF50,stroke:#2E7D32,stroke-width:3px,color:#fff
-
-
-
-```mermaid          children: [
+```mermaid children: [
 
 graph TB
 
     Data[data/]            { name: "security-policies/", type: "folder" },            </ul>    style Web fill:#81C784,stroke:#4CAF50,stroke-width:2px
 
-    
+
 
     Data --> Fixtures[fixtures/]            { name: "risk-register.md", type: "file" },
 
@@ -1698,7 +1658,7 @@ graph TB
 
     Fixtures --> seed[seed-data/]            { name: "incidents/", type: "folder" }          </details></li>    style Shell fill:#81C784,stroke:#4CAF50,stroke-width:2px
 
-    
+
 
     Data --> Seeds[seeds/]          ]
 
@@ -1706,7 +1666,7 @@ graph TB
 
     Seeds --> staging[staging/]        },              style AuthRemote fill:#81C784,stroke:#4CAF50,stroke-width:2px
 
-    
+
 
     style Data fill:#607D8B,stroke:#37474F,stroke-width:3px,color:#fff        {
 
@@ -1738,7 +1698,7 @@ graph TB            { name: "ai-governance.md", type: "file" },
 
     Static --> styles[styles.css]          ]              <li><span class="folder">src/</span></li></details>
 
-    
+
 
     style Static fill:#607D8B,stroke:#37474F,stroke-width:3px,color:#fff        },
 
@@ -1750,7 +1710,7 @@ graph TB            { name: "ai-governance.md", type: "file" },
 
           name: "08-game-design-and-mechanics",
 
-```mermaid
+````mermaid
 
 graph TB          type: "doc",              <li><span class="folder">__tests__/</span></li>### Support & Infrastructure
 
@@ -2960,7 +2920,7 @@ graph TB
     style CI fill:#A1887F,stroke:#6D4C41,stroke-width:2px
     style Migrations fill:#A1887F,stroke:#6D4C41,stroke-width:2px
     style Utils fill:#A1887F,stroke:#6D4C41,stroke-width:2px
-```
+````
 
 </details>
 

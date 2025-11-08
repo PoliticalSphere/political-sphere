@@ -10,3 +10,9 @@
 - [ ] Update .github/copilot-instructions.md: Add guidance on avoiding direct interpolation in GitHub Actions run scripts
 - [ ] Update CHANGELOG.md: Document the security fixes
 - [ ] Update docs/TODO.md: Mark tasks as completed
+
+## Technical Debt Fixes
+
+- [ ] Investigate and fix database/storage layer issues causing 500 errors in tests
+- [ ] Resolve tool conflict between Prettier and Biome formatters
+- [ ] Implement AI cache cleanup with TTL-based eviction

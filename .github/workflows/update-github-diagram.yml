@@ -3,9 +3,9 @@ name: Update .github Directory Diagram
 on:
   push:
     paths:
-      - '.github/**'
-      - '!.github/README.md'
-      - '!.github/workflows/update-github-diagram.yml'
+      - ".github/**"
+      - "!.github/README.md"
+      - "!.github/workflows/update-github-diagram.yml"
   workflow_dispatch:
 
 permissions:
@@ -14,23 +14,23 @@ permissions:
 jobs:
   update-diagram:
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           token: ${{ secrets.GITHUB_TOKEN }}
-      
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-      
+          node-version: "20"
+
       - name: Generate diagram
         run: |
           node .github/scripts/generate-diagram.mjs
-      
+
       - name: Check for changes
         id: check_changes
         run: |
@@ -39,7 +39,7 @@ jobs:
           else
             echo "changed=true" >> $GITHUB_OUTPUT
           fi
-      
+
       - name: Commit and push if changed
         if: steps.check_changes.outputs.changed == 'true'
         run: |

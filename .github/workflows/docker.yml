@@ -6,17 +6,17 @@ on:
       - main
       - develop
     tags:
-      - 'v*.*.*'
+      - "v*.*.*"
   pull_request:
     branches:
       - main
       - develop
     paths:
-      - 'apps/**'
-      - 'libs/**'
-      - '**/Dockerfile'
-      - 'docker-compose*.yml'
-      - '.github/workflows/docker.yml'
+      - "apps/**"
+      - "libs/**"
+      - "**/Dockerfile"
+      - "docker-compose*.yml"
+      - ".github/workflows/docker.yml"
   workflow_dispatch:
 
 env:
@@ -31,7 +31,7 @@ jobs:
       contents: read
       packages: write
       id-token: write
-    
+
     strategy:
       matrix:
         service:
@@ -51,7 +51,7 @@ jobs:
             context: .
             dockerfile: apps/web/Dockerfile
             platforms: linux/amd64,linux/arm64
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -137,30 +137,30 @@ jobs:
     permissions:
       contents: read
       security-events: write
-    
+
     strategy:
       matrix:
         service: [api, game-server, worker, web]
-    
+
     steps:
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}:latest
-          format: 'sarif'
-          output: 'trivy-results-${{ matrix.service }}.sarif'
-          severity: 'CRITICAL,HIGH'
+          format: "sarif"
+          output: "trivy-results-${{ matrix.service }}.sarif"
+          severity: "CRITICAL,HIGH"
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: 'trivy-results-${{ matrix.service }}.sarif'
-          category: 'docker-${{ matrix.service }}'
+          sarif_file: "trivy-results-${{ matrix.service }}.sarif"
+          category: "docker-${{ matrix.service }}"
 
   docker-compose-test:
     name: Test Docker Compose
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -212,7 +212,7 @@ jobs:
     needs: [build-and-push, security-scan, docker-compose-test]
     runs-on: ubuntu-latest
     if: always() && github.event_name != 'pull_request'
-    
+
     steps:
       - name: Check job status
         id: status

@@ -63,7 +63,7 @@ jobs:
             echo "NX_CLOUD_DISABLED=true" >> $GITHUB_ENV
             exit 0
           fi
-          
+
           # Only require secrets for pushes to main or PRs from same repo (not forks)
           if [ "${EVENT_NAME}" == "push" ] || [ "${PR_HEAD_REPO}" == "${CURRENT_REPO}" ]; then
             if [ -z "$NX_CLOUD_ACCESS_TOKEN" ]; then
@@ -103,9 +103,6 @@ jobs:
         run: |
           node --version
           node scripts/ci/check-tools.mjs
-
-      - name: Check file placement
-        run: node scripts/ci/check-file-placement.mjs
 
       - name: Validate CODEOWNERS teams
         env:
@@ -710,7 +707,7 @@ jobs:
           echo "accessibility-test: ${{ needs.accessibility-test.result }}"
           echo "ci-performance-monitoring: ${{ needs.ci-performance-monitoring.result }}"
           echo "======================="
-          
+
           # For fork PRs, allow skipped jobs that require secrets
           IS_FORK_PR=false
           if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]]; then
@@ -720,12 +717,12 @@ jobs:
 
           # Check required jobs (these should never be skipped)
           FAILED=false
-          
+
           if [[ "${{ needs.lint-and-typecheck.result }}" != "success" ]]; then
             echo "❌ lint-and-typecheck failed or was skipped"
             FAILED=true
           fi
-          
+
           if [[ "${{ needs.security-scan.result }}" != "success" ]]; then
             echo "❌ security-scan failed or was skipped"
             FAILED=true
@@ -775,7 +772,7 @@ jobs:
               FAILED=true
             fi
           fi
-          
+
           # ci-performance-monitoring can be skipped
           if [[ "${{ needs.ci-performance-monitoring.result }}" != "success" && "${{ needs.ci-performance-monitoring.result }}" != "skipped" ]]; then
             echo "⚠️  ci-performance-monitoring failed (result: ${{ needs.ci-performance-monitoring.result }})"

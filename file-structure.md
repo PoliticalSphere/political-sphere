@@ -1,53 +1,68 @@
 political-sphere/
 ├── **.devcontainer/** # Development containers (at repo root)
-│ ├── devcontainer.json
-│ ├── Dockerfile
-│ └── docker-compose.dev.yml
+│ ├── **devcontainer.json**
+│ ├── **Dockerfile**
+│ └── **docker-compose.dev.yml**
 │
 ├── **.github/** # GitHub configuration
 │ ├── **workflows/** # CI/CD pipelines
-│ │ ├── **ci.yml**
-│ │ ├── **release.yml**
-│ │ ├── **security.yml**
-│ │ ├── **test-run-tests-action.yml**
-│ │ └── **test-setup-node-action.yml**
-│ ├── **actions/** # Reusable actions
-│ │ ├── **setup-node/**
+│ │ ├── **ci.yml** # Main CI pipeline
+│ │ ├── **docker.yml** # Docker build & publish
+│ │ ├── **release.yml** # Release automation
+│ │ ├── **security.yml** # Security scanning
+│ │ ├── **test-run-tests-action.yml** # Test run-tests action
+│ │ ├── **test-setup-node-action.yml** # Test setup-node action
+│ │ └── **update-github-diagram.yml** # Auto-update .github diagram
+│ ├── **actions/** # Reusable composite actions
+│ │ ├── **deploy/**
 │ │ │ ├── **action.yml**
-│ │ │ ├── **setup-node.sh** # Basic node setup and validation
+│ │ │ ├── **CHANGELOG.md**
+│ │ │ ├── **README.md**
+│ │ │ ├── **argocd-sync.sh** # ArgoCD sync
+│ │ │ ├── **build-and-push.sh** # Build & push images
+│ │ │ ├── **helm-deploy.sh** # Helm deployments
+│ │ │ ├── **kubectl-apply.sh** # Kubectl apply
+│ │ │ ├── **rollback.sh** # Rollback helper
+│ │ │ ├── **run-deploy.sh** # Main orchestration
+│ │ │ ├── **validate-manifests.sh** # Manifest validation
+│ │ │ └── **test/** # Action tests
+│ │ ├── **quality-checks/**
+│ │ │ ├── **action.yml**
+│ │ │ ├── **CHANGELOG.md**
 │ │ │ └── **README.md**
 │ │ ├── **run-tests/**
-│ │ │ ├── **action.yml** # Definition and logic
-│ │ │ ├── **run-tests.sh** # Core runner script
-│ │ │ ├── **parse-results.mjs** # parse & summarise test output
-│ │ │ ├── **upload-artifacts.sh** # uploads coverage/test reports
-│ │ │ ├── **coverage.config.json** # Shared coverage thresholds
-│ │ │ └── **README.md**
-│ │ ├── **setup-node-deps/** # Install dependencies (separate composite)
-│ │ ├── **quality-checks/** # Linting/type/security meta action
-│ │ └── **deploy/**
+│ │ │ ├── **action.yml**
+│ │ │ ├── **CHANGELOG.md**
+│ │ │ ├── **README.md**
+│ │ │ ├── **coverage.config.json** # Coverage thresholds
+│ │ │ ├── **parse-results.mjs** # Parse test output
+│ │ │ ├── **run-tests.sh** # Test runner
+│ │ │ ├── **upload-artifacts.sh** # Upload reports
+│ │ │ └── **tests/** # Action tests
+│ │ ├── **setup-node/**
+│ │ │ ├── **action.yml**
+│ │ │ ├── **CHANGELOG.md**
+│ │ │ ├── **README.md**
+│ │ │ └── **setup-node.sh** # Node setup script
+│ │ └── **setup-node-deps/**
 │ │ ├── **action.yml**
-│ │ ├── **run-deploy.sh** # main, idempotent deploy orchestration script
-│ │ ├── **build-and-push.sh** # build container images & push to registry
-│ │ ├── **helm-deploy.sh** # deploy/upgrade Helm charts
-│ │ ├── **kubectl-apply.sh** # apply k8s manifests / kustomize
-│ │ ├── **argocd-sync.sh** # call ArgoCD API / CLI to sync apps
-│ │ ├── **rollback.sh** # simple rollback helper
-│ │ ├── **validate-manifests.sh** # linting + kubeval + yamllint
+│ │ ├── **CHANGELOG.md**
 │ │ └── **README.md**
+│ ├── **documentation/** # GitHub-specific documentation
+│ │ ├── **CODEOWNERS** # Code ownership
+│ │ ├── **SECURITY.md** # Security policy
+│ │ └── **SUPPORT.md** # Support guidelines
 │ ├── **ISSUE_TEMPLATE/**
 │ │ ├── **bug_report.yml**
 │ │ ├── **feature_request.yml**
 │ │ └── **security_report.yml**
 │ ├── **PULL_REQUEST_TEMPLATE/**
-│ │ └── **PULL_REQUEST.md**
-│ ├── **SECURITY.md** # Security policy ✨ NEW
-│ ├── **SUPPORT.md** # Support guidelines ✨ NEW
-│ ├── **CODEOWNERS** # Code ownership ✨ NEW
-│ ├── **FUNDING.yml** # Sponsorship info ✨ NEW
-│ ├── **dependabot.yml** # Dependency updates ✨ NEW
-│ ├── **copilot-instructions.md**
-│ └── **README.md** # ✨ NEW
+│ │ └── **PULL_REQUEST_TEMPLATE.md**
+│ ├── **scripts/** # GitHub automation scripts
+│ │ └── **generate-diagram.mjs** # Auto-generate .github diagram
+│ ├── **copilot-instructions.md** # AI development guidelines
+│ ├── **dependabot.yml** # Dependency update config
+│ └── **README.md** # .github directory documentation
 |
 ├── **.nx/** # Nx cache and workspace data
 │ └── **workspace-data/** # Project graphs and dependency analysis

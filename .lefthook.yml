@@ -1,10 +1,122 @@
+# =============================================================================
+# Lefthook Configuration - Git Hooks for Political Sphere
+# Version: 2.0.0
+# =============================================================================
+#
+# Pre-commit hooks with security checks, auto-fix, and quality validation
+# Install: npm install -g lefthook && lefthook install
+# Skip: LEFTHOOK=0 git commit (emergencies only)
+#
+# =============================================================================
+
+min_version: 1.5.0
+
 pre-commit:
+  parallel: true
+
   commands:
-    lint:
-      run: npm run lint:fix
+    # Auto-fix code formatting
+    prettier:
+      glob: "*.{ts,tsx,js,jsx,json,css,scss,md,yml,yaml}"
+      run: npx prettier --write {staged_files}
+      stage_fixed: true
+
+    eslint:
+      glob: "*.{ts,tsx,js,jsx}"
+      run: npx eslint --fix --max-warnings 0 {staged_files}
+      stage_fixed: true
+
+    # Security: Secret scanning
+    gitleaks:
+      run: |
+        if command -v gitleaks >/dev/null 2>&1; then
+          gitleaks protect --staged --verbose --redact
+        else
+          echo "⚠️  gitleaks not installed (brew install gitleaks)"
+        fi
+
+    # Security: Check for hardcoded secrets
+    detect-secrets:
+      glob: "*.{ts,tsx,js,jsx,json,yml,yaml,env,sh}"
+      run: |
+        if grep -nE "(password|secret|key|token).*=.*['\"][^'\"]{20,}" {staged_files} 2>/dev/null; then
+          echo "❌ Potential hardcoded secrets detected!"
+          exit 1
+        fi
+
+    # TypeScript validation
     type-check:
-      run: npm run type-check
-    test:
-      run: npm test
-    format:
-      run: npm run format
+      glob: "*.{ts,tsx}"
+      run: npx tsc --noEmit --skipLibCheck
+
+    # No console.log in production
+    no-console:
+      glob: "apps/**/*.{ts,tsx}"
+      exclude: "*.test.{ts,tsx}|*.spec.{ts,tsx}"
+      run: |
+        if grep -n "console\\.log" {staged_files} 2>/dev/null; then
+          echo "❌ console.log found in production code"
+          exit 1
+        fi
+
+    # No .only() in tests
+    no-only-tests:
+      glob: "*.{test,spec}.{ts,tsx}"
+      run: |
+        if grep -nE "(describe|it|test)\\.only" {staged_files} 2>/dev/null; then
+          echo "❌ .only() found in tests"
+          exit 1
+        fi
+
+    # Validate JSON
+    validate-json:
+      glob: "*.json"
+      run: |
+        for file in {staged_files}; do
+          jq empty "$file" 2>/dev/null || exit 1
+        done
+
+    # Validate YAML
+    validate-yaml:
+      glob: "*.{yml,yaml}"
+      run: |
+        if command -v yamllint >/dev/null 2>&1; then
+          yamllint --strict {staged_files}
+        fi
+
+    # GitHub workflows
+    actionlint:
+      glob: ".github/workflows/*.{yml,yaml}"
+      run: |
+        if command -v actionlint >/dev/null 2>&1; then
+          actionlint {staged_files}
+        fi
+
+    # Docker linting
+    hadolint:
+      glob: "**/Dockerfile*"
+      run: |
+        if command -v hadolint >/dev/null 2>&1; then
+          hadolint {staged_files}
+        fi
+
+pre-push:
+  commands:
+    audit:
+      run: npm run audit || true
+
+    full-type-check:
+      run: npx tsc --noEmit
+
+    tests:
+      run: npm test -- --run
+
+commit-msg:
+  commands:
+    conventional:
+      run: |
+        msg=$(cat {1})
+        if ! echo "$msg" | grep -qE "^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)(\(.+\))?: .{1,}"; then
+          echo "❌ Use Conventional Commits: type(scope): message"
+          exit 1
+        fi

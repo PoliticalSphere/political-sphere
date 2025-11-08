@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <!--
+    OWASP Dependency-Check Suppressions
+    
+    This file contains suppression rules for false positives or accepted risks
+    in dependency vulnerability scanning.
+    
+    Format: https://jeremylong.github.io/DependencyCheck/general/suppression.html
+    
+    Common suppression patterns:
+    - False positives (CVE incorrectly matched to dependency)
+    - Accepted risks (documented decision to accept vulnerability)
+    - Dev dependencies (vulnerabilities in development-only packages)
+    
+    Each suppression MUST include:
+    - notes: Why this is suppressed
+    - until: Expiration date for review (format: YYYY-MM-DD)
+    - filePath or gav: What dependency is suppressed
+    - cve: Specific CVE being suppressed
+    -->
+    
+    <!-- Example: False positive suppression
+    <suppress until="2026-12-31">
+        <notes>
+            CVE-2021-12345 is incorrectly matched to our lodash version.
+            This CVE affects lodash 4.17.0-4.17.20, but we use 4.17.21+.
+            Verified: https://github.com/lodash/lodash/issues/12345
+        </notes>
+        <packageUrl regex="true">^pkg:npm/lodash@.*$</packageUrl>
+        <cve>CVE-2021-12345</cve>
+    </suppress>
+    -->
+    
+    <!-- Example: Accepted risk suppression
+    <suppress until="2026-06-30">
+        <notes>
+            CVE-2022-67890 in dev-only package "some-test-helper".
+            Risk accepted: Only used in test environment, not in production.
+            Mitigation: Test environment is isolated and not exposed to users.
+            Reviewed by: Security Team on 2025-11-08
+            Next review: 2026-06-30
+        </notes>
+        <packageUrl regex="true">^pkg:npm/some\-test\-helper@.*$</packageUrl>
+        <cve>CVE-2022-67890</cve>
+    </suppress>
+    -->
+    
+    <!--
+    Add your project-specific suppressions below.
+    Remember to:
+    1. Document the reason clearly
+    2. Set an expiration date for review
+    3. Get security team approval for accepted risks
+    4. Remove suppressions when issues are fixed
+    -->
+    
+</suppressions>

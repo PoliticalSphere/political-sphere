@@ -149,25 +149,63 @@ phase2_code_quality() {
     if [[ -f "${APP_DIR}/.eslintrc.json" ]] || [[ -f "${PROJECT_ROOT}/.eslintrc.json" ]]; then
         log_pass "ESLint configuration found"
         
-        # Try to run ESLint (skip if not installed)
-        if command -v npx &> /dev/null; then
-            log_info "Running ESLint..."
-            if npx eslint "${APP_DIR}/src" --max-warnings 0 > "${APP_AUDIT_DIR}/eslint.log" 2>&1; then
-                log_pass "ESLint passed with no warnings"
-            else
-                WARNING_COUNT=$(grep -c "warning" "${APP_AUDIT_DIR}/eslint.log" 2>/dev/null || echo "0")
-                ERROR_COUNT=$(grep -c "error" "${APP_AUDIT_DIR}/eslint.log" 2>/dev/null || echo "0")
-                
-                if [[ ${ERROR_COUNT} -gt 0 ]]; then
-                    log_high "ESLint found ${ERROR_COUNT} errors"
-                elif [[ ${WARNING_COUNT} -gt 0 ]]; then
-                    log_medium "ESLint found ${WARNING_COUNT} warnings"
+        # Skip ESLint if requested
+        if [[ "${SKIP_ESLINT:-false}" == "true" ]]; then
+            log_info "Skipping ESLint checks (SKIP_ESLINT=true)"
+        elif command -v npx &> /dev/null; then
+            # Auto-fix mode: run ESLint with --fix flag
+            if [[ "${AUTO_FIX}" == "true" ]]; then
+                log_info "Running ESLint with auto-fix..."
+                if npx eslint "${APP_DIR}/src" --fix --max-warnings 0 > "${APP_AUDIT_DIR}/eslint.log" 2>&1; then
+                    log_pass "ESLint auto-fix completed successfully"
+                else
+                    FIXED_COUNT=$(grep -c "✔" "${APP_AUDIT_DIR}/eslint.log" 2>/dev/null || echo "0")
+                    REMAINING_COUNT=$(grep -c "✖" "${APP_AUDIT_DIR}/eslint.log" 2>/dev/null || echo "0")
+                    
+                    if [[ ${FIXED_COUNT} -gt 0 ]]; then
+                        log_pass "ESLint auto-fixed ${FIXED_COUNT} issues"
+                    fi
+                    if [[ ${REMAINING_COUNT} -gt 0 ]]; then
+                        log_medium "ESLint found ${REMAINING_COUNT} issues requiring manual fix"
+                    fi
+                    log_info "See ${APP_AUDIT_DIR}/eslint.log for details"
                 fi
-                log_info "See ${APP_AUDIT_DIR}/eslint.log for details"
+            else
+                # Normal mode: run ESLint without --fix
+                log_info "Running ESLint..."
+                if npx eslint "${APP_DIR}/src" --max-warnings 0 > "${APP_AUDIT_DIR}/eslint.log" 2>&1; then
+                    log_pass "ESLint passed with no warnings"
+                else
+                    WARNING_COUNT=$(grep -c "warning" "${APP_AUDIT_DIR}/eslint.log" 2>/dev/null || echo "0")
+                    ERROR_COUNT=$(grep -c "error" "${APP_AUDIT_DIR}/eslint.log" 2>/dev/null || echo "0")
+                    
+                    if [[ ${ERROR_COUNT} -gt 0 ]]; then
+                        log_high "ESLint found ${ERROR_COUNT} errors (run with AUTO_FIX=true to auto-fix)"
+                    elif [[ ${WARNING_COUNT} -gt 0 ]]; then
+                        log_medium "ESLint found ${WARNING_COUNT} warnings (run with AUTO_FIX=true to auto-fix)"
+                    fi
+                    log_info "See ${APP_AUDIT_DIR}/eslint.log for details"
+                fi
             fi
         fi
     else
         log_low "No ESLint configuration found"
+    fi
+    
+    # Check for Prettier configuration and apply auto-formatting
+    if [[ -f "${PROJECT_ROOT}/.prettierrc" ]] || [[ -f "${PROJECT_ROOT}/.prettierrc.json" ]] || [[ -f "${PROJECT_ROOT}/.prettierrc.js" ]]; then
+        log_pass "Prettier configuration found"
+        
+        if [[ "${AUTO_FIX}" == "true" ]] && command -v npx &> /dev/null; then
+            log_info "Running Prettier auto-format..."
+            if npx prettier --write "${APP_DIR}/src/**/*.{ts,tsx,js,jsx,json,css,scss,md}" > "${APP_AUDIT_DIR}/prettier.log" 2>&1; then
+                FORMATTED_COUNT=$(grep -c "unchanged" "${APP_AUDIT_DIR}/prettier.log" 2>/dev/null || echo "0")
+                log_pass "Prettier formatted code successfully"
+                log_info "See ${APP_AUDIT_DIR}/prettier.log for details"
+            fi
+        elif command -v npx &> /dev/null; then
+            log_info "Run with AUTO_FIX=true to auto-format with Prettier"
+        fi
     fi
     
     # Check TypeScript compilation
@@ -279,12 +317,65 @@ phase5_dependencies() {
             log_info "Skipping npm audit (SKIP_NPM_AUDIT=true)"
         elif command -v npm &> /dev/null; then
             log_info "Running npm audit (set SKIP_NPM_AUDIT=true to skip)..."
+            
+            # Auto-fix mode: attempt to fix vulnerabilities
+            if [[ "${AUTO_FIX}" == "true" ]]; then
+                log_info "Running npm audit fix..."
+                if npm audit fix --json > "${APP_AUDIT_DIR}/npm-audit-fix.json" 2>&1; then
+                    FIXED_COUNT=$(jq -r '.actions | length' "${APP_AUDIT_DIR}/npm-audit-fix.json" 2>/dev/null || echo "0")
+                    if [[ ${FIXED_COUNT} -gt 0 ]]; then
+                        log_pass "npm audit fixed ${FIXED_COUNT} vulnerabilities"
+                    else
+                        log_pass "No vulnerabilities to fix"
+                    fi
+                else
+                    log_medium "npm audit fix completed with some remaining issues"
+                    log_info "See ${APP_AUDIT_DIR}/npm-audit-fix.json for details"
+                fi
+            fi
+            
+            # Run audit to check remaining vulnerabilities
             if npm audit --audit-level=high --json > "${APP_AUDIT_DIR}/npm-audit.json" 2>&1; then
                 log_pass "No high/critical vulnerabilities found"
             else
                 VULN_COUNT=$(jq -r '.metadata.vulnerabilities.high + .metadata.vulnerabilities.critical' "${APP_AUDIT_DIR}/npm-audit.json" 2>/dev/null || echo "unknown")
-                log_high "Found vulnerabilities - see ${APP_AUDIT_DIR}/npm-audit.json"
+                if [[ "${AUTO_FIX}" == "true" ]]; then
+                    log_high "Found ${VULN_COUNT} high/critical vulnerabilities requiring manual fix"
+                else
+                    log_high "Found ${VULN_COUNT} high/critical vulnerabilities (run with AUTO_FIX=true to attempt auto-fix)"
+                fi
+                log_info "See ${APP_AUDIT_DIR}/npm-audit.json for details"
             fi
+        fi
+        
+        # OWASP Dependency-Check (comprehensive CVE scanning)
+        if [[ "${SKIP_OWASP_CHECK:-false}" == "true" ]]; then
+            log_info "Skipping OWASP Dependency-Check (SKIP_OWASP_CHECK=true)"
+        elif command -v dependency-check &> /dev/null || command -v dependency-check.sh &> /dev/null; then
+            log_info "Running OWASP Dependency-Check v12.1.8+ (CVE/CPE detection)..."
+            
+            OWASP_CMD="dependency-check"
+            if ! command -v dependency-check &> /dev/null && command -v dependency-check.sh &> /dev/null; then
+                OWASP_CMD="dependency-check.sh"
+            fi
+            
+            # Run OWASP Dependency-Check with SARIF output
+            if ${OWASP_CMD} \
+                --scan "${APP_DIR}" \
+                --project "${APP_NAME}" \
+                --format JSON \
+                --format SARIF \
+                --out "${APP_AUDIT_DIR}/owasp-dependency-check" \
+                --failOnCVSS 7 \
+                --suppression "${PROJECT_ROOT}/.owasp-suppressions.xml" 2>&1 | tee "${APP_AUDIT_DIR}/owasp-dc.log"; then
+                log_pass "OWASP Dependency-Check passed (no CVE ≥7.0 CVSS)"
+            else
+                CVE_COUNT=$(jq -r '.dependencies[].vulnerabilities | length' "${APP_AUDIT_DIR}/owasp-dependency-check/dependency-check-report.json" 2>/dev/null | awk '{s+=$1} END {print s}' || echo "0")
+                log_critical "OWASP Dependency-Check found ${CVE_COUNT} vulnerabilities with CVSS ≥7.0"
+                log_info "See ${APP_AUDIT_DIR}/owasp-dependency-check/ for details"
+            fi
+        else
+            log_info "OWASP Dependency-Check not installed (brew install dependency-check or download from owasp.org)"
         fi
     else
         log_critical "Root package.json not found"
@@ -364,6 +455,70 @@ EOF
 }
 
 ################################################################################
+# SARIF Output Generation (for GitHub Code Scanning)
+################################################################################
+
+generate_sarif_output() {
+    if [[ "${GENERATE_SARIF:-false}" != "true" ]]; then
+        return 0
+    fi
+    
+    log_info "Generating SARIF 2.1.0 format output for GitHub Code Scanning..."
+    
+    # Create SARIF file
+    cat > "${APP_AUDIT_DIR}/audit-results.sarif" <<'SARIF_START'
+{
+  "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+  "version": "2.1.0",
+  "runs": [
+    {
+      "tool": {
+        "driver": {
+          "name": "Political Sphere App Audit",
+          "version": "1.0.0",
+          "informationUri": "https://github.com/PoliticalSphere/political-sphere",
+          "rules": [
+            {
+              "id": "PS001",
+              "name": "HardcodedSecrets",
+              "shortDescription": { "text": "Hardcoded secrets detected" },
+              "fullDescription": { "text": "Source code contains hardcoded passwords, API keys, or secrets" },
+              "defaultConfiguration": { "level": "error" }
+            },
+            {
+              "id": "PS002",
+              "name": "EvalUsage",
+              "shortDescription": { "text": "eval() usage detected" },
+              "fullDescription": { "text": "Use of eval() function poses security risk (OWASP A03:2021)" },
+              "defaultConfiguration": { "level": "error" }
+            },
+            {
+              "id": "PS003",
+              "name": "MissingTests",
+              "shortDescription": { "text": "No test files found" },
+              "fullDescription": { "text": "Application lacks automated tests" },
+              "defaultConfiguration": { "level": "warning" }
+            },
+            {
+              "id": "PS004",
+              "name": "DependencyVulnerability",
+              "shortDescription": { "text": "Vulnerable dependencies detected" },
+              "fullDescription": { "text": "npm audit found high/critical vulnerabilities" },
+              "defaultConfiguration": { "level": "error" }
+            }
+          ]
+        }
+      },
+      "results": []
+    }
+  ]
+}
+SARIF_START
+    
+    log_pass "SARIF output generated: ${APP_AUDIT_DIR}/audit-results.sarif"
+}
+
+################################################################################
 # Main Execution
 ################################################################################
 
@@ -377,6 +532,7 @@ main() {
     phase5_dependencies || true
     phase6_configuration || true
     
+    generate_sarif_output || true
     generate_report
 }
 

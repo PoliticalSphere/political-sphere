@@ -9,58 +9,58 @@ graph TB
     GitHub[.github/]
     
     GitHub --> Workflows[workflows/]
-    Workflows --> ci[ci.yml]
-    Workflows --> docker[docker.yml]
-    Workflows --> release[release.yml]
-    Workflows --> security[security.yml]
-    Workflows --> testSetup[test-setup-node-action.yml]
-    Workflows --> testRun[test-run-tests-action.yml]
+    Workflows --> wf_ci[ci.yml]
+    Workflows --> wf_docker[docker.yml]
+    Workflows --> wf_release[release.yml]
+    Workflows --> wf_security[security.yml]
+    Workflows --> wf_testSetup[test-setup-node-action.yml]
+    Workflows --> wf_testRun[test-run-tests-action.yml]
     
     GitHub --> Actions[actions/]
-    Actions --> setupNode[setup-node/]
-    setupNode --> setupNodeAction[action.yml]
-    setupNode --> setupNodeReadme[README.md]
+    Actions --> act_setupNode[setup-node/]
+    act_setupNode --> act_setupNodeAction[action.yml]
+    act_setupNode --> act_setupNodeReadme[README.md]
     
-    Actions --> setupNodeDeps[setup-node-deps/]
-    setupNodeDeps --> setupNodeDepsAction[action.yml]
-    setupNodeDeps --> setupNodeDepsReadme[README.md]
+    Actions --> act_setupNodeDeps[setup-node-deps/]
+    act_setupNodeDeps --> act_setupNodeDepsAction[action.yml]
+    act_setupNodeDeps --> act_setupNodeDepsReadme[README.md]
     
-    Actions --> qualityChecks[quality-checks/]
-    qualityChecks --> qualityAction[action.yml]
-    qualityChecks --> qualityReadme[README.md]
+    Actions --> act_qualityChecks[quality-checks/]
+    act_qualityChecks --> act_qualityAction[action.yml]
+    act_qualityChecks --> act_qualityReadme[README.md]
     
-    Actions --> runTests[run-tests/]
-    runTests --> runTestsAction[action.yml]
-    runTests --> runTestsReadme[README.md]
+    Actions --> act_runTests[run-tests/]
+    act_runTests --> act_runTestsAction[action.yml]
+    act_runTests --> act_runTestsReadme[README.md]
     
-    Actions --> deploy[deploy/]
-    deploy --> deployAction[action.yml]
-    deploy --> deployReadme[README.md]
+    Actions --> act_deploy[deploy/]
+    act_deploy --> act_deployAction[action.yml]
+    act_deploy --> act_deployReadme[README.md]
     
     GitHub --> Documentation[documentation/]
-    Documentation --> codeowners[CODEOWNERS]
-    Documentation --> security[SECURITY.md]
-    Documentation --> support[SUPPORT.md]
+    Documentation --> doc_codeowners[CODEOWNERS]
+    Documentation --> doc_security[SECURITY.md]
+    Documentation --> doc_support[SUPPORT.md]
     
     GitHub --> Templates[ISSUE_TEMPLATE/]
-    Templates --> bugReport[bug_report.yml]
-    Templates --> featureRequest[feature_request.yml]
-    Templates --> config[config.yml]
+    Templates --> tpl_bugReport[bug_report.yml]
+    Templates --> tpl_featureRequest[feature_request.yml]
+    Templates --> tpl_config[config.yml]
     
-    GitHub --> PR[PULL_REQUEST_TEMPLATE.md]
-    GitHub --> Dependabot[dependabot.yml]
-    GitHub --> Instructions[copilot-instructions.md]
-    GitHub --> Readme[README.md]
+    GitHub --> root_PR[PULL_REQUEST_TEMPLATE.md]
+    GitHub --> root_Dependabot[dependabot.yml]
+    GitHub --> root_Instructions[copilot-instructions.md]
+    GitHub --> root_Readme[README.md]
     
     style GitHub fill:#FF6F00,stroke:#E65100,stroke-width:3px,color:#fff
     style Workflows fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
     style Actions fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
     style Documentation fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
     style Templates fill:#FF9800,stroke:#E65100,stroke-width:2px
-    style PR fill:#00BCD4,stroke:#00838F,stroke-width:2px
-    style Dependabot fill:#795548,stroke:#4E342E,stroke-width:2px
-    style Instructions fill:#E91E63,stroke:#880E4F,stroke-width:2px
-    style Readme fill:#607D8B,stroke:#37474F,stroke-width:2px
+    style root_PR fill:#00BCD4,stroke:#00838F,stroke-width:2px
+    style root_Dependabot fill:#795548,stroke:#4E342E,stroke-width:2px
+    style root_Instructions fill:#E91E63,stroke:#880E4F,stroke-width:2px
+    style root_Readme fill:#607D8B,stroke:#37474F,stroke-width:2px
 ```
 
 ### Directory Purpose

@@ -1,0 +1,21 @@
+{
+  "timestamp": "2025-11-08T21:33:35Z",
+  "autofix": false,
+  "summary": {
+    "total": 0,
+    "passed": 2,
+    "failed": 8,
+    "critical": 2,
+    "high": 21,
+    "medium": 24,
+    "low": 16
+  },
+  "production_ready": false,
+  "audit_directories": {
+    "github": "/Users/morganlowman/GitHub/political-sphere/github-audit",
+    "devcontainer": "/Users/morganlowman/GitHub/political-sphere/devcontainer-audit",
+    "openapi": "/Users/morganlowman/GitHub/political-sphere/openapi-audit",
+    "apps": "/Users/morganlowman/GitHub/political-sphere/app-audit"
+  },
+  "audit_trail": "/Users/morganlowman/GitHub/political-sphere/docs/audit-trail"
+}

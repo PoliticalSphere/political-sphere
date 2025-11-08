@@ -1,1 +1,1 @@
-/Users/morganlowman/GitHub/political-sphere/scripts/ci/openapi-audit.sh: line 337: timeout: command not found
+scripts/ci/openapi-audit.sh: line 337: timeout: command not found

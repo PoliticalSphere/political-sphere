@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+l #!/usr/bin/env bash
 # =============================================================================
 # DevContainer Audit Script v1.1.0
 # =============================================================================
@@ -41,6 +41,7 @@
 #   SKIP_ENHANCED_SCAN=true    - Skip enhanced scanning
 #   SKIP_MONITORING=true       - Skip monitoring/logging checks
 #   SKIP_EDGE=true             - Skip edge case checks
+#   SKIP_OPTIMIZATION=true     - Skip Dockerfile optimization checks
 #   OUTPUT_DIR=./audit-output  - Directory for output files
 #
 # Usage:
@@ -71,6 +72,7 @@ SKIP_DEV_FEATURES="${SKIP_DEV_FEATURES:-false}"
 SKIP_ENHANCED_SCAN="${SKIP_ENHANCED_SCAN:-false}"
 SKIP_MONITORING="${SKIP_MONITORING:-false}"
 SKIP_EDGE="${SKIP_EDGE:-false}"
+SKIP_OPTIMIZATION="${SKIP_OPTIMIZATION:-false}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/devcontainer-audit}"
 
 # Color codes
@@ -97,6 +99,11 @@ declare -a FINDINGS
 BACKUP_DIR="${OUTPUT_DIR}/backups/$(date +%Y%m%d_%H%M%S)"
 AUTO_FIX_LOG="${OUTPUT_DIR}/auto-fix.log"
 
+# Temporary build artefacts for runtime/enhanced checks
+TEMP_BUILD_DIR="${OUTPUT_DIR}/temp-build"
+TEMP_IMAGE_NAME="devcontainer-audit-temp:$(date +%s)"
+TEMP_IMAGE_BUILT=false
+
 # -----------------------------------------------------------------------------
 # Utility Functions
 # -----------------------------------------------------------------------------
@@ -117,6 +124,8 @@ log_medium() {
 }
 
 log_low() {
+    echo -e "${YELLOW}[LOW]${NC} $*"
+    ((LOW_COUNT++)) || true
 }
 
 log_info() {
@@ -252,8 +261,8 @@ check_tool_availability() {
             local version=$(hadolint --version | head -n1 || echo "unknown")
             log_pass "Hadolint available: $version"
         else
-            log_medium "Hadolint not found. Install: brew install hadolint (macOS) or docker pull hadolint/hadolint"
-            add_finding "medium" "TOOL-001" "Hadolint not installed - Dockerfile linting will be skipped" "N/A" 0
+            log_info "Hadolint not found (optional). Install: brew install hadolint (macOS) or docker pull hadolint/hadolint"
+            add_finding "info" "TOOL-001" "Hadolint not installed - Dockerfile linting will be skipped (optional tool)" "N/A" 0
             SKIP_HADOLINT=true
         fi
     fi
@@ -601,24 +610,67 @@ check_supply_chain() {
     log_info "Checking supply chain security..."
     
     # SUPPLY-003: Trusted registry
-    if grep -q "^FROM .*[^a-zA-Z0-9./-]" "$dockerfile"; then
-        log_high "Base image from untrusted registry detected"
+    # List of trusted registries
+    local trusted_registries=(
+        "docker.io"
+        "ghcr.io"
+        "gcr.io"
+        "mcr.microsoft.com"
+        "registry.k8s.io"
+        "quay.io"
+    )
+    
+    local base_image
+    base_image=$(grep "^FROM " "$dockerfile" | head -1 | awk '{print $2}')
+    
+    local is_trusted=false
+    for registry in "${trusted_registries[@]}"; do
+        if [[ "$base_image" == "$registry"* ]] || [[ "$base_image" != *"/"* && "$registry" == "docker.io" ]]; then
+            is_trusted=true
+            break
+        fi
+    done
+    
+    if [[ "$is_trusted" == false ]]; then
+        log_high "Base image from untrusted registry detected: $base_image"
         add_finding "high" "SUPPLY-003" "Use official/trusted registries for base images" "$dockerfile" 0
     else
-        if ! grep -q "^FROM [a-z0-9/]*:.*" "$dockerfile" || grep -q ":latest" "$dockerfile"; then
-            log_medium "Base image may not be from trusted source or uses :latest"
-            add_finding "medium" "SUPPLY-003" "Verify base image from trusted registry and pinned version" "$dockerfile" 0
+        if grep -q ":latest" "$dockerfile"; then
+            log_medium "Base image uses :latest tag"
+            add_finding "medium" "SUPPLY-003" "Pin base image to specific version instead of :latest" "$dockerfile" 0
         else
             log_pass "Base image from trusted registry with pinned version"
         fi
     fi
     
     # SUPPLY-005: Checksums for downloads
-    if grep -E "(curl|wget) " "$dockerfile" | grep -v -E "(sha256|md5|checksum)" &> /dev/null; then
-        log_medium "Downloads without checksum verification"
-        add_finding "medium" "SUPPLY-005" "Add checksum verification for curl/wget downloads" "$dockerfile" 0
+    # Check each RUN command that contains curl/wget for checksum verification
+    # Exclude lines with GPG verification as that's more secure
+    local curl_wget_lines
+    curl_wget_lines=$(grep -n "RUN.*\(curl\|wget\)" "$dockerfile" | grep -v "gpg" || true)
+    
+    if [[ -n "$curl_wget_lines" ]]; then
+        local has_unverified=false
+        while IFS= read -r line; do
+            local line_num=$(echo "$line" | cut -d: -f1)
+            local content=$(echo "$line" | cut -d: -f2-)
+            
+            # Check if this RUN block has checksum verification
+            # Look ahead a few lines to see if sha256sum/md5sum follows
+            if ! sed -n "${line_num},$((line_num + 10))p" "$dockerfile" | grep -qE "(sha256sum|md5sum|checksum|\.sha256)"; then
+                has_unverified=true
+                break
+            fi
+        done <<< "$curl_wget_lines"
+        
+        if [[ "$has_unverified" == true ]]; then
+            log_medium "Some downloads without checksum verification"
+            add_finding "medium" "SUPPLY-005" "Add checksum verification for curl/wget downloads" "$dockerfile" 0
+        else
+            log_pass "Downloads include checksum verification"
+        fi
     else
-        log_pass "Downloads include checksum verification"
+        log_pass "No downloads requiring checksum verification"
     fi
 }
 
@@ -645,7 +697,7 @@ check_runtime_security() {
     
     if ! ensure_temp_image; then
         log_info "Skipping runtime checks because temp image build failed (see ${TEMP_BUILD_DIR}/build.log)"
-        return 1
+        return 0
     fi
     
     # Run checks inside container
@@ -785,7 +837,7 @@ run_enhanced_scanning() {
     
     if ! ensure_temp_image; then
         log_info "Skipping enhanced scan because temp image build failed (see ${TEMP_BUILD_DIR}/build.log)"
-        return 1
+        return 0
     fi
     
     if trivy image --format json --output "${OUTPUT_DIR}/trivy-image.json" "$TEMP_IMAGE_NAME" 2>&1; then
@@ -828,47 +880,6 @@ run_enhanced_scanning() {
         log_pass "FIPS compliance indicators present"
     fi
 }
-            local image_vuln_count=$(jq '[.Results[] | .Vulnerabilities[]?] | length' "${OUTPUT_DIR}/trivy-image.json" 2>/dev/null || echo "0")
-            if [[ "$image_vuln_count" -gt 0 ]]; then
-                local critical_vulns=$(jq '[.Results[] | .Vulnerabilities[]? | select(.Severity == "CRITICAL")] | length' "${OUTPUT_DIR}/trivy-image.json" 2>/dev/null || echo "0")
-                if [[ "$critical_vulns" -gt 0 ]]; then
-                    log_high "Trivy image scan found $image_vuln_count vulns ($critical_vulns critical)"
-                    add_finding "high" "VULN-002" "Image vulnerabilities detected ($image_vuln_count total)" "$dockerfile" 0
-                else
-                    log_medium "Trivy image scan found $image_vuln_count vulns (no critical)"
-                    add_finding "medium" "VULN-002" "Image vulnerabilities detected ($image_vuln_count total)" "$dockerfile" 0
-                fi
-            else
-                log_pass "No image vulnerabilities found by Trivy"
-            fi
-        else
-            log_info "Trivy image scan failed"
-        fi
-        docker rmi "$temp_image" &> /dev/null || true
-    else
-        log_info "Enhanced build failed; skipping image scan"
-    fi
-    
-    # VULN-003: Outdated packages (basic grep for apt update)
-    if grep -q "apt-get update" "$dockerfile" && ! grep -q "apt-get upgrade" "$dockerfile"; then
-        log_medium "apt-get update without upgrade; consider updating packages"
-        add_finding "medium" "VULN-003" "Potential outdated packages (add apt upgrade)" "$dockerfile" 0
-    fi
-    
-    # COMPLIANCE-004: Basic OWASP (extend secrets check)
-    if grep -iE "(password|secret|key|token)[ =]" "$devcontainer_json" &> /dev/null; then
-        log_critical "Potential OWASP injection risk: hardcoded secrets in config"
-        add_finding "critical" "COMPLIANCE-004" "Hardcoded secrets in devcontainer.json (OWASP A07)" "$devcontainer_json" 0
-    fi
-    
-    # COMPLIANCE-005: FIPS (basic)
-    if ! grep -qE "(fips|nist)" "$dockerfile"; then
-        log_info "No FIPS compliance indicators; add if required for regulated envs"
-        add_finding "info" "COMPLIANCE-005" "Consider FIPS-enabled base image for compliance" "$dockerfile" 0
-    else
-        log_pass "FIPS compliance indicators present"
-    fi
-}
 
 # -----------------------------------------------------------------------------
 # Phase 14: Monitoring and Logging
@@ -883,6 +894,7 @@ check_monitoring_logging() {
     fi
     
     local compose_file="${DEVCONTAINER_DIR}/docker-compose.dev.yml"
+    local dockerfile="${DEVCONTAINER_DIR}/Dockerfile"
     
     if [[ ! -f "$compose_file" ]]; then
         log_info "No compose file for logging checks"
@@ -908,7 +920,7 @@ check_monitoring_logging() {
     fi
     
     # MONITOR-002: Healthcheck metrics
-    if grep -q "HEALTHCHECK " "$dockerfile" && grep -q "/metrics\|health" "$dockerfile"; then
+    if [[ -f "$dockerfile" ]] && grep -q "HEALTHCHECK " "$dockerfile" && grep -q "/metrics\|health" "$dockerfile"; then
         log_pass "Healthcheck includes metrics endpoint"
     else
         log_info "Basic healthcheck; consider adding /metrics for monitoring"

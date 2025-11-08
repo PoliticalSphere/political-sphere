@@ -147,10 +147,10 @@ jobs:
 
           if [ -f semgrep-results.json ]; then
             findings=$(jq '.results | length' semgrep-results.json 2>/dev/null || echo "0")
-            echo "findings=$findings" >> $GITHUB_OUTPUT
-            echo "📈 Found $findings security findings"
+            echo "findings=${findings}" >> "$GITHUB_OUTPUT"
+            echo "📈 Found ${findings} security findings"
             
-            if [ "$findings" -gt 0 ]; then
+            if [ "${findings}" -gt 0 ]; then
               echo "⚠️ Semgrep found security issues - review required"
             fi
           fi
@@ -339,30 +339,32 @@ jobs:
     steps:
       - name: Generate Security Summary
         run: |
-          echo "## 🔒 Security Scanning Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Scan Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")" >> $GITHUB_STEP_SUMMARY
-          echo "**Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Commit:** ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Scans Performed" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Secret scanning (Gitleaks)" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Workflow security validation" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ SAST scanning (Semgrep)" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ CodeQL analysis" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Dependency scanning (npm audit, Trivy)" >> $GITHUB_STEP_SUMMARY
-          echo "- ✅ Supply chain security (SBOM, SLSA provenance)" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "### Security Guidelines" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Never commit secrets or credentials" >> $GITHUB_STEP_SUMMARY
-          echo "- Keep dependencies updated regularly" >> $GITHUB_STEP_SUMMARY
-          echo "- Address critical/high vulnerabilities promptly" >> $GITHUB_STEP_SUMMARY
-          echo "- Use \`env:\` blocks for GitHub context in workflows" >> $GITHUB_STEP_SUMMARY
-          echo "- Pin action versions to commit SHAs" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "📚 [Security Documentation](https://docs.github.com/en/code-security)" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## 🔒 Security Scanning Summary"
+            echo ""
+            echo "**Scan Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")"
+            echo "**Branch:** ${{ github.ref_name }}"
+            echo "**Commit:** ${{ github.sha }}"
+            echo ""
+            echo "### Scans Performed"
+            echo ""
+            echo "- ✅ Secret scanning (Gitleaks)"
+            echo "- ✅ Workflow security validation"
+            echo "- ✅ SAST scanning (Semgrep)"
+            echo "- ✅ CodeQL analysis"
+            echo "- ✅ Dependency scanning (npm audit, Trivy)"
+            echo "- ✅ Supply chain security (SBOM, SLSA provenance)"
+            echo ""
+            echo "### Security Guidelines"
+            echo ""
+            echo "- Never commit secrets or credentials"
+            echo "- Keep dependencies updated regularly"
+            echo "- Address critical/high vulnerabilities promptly"
+            echo "- Use \`env:\` blocks for GitHub context in workflows"
+            echo "- Pin action versions to commit SHAs"
+            echo ""
+            echo "📚 [Security Documentation](https://docs.github.com/en/code-security)"
+          } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Check job statuses
         run: |
@@ -372,13 +374,13 @@ jobs:
           SUPPLY_STATUS="${{ needs.supply-chain.result }}"
 
           echo "Job Results:"
-          echo "  Secrets & Workflows: $SECRETS_STATUS"
-          echo "  SAST Scanning: $SAST_STATUS"
-          echo "  Dependency Scanning: $DEPS_STATUS"
-          echo "  Supply Chain: $SUPPLY_STATUS"
+          echo "  Secrets & Workflows: ${SECRETS_STATUS}"
+          echo "  SAST Scanning: ${SAST_STATUS}"
+          echo "  Dependency Scanning: ${DEPS_STATUS}"
+          echo "  Supply Chain: ${SUPPLY_STATUS}"
 
           # Fail if any critical job failed
-          if [[ "$SECRETS_STATUS" == "failure" ]] || [[ "$SAST_STATUS" == "failure" ]] || [[ "$DEPS_STATUS" == "failure" ]]; then
+          if [[ "${SECRETS_STATUS}" == "failure" ]] || [[ "${SAST_STATUS}" == "failure" ]] || [[ "${DEPS_STATUS}" == "failure" ]]; then
             echo "❌ One or more security scans failed!"
             exit 1
           fi

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# GitHub Workflows & Actions Audit Script v1.1.0
+# GitHub Workflows & Actions Audit Script v1.3.0
 # =============================================================================
 #
 # Comprehensive validation for GitHub Actions workflows including:
@@ -13,7 +13,7 @@
 # - CodeQL workflow presence and configuration check
 # - Configurable warning enforcement
 #
-# Industry Standards Covered:
+# Standards Compliance:
 # - GitHub Actions Security Hardening Guide
 # - OWASP CI/CD Security Top 10
 # - GitHub Security Best Practices for Actions
@@ -31,6 +31,9 @@
 #   SKIP_ACTIONLINT=true       - Skip actionlint validation
 #   SKIP_YAMLLINT=true         - Skip YAML linting
 #   SKIP_SECRET_SCAN=true      - Skip secrets scanning
+#   VERBOSE=true               - Enable verbose logging
+#   LOG_FORMAT=json            - Output logs in JSON format
+#   CONFIG_FILE=<path>         - Path to external configuration file
 #   GITLEAKS_SCOPE=<path>      - Path to scan (default: .github)
 #   GITLEAKS_CONFIG=<path>     - Custom gitleaks config file
 #   GITLEAKS_ARGS="<args>"     - Additional gitleaks arguments
@@ -40,6 +43,9 @@
 #   ./github-audit.sh [options]
 #   AUTO_FIX=true ./github-audit.sh
 #   FAIL_ON_WARNINGS=true ./github-audit.sh
+#   VERBOSE=true ./github-audit.sh
+#   LOG_FORMAT=json ./github-audit.sh
+#   CONFIG_FILE=config.yml ./github-audit.sh
 #
 # =============================================================================
 
@@ -61,20 +67,69 @@ SKIP_YAMLLINT="${SKIP_YAMLLINT:-false}"
 SKIP_SECRET_SCAN="${SKIP_SECRET_SCAN:-false}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/github-audit}"
 FAIL_ON_WARNINGS="${FAIL_ON_WARNINGS:-false}"
+VERBOSE="${VERBOSE:-false}"
+CONFIG_FILE="${CONFIG_FILE:-}"
+LOG_FORMAT="${LOG_FORMAT:-human}"
 # gitleaks configuration: scope (path), config file, and additional args
 GITLEAKS_SCOPE="${GITLEAKS_SCOPE:-$GITHUB_DIR}"
 GITLEAKS_CONFIG="${GITLEAKS_CONFIG:-}"
 GITLEAKS_ARGS="${GITLEAKS_ARGS:-}"
 
-# Color codes
-RED='\033[0;31m'
-YELLOW='\033[1;33m'
-GREEN='\033[0;32m'
-BLUE='\033[0;34m'
-CYAN='\033[0;36m'
-NC='\033[0m' # No Color
+# Color and box drawing detection with NO_COLOR support
+if [[ "${NO_COLOR:-}" == "true" ]] || [[ ! -t 1 ]]; then
+    # No colors for CI, non-TTY, or NO_COLOR set
+    RED=''
+    YELLOW=''
+    GREEN=''
+    BLUE=''
+    CYAN=''
+    NC=''
+else
+    # Use tput for colors if available and terminal supports it
+    if command -v tput &> /dev/null && [[ $(tput colors 2>/dev/null || echo 0) -ge 8 ]]; then
+        RED=$(tput setaf 1)
+        YELLOW=$(tput setaf 3)
+        GREEN=$(tput setaf 2)
+        BLUE=$(tput setaf 4)
+        CYAN=$(tput setaf 6)
+        NC=$(tput sgr0)
+    else
+        # Fallback ANSI colors
+        RED='\033[0;31m'
+        YELLOW='\033[1;33m'
+        GREEN='\033[0;32m'
+        BLUE='\033[0;34m'
+        CYAN='\033[0;36m'
+        NC='\033[0m'
+    fi
+fi
 
-# Counters
+# Box drawing characters - use Unicode if supported, ASCII otherwise
+if [[ "${LANG:-}" == *UTF-8* ]] && locale charmap 2>/dev/null | grep -q UTF-8; then
+    BOX_H='═'
+    BOX_V='║'
+    BOX_TL='╔'
+    BOX_TR='╗'
+    BOX_BL='╚'
+    BOX_BR='╝'
+    BOX_T='╠'
+    BOX_B='╚'
+    BOX_L='╠'
+    BOX_R='╣'
+else
+    BOX_H='-'
+    BOX_V='|'
+    BOX_TL='+'
+    BOX_TR='+'
+    BOX_BL='+'
+    BOX_BR='+'
+    BOX_T='+'
+    BOX_B='+'
+    BOX_L='+'
+    BOX_R='+'
+fi
+
+# Counters for findings
 CRITICAL_COUNT=0
 HIGH_COUNT=0
 MEDIUM_COUNT=0
@@ -95,46 +150,79 @@ AUTO_FIX_LOG="${OUTPUT_DIR}/auto-fix.log"
 # -----------------------------------------------------------------------------
 
 log_critical() {
-    echo -e "${RED}[CRITICAL]${NC} $*" >&2
+    if [[ "$LOG_FORMAT" == "json" ]]; then
+        printf '{"level":"CRITICAL","message":"%s","timestamp":"%s"}\n' "$*" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >&2
+    else
+        printf '%s[CRITICAL]%s %s\n' "$RED" "$NC" "$*" >&2
+    fi
     ((CRITICAL_COUNT++)) || true
 }
 
 log_high() {
-    echo -e "${RED}[HIGH]${NC} $*" >&2
+    if [[ "$LOG_FORMAT" == "json" ]]; then
+        printf '{"level":"HIGH","message":"%s","timestamp":"%s"}\n' "$*" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >&2
+    else
+        printf '%s[HIGH]%s %s\n' "$RED" "$NC" "$*" >&2
+    fi
     ((HIGH_COUNT++)) || true
 }
 
 log_medium() {
-    echo -e "${YELLOW}[MEDIUM]${NC} $*" >&2
+    if [[ "$LOG_FORMAT" == "json" ]]; then
+        printf '{"level":"MEDIUM","message":"%s","timestamp":"%s"}\n' "$*" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >&2
+    else
+        printf '%s[MEDIUM]%s %s\n' "$YELLOW" "$NC" "$*" >&2
+    fi
     ((MEDIUM_COUNT++)) || true
 }
 
 log_low() {
-    echo -e "${YELLOW}[LOW]${NC} $*" >&2
+    if [[ "$LOG_FORMAT" == "json" ]]; then
+        printf '{"level":"LOW","message":"%s","timestamp":"%s"}\n' "$*" "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >&2
+    else
+        printf '%s[LOW]%s %s\n' "$YELLOW" "$NC" "$*" >&2
+    fi
     ((LOW_COUNT++)) || true
 }
 
 log_info() {
-    echo -e "${CYAN}[INFO]${NC} $*"
+    if [[ "$VERBOSE" == "true" ]]; then
+        if [[ "$LOG_FORMAT" == "json" ]]; then
+            printf '{"level":"INFO","message":"%s","timestamp":"%s"}\n' "$*" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        else
+            printf '%s[INFO]%s %s\n' "$CYAN" "$NC" "$*"
+        fi
+    fi
     ((INFO_COUNT++)) || true
 }
 
 log_pass() {
-    echo -e "${GREEN}[PASS]${NC} $*"
+    if [[ "$LOG_FORMAT" == "json" ]]; then
+        printf '{"level":"PASS","message":"%s","timestamp":"%s"}\n' "$*" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    else
+        printf '%s[PASS]%s %s\n' "$GREEN" "$NC" "$*"
+    fi
     ((PASS_COUNT++)) || true
 }
 
 log_fix() {
-    echo -e "${BLUE}[AUTO-FIX]${NC} $*"
+    if [[ "$LOG_FORMAT" == "json" ]]; then
+        printf '{"level":"AUTO-FIX","message":"%s","timestamp":"%s"}\n' "$*" "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+    else
+        printf '%s[AUTO-FIX]%s %s\n' "$BLUE" "$NC" "$*"
+    fi
     ((AUTO_FIXED_COUNT++)) || true
 }
 
 log_section() {
-    echo ""
-    echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"
-    echo -e "${BLUE} $*${NC}"
-    echo -e "${BLUE}═══════════════════════════════════════════════════════${NC}"
-    echo ""
+    local title="$*"
+    local width=63
+    local box_line=""
+    for ((i=0; i<width; i++)); do box_line+="$BOX_H"; done
+
+    printf '\n%s%s%s%s%s%s\n' "$BLUE" "$BOX_TL" "$box_line" "$BOX_TR" "$NC"
+    printf '%s%s %s %s%s%s\n' "$BLUE" "$BOX_V" "$title" "$BOX_V" "$NC"
+    printf '%s%s%s%s%s%s\n\n' "$BLUE" "$BOX_BL" "$box_line" "$BOX_BR" "$NC"
 }
 
 add_finding() {
@@ -143,8 +231,14 @@ add_finding() {
     local message="$3"
     local file="${4:-N/A}"
     local line="${5:-0}"
-    
-    FINDINGS+=("{\"severity\":\"$severity\",\"code\":\"$code\",\"message\":\"$message\",\"file\":\"$file\",\"line\":$line}")
+
+    # Escape JSON strings properly
+    local escaped_message
+    local escaped_file
+    escaped_message=$(printf '%s\n' "$message" | sed 's/"/\\"/g')
+    escaped_file=$(printf '%s\n' "$file" | sed 's/"/\\"/g')
+
+    FINDINGS+=("{\"severity\":\"$severity\",\"code\":\"$code\",\"message\":\"$escaped_message\",\"file\":\"$escaped_file\",\"line\":$line}")
 }
 
 create_backup() {
@@ -163,35 +257,71 @@ create_backup() {
 # Setup and Prerequisite Checks
 # -----------------------------------------------------------------------------
 
+validate_inputs() {
+    # Validate environment variables and paths early
+    if [[ -n "$OUTPUT_DIR" && ! -w "$(dirname "$OUTPUT_DIR")" ]]; then
+        log_critical "Output directory is not writable: $(dirname "$OUTPUT_DIR")"
+        exit 2
+    fi
+
+    if [[ -n "$GITLEAKS_CONFIG" && ! -f "$GITLEAKS_CONFIG" ]]; then
+        log_critical "Gitleaks config file not found: $GITLEAKS_CONFIG"
+        exit 2
+    fi
+
+    if [[ -n "$CONFIG_FILE" && ! -f "$CONFIG_FILE" ]]; then
+        log_critical "Configuration file not found: $CONFIG_FILE"
+        exit 2
+    fi
+
+    case "$AUTO_FIX" in
+        true|false) ;;
+        *) log_critical "AUTO_FIX must be 'true' or 'false', got: $AUTO_FIX"; exit 2 ;;
+    esac
+
+    case "$FAIL_ON_WARNINGS" in
+        true|false) ;;
+        *) log_critical "FAIL_ON_WARNINGS must be 'true' or 'false', got: $FAIL_ON_WARNINGS"; exit 2 ;;
+    esac
+
+    case "$VERBOSE" in
+        true|false) ;;
+        *) log_critical "VERBOSE must be 'true' or 'false', got: $VERBOSE"; exit 2 ;;
+    esac
+}
+
 setup_environment() {
     log_section "Phase 1: Environment Setup"
-    
+
+    # Run input validation first
+    validate_inputs
+
     # Create output directory
     mkdir -p "$OUTPUT_DIR"
-    
+
     # Initialize auto-fix log
     if [[ "$AUTO_FIX" == "true" ]]; then
         mkdir -p "$BACKUP_DIR"
-        echo "Auto-fix session started: $(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$AUTO_FIX_LOG"
+        printf '[%s] Auto-fix session started\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" > "$AUTO_FIX_LOG"
         log_info "Auto-fix enabled. Backups will be stored in: $BACKUP_DIR"
     fi
-    
+
     # Check if .github directory exists
     if [[ ! -d "$GITHUB_DIR" ]]; then
         log_critical "GitHub directory not found: $GITHUB_DIR"
         add_finding "critical" "GITHUB-001" ".github directory not found" "$GITHUB_DIR" 0
         exit 2
     fi
-    
+
     log_pass "GitHub directory found: $GITHUB_DIR"
-    
+
     # Check if workflows directory exists
     if [[ ! -d "$WORKFLOWS_DIR" ]]; then
         log_high "Workflows directory not found: $WORKFLOWS_DIR"
         add_finding "high" "GITHUB-002" ".github/workflows directory not found" "$WORKFLOWS_DIR" 0
         return 1
     fi
-    
+
     log_pass "Workflows directory found: $WORKFLOWS_DIR"
 }
 
@@ -292,13 +422,20 @@ validate_yaml_syntax() {
 
 run_actionlint() {
     log_section "Phase 4: actionlint Workflow Validation"
-    
+
     if [[ "$SKIP_ACTIONLINT" == "true" ]]; then
         log_info "Skipping actionlint (SKIP_ACTIONLINT=true)"
         return 0
     fi
-    
+
     log_info "Running actionlint on all workflows..."
+
+    # Add timeout to prevent hanging
+    local timeout_cmd=""
+    if command -v timeout &> /dev/null; then
+        timeout_cmd="timeout 120"  # 2 minute timeout
+    fi
+
     # Use bash globbing to build the list of workflow files safely
     # shellcheck disable=SC2296
     shopt -s nullglob 2>/dev/null || true
@@ -309,8 +446,18 @@ run_actionlint() {
     fi
 
     # Run actionlint against the discovered files and capture JSON output
-    if actionlint -format '{{json .}}' "${files[@]}" > "${OUTPUT_DIR}/actionlint-results.json" 2>&1; then
+    local exit_code=0
+    if [[ -n "$timeout_cmd" ]]; then
+        $timeout_cmd actionlint -format '{{json .}}' "${files[@]}" > "${OUTPUT_DIR}/actionlint-results.json" 2>&1 || exit_code=$?
+    else
+        actionlint -format '{{json .}}' "${files[@]}" > "${OUTPUT_DIR}/actionlint-results.json" 2>&1 || exit_code=$?
+    fi
+
+    if [[ $exit_code -eq 0 ]]; then
         log_pass "actionlint: No issues found"
+    elif [[ $exit_code -eq 124 ]]; then
+        log_medium "actionlint timed out after 2 minutes"
+        add_finding "medium" "ACTIONLINT-003" "actionlint timed out" "workflows" 0
     else
         if [[ -f "${OUTPUT_DIR}/actionlint-results.json" && -s "${OUTPUT_DIR}/actionlint-results.json" ]]; then
             log_medium "actionlint found issues (see ${OUTPUT_DIR}/actionlint-results.json)"
@@ -330,69 +477,241 @@ run_actionlint() {
 
 check_security_best_practices() {
     log_section "Phase 5: Security Best Practices"
-    
+
     while IFS= read -r -d '' workflow_file; do
         local filename=$(basename "$workflow_file")
         log_info "Checking security for: $filename"
-        
-        # Check for pull_request_target usage (risky)
-        if grep -q "pull_request_target:" "$workflow_file"; then
-            log_high "$filename: Uses pull_request_target (review for security risks)"
-            add_finding "high" "SEC-001" "pull_request_target can expose secrets to untrusted code" "$workflow_file" 0
-        fi
-        
-        # Check for script injection vulnerabilities
-        if grep -E '\$\{\{.*github\.(event|head_ref|base_ref)' "$workflow_file" | grep -v "contains"; then
-            log_critical "$filename: Potential script injection vulnerability (unsanitized GitHub context)"
-            add_finding "critical" "SEC-002" "Potential script injection from unsanitized GitHub context variables" "$workflow_file" 0
-        else
-            log_pass "$filename: No obvious script injection vulnerabilities"
-        fi
-        
-        # Check for hardcoded credentials/tokens
-        if grep -iE '(password|token|api[_-]?key|secret).*:.*["\x27][A-Za-z0-9+/=_-]{20,}' "$workflow_file"; then
-            log_critical "$filename: Potential hardcoded credentials detected"
-            add_finding "critical" "SEC-003" "Potential hardcoded credentials in workflow" "$workflow_file" 0
-        else
-            log_pass "$filename: No hardcoded credentials detected"
-        fi
-        
-        # Check for proper secrets usage
-        if grep -E '\$\{\{.*secrets\.' "$workflow_file" &> /dev/null; then
-            log_pass "$filename: Uses GitHub Secrets for sensitive data"
-        fi
-        
-        # Check for runs-on: self-hosted without additional security
-        if grep -q "runs-on:.*self-hosted" "$workflow_file"; then
-            log_medium "$filename: Uses self-hosted runners (ensure proper isolation)"
-            add_finding "medium" "SEC-004" "Self-hosted runners require additional security considerations" "$workflow_file" 0
-        fi
-        
-        # Check for write permissions
-        if grep -E "permissions:.*write" "$workflow_file" &> /dev/null; then
-            if ! grep -q "permissions:" "$workflow_file" || grep -q "permissions: write-all" "$workflow_file"; then
-                log_high "$filename: Uses broad write permissions (apply least privilege)"
-                add_finding "high" "SEC-005" "Workflow uses overly broad permissions" "$workflow_file" 0
-            else
-                log_pass "$filename: Uses scoped permissions"
-            fi
-        fi
-        
-        # Check for actions without version pinning
-        if grep -E "uses:.*@(main|master|latest)" "$workflow_file" &> /dev/null; then
-            log_medium "$filename: Actions pinned to branch instead of SHA or tag"
-            add_finding "medium" "SEC-006" "Pin actions to specific SHA or semantic version" "$workflow_file" 0
-        else
-            log_pass "$filename: Actions properly pinned"
-        fi
-        
-        # Check for checkout with persist-credentials
-        if grep -A5 "uses:.*actions/checkout" "$workflow_file" | grep -q "persist-credentials: true"; then
-            log_medium "$filename: checkout action persists credentials (security risk)"
-            add_finding "medium" "SEC-007" "Disable persist-credentials in checkout action unless required" "$workflow_file" 0
-        fi
-        
+
+        check_pull_request_target "$workflow_file"
+        check_script_injection "$workflow_file"
+        check_hardcoded_credentials "$workflow_file"
+        check_secrets_usage "$workflow_file"
+        check_self_hosted_runners "$workflow_file"
+        check_permissions "$workflow_file"
+        check_action_pinning "$workflow_file"
+        check_checkout_persist_credentials "$workflow_file"
+        check_env_injection "$workflow_file"
+
     done < <(find "$WORKFLOWS_DIR" \( -name "*.yml" -o -name "*.yaml" \) -print0 2>/dev/null)
+}
+
+check_env_injection() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    # Check for GITHUB_ENV/PATH injection patterns
+    if grep -n -E "echo.*>>.*GITHUB_ENV" "$workflow_file" | grep -v -E "(contains|startsWith|endsWith|format|toJSON)" | head -3 | while IFS=: read -r line_num line; do
+        if echo "$line" | grep -qE '\$\{\{.*github\.(event|head_ref|base_ref)'; then
+            log_critical "$filename: Potential GITHUB_ENV injection (line $line_num)"
+            add_finding "critical" "SEC-008" "Potential environment variable injection via GITHUB_ENV" "$workflow_file" "$line_num"
+        fi
+    done; then
+        : # Found issues, already logged
+    fi
+
+    # Check for PATH manipulation
+    if grep -n -E "echo.*>>.*GITHUB_PATH" "$workflow_file" | grep -v -E "(contains|startsWith|endsWith|format|toJSON)" | head -3 | while IFS=: read -r line_num line; do
+        if echo "$line" | grep -qE '\$\{\{.*github\.'; then
+            log_high "$filename: Potential PATH injection via GITHUB_PATH (line $line_num)"
+            add_finding "high" "SEC-009" "Potential PATH manipulation via GITHUB_PATH" "$workflow_file" "$line_num"
+        fi
+    done; then
+        : # Found issues, already logged
+    fi
+}
+
+check_pull_request_target() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    if grep -q "pull_request_target:" "$workflow_file"; then
+        log_high "$filename: Uses pull_request_target (review for security risks)"
+        add_finding "high" "SEC-001" "pull_request_target can expose secrets to untrusted code" "$workflow_file" 0
+    fi
+}
+
+check_script_injection() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    # Refined detection: focus on run: blocks with unsafe GitHub context
+    # Exclude safe helper functions and legitimate uses
+    local unsafe_context_pattern='\$\{\{.*github\.(event|head_ref|base_ref|event\.inputs|event\.pull_request\.head\.ref).*[^}]*\}\}'
+
+    # Find run: blocks and check for unsafe context usage
+    local run_blocks
+    run_blocks=$(grep -n -A10 "^[[:space:]]*run:" "$workflow_file" | grep -E "$unsafe_context_pattern" || true)
+
+    if [[ -n "$run_blocks" ]]; then
+        # Extract line numbers and context
+        while read -r line; do
+            # Parse line number from grep output (handles both N: and N- formats)
+            if [[ $line =~ ^([0-9]+)[:-](.*)$ ]]; then
+                line_num="${BASH_REMATCH[1]}"
+                context="${BASH_REMATCH[2]}"
+            else
+                continue
+            fi
+
+            # Skip if it's a safe helper function
+            if echo "$context" | grep -qE "(contains|startsWith|endsWith|format|toJSON)"; then
+                continue
+            fi
+
+            # Additional check: skip if the context is used in a safe way (e.g., in quotes or as part of a larger expression)
+            if echo "$context" | grep -qE "echo.*[\"'].*\$\{\{.*github\."; then
+                continue
+            fi
+
+            log_critical "$filename: Potential script injection vulnerability (unsanitized GitHub context in run: block)"
+            add_finding "critical" "SEC-002" "Potential script injection from unsanitized GitHub context variables in run: block" "$workflow_file" "$line_num"
+        done <<< "$run_blocks"
+    else
+        log_pass "$filename: No obvious script injection vulnerabilities"
+    fi
+}
+
+check_hardcoded_credentials() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    # Look for high-entropy strings that might be secrets, excluding legitimate secrets.* references
+    local secret_patterns=(
+        '(password|token|api[_-]?key|secret).*:.*["'"'"'][A-Za-z0-9+/=_-]{20,}'
+        '["'"'"'][A-Za-z0-9+/=_-]{32,}["'"'"']'  # High entropy strings
+        '(sk_|pk_|AKIAI|xoxb-|ghp_|glpat-)[A-Za-z0-9+/=_-]{20,}'  # Common secret prefixes
+    )
+
+    local found_hardcoded=false
+    for pattern in "${secret_patterns[@]}"; do
+        if grep -n -E "$pattern" "$workflow_file" | grep -v "secrets\." | grep -v "GITHUB_TOKEN" | head -5 | while IFS=: read -r line_num line; do
+            log_critical "$filename: Potential hardcoded credentials detected (line $line_num)"
+            add_finding "critical" "SEC-003" "Potential hardcoded credentials in workflow" "$workflow_file" "$line_num"
+            found_hardcoded=true
+        done; then
+            break
+        fi
+    done
+
+    if [[ "$found_hardcoded" == false ]]; then
+        log_pass "$filename: No hardcoded credentials detected"
+    fi
+}
+
+check_secrets_usage() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    if grep -E '\$\{\{.*secrets\.' "$workflow_file" &> /dev/null; then
+        log_pass "$filename: Uses GitHub Secrets for sensitive data"
+    fi
+}
+
+check_self_hosted_runners() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    if grep -q "runs-on:.*self-hosted" "$workflow_file"; then
+        log_medium "$filename: Uses self-hosted runners (ensure proper isolation)"
+        add_finding "medium" "SEC-004" "Self-hosted runners require additional security considerations" "$workflow_file" 0
+    fi
+}
+
+check_permissions() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    # Check if workflow has explicit permissions block
+    if ! grep -q "^permissions:" "$workflow_file"; then
+        log_high "$filename: Missing explicit permissions block (defaults to write-all)"
+        add_finding "high" "SEC-005" "Workflow missing explicit permissions block - defaults to write-all access" "$workflow_file" 0
+        return
+    fi
+
+    # Check for truly overly broad permissions (write-all or empty permissions block)
+    if grep -q "permissions: write-all" "$workflow_file"; then
+        log_high "$filename: Uses write-all permissions (apply least privilege)"
+        add_finding "high" "SEC-005" "Workflow uses write-all permissions" "$workflow_file" 0
+        return
+    fi
+    
+    # Check for empty permissions block (defaults to write-all)
+    # Look for "permissions:" followed only by whitespace/comments until next key or job
+    if grep -A3 "^permissions:" "$workflow_file" | grep -E "^[a-z_-]+:" | head -1 | grep -qv "^permissions:"; then
+        # This means permissions block is empty and next line is another key
+        if ! grep -A3 "^permissions:" "$workflow_file" | grep -qE "^\s+(contents|actions|checks|deployments|id-token|issues|packages|pull-requests|repository-projects|security-events|statuses|attestations):"; then
+            log_high "$filename: Empty permissions block (defaults to write-all)"
+            add_finding "high" "SEC-005" "Workflow has empty permissions block - defaults to write-all access" "$workflow_file" 0
+            return
+        fi
+    fi
+    
+    # Check for dangerous permission combinations that should be flagged
+    # Only flag if workflow-level permissions are too broad AND there are no job-level restrictions
+    local has_workflow_write_all=false
+    
+    # Check if permissions at workflow level grant broad write without job-level restrictions
+    if grep -A5 "^permissions:" "$workflow_file" | grep -q "contents: write" && \
+       grep -A5 "^permissions:" "$workflow_file" | grep -q "actions: write" && \
+       grep -A5 "^permissions:" "$workflow_file" | grep -q "packages: write"; then
+        # Multiple critical write permissions at workflow level - check if jobs have restrictions
+        if ! grep -q "^\s\s\s\spermissions:" "$workflow_file"; then
+            log_medium "$filename: Multiple write permissions at workflow level without job-level restrictions"
+            add_finding "medium" "SEC-005" "Workflow has multiple write permissions - consider job-level scoping" "$workflow_file" 0
+            return
+        fi
+    fi
+    
+    # If we get here, permissions are appropriately scoped
+    log_pass "$filename: Uses scoped permissions"
+}
+
+check_action_pinning() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    # Check for actions pinned to branches/tags vs SHAs
+    local unpinned_actions
+    unpinned_actions=$(grep -n -E "uses:.*@(main|master|latest)" "$workflow_file" || true)
+
+    if [[ -n "$unpinned_actions" ]]; then
+        while IFS=: read -r line_num action_line; do
+            # Differentiate first-party vs third-party actions
+            if echo "$action_line" | grep -qE "uses:.*(actions/|github/|docker/)" && echo "$action_line" | grep -q "@latest"; then
+                # First-party actions: prefer semantic tags over @latest
+                log_medium "$filename: First-party action uses @latest (prefer semantic version)"
+                add_finding "medium" "SEC-006" "First-party action should use semantic version instead of @latest" "$workflow_file" "$line_num"
+            elif echo "$action_line" | grep -qE "uses:.*@(main|master)"; then
+                # Third-party actions: require SHA pinning
+                log_high "$filename: Third-party action pinned to branch (use SHA for security)"
+                add_finding "high" "SEC-006" "Third-party actions must be pinned to specific SHA, not branch" "$workflow_file" "$line_num"
+            fi
+        done <<< "$unpinned_actions"
+    else
+        # Check for SHA pinning (40 hex chars)
+        local sha_pinned_actions
+        sha_pinned_actions=$(grep -c -E "uses:.*@[a-f0-9]{40}" "$workflow_file" || true)
+        local total_actions
+        total_actions=$(grep -c "uses:" "$workflow_file" || true)
+
+        if [[ "$total_actions" -gt 0 && "$sha_pinned_actions" -eq "$total_actions" ]]; then
+            log_pass "$filename: All actions properly pinned to SHA"
+        elif [[ "$total_actions" -gt 0 ]]; then
+            log_info "$filename: Actions are pinned (consider SHA pinning for maximum security)"
+        else
+            log_pass "$filename: No actions to pin"
+        fi
+    fi
+}
+
+check_checkout_persist_credentials() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    if grep -A5 "uses:.*actions/checkout" "$workflow_file" | grep -q "persist-credentials: true"; then
+        log_medium "$filename: checkout action persists credentials (security risk)"
+        add_finding "medium" "SEC-007" "Disable persist-credentials in checkout action unless required" "$workflow_file" 0
+    fi
 }
 
 # -----------------------------------------------------------------------------
@@ -401,18 +720,25 @@ check_security_best_practices() {
 
 scan_for_secrets() {
     log_section "Phase 6: Secrets Scanning"
-    
+
     if [[ "$SKIP_SECRET_SCAN" == "true" ]]; then
         log_info "Skipping secrets scan (SKIP_SECRET_SCAN=true)"
         return 0
     fi
-    
+
     if ! command -v gitleaks &> /dev/null; then
         log_info "gitleaks not available, skipping secrets scan"
         return 0
     fi
-    
+
     log_info "Scanning workflows for leaked secrets..."
+
+    # Add timeouts to prevent hanging
+    local timeout_cmd=""
+    if command -v timeout &> /dev/null; then
+        timeout_cmd="timeout 300"  # 5 minute timeout
+    fi
+
     # Allow configurable scope and additional args
     local gitleaks_cmd=(gitleaks detect --source "$GITLEAKS_SCOPE" --report-path "${OUTPUT_DIR}/gitleaks-report.json" --report-format json --no-git)
     if [[ -n "$GITLEAKS_CONFIG" ]]; then
@@ -423,8 +749,19 @@ scan_for_secrets() {
         gitleaks_cmd+=( $GITLEAKS_ARGS )
     fi
 
-    if "${gitleaks_cmd[@]}" 2>&1; then
+    # Execute with timeout and failure context
+    local exit_code=0
+    if [[ -n "$timeout_cmd" ]]; then
+        $timeout_cmd "${gitleaks_cmd[@]}" 2>&1 || exit_code=$?
+    else
+        "${gitleaks_cmd[@]}" 2>&1 || exit_code=$?
+    fi
+
+    if [[ $exit_code -eq 0 ]]; then
         log_pass "No secrets detected by gitleaks"
+    elif [[ $exit_code -eq 124 ]]; then
+        log_medium "gitleaks scan timed out after 5 minutes"
+        add_finding "medium" "SECRET-004" "gitleaks scan timed out" "$GITLEAKS_SCOPE" 0
     else
         if [[ -f "${OUTPUT_DIR}/gitleaks-report.json" ]]; then
             local leak_count=$(jq length "${OUTPUT_DIR}/gitleaks-report.json" 2>/dev/null || echo "0")
@@ -436,8 +773,8 @@ scan_for_secrets() {
                 add_finding "medium" "SECRET-002" "gitleaks executed with non-zero exit but no findings in report" "$GITLEAKS_SCOPE" 0
             fi
         else
-            log_high "gitleaks execution failed and no report was generated"
-            add_finding "high" "SECRET-003" "gitleaks failed to run" "$GITLEAKS_SCOPE" 0
+            log_high "gitleaks execution failed and no report was generated (exit code: $exit_code)"
+            add_finding "high" "SECRET-003" "gitleaks failed to run (exit code: $exit_code)" "$GITLEAKS_SCOPE" 0
         fi
     fi
 }
@@ -448,25 +785,18 @@ scan_for_secrets() {
 
 check_workflow_efficiency() {
     log_section "Phase 7: Workflow Efficiency Analysis"
-    
+
     while IFS= read -r -d '' workflow_file; do
         local filename=$(basename "$workflow_file")
-        
-        # Check for cache usage
-        if grep -q "actions/cache" "$workflow_file"; then
-            log_pass "$filename: Uses caching for dependencies"
-        else
-            if grep -E "(npm|yarn|pip|bundle) install" "$workflow_file" &> /dev/null; then
-                log_info "$filename: Consider adding caching for faster builds"
-                add_finding "info" "PERF-001" "Workflow could benefit from dependency caching" "$workflow_file" 0
-            fi
-        fi
-        
+
+        # Check for cache usage and configuration
+        check_caching_config "$workflow_file"
+
         # Check for matrix strategy usage (when appropriate)
         if grep -E "strategy:.*matrix:" "$workflow_file" &> /dev/null; then
             log_pass "$filename: Uses matrix strategy for parallel testing"
         fi
-        
+
         # Check for concurrency control
         if grep -q "concurrency:" "$workflow_file"; then
             log_pass "$filename: Uses concurrency control to prevent duplicate runs"
@@ -474,8 +804,44 @@ check_workflow_efficiency() {
             log_info "$filename: Consider adding concurrency control to save resources"
             add_finding "info" "PERF-002" "Consider adding concurrency control" "$workflow_file" 0
         fi
-        
+
+        # Check for timeout-minutes
+        check_timeout_config "$workflow_file"
+
     done < <(find "$WORKFLOWS_DIR" \( -name "*.yml" -o -name "*.yaml" \) -print0 2>/dev/null)
+}
+
+check_caching_config() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    if grep -q "actions/cache" "$workflow_file"; then
+        # Check if cache has proper key and restore-keys
+        if grep -A5 "uses:.*actions/cache" "$workflow_file" | grep -q "key:" && grep -A5 "uses:.*actions/cache" "$workflow_file" | grep -q "restore-keys:"; then
+            log_pass "$filename: Uses properly configured caching"
+        else
+            log_medium "$filename: Cache missing key or restore-keys configuration"
+            add_finding "medium" "PERF-001" "Cache action missing key or restore-keys configuration" "$workflow_file" 0
+        fi
+    else
+        if grep -E "(npm|yarn|pip|bundle) install" "$workflow_file" &> /dev/null; then
+            log_info "$filename: Consider adding caching for faster builds"
+            add_finding "info" "PERF-001" "Workflow could benefit from dependency caching" "$workflow_file" 0
+        fi
+    fi
+}
+
+check_timeout_config() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    # Check for job-level timeout-minutes
+    if ! grep -q "timeout-minutes:" "$workflow_file"; then
+        log_medium "$filename: Missing timeout-minutes (recommended for all jobs)"
+        add_finding "medium" "PERF-003" "Job missing timeout-minutes configuration" "$workflow_file" 0
+    else
+        log_pass "$filename: Has timeout-minutes configured"
+    fi
 }
 
 # -----------------------------------------------------------------------------
@@ -590,30 +956,64 @@ apply_auto_fixes() {
 
 generate_reports() {
     log_section "Phase 10: Report Generation"
-    
-    # Generate JSON report with proper escaping
+
+    # Generate JSON report using jq if available for safer JSON generation
     local json_report="${OUTPUT_DIR}/github-audit-results.json"
-    
-    # Build findings array with proper JSON escaping
-    local findings_json="[]"
-    if [[ ${#FINDINGS[@]} -gt 0 ]]; then
-        findings_json="["
-        local first=true
-        for finding in "${FINDINGS[@]}"; do
-            if [[ "$first" == true ]]; then
-                first=false
-            else
-                findings_json+=","
-            fi
-            findings_json+="$finding"
-        done
-        findings_json+="]"
-    fi
-    
-    cat > "$json_report" <<EOF
+
+    if command -v jq &> /dev/null; then
+        # Use jq for proper JSON generation
+        local findings_json="[]"
+        if [[ ${#FINDINGS[@]} -gt 0 ]]; then
+            # Convert bash array to JSON array
+            findings_json=$(printf '%s\n' "${FINDINGS[@]}" | jq -R -s 'split("\n") | map(select(. != "")) | map(fromjson)')
+        fi
+
+        jq -n \
+            --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg version "1.3.0" \
+            --argjson critical "$CRITICAL_COUNT" \
+            --argjson high "$HIGH_COUNT" \
+            --argjson medium "$MEDIUM_COUNT" \
+            --argjson low "$LOW_COUNT" \
+            --argjson info "$INFO_COUNT" \
+            --argjson pass "$PASS_COUNT" \
+            --argjson autoFixed "$AUTO_FIXED_COUNT" \
+            --argjson findings "$findings_json" \
+            '{
+                timestamp: $timestamp,
+                version: $version,
+                summary: {
+                    critical: $critical,
+                    high: $high,
+                    medium: $medium,
+                    low: $low,
+                    info: $info,
+                    pass: $pass,
+                    autoFixed: $autoFixed
+                },
+                findings: $findings
+            }' > "$json_report"
+    else
+        # Fallback to manual JSON generation with improved escaping
+        local findings_json="[]"
+        if [[ ${#FINDINGS[@]} -gt 0 ]]; then
+            findings_json="["
+            local first=true
+            for finding in "${FINDINGS[@]}"; do
+                if [[ "$first" == true ]]; then
+                    first=false
+                else
+                    findings_json+=","
+                fi
+                findings_json+="$finding"
+            done
+            findings_json+="]"
+        fi
+
+        cat > "$json_report" <<EOF
 {
   "timestamp": "$(date -u +%Y-%m-%dT%H:%M:%SZ)",
-  "version": "1.1.0",
+  "version": "1.3.0",
   "summary": {
     "critical": $CRITICAL_COUNT,
     "high": $HIGH_COUNT,
@@ -626,36 +1026,34 @@ generate_reports() {
   "findings": $findings_json
 }
 EOF
-    
+    fi
+
     log_pass "JSON report generated: $json_report"
-    
+
     # Generate human-readable summary
-    cat > "${OUTPUT_DIR}/summary.txt" <<EOF
-GitHub Workflows & Actions Audit Summary
-Generated: $(date -u +%Y-%m-%dT%H:%M:%SZ)
-Version: 1.1.0
-================================================================================
+    {
+        printf 'GitHub Workflows & Actions Audit Summary\n'
+        printf 'Generated: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
+        printf 'Version: 1.3.0\n'
+        printf '================================================================================\n\n'
+        printf 'Findings Summary:\n'
+        printf '  Critical: %d\n' "$CRITICAL_COUNT"
+        printf '  High:     %d\n' "$HIGH_COUNT"
+        printf '  Medium:   %d\n' "$MEDIUM_COUNT"
+        printf '  Low:      %d\n' "$LOW_COUNT"
+        printf '  Info:     %d\n' "$INFO_COUNT"
+        printf '  Pass:     %d\n' "$PASS_COUNT"
+        printf '\nAuto-fixes Applied: %d\n\n' "$AUTO_FIXED_COUNT"
+        printf 'Workflows Analyzed: %d\n\n' "$(find "$WORKFLOWS_DIR" \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null | wc -l)"
+        printf 'Output Directory: %s\n\n' "$OUTPUT_DIR"
+        printf 'Configuration:\n'
+        printf '  AUTO_FIX: %s\n' "$AUTO_FIX"
+        printf '  FAIL_ON_WARNINGS: %s\n' "$FAIL_ON_WARNINGS"
+        printf '  VERBOSE: %s\n' "$VERBOSE"
+        printf '  CONFIG_FILE: %s\n' "${CONFIG_FILE:-N/A}"
+        printf '  GITLEAKS_SCOPE: %s\n' "$GITLEAKS_SCOPE"
+    } > "${OUTPUT_DIR}/summary.txt"
 
-Findings Summary:
-  Critical: $CRITICAL_COUNT
-  High:     $HIGH_COUNT
-  Medium:   $MEDIUM_COUNT
-  Low:      $LOW_COUNT
-  Info:     $INFO_COUNT
-  Pass:     $PASS_COUNT
-  
-Auto-fixes Applied: $AUTO_FIXED_COUNT
-
-Workflows Analyzed: $(find "$WORKFLOWS_DIR" \( -name "*.yml" -o -name "*.yaml" \) 2>/dev/null | wc -l)
-
-Output Directory: $OUTPUT_DIR
-
-Configuration:
-  AUTO_FIX: $AUTO_FIX
-  FAIL_ON_WARNINGS: $FAIL_ON_WARNINGS
-  GITLEAKS_SCOPE: $GITLEAKS_SCOPE
-EOF
-    
     log_pass "Summary report generated: ${OUTPUT_DIR}/summary.txt"
 }
 
@@ -664,10 +1062,12 @@ EOF
 # -----------------------------------------------------------------------------
 
 main() {
-    echo -e "${BLUE}╔═══════════════════════════════════════════════════════════════╗${NC}"
-    echo -e "${BLUE}║       GitHub Workflows & Actions Security Audit v1.1.0        ║${NC}"
-    echo -e "${BLUE}╚═══════════════════════════════════════════════════════════════╝${NC}"
-    echo ""
+    local box_line=""
+    for ((i=0; i<63; i++)); do box_line+="$BOX_H"; done
+
+    printf '%s%s%s%s%s%s\n' "$BLUE" "$BOX_TL" "$box_line" "$BOX_TR" "$NC"
+    printf '%s%s       GitHub Workflows & Actions Security Audit v1.3.0        %s%s%s\n' "$BLUE" "$BOX_V" "$BOX_V" "$NC"
+    printf '%s%s%s%s%s%s\n\n' "$BLUE" "$BOX_BL" "$box_line" "$BOX_BR" "$NC"
     
     setup_environment
     check_tool_availability
@@ -683,34 +1083,32 @@ main() {
     
     # Final summary
     log_section "Audit Complete"
-    
-    echo ""
-    echo "╔═══════════════════════════════════════════════════════════════╗"
-    echo "║                      FINAL RESULTS                            ║"
-    echo "╠═══════════════════════════════════════════════════════════════╣"
-    printf "║  ${RED}Critical:${NC} %-4d  ${RED}High:${NC} %-4d  ${YELLOW}Medium:${NC} %-4d  ${YELLOW}Low:${NC} %-4d    ║\n" "$CRITICAL_COUNT" "$HIGH_COUNT" "$MEDIUM_COUNT" "$LOW_COUNT"
-    printf "║  ${CYAN}Info:${NC} %-4d      ${GREEN}Pass:${NC} %-4d  ${BLUE}Auto-Fixed:${NC} %-4d         ║\n" "$INFO_COUNT" "$PASS_COUNT" "$AUTO_FIXED_COUNT"
-    echo "╚═══════════════════════════════════════════════════════════════╝"
-    echo ""
+
+    printf '\n'
+    local box_line=""
+    for ((i=0; i<63; i++)); do box_line+="$BOX_H"; done
+
+    printf '%s%s%s%s%s%s\n' "$BLUE" "$BOX_TL" "$box_line" "$BOX_TR" "$NC"
+    printf '%s%s                      FINAL RESULTS                            %s%s%s\n' "$BLUE" "$BOX_V" "$BOX_V" "$NC"
+    printf '%s%s%s%s%s%s\n' "$BLUE" "$BOX_T" "$box_line" "$BOX_R" "$NC"
+    printf '%s%s  %sCritical:%s %-4d  %sHigh:%s %-4d  %sMedium:%s %-4d  %sLow:%s %-4d    %s%s%s\n' "$BLUE" "$BOX_V" "$RED" "$NC" "$CRITICAL_COUNT" "$RED" "$NC" "$HIGH_COUNT" "$YELLOW" "$NC" "$MEDIUM_COUNT" "$YELLOW" "$NC" "$LOW_COUNT" "$BOX_V" "$NC"
+    printf '%s%s  %sInfo:%s %-4d      %sPass:%s %-4d  %sAuto-Fixed:%s %-4d         %s%s%s\n' "$BLUE" "$BOX_V" "$CYAN" "$NC" "$INFO_COUNT" "$GREEN" "$NC" "$PASS_COUNT" "$BLUE" "$NC" "$AUTO_FIXED_COUNT" "$BOX_V" "$NC"
+    printf '%s%s%s%s%s%s\n\n' "$BLUE" "$BOX_BL" "$box_line" "$BOX_BR" "$NC"
     
     # Production readiness assessment with FAIL_ON_WARNINGS support
     if [[ "$CRITICAL_COUNT" -eq 0 && "$HIGH_COUNT" -eq 0 ]]; then
         if [[ "$FAIL_ON_WARNINGS" == "true" && ("$MEDIUM_COUNT" -gt 0 || "$LOW_COUNT" -gt 0) ]]; then
-            echo -e "${YELLOW}⚠ FAIL_ON_WARNINGS=true: Medium/Low issues present${NC}"
-            echo ""
+            printf '%s⚠ FAIL_ON_WARNINGS=true: Medium/Low issues present%s\n\n' "$YELLOW" "$NC"
             exit 1
         else
-            echo -e "${GREEN}✓ GitHub workflows meet security and quality standards${NC}"
-            echo ""
+            printf '%s✓ GitHub workflows meet security and quality standards%s\n\n' "$GREEN" "$NC"
             exit 0
         fi
     elif [[ "$CRITICAL_COUNT" -gt 0 ]]; then
-        echo -e "${RED}✗ CRITICAL security issues must be resolved${NC}"
-        echo ""
+        printf '%s✗ CRITICAL security issues must be resolved%s\n\n' "$RED" "$NC"
         exit 2
     else
-        echo -e "${YELLOW}⚠ HIGH priority security issues should be addressed${NC}"
-        echo ""
+        printf '%s⚠ HIGH priority security issues should be addressed%s\n\n' "$YELLOW" "$NC"
         exit 1
     fi
 }

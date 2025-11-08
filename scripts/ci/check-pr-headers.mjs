@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 // Validate presence and basic correctness of mandatory PR headers.
 // Reads PR body from env PR_BODY (GitHub Actions) or from stdin if not set.
 // Emits GitHub annotations and exits 1 on blocking violations.
@@ -7,7 +8,7 @@ import { readFileSync } from "node:fs";
 
 function getPrBody() {
 	const body = process.env.PR_BODY;
-	if (body && body.trim()) return body;
+	if (body?.trim()) return body;
 	try {
 		return readFileSync(0, "utf8"); // stdin
 	} catch {
@@ -22,12 +23,15 @@ function extractBlock(name, text) {
 		return null;
 	}
 
-	// Escape special regex characters to prevent ReDoS
-	const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-	const re = new RegExp(
-		`(^|\n)${escapedName}:\n([\u0000-\uFFFF]*?)(\nS|$)`,
-		"m",
-	);
+	// Use pre-compiled regexes for each allowed block to prevent ReDoS
+	const blockRegexes = {
+		"AI-EXECUTION": /(^|\n)AI-EXECUTION:\n([\s\S]*?)(\nS|$)/m,
+		ASSUMPTIONS: /(^|\n)ASSUMPTIONS:\n([\s\S]*?)(\nS|$)/m,
+		CONFIDENCE: /(^|\n)CONFIDENCE:\n([\s\S]*?)(\nS|$)/m,
+		OUTPUT: /(^|\n)OUTPUT:\n([\s\S]*?)(\nS|$)/m,
+	};
+
+	const re = blockRegexes[name];
 	const m = text.match(re);
 	if (!m) return null;
 	// group 2 contains indented lines
@@ -36,9 +40,6 @@ function extractBlock(name, text) {
 
 function error(msg) {
 	console.log(`::error::${msg.replace(/\n/g, "%0A")}`);
-}
-function warn(msg) {
-	console.log(`::warning::${msg.replace(/\n/g, "%0A")}`);
 }
 function notice(msg) {
 	console.log(`::notice::${msg.replace(/\n/g, "%0A")}`);
@@ -68,7 +69,6 @@ function validateAIExecution(block) {
 	}
 	const mode = block.match(/\bmode:\s*(.*)/)?.[1]?.trim();
 	const controlsLine = block.match(/\bcontrols:\s*(.*)/)?.[1] ?? "";
-	const deferredLine = block.match(/\bdeferred:\s*(.*)/)?.[1] ?? "";
 	const rationale = block.match(/\brationale:\s*(.*)/)?.[1]?.trim();
 	const allowed = ["Safe", "Fast-Secure", "Audit", "R&D"];
 	if (!mode || !allowed.includes(mode)) {
@@ -148,7 +148,9 @@ function validateOutput(block) {
 	];
 
 	if (failures.length) {
-		failures.forEach((f) => error(f));
+		failures.forEach((f) => {
+			error(f);
+		});
 		console.error(
 			`PR header validation failed with ${failures.length} error(s).`,
 		);

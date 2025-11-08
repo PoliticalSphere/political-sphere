@@ -23,10 +23,14 @@ env:
   REGISTRY: ghcr.io
   IMAGE_NAME: ${{ github.repository }}
 
+permissions:
+  contents: read
+
 jobs:
   build-and-push:
     name: Build and Push Docker Images
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
       packages: write
@@ -89,10 +93,10 @@ jobs:
         id: check_dockerfile
         run: |
           if [ -f "${{ matrix.service.dockerfile }}" ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "✅ Dockerfile found: ${{ matrix.service.dockerfile }}"
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "exists=false" >> "$GITHUB_OUTPUT"
             echo "⚠️ Dockerfile not found: ${{ matrix.service.dockerfile }}"
           fi
 
@@ -133,6 +137,7 @@ jobs:
     name: Security Scan Docker Images
     needs: build-and-push
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     if: github.event_name != 'pull_request'
     permissions:
       contents: read
@@ -144,7 +149,7 @@ jobs:
 
     steps:
       - name: Run Trivy vulnerability scanner
-        uses: aquasecurity/trivy-action@master
+        uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}:latest
           format: "sarif"
@@ -160,6 +165,9 @@ jobs:
   docker-compose-test:
     name: Test Docker Compose
     runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout code
@@ -172,10 +180,10 @@ jobs:
         id: check_compose
         run: |
           if [ -f "docker-compose.yml" ] || [ -f "docker-compose.yaml" ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
+            echo "exists=true" >> "$GITHUB_OUTPUT"
             echo "✅ docker-compose file found"
           else
-            echo "exists=false" >> $GITHUB_OUTPUT
+            echo "exists=false" >> "$GITHUB_OUTPUT"
             echo "⚠️ docker-compose file not found"
           fi
 
@@ -211,7 +219,10 @@ jobs:
     name: Notify on Completion
     needs: [build-and-push, security-scan, docker-compose-test]
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     if: always() && github.event_name != 'pull_request'
+    permissions:
+      contents: read
 
     steps:
       - name: Check job status
@@ -220,19 +231,21 @@ jobs:
           if [ "${{ needs.build-and-push.result }}" == "success" ] && \
              [ "${{ needs.security-scan.result }}" == "success" ] && \
              [ "${{ needs.docker-compose-test.result }}" == "success" ]; then
-            echo "status=success" >> $GITHUB_OUTPUT
-            echo "message=✅ All Docker builds completed successfully" >> $GITHUB_OUTPUT
+            echo "status=success" >> "$GITHUB_OUTPUT"
+            echo "message=✅ All Docker builds completed successfully" >> "$GITHUB_OUTPUT"
           else
-            echo "status=failure" >> $GITHUB_OUTPUT
-            echo "message=❌ Some Docker builds failed" >> $GITHUB_OUTPUT
+            echo "status=failure" >> "$GITHUB_OUTPUT"
+            echo "message=❌ Some Docker builds failed" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Summary
         run: |
-          echo "## Docker Build Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- Build and Push: ${{ needs.build-and-push.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Security Scan: ${{ needs.security-scan.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Docker Compose Test: ${{ needs.docker-compose-test.result }}" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.status.outputs.message }}" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## Docker Build Summary"
+            echo ""
+            echo "- Build and Push: ${{ needs.build-and-push.result }}"
+            echo "- Security Scan: ${{ needs.security-scan.result }}"
+            echo "- Docker Compose Test: ${{ needs.docker-compose-test.result }}"
+            echo ""
+            echo "${{ steps.status.outputs.message }}"
+          } >> "$GITHUB_STEP_SUMMARY"

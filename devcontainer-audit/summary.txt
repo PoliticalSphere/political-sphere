@@ -1,14 +1,14 @@
 DevContainer Audit Summary
-Generated: 2025-11-08T18:59:13Z
+Generated: 2025-11-08T21:33:43Z
 ================================================================================
 
 Findings Summary:
   Critical: 0
   High:     0
   Medium:   2
-  Low:      1
-  Info:     6
-  Pass:     16
+  Low:      0
+  Info:     17
+  Pass:     30
   
 Auto-fixes Applied: 0
 

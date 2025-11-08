@@ -1,0 +1,44 @@
+═══════════════════════════════════════════════════════════════
+  Central Audit System - Summary Report
+═══════════════════════════════════════════════════════════════
+
+Audit Date: 2025-11-08T21:33:35Z
+Auto-Fix Enabled: false
+
+───────────────────────────────────────────────────────────────
+  Overall Results
+───────────────────────────────────────────────────────────────
+
+Total Audits Run:     0
+Passed:               2
+Failed/Issues:        8
+
+───────────────────────────────────────────────────────────────
+  Aggregated Severity Counts
+───────────────────────────────────────────────────────────────
+
+Critical:             2
+High:                 21
+Medium:               24
+Low:                  16
+
+───────────────────────────────────────────────────────────────
+  Production Readiness Assessment
+───────────────────────────────────────────────────────────────
+
+Status: ❌ NOT PRODUCTION READY
+Reason: Critical or High severity issues found
+
+───────────────────────────────────────────────────────────────
+  Detailed Results
+───────────────────────────────────────────────────────────────
+
+Individual audit results available in:
+- GitHub Workflows:  /Users/morganlowman/GitHub/political-sphere/github-audit/
+- DevContainer:      /Users/morganlowman/GitHub/political-sphere/devcontainer-audit/
+- OpenAPI:           /Users/morganlowman/GitHub/political-sphere/openapi-audit/
+- Applications:      /Users/morganlowman/GitHub/political-sphere/app-audit/
+
+Audit log (JSONL):   /Users/morganlowman/GitHub/political-sphere/docs/audit-trail/audit-log-2025-11-08.jsonl
+
+═══════════════════════════════════════════════════════════════

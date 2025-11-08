@@ -1,15 +1,15 @@
 {
-  "timestamp": "2025-11-08T18:59:13Z",
+  "timestamp": "2025-11-08T21:33:43Z",
   "summary": {
     "critical": 0,
     "high": 0,
     "medium": 2,
-    "low": 1,
-    "info": 6,
-    "pass": 15,
+    "low": 0,
+    "info": 17,
+    "pass": 29,
     "autoFixed": 0
   },
   "findings": [
-    {"severity":"medium","code":"TOOL-001","message":"Hadolint not installed - Dockerfile linting will be skipped","file":"N/A","line":0},{"severity":"low","code":"DOCKERFILE-SEC-006","message":"apt-get install should use --no-install-recommends","file":"/Users/morganlowman/GitHub/political-sphere/.devcontainer/Dockerfile","line":0},{"severity":"medium","code":"SECURITY-001","message":"Trivy found 2 configuration issues","file":"/Users/morganlowman/GitHub/political-sphere/.devcontainer/Dockerfile","line":0}
+    {"severity":"medium","code":"RUNTIME-BUILD","message":"Failed to build temp image for runtime/enhanced checks","file":"/Users/morganlowman/GitHub/political-sphere/.devcontainer/Dockerfile","line":0},{"severity":"info","code":"EDGE-002","message":"Consider --platform for multi-arch support","file":"/Users/morganlowman/GitHub/political-sphere/.devcontainer/Dockerfile","line":0},{"severity":"medium","code":"EDGE-003","message":"Implement secrets management for sensitive data","file":"/Users/morganlowman/GitHub/political-sphere/.devcontainer/Dockerfile","line":0}
   ]
 }

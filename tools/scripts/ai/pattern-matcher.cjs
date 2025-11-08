@@ -5,8 +5,8 @@
  * Based on ESLint's proven pattern matching approach
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require("node:fs");
+const path = require("node:path");
 
 const PATTERNS_DIR = path.join(__dirname, "../../../ai/patterns");
 const COMPILED_PATTERNS = path.join(PATTERNS_DIR, "compiled-patterns.json");
@@ -41,7 +41,7 @@ class PatternMatcher {
 						);
 						return;
 					}
-					const regex = new RegExp(pattern, flags || "");
+					const regex = new RegExp(pattern, flags || "u");
 					out[category].push({ regex, severity, message });
 				} catch (_) {
 					// If a pattern fails to compile, skip it but log for debugging.

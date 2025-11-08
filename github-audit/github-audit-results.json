@@ -1,14 +1,71 @@
 {
-  "timestamp": "2025-11-08T19:36:30Z",
-  "version": "1.1.0",
+  "timestamp": "2025-11-08T21:33:39Z",
+  "version": "1.3.0",
   "summary": {
     "critical": 0,
-    "high": 1,
-    "medium": 2,
+    "high": 0,
+    "medium": 0,
     "low": 0,
-    "info": 4,
-    "pass": 6,
+    "info": 27,
+    "pass": 54,
     "autoFixed": 0
   },
-  "findings": [{"severity":"medium","code":"TOOL-001","message":"actionlint not installed - workflow validation will be limited","file":"N/A","line":0},{"severity":"medium","code":"YAML-003","message":"No workflow files found","file":"/Users/morganlowman/GitHub/political-sphere/.github/workflows","line":0},{"severity":"high","code":"CODEQL-002","message":"Add CodeQL workflow for automated security analysis","file":"/Users/morganlowman/GitHub/political-sphere/.github/workflows","line":0}]
+  "findings": [
+    {
+      "severity": "info",
+      "code": "PERF-002",
+      "message": "Consider adding concurrency control",
+      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/release.yml",
+      "line": 0
+    },
+    {
+      "severity": "info",
+      "code": "PERF-001",
+      "message": "Workflow could benefit from dependency caching",
+      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/test-run-tests-action.yml",
+      "line": 0
+    },
+    {
+      "severity": "info",
+      "code": "PERF-002",
+      "message": "Consider adding concurrency control",
+      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/test-run-tests-action.yml",
+      "line": 0
+    },
+    {
+      "severity": "info",
+      "code": "PERF-001",
+      "message": "Workflow could benefit from dependency caching",
+      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/test-setup-node-action.yml",
+      "line": 0
+    },
+    {
+      "severity": "info",
+      "code": "PERF-002",
+      "message": "Consider adding concurrency control",
+      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/test-setup-node-action.yml",
+      "line": 0
+    },
+    {
+      "severity": "info",
+      "code": "PERF-002",
+      "message": "Consider adding concurrency control",
+      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/update-github-diagram.yml",
+      "line": 0
+    },
+    {
+      "severity": "info",
+      "code": "PERF-002",
+      "message": "Consider adding concurrency control",
+      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/docker.yml",
+      "line": 0
+    },
+    {
+      "severity": "info",
+      "code": "PERF-001",
+      "message": "Workflow could benefit from dependency caching",
+      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/ci.yml",
+      "line": 0
+    }
+  ]
 }

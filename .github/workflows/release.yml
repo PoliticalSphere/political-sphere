@@ -61,8 +61,8 @@ jobs:
         run: |
           npx semantic-release
           # Capture outputs for downstream jobs
-          echo "new-release-version=$(git describe --tags --abbrev=0 2>/dev/null || echo 'none')" >> $GITHUB_OUTPUT
-          echo "new-release-published=$([[ -n $(git describe --tags --abbrev=0 2>/dev/null) ]] && echo 'true' || echo 'false')" >> $GITHUB_OUTPUT
+          echo "new-release-version=$(git describe --tags --abbrev=0 2>/dev/null || echo 'none')" >> "$GITHUB_OUTPUT"
+          echo "new-release-published=$([[ -n $(git describe --tags --abbrev=0 2>/dev/null) ]] && echo 'true' || echo 'false')" >> "$GITHUB_OUTPUT"
 
       - name: Upload build artifacts
         if: steps.semantic-release.outputs.new-release-published == 'true'
@@ -128,9 +128,11 @@ jobs:
 
       - name: Report release summary
         run: |
-          echo "## 🚀 Release Summary" >> $GITHUB_STEP_SUMMARY
-          echo "" >> $GITHUB_STEP_SUMMARY
-          echo "- **Version**: ${{ needs.release.outputs.release-version }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Commit**: ${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
-          echo "- **Attestation**: Generated ✅" >> $GITHUB_STEP_SUMMARY
-          echo "- **Verification**: Passed ✅" >> $GITHUB_STEP_SUMMARY
+          {
+            echo "## 🚀 Release Summary"
+            echo ""
+            echo "- **Version**: ${{ needs.release.outputs.release-version }}"
+            echo "- **Commit**: ${{ github.sha }}"
+            echo "- **Attestation**: Generated ✅"
+            echo "- **Verification**: Passed ✅"
+          } >> "$GITHUB_STEP_SUMMARY"

@@ -6,75 +6,162 @@ This document explains the CI/CD triggers, key jobs, ownership, and how to run w
 
 ```mermaid
 graph TB
-    GitHub[.github/]
-    
-    GitHub --> Workflows[workflows/]
-    Workflows --> wf_ci[ci.yml]
-    Workflows --> wf_docker[docker.yml]
-    Workflows --> wf_release[release.yml]
-    Workflows --> wf_security[security.yml]
-    Workflows --> wf_testSetup[test-setup-node-action.yml]
-    Workflows --> wf_testRun[test-run-tests-action.yml]
-    
-    GitHub --> Actions[actions/]
-    Actions --> act_setupNode[setup-node/]
-    act_setupNode --> act_setupNodeAction[action.yml]
-    act_setupNode --> act_setupNodeReadme[README.md]
-    
-    Actions --> act_setupNodeDeps[setup-node-deps/]
-    act_setupNodeDeps --> act_setupNodeDepsAction[action.yml]
-    act_setupNodeDeps --> act_setupNodeDepsReadme[README.md]
-    
-    Actions --> act_qualityChecks[quality-checks/]
-    act_qualityChecks --> act_qualityAction[action.yml]
-    act_qualityChecks --> act_qualityReadme[README.md]
-    
-    Actions --> act_runTests[run-tests/]
-    act_runTests --> act_runTestsAction[action.yml]
-    act_runTests --> act_runTestsReadme[README.md]
-    
-    Actions --> act_deploy[deploy/]
-    act_deploy --> act_deployAction[action.yml]
-    act_deploy --> act_deployReadme[README.md]
-    
-    GitHub --> Documentation[documentation/]
-    Documentation --> doc_codeowners[CODEOWNERS]
-    Documentation --> doc_security[SECURITY.md]
-    Documentation --> doc_support[SUPPORT.md]
-    
-    GitHub --> Templates[ISSUE_TEMPLATE/]
-    Templates --> tpl_bugReport[bug_report.yml]
-    Templates --> tpl_featureRequest[feature_request.yml]
-    Templates --> tpl_config[config.yml]
-    
-    GitHub --> root_PR[PULL_REQUEST_TEMPLATE.md]
-    GitHub --> root_Dependabot[dependabot.yml]
-    GitHub --> root_Instructions[copilot-instructions.md]
-    GitHub --> root_Readme[README.md]
-    
+    GitHub[📁 .github/]
+
+    %% Workflows Directory
+    GitHub --> Workflows[📁 workflows/]
+    Workflows --> wf_ci[📄 ci.yml]
+    Workflows --> wf_docker[📄 docker.yml]
+    Workflows --> wf_release[📄 release.yml]
+    Workflows --> wf_security[📄 security.yml]
+    Workflows --> wf_testSetup[📄 test-setup-node-action.yml]
+    Workflows --> wf_testRun[📄 test-run-tests-action.yml]
+
+    %% Actions Directory
+    GitHub --> Actions[📁 actions/]
+
+    Actions --> act_deploy[📁 deploy/]
+    act_deploy --> deploy_action[📄 action.yml]
+    act_deploy --> deploy_readme[📄 README.md]
+    act_deploy --> deploy_changelog[📄 CHANGELOG.md]
+    act_deploy --> deploy_argocd[📄 argocd-sync.sh]
+    act_deploy --> deploy_build[📄 build-and-push.sh]
+    act_deploy --> deploy_helm[📄 helm-deploy.sh]
+    act_deploy --> deploy_kubectl[📄 kubectl-apply.sh]
+    act_deploy --> deploy_rollback[📄 rollback.sh]
+    act_deploy --> deploy_run[📄 run-deploy.sh]
+    act_deploy --> deploy_validate[📄 validate-manifests.sh]
+    act_deploy --> deploy_test[📁 test/]
+
+    Actions --> act_qualityChecks[📁 quality-checks/]
+    act_qualityChecks --> quality_action[📄 action.yml]
+    act_qualityChecks --> quality_readme[📄 README.md]
+    act_qualityChecks --> quality_changelog[📄 CHANGELOG.md]
+
+    Actions --> act_runTests[📁 run-tests/]
+    act_runTests --> tests_action[📄 action.yml]
+    act_runTests --> tests_readme[📄 README.md]
+    act_runTests --> tests_changelog[📄 CHANGELOG.md]
+    act_runTests --> tests_coverage[📄 coverage.config.json]
+    act_runTests --> tests_parse[📄 parse-results.mjs]
+    act_runTests --> tests_run[📄 run-tests.sh]
+    act_runTests --> tests_upload[📄 upload-artifacts.sh]
+    act_runTests --> tests_folder[📁 tests/]
+
+    Actions --> act_setupNode[📁 setup-node/]
+    act_setupNode --> node_action[📄 action.yml]
+    act_setupNode --> node_readme[📄 README.md]
+    act_setupNode --> node_changelog[📄 CHANGELOG.md]
+    act_setupNode --> node_script[📄 setup-node.sh]
+
+    Actions --> act_setupNodeDeps[📁 setup-node-deps/]
+    act_setupNodeDeps --> deps_action[📄 action.yml]
+    act_setupNodeDeps --> deps_readme[📄 README.md]
+    act_setupNodeDeps --> deps_changelog[📄 CHANGELOG.md]
+
+    %% Documentation Directory
+    GitHub --> Documentation[📁 documentation/]
+    Documentation --> doc_codeowners[📄 CODEOWNERS]
+    Documentation --> doc_security[📄 SECURITY.md]
+    Documentation --> doc_support[📄 SUPPORT.md]
+
+    %% Issue Templates Directory
+    GitHub --> IssueTemplates[📁 ISSUE_TEMPLATE/]
+    IssueTemplates --> tpl_bug[📄 bug_report.yml]
+    IssueTemplates --> tpl_feature[📄 feature_request.yml]
+    IssueTemplates --> tpl_security[📄 security_report.yml]
+
+    %% PR Template Directory
+    GitHub --> PRTemplates[📁 PULL_REQUEST_TEMPLATE/]
+    PRTemplates --> pr_template[📄 PULL_REQUEST_TEMPLATE.md]
+
+    %% Root Files
+    GitHub --> root_dependabot[📄 dependabot.yml]
+    GitHub --> root_copilot[📄 copilot-instructions.md]
+    GitHub --> root_readme[📄 README.md]
+
+    %% Styling - Folders (darker, bolder colors)
     style GitHub fill:#FF6F00,stroke:#E65100,stroke-width:3px,color:#fff
-    style Workflows fill:#4CAF50,stroke:#2E7D32,stroke-width:2px,color:#fff
-    style Actions fill:#2196F3,stroke:#1565C0,stroke-width:2px,color:#fff
-    style Documentation fill:#9C27B0,stroke:#6A1B9A,stroke-width:2px,color:#fff
-    style Templates fill:#FF9800,stroke:#E65100,stroke-width:2px
-    style root_PR fill:#00BCD4,stroke:#00838F,stroke-width:2px
-    style root_Dependabot fill:#795548,stroke:#4E342E,stroke-width:2px
-    style root_Instructions fill:#E91E63,stroke:#880E4F,stroke-width:2px
-    style root_Readme fill:#607D8B,stroke:#37474F,stroke-width:2px
+    style Workflows fill:#2E7D32,stroke:#1B5E20,stroke-width:2px,color:#fff
+    style Actions fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#fff
+    style act_deploy fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#fff
+    style act_qualityChecks fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#fff
+    style act_runTests fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#fff
+    style act_setupNode fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#fff
+    style act_setupNodeDeps fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#fff
+    style deploy_test fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#fff
+    style tests_folder fill:#1565C0,stroke:#0D47A1,stroke-width:2px,color:#fff
+    style Documentation fill:#6A1B9A,stroke:#4A148C,stroke-width:2px,color:#fff
+    style IssueTemplates fill:#E65100,stroke:#BF360C,stroke-width:2px,color:#fff
+    style PRTemplates fill:#00838F,stroke:#006064,stroke-width:2px,color:#fff
+
+    %% Styling - Files (lighter colors)
+    style wf_ci fill:#A5D6A7,stroke:#66BB6A,stroke-width:1px
+    style wf_docker fill:#A5D6A7,stroke:#66BB6A,stroke-width:1px
+    style wf_release fill:#A5D6A7,stroke:#66BB6A,stroke-width:1px
+    style wf_security fill:#A5D6A7,stroke:#66BB6A,stroke-width:1px
+    style wf_testSetup fill:#A5D6A7,stroke:#66BB6A,stroke-width:1px
+    style wf_testRun fill:#A5D6A7,stroke:#66BB6A,stroke-width:1px
+
+    style deploy_action fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deploy_readme fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deploy_changelog fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deploy_argocd fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deploy_build fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deploy_helm fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deploy_kubectl fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deploy_rollback fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deploy_run fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deploy_validate fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+
+    style quality_action fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style quality_readme fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style quality_changelog fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+
+    style tests_action fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style tests_readme fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style tests_changelog fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style tests_coverage fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style tests_parse fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style tests_run fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style tests_upload fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+
+    style node_action fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style node_readme fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style node_changelog fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style node_script fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+
+    style deps_action fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deps_readme fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+    style deps_changelog fill:#90CAF9,stroke:#42A5F5,stroke-width:1px
+
+    style doc_codeowners fill:#CE93D8,stroke:#AB47BC,stroke-width:1px
+    style doc_security fill:#CE93D8,stroke:#AB47BC,stroke-width:1px
+    style doc_support fill:#CE93D8,stroke:#AB47BC,stroke-width:1px
+
+    style tpl_bug fill:#FFCC80,stroke:#FFA726,stroke-width:1px
+    style tpl_feature fill:#FFCC80,stroke:#FFA726,stroke-width:1px
+    style tpl_security fill:#FFCC80,stroke:#FFA726,stroke-width:1px
+
+    style pr_template fill:#80DEEA,stroke:#26C6DA,stroke-width:1px
+
+    style root_dependabot fill:#BCAAA4,stroke:#8D6E63,stroke-width:1px
+    style root_copilot fill:#F48FB1,stroke:#EC407A,stroke-width:1px
+    style root_readme fill:#B0BEC5,stroke:#78909C,stroke-width:1px
 ```
 
 ### Directory Purpose
 
-| Directory/File | Purpose |
-|----------------|---------|
-| **workflows/** | GitHub Actions workflow definitions for CI/CD automation |
-| **actions/** | Reusable composite actions used across workflows |
-| **documentation/** | Project governance documents (CODEOWNERS, SECURITY, SUPPORT) |
-| **ISSUE_TEMPLATE/** | Issue templates for bug reports, feature requests, etc. |
-| **PULL_REQUEST_TEMPLATE.md** | Template for pull request descriptions |
-| **dependabot.yml** | Automated dependency update configuration |
-| **copilot-instructions.md** | GitHub Copilot custom instructions and coding standards |
-| **README.md** | This file - CI/CD documentation and workflow guide |
+| Directory/File               | Purpose                                                      |
+| ---------------------------- | ------------------------------------------------------------ |
+| **workflows/**               | GitHub Actions workflow definitions for CI/CD automation     |
+| **actions/**                 | Reusable composite actions used across workflows             |
+| **documentation/**           | Project governance documents (CODEOWNERS, SECURITY, SUPPORT) |
+| **ISSUE_TEMPLATE/**          | Issue templates for bug reports, feature requests, etc.      |
+| **PULL_REQUEST_TEMPLATE.md** | Template for pull request descriptions                       |
+| **dependabot.yml**           | Automated dependency update configuration                    |
+| **copilot-instructions.md**  | GitHub Copilot custom instructions and coding standards      |
+| **README.md**                | This file - CI/CD documentation and workflow guide           |
 
 ---
 

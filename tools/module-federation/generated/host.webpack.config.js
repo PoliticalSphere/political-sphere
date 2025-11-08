@@ -1,15 +1,14 @@
-// Host webpack config (Module Federation) example (ESM)
-import webpack from 'webpack';
-const { ModuleFederationPlugin } = webpack.container;
+// Shell webpack config (Module Federation) example
+const { ModuleFederationPlugin } = require('webpack').container;
 
-export default {
+module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      name: 'host',
+      name: 'shell',
       remotes: {
-        remoteApp: 'remoteApp@http://localhost:3001/remoteEntry.js',
+        remoteApp: 'remoteApp@http://localhost:4201/remoteEntry.js'
       },
-      shared: { react: { singleton: true }, 'react-dom': { singleton: true } },
-    }),
-  ],
+      shared: { react: { singleton: true }, 'react-dom': { singleton: true } }
+    })
+  ]
 };

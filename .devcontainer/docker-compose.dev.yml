@@ -13,6 +13,11 @@ services:
     environment:
       - NODE_ENV=development
       - DOCKER_HOST=unix:///var/run/docker.sock
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     networks:
       - political-sphere-dev
 
@@ -29,6 +34,12 @@ services:
       - postgres_data:/var/lib/postgresql/data
     networks:
       - political-sphere-dev
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
+      - /var/run/postgresql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U dev -d political_sphere_dev"]
       interval: 10s
@@ -43,6 +54,11 @@ services:
       - redis_data:/data
     networks:
       - political-sphere-dev
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 10s

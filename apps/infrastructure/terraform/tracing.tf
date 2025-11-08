@@ -87,6 +87,12 @@ resource "aws_lb" "jaeger" {
   security_groups    = [aws_security_group.jaeger_lb.id]
   subnets            = aws_subnet.private[*].id
 
+  access_logs {
+    bucket  = aws_s3_bucket.jaeger_access_logs.bucket
+    prefix  = "jaeger-access-logs"
+    enabled = true
+  }
+
   tags = {
     Environment = var.environment
     Project     = "political-sphere"

@@ -1,17 +1,17 @@
 /**
  * Benchmark Features
- * 
+ *
  * Runs performance benchmarks on various features and components to measure:
  * - API endpoint response times
  * - Database query performance
  * - Frontend component render times
  * - Memory usage and leaks
  * - Throughput under load
- * 
+ *
  * @module scripts/benchmark-features
  */
 
-import { performance } from 'node:perf_hooks';
+import { performance } from "node:perf_hooks";
 
 interface BenchmarkResult {
   name: string;
@@ -60,7 +60,7 @@ class BenchmarkRunner {
 
     // Warmup phase
     if (opts.warmup && opts.warmup > 0) {
-      console.log('   → Running warmup...');
+      console.log("   → Running warmup...");
       for (let i = 0; i < opts.warmup; i++) {
         if (opts.async) {
           await (fn as () => Promise<void>)();
@@ -71,19 +71,19 @@ class BenchmarkRunner {
     }
 
     // Benchmark phase
-    console.log('   → Running benchmark...');
+    console.log("   → Running benchmark...");
     const times: number[] = [];
     const startTotal = performance.now();
 
     for (let i = 0; i < (opts.iterations || 1000); i++) {
       const start = performance.now();
-      
+
       if (opts.async) {
         await (fn as () => Promise<void>)();
       } else {
         (fn as () => void)();
       }
-      
+
       const end = performance.now();
       times.push(end - start);
     }
@@ -92,7 +92,12 @@ class BenchmarkRunner {
     const totalTime = endTotal - startTotal;
 
     // Calculate statistics
-    const result = this.calculateStats(name, times, totalTime, opts.iterations || 1000);
+    const result = this.calculateStats(
+      name,
+      times,
+      totalTime,
+      opts.iterations || 1000
+    );
     this.results.push(result);
     this.printResult(result);
 
@@ -114,8 +119,9 @@ class BenchmarkRunner {
     const max = Math.max(...times);
 
     // Calculate standard deviation
-    const squareDiffs = times.map(time => Math.pow(time - avg, 2));
-    const avgSquareDiff = squareDiffs.reduce((a, b) => a + b, 0) / squareDiffs.length;
+    const squareDiffs = times.map((time) => (time - avg) ** 2);
+    const avgSquareDiff =
+      squareDiffs.reduce((a, b) => a + b, 0) / squareDiffs.length;
     const stdDev = Math.sqrt(avgSquareDiff);
 
     // Calculate throughput (operations per second)
@@ -139,7 +145,11 @@ class BenchmarkRunner {
   private printResult(result: BenchmarkResult): void {
     console.log(`   ✓ ${result.name}`);
     console.log(`     Average: ${result.averageTime.toFixed(3)}ms`);
-    console.log(`     Min: ${result.minTime.toFixed(3)}ms, Max: ${result.maxTime.toFixed(3)}ms`);
+    console.log(
+      `     Min: ${result.minTime.toFixed(3)}ms, Max: ${result.maxTime.toFixed(
+        3
+      )}ms`
+    );
     console.log(`     Std Dev: ${result.standardDeviation.toFixed(3)}ms`);
     if (result.throughput) {
       console.log(`     Throughput: ${result.throughput.toFixed(0)} ops/sec`);
@@ -150,17 +160,19 @@ class BenchmarkRunner {
    * Print summary of all benchmarks
    */
   printSummary(): void {
-    console.log('\n📊 Benchmark Summary');
-    console.log('═'.repeat(80));
+    console.log("\n📊 Benchmark Summary");
+    console.log("═".repeat(80));
 
     for (const result of this.results) {
-      const opsPerSec = result.throughput?.toFixed(0) || 'N/A';
+      const opsPerSec = result.throughput?.toFixed(0) || "N/A";
       console.log(
-        `${result.name.padEnd(40)} ${result.averageTime.toFixed(3)}ms (${opsPerSec} ops/sec)`
+        `${result.name.padEnd(40)} ${result.averageTime.toFixed(
+          3
+        )}ms (${opsPerSec} ops/sec)`
       );
     }
 
-    console.log('═'.repeat(80));
+    console.log("═".repeat(80));
   }
 
   /**
@@ -185,11 +197,11 @@ class BenchmarkRunner {
  */
 function benchmarkStringConcat(runner: BenchmarkRunner): void {
   runner.benchmark(
-    'String concatenation',
+    "String concatenation",
     () => {
-      let str = '';
+      let str = "";
       for (let i = 0; i < 100; i++) {
-        str += 'a';
+        str += "a";
       }
     },
     { iterations: 10000 }
@@ -201,7 +213,7 @@ function benchmarkStringConcat(runner: BenchmarkRunner): void {
  */
 function benchmarkArrayOps(runner: BenchmarkRunner): void {
   runner.benchmark(
-    'Array push operations',
+    "Array push operations",
     () => {
       const arr: number[] = [];
       for (let i = 0; i < 100; i++) {
@@ -217,12 +229,12 @@ function benchmarkArrayOps(runner: BenchmarkRunner): void {
  */
 function benchmarkObjectCreation(runner: BenchmarkRunner): void {
   runner.benchmark(
-    'Object creation',
+    "Object creation",
     () => {
       const obj = {
         id: 1,
-        name: 'Test User',
-        email: 'test@example.com',
+        name: "Test User",
+        email: "test@example.com",
         createdAt: new Date(),
       };
       return obj;
@@ -236,9 +248,9 @@ function benchmarkObjectCreation(runner: BenchmarkRunner): void {
  */
 async function benchmarkAsyncOps(runner: BenchmarkRunner): Promise<void> {
   await runner.benchmark(
-    'Async Promise resolve',
+    "Async Promise resolve",
     async () => {
-      await Promise.resolve('done');
+      await Promise.resolve("done");
     },
     { iterations: 1000, async: true }
   );
@@ -257,7 +269,7 @@ function benchmarkJsonOps(runner: BenchmarkRunner): void {
   };
 
   runner.benchmark(
-    'JSON stringify',
+    "JSON stringify",
     () => {
       JSON.stringify(data);
     },
@@ -267,7 +279,7 @@ function benchmarkJsonOps(runner: BenchmarkRunner): void {
   const jsonString = JSON.stringify(data);
 
   runner.benchmark(
-    'JSON parse',
+    "JSON parse",
     () => {
       JSON.parse(jsonString);
     },
@@ -279,7 +291,7 @@ function benchmarkJsonOps(runner: BenchmarkRunner): void {
  * Run all benchmarks
  */
 async function runAllBenchmarks(): Promise<void> {
-  console.log('🚀 Starting feature benchmarks...');
+  console.log("🚀 Starting feature benchmarks...");
 
   const runner = new BenchmarkRunner();
 
@@ -296,7 +308,7 @@ async function runAllBenchmarks(): Promise<void> {
   runner.printSummary();
 
   // Export results
-  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   runner.exportResults(`benchmark-results-${timestamp}.json`);
 }
 
@@ -304,11 +316,11 @@ async function runAllBenchmarks(): Promise<void> {
 if (import.meta.url === `file://${process.argv[1]}`) {
   runAllBenchmarks()
     .then(() => {
-      console.log('\n✅ Benchmarks complete');
+      console.log("\n✅ Benchmarks complete");
       process.exit(0);
     })
     .catch((error) => {
-      console.error('\n💥 Benchmark failed:', error);
+      console.error("\n💥 Benchmark failed:", error);
       process.exit(1);
     });
 }

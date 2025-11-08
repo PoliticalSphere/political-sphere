@@ -42,10 +42,11 @@ runs:
     - id: detect-pm
       name: Detect package manager (optional)
       shell: bash
+      env:
+        PM_INPUT: ${{ inputs.cache }}
+        PM_AUTO: ${{ inputs.package-manager-cache }}
       run: |
         set -euo pipefail
-        PM_INPUT="${{ inputs.cache }}"
-        PM_AUTO="${{ inputs.package-manager-cache }}"
 
         pm="none"
         if [[ "$PM_INPUT" != "none" && -n "$PM_INPUT" ]]; then

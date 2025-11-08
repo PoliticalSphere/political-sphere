@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-11-08T18:16:09Z",
+  "summary": {
+    "critical": 0,
+    "high": 0,
+    "medium": 2,
+    "low": 0,
+    "info": 4,
+    "pass": 6,
+    "autoFixed": 0
+  },
+  "findings": [
+    {"severity":"medium","code":"TOOL-001","message":"actionlint not installed - workflow validation will be limited","file":"N/A","line":0},{"severity":"medium","code":"YAML-003","message":"No workflow files found","file":"/Users/morganlowman/GitHub/political-sphere/.github/workflows","line":0}
+  ]
+}

@@ -146,6 +146,12 @@ resource "aws_lb" "political_sphere" {
 
   enable_deletion_protection = var.environment == "prod"
 
+  access_logs {
+    bucket  = aws_s3_bucket.alb_access_logs.bucket
+    prefix  = "alb-access-logs"
+    enabled = true
+  }
+
   tags = {
     Name        = "political-sphere-alb"
     Environment = var.environment
@@ -388,6 +394,7 @@ resource "aws_cloudtrail" "political_sphere" {
   include_global_service_events = true
   is_multi_region_trail         = true
   enable_log_file_validation    = true
+  kms_key_id                    = aws_kms_key.cloudtrail.arn
 
   event_selector {
     read_write_type           = "All"

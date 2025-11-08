@@ -95,7 +95,7 @@ resource "aws_eks_cluster" "this" {
     public_access_cidrs     = []
   }
 
-  enabled_cluster_log_types = var.cluster_log_types
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
 
   tags = local.cluster_tags
 

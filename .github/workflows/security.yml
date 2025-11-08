@@ -128,10 +128,11 @@ jobs:
           EVENT_NAME: ${{ github.event_name }}
           PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
           CURRENT_REPO: ${{ github.repository }}
+          SEMGREP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
         run: |
           # Only require secrets for pushes to main or PRs from same repo (not forks)
           if [ "${EVENT_NAME}" = "push" ] || [ "${PR_HEAD_REPO}" = "${CURRENT_REPO}" ]; then
-            if [ -z "${{ secrets.SEMGREP_APP_TOKEN }}" ]; then
+            if [ -z "$SEMGREP_TOKEN" ]; then
               echo "::warning::SEMGREP_APP_TOKEN not set - scan will run in local mode only"
             fi
           else

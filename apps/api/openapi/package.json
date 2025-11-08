@@ -1,0 +1,28 @@
+{
+  "name": "@political-sphere/api-openapi",
+  "version": "1.0.0",
+  "description": "OpenAPI specifications and tooling for Political Sphere API",
+  "private": true,
+  "scripts": {
+    "validate": "npm run validate:spec && npm run validate:lint",
+    "validate:spec": "npx @apidevtools/swagger-parser validate api.yaml",
+    "validate:lint": "npx @redocly/cli lint api.yaml --config .redocly.yaml",
+    "generate": "npm run generate:client && npm run generate:server && npm run generate:docs",
+    "generate:client": "npx @openapitools/openapi-generator-cli generate -i api.yaml -g typescript-axios -o generated/client --config openapi-generator-config.json",
+    "generate:server": "npx @openapitools/openapi-generator-cli generate -i api.yaml -g typescript-node -o generated/server --config openapi-generator-config.json",
+    "generate:docs": "npx @redocly/cli build-docs api.yaml -o generated/docs/index.html",
+    "preview:docs": "npx @redocly/cli preview-docs api.yaml",
+    "bundle": "npx @redocly/cli bundle api.yaml -o api.bundle.yaml",
+    "test:examples": "npx @apidevtools/swagger-parser validate api.yaml --resolve && echo 'All examples validated'",
+    "stats": "npx @redocly/cli stats api.yaml",
+    "changelog": "cat CHANGELOG.md"
+  },
+  "devDependencies": {
+    "@apidevtools/swagger-parser": "^10.1.1",
+    "@openapitools/openapi-generator-cli": "^2.13.4",
+    "@redocly/cli": "^1.12.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,13 +1,13 @@
 /**
  * Data Cleanup Job
- * 
+ *
  * Performs data cleanup and maintenance tasks such as removing old records,
  * archiving data, and optimizing database tables.
- * 
+ *
  * @module jobs/data-cleanup
  */
 
-import type { DatabaseConnector } from '../connectors/database-connector.js';
+import type { DatabaseConnector } from "../connectors/database-connector.js";
 
 export interface CleanupConfig {
   retentionDays: number;
@@ -26,8 +26,8 @@ export class DataCleanupJob {
    * Run the cleanup job
    */
   async run(): Promise<{ deleted: number; archived: number }> {
-    console.log('Starting data cleanup job...');
-    
+    console.log("Starting data cleanup job...");
+
     let totalDeleted = 0;
     let totalArchived = 0;
 
@@ -37,8 +37,8 @@ export class DataCleanupJob {
       totalArchived += archived;
     }
 
-    console.log('Cleanup completed:', { totalDeleted, totalArchived });
-    
+    console.log("Cleanup completed:", { totalDeleted, totalArchived });
+
     return { deleted: totalDeleted, archived: totalArchived };
   }
 
@@ -67,7 +67,7 @@ export class DataCleanupJob {
     const deleted = result.rowCount;
 
     console.log(`Cleaned up table ${tableName}:`, { deleted, archived });
-    
+
     return { deleted, archived };
   }
 
@@ -79,8 +79,8 @@ export class DataCleanupJob {
     cutoffDate: Date
   ): Promise<number> {
     // TODO: Implement archiving to S3, file system, or archive database
-    console.log('Archiving records from', tableName, 'before', cutoffDate);
-    
+    console.log("Archiving records from", tableName, "before", cutoffDate);
+
     const result = await this.database.query(
       `SELECT * FROM ${tableName} WHERE created_at < $1`,
       [cutoffDate]
@@ -88,7 +88,7 @@ export class DataCleanupJob {
 
     // Write to archive destination
     if (this.config.archiveDestination) {
-      console.log('Writing to archive:', this.config.archiveDestination);
+      console.log("Writing to archive:", this.config.archiveDestination);
       // TODO: Write archive file
     }
 
@@ -99,13 +99,13 @@ export class DataCleanupJob {
    * Optimize database tables
    */
   async optimize(): Promise<void> {
-    console.log('Optimizing database tables...');
-    
+    console.log("Optimizing database tables...");
+
     for (const table of this.config.tables) {
       // TODO: Run database-specific optimization commands
       // PostgreSQL: VACUUM ANALYZE
       // MySQL: OPTIMIZE TABLE
-      console.log('Optimizing table:', table);
+      console.log("Optimizing table:", table);
       await this.database.query(`VACUUM ANALYZE ${table}`);
     }
   }
@@ -117,11 +117,11 @@ export class DataCleanupJob {
     tableName: string,
     uniqueColumns: string[]
   ): Promise<number> {
-    const columns = uniqueColumns.join(', ');
-    
+    const columns = uniqueColumns.join(", ");
+
     // TODO: Implement deduplication logic based on unique columns
     console.log(`Deduplicating ${tableName} on columns: ${columns}`);
-    
+
     const result = await this.database.query(`
       DELETE FROM ${tableName} a
       USING ${tableName} b
@@ -137,14 +137,14 @@ export class DataCleanupJob {
    */
   async getStatistics(): Promise<Record<string, number>> {
     const stats: Record<string, number> = {};
-    
+
     for (const table of this.config.tables) {
       const result = await this.database.query(
         `SELECT COUNT(*) as count FROM ${table}`
       );
       stats[table] = Number(result.rows[0]) || 0;
     }
-    
+
     return stats;
   }
 }

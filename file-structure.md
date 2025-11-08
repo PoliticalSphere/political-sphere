@@ -103,45 +103,63 @@ political-sphere/
 ├── apps/ # Application projects
 │ ├── **api/** # Backend API service
 │ │ ├── **src/**
-│ │ │ ├── **modules/**
-│ │ │ ├── **middleware/**
-│ │ │ ├── **utils/**
-│ │ │ └── **server.ts**
+│ │ │ ├── **domain/** # Domain models and business logic
+│ │ │ ├── **routes/** # API route handlers
+│ │ │ ├── **modules/** # Service modules
+│ │ │ ├── **middleware/** # Express middleware
+│ │ │ ├── **utils/** # Utility functions
+│ │ │ ├── **app.js** # Express app configuration
+│ │ │ ├── **index.js** # Entry point
+│ │ │ └── **server.ts** # Server initialization
 │ │ ├── **tests/**
-│ │ │ ├── unit/
-│ │ │ ├── integration/
-│ │ │ └── fixtures/
+│ │ │ ├── **unit/**
+│ │ │ ├── **integration/**
+│ │ │ ├── **e2e/**
+│ │ │ ├── **routes/**
+│ │ │ ├── **domain/**
+│ │ │ ├── **fixtures/**
+│ │ │ └── **utils/**
 │ │ ├── **openapi/** # OpenAPI specs ✨ NEW
-│ │ │ ├── api.yaml
-│ │ │ ├── schemas/
-│ │ │ └── generated/
+│ │ │ ├── **api.yaml**
+│ │ │ ├── **schemas/**
+│ │ │ ├── **generated/**
+│ │ │ └── **README.md**
 │ │ ├── **prisma/** # Database schemas ✨ NEW
-│ │ │ ├── schema.prisma
-│ │ │ ├── migrations/
-│ │ │ └── seeds/
-│ │ ├── project.json # With tags ⚡ ENHANCED
-│ │ ├── tsconfig.json
-│ │ ├── .env.example
-│ │ └── README.md
+│ │ │ ├── **schema.prisma** # Main Prisma schema
+│ │ │ ├── **migrations/** # Database migration files
+│ │ │ ├── **seeds/** # Seed data files
+│ │ │ └── **README.md**
+│ │ ├── **Dockerfile**
+│ │ ├── **project.json** # With tags ⚡ ENHANCED
+│ │ ├── **tsconfig.json**
+│ │ ├── **tsconfig.app.json**
+│ │ ├── **tsconfig.spec.json**
+│ │ ├── **budgets.json**
+│ │ ├── **playwright.config.js**
+│ │ ├── **logger.js**
+│ │ └── **README.md**
 │ │
 │ ├── **web/** # Main web application ⚡ RENAMED (was frontend)
-│ │ ├── src/
-│ │ │ ├── components/
-│ │ │ ├── pages/
-│ │ │ ├── hooks/
-│ │ │ ├── utils/
-│ │ │ ├── styles/
-│ │ │ ├── assets/
-│ │ │ └── main.tsx
-│ │ ├── tests/
-│ │ │ ├── unit/
-│ │ │ ├── integration/
-│ │ │ └── accessibility/
-│ │ ├── public/
-│ │ ├── project.json # With tags ⚡ ENHANCED
-│ │ ├── vite.config.js
-│ │ ├── .env.example
-│ │ └── README.md
+│ │ ├── **src/**
+│ │ │ ├── **components/**
+│ │ │ ├── **pages/**
+│ │ │ ├── **hooks/**
+│ │ │ ├── **utils/**
+│ │ │ ├── **styles/**
+│ │ │ ├── **assets/**
+│ │ │ └── **main.jsx** # React app entry point
+│ │ ├── **tests/**
+│ │ │ ├── **unit/**
+│ │ │ ├── **integration/**
+│ │ │ └── **accessibility/**
+│ │ ├── **public/**
+│ │ ├── **server.js** # Production server for serving built app
+│ │ ├── **Dockerfile**
+│ │ ├── **project.json** # With tags ⚡ ENHANCED
+│ │ ├── **vite.config.js**
+│ │ ├── **budgets.json**
+│ │ ├── **.eslintrc.json**
+│ │ └── **README.md**
 │ │
 │ ├── **game-server/** # Real-time game simulation
 │ │ ├── src/
@@ -150,7 +168,7 @@ political-sphere/
 │ │ │ ├── websocket/
 │ │ │ └── server.ts
 │ │ ├── tests/
-│ │ ├── project.json # With tags ⚡ ENHANCED
+│ │ ├── **project.json** # With tags ⚡ ENHANCED
 │ │ ├── tsconfig.json
 │ │ └── README.md
 │ │
@@ -160,8 +178,7 @@ political-sphere/
 │ │ │ ├── queues/
 │ │ │ └── worker.ts
 │ │ ├── tests/
-│ │ ├── project.json # With tags ⚡ ENHANCED
-│ │ ├── tsconfig.json
+│ │ ├── **project.json** # With tags ⚡ ENHANCED
 │ │ └── README.md
 │ │
 │ ├── **shell/** # Module federation shell ⚡ RENAMED (was host)
@@ -169,7 +186,7 @@ political-sphere/
 │ │ │ ├── bootstrap.tsx
 │ │ │ └── remotes/
 │ │ ├── project.json
-│ │ ├── webpack.config.js
+│ │ ├── webpack.config.cjs
 │ │ └── README.md
 │ │
 │ ├── **feature-auth-remote/** # Auth micro-frontend ⚡ RENAMED (was remote)
@@ -177,7 +194,7 @@ political-sphere/
 │ │ │ ├── components/
 │ │ │ └── index.tsx
 │ │ ├── project.json
-│ │ ├── webpack.config.js
+│ │ ├── webpack.config.cjs
 │ │ └── README.md
 │ │
 │ ├── **feature-dashboard-remote/** # Dashboard micro-frontend ✨ NEW
@@ -212,58 +229,62 @@ political-sphere/
 │ │ └── README.md
 │ │
 │ ├── **data/** # Data processing and ETL service
-│ │ ├── src/
-│ │ │ ├── pipelines/
-│ │ │ │ ├── user-data-pipeline.ts
-│ │ │ │ ├── analytics-pipeline.ts
-│ │ │ │ └── game-state-sync.ts
-│ │ │ ├── transformers/
-│ │ │ │ ├── normalize-user-data.ts
-│ │ │ │ ├── aggregate-metrics.ts
-│ │ │ │ └── sanitize-inputs.ts
-│ │ │ ├── connectors/
-│ │ │ │ ├── database-connector.ts
-│ │ │ │ ├── api-connector.ts
-│ │ │ │ └── external-sources.ts
-│ │ │ ├── jobs/
-│ │ │ │ ├── scheduled-imports.ts
-│ │ │ │ ├── data-cleanup.ts
-│ │ │ │ └── export-reports.ts
-│ │ │ └── server.ts
-│ │ ├── tests/
-│ │ │ ├── unit/
-│ │ │ ├── integration/
-│ │ │ └── fixtures/
-│ │ ├── config/
-│ │ │ ├── pipeline.config.json
-│ │ │ └── sources.config.json
-│ │ ├── project.json
-│ │ ├── tsconfig.json
-│ │ ├── .env.example
-│ │ └── README.md
+│ │ ├── **src/**
+│ │ │ ├── **pipelines/**
+│ │ │ │ ├── **user-data-pipeline.ts**
+│ │ │ │ ├── **analytics-pipeline.ts**
+│ │ │ │ └── **game-state-sync.ts**
+│ │ │ ├── **transformers/**
+│ │ │ │ ├── **normalize-user-data.ts**
+│ │ │ │ ├── **aggregate-metrics.ts**
+│ │ │ │ └── **sanitize-inputs.ts**
+│ │ │ ├── **connectors/**
+│ │ │ │ ├── **database-connector.ts**
+│ │ │ │ ├── **api-connector.ts**
+│ │ │ │ └── **external-sources.ts**
+│ │ │ ├── **jobs/**
+│ │ │ │ ├── **scheduled-imports.ts**
+│ │ │ │ ├── **data-cleanup.ts**
+│ │ │ │ └── **export-reports.ts**
+│ │ │ └── **server.ts**
+│ │ ├── **tests/**
+│ │ │ ├── **unit/**
+│ │ │ ├── **integration/**
+│ │ │ └── **fixtures/**
+│ │ ├── **config/**
+│ │ │ ├── **pipeline.config.json**
+│ │ │ └── **sources.config.json**
+│ │ ├── **project.json**
+│ │ ├── **tsconfig.json**
+│ │ ├── **.env.example**
+│ │ └── **README.md**
 │ │
 │ ├── **dev/** # Development tools and experimental features
-│ │ ├── src/
-│ │ │ ├── experiments/
-│ │ │ │ ├── feature-prototypes/
-│ │ │ │ ├── ai-playground/
-│ │ │ │ └── performance-tests/
-│ │ │ ├── tools/
-│ │ │ │ ├── data-generators/
-│ │ │ │ ├── mock-servers/
-│ │ │ │ └── test-harnesses/
-│ │ │ ├── sandbox/
-│ │ │ │ ├── component-demos/
-│ │ │ │ ├── api-exploration/
-│ │ │ │ └── integration-tests/
-│ │ │ └── main.ts
-│ │ ├── scripts/
-│ │ │ ├── seed-dev-data.ts
-│ │ │ ├── reset-environment.ts
-│ │ │ └── benchmark-features.ts
-│ │ ├── project.json
-│ │ ├── tsconfig.json
-│ │ └── README.md
+│ │ ├── **src/**
+│ │ │ ├── **experiments/**
+│ │ │ │ ├── **feature-prototypes/**
+│ │ │ │ ├── **ai-playground/**
+│ │ │ │ └── **performance-tests/**
+│ │ │ ├── **tools/**
+│ │ │ │ ├── **data-generators/**
+│ │ │ │ ├── **mock-servers/**
+│ │ │ │ └── **test-harnesses/**
+│ │ │ ├── **sandbox/**
+│ │ │ │ ├── **component-demos/**
+│ │ │ │ ├── **api-exploration/**
+│ │ │ │ └── **integration-tests/**
+│ │ │ └── **main.ts**
+│ │ ├── **scripts/**
+│ │ │ ├── **seed-dev-data.ts**
+│ │ │ ├── **reset-environment.ts**
+│ │ │ └── **benchmark-features.ts**
+│ │ ├── **templates/** # Environment variable templates
+│ │ │ ├── **.env.example**
+│ │ │ └── **.env.local.example**
+│ │ ├── **tests/**
+│ │ ├── **project.json**
+│ │ ├── **tsconfig.json**
+│ │ └── **README.md**
 │ │
 │ ├── **docs/** # Documentation site (Docusaurus/VitePress)
 │ │ ├── docs/
@@ -325,6 +346,21 @@ political-sphere/
 │ │ │ ├── aws-client.ts
 │ │ │ ├── kubectl-wrapper.ts
 │ │ │ └── terraform-runner.ts
+│ │ ├── **environments/** # Environment-specific infrastructure
+│ │ │ └── **dev/** # Development environment
+│ │ │ ├── **terraform/** # LocalStack infrastructure
+│ │ │ │ ├── **main.tf**
+│ │ │ │ ├── **variables.tf**
+│ │ │ │ ├── **outputs.tf**
+│ │ │ │ └── **README.md**
+│ │ │ └── **monitoring/** # Dev monitoring setup
+│ │ │ ├── **prometheus.yml**
+│ │ │ ├── **grafana-dashboards/**
+│ │ │ └── **README.md**
+│ │ ├── **k3d/** # Kubernetes cluster management
+│ │ │ ├── **create-cluster.sh**
+│ │ │ ├── **port-forward-vault.sh**
+│ │ │ └── **README.md**
 │ │ ├── tests/
 │ │ │ ├── unit/
 │ │ │ └── integration/
@@ -1330,6 +1366,24 @@ political-sphere/
 │ │ ├── refresh-knowledge.sh
 │ │ └── README.md
 │ │
+│ ├── **dev-tools/** # AI development tools
+│ │ ├── **ai-assistant/**
+│ │ ├── **blackbox-review.mjs**
+│ │ ├── **commit-msg.mjs**
+│ │ ├── **context-indexer.mjs**
+│ │ ├── **copilot-experiment-log.mjs**
+│ │ ├── **governance.js**
+│ │ ├── **knowledge-base.md**
+│ │ ├── **learning.js**
+│ │ ├── **metrics-aggregator.mjs**
+│ │ ├── **ml-pipeline.js**
+│ │ ├── **performance-monitor.js**
+│ │ ├── **pr-desc.mjs**
+│ │ ├── **predictive-analytics.js**
+│ │ ├── **prompt-standards.md**
+│ │ ├── **review-pr.mjs**
+│ │ └── **telemetry-dashboard.mjs**
+│ │
 │ ├── ai-controls.json
 │ └── README.md
 │
@@ -1345,6 +1399,23 @@ political-sphere/
 │ │
 │ ├── demo/
 │ │ └── sample-data/
+│ │
+│ ├── **mcp-servers/** # Model Context Protocol servers
+│ │ ├── **duckduckgo/**
+│ │ ├── **filesystem/**
+│ │ ├── **git/**
+│ │ ├── **github/**
+│ │ ├── **microsoft-learn/**
+│ │ ├── **political-sphere/**
+│ │ ├── **puppeteer/**
+│ │ └── **sqlite/**
+│ │
+│ ├── **tests/** # Testing utilities
+│ │ ├── **accessibility-testing.js**
+│ │ ├── **chaos-engineering.js**
+│ │ ├── **integration-tests.js**
+│ │ ├── **performance-benchmarking.js**
+│ │ └── **ui-visual-testing.js**
 │ │
 │ └── README.md
 │
@@ -1389,6 +1460,7 @@ political-sphere/
 ├── .npmrc
 ├── .prettierrc
 ├── .prettierignore
+├── **Tiltfile** # Tilt development orchestration
 ├── Makefile
 ├── nx.json
 ├── package.json

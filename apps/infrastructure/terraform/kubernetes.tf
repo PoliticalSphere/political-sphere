@@ -4,6 +4,8 @@ resource "aws_eks_cluster" "political_sphere" {
   role_arn = aws_iam_role.eks_cluster.arn
   version  = "1.28"
 
+  enabled_cluster_log_types = ["api", "audit", "authenticator", "controllerManager", "scheduler"]
+
   vpc_config {
     subnet_ids              = aws_subnet.private[*].id
     endpoint_private_access = true

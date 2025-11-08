@@ -1,15 +1,15 @@
 /**
  * External Sources Connector
- * 
+ *
  * Manages connections to external data sources like third-party APIs,
  * data feeds, and webhook endpoints.
- * 
+ *
  * @module connectors/external-sources
  */
 
 export interface ExternalSourceConfig {
   name: string;
-  type: 'rest' | 'graphql' | 'webhook' | 'feed';
+  type: "rest" | "graphql" | "webhook" | "feed";
   url: string;
   apiKey?: string;
   refreshInterval?: number;
@@ -32,7 +32,7 @@ export class ExternalSourcesConnector {
    */
   registerSource(config: ExternalSourceConfig): void {
     this.sources.set(config.name, config);
-    console.log('Registered external source:', config.name);
+    console.log("Registered external source:", config.name);
   }
 
   /**
@@ -53,8 +53,8 @@ export class ExternalSourcesConnector {
     }
 
     // TODO: Implement actual data fetching based on source type
-    console.log('Fetching from external source:', source);
-    
+    console.log("Fetching from external source:", source);
+
     return {
       id: crypto.randomUUID(),
       source: sourceName,
@@ -77,10 +77,10 @@ export class ExternalSourcesConnector {
     if (!this.listeners.has(sourceName)) {
       this.listeners.set(sourceName, new Set());
     }
-    
+
     const callbacks = this.listeners.get(sourceName)!;
     callbacks.add(callback);
-    
+
     // Return unsubscribe function
     return () => {
       callbacks.delete(callback);
@@ -109,13 +109,13 @@ export class ExternalSourcesConnector {
     }
 
     const interval = source.refreshInterval || 60000; // Default 1 minute
-    
+
     const timerId = setInterval(async () => {
       try {
         const data = await this.fetch(sourceName);
         this.emit(sourceName, data);
       } catch (error) {
-        console.error('Error polling external source:', sourceName, error);
+        console.error("Error polling external source:", sourceName, error);
       }
     }, interval);
 

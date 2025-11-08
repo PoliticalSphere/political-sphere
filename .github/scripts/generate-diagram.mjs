@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-import { readdir, readFile, writeFile } from "fs/promises";
-import { join } from "path";
+import { readdir, readFile, writeFile } from "node:fs/promises";
+import { join } from "node:path";
 
 const GITHUB_DIR = ".github";
 const README_PATH = join(GITHUB_DIR, "README.md");
@@ -131,7 +131,7 @@ async function updateReadme() {
 	const mermaidRegex = /```mermaid\n[\s\S]*?\n```/;
 	const newReadme = readme.replace(
 		mermaidRegex,
-		"```mermaid\n" + diagram + "```",
+		`\`\`\`mermaid\n${diagram}\`\`\``,
 	);
 
 	await writeFile(README_PATH, newReadme, "utf-8");

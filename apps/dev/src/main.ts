@@ -1,13 +1,13 @@
 /**
  * Development Tools and Experimental Features - Main Entry Point
- * 
+ *
  * This is the main entry point for the development tools application.
  * It provides access to experiments, prototypes, and development utilities.
- * 
+ *
  * @module apps/dev
  */
 
-import { createServer } from 'node:http';
+import { createServer } from "node:http";
 
 const PORT = process.env.DEV_PORT || 3001;
 
@@ -21,26 +21,26 @@ class DevServer {
    * Start the development server
    */
   async start(): Promise<void> {
-    console.log('🔧 Starting Development Tools Server...');
+    console.log("🔧 Starting Development Tools Server...");
 
     this.server = createServer((req, res) => {
-      const url = new URL(req.url || '/', `http://${req.headers.host}`);
+      const url = new URL(req.url || "/", `http://${req.headers.host}`);
 
       // Route handling for different dev tools
       switch (url.pathname) {
-        case '/':
+        case "/":
           this.handleIndex(res);
           break;
-        case '/experiments':
+        case "/experiments":
           this.handleExperiments(res);
           break;
-        case '/tools':
+        case "/tools":
           this.handleTools(res);
           break;
-        case '/sandbox':
+        case "/sandbox":
           this.handleSandbox(res);
           break;
-        case '/health':
+        case "/health":
           this.handleHealth(res);
           break;
         default:
@@ -50,12 +50,18 @@ class DevServer {
 
     this.server.listen(PORT, () => {
       console.log(`✓ Development server running at http://localhost:${PORT}`);
-      console.log('');
-      console.log('Available endpoints:');
+      console.log("");
+      console.log("Available endpoints:");
       console.log(`  → http://localhost:${PORT}/            - Index`);
-      console.log(`  → http://localhost:${PORT}/experiments - Feature experiments`);
-      console.log(`  → http://localhost:${PORT}/tools       - Development tools`);
-      console.log(`  → http://localhost:${PORT}/sandbox     - Sandbox environment`);
+      console.log(
+        `  → http://localhost:${PORT}/experiments - Feature experiments`
+      );
+      console.log(
+        `  → http://localhost:${PORT}/tools       - Development tools`
+      );
+      console.log(
+        `  → http://localhost:${PORT}/sandbox     - Sandbox environment`
+      );
       console.log(`  → http://localhost:${PORT}/health      - Health check`);
     });
   }
@@ -71,15 +77,15 @@ class DevServer {
           else resolve();
         });
       });
-      console.log('✓ Development server stopped');
+      console.log("✓ Development server stopped");
     }
   }
 
   /**
    * Handle index page
    */
-  private handleIndex(res: import('node:http').ServerResponse): void {
-    res.writeHead(200, { 'Content-Type': 'text/html' });
+  private handleIndex(res: import("node:http").ServerResponse): void {
+    res.writeHead(200, { "Content-Type": "text/html" });
     res.end(`
       <!DOCTYPE html>
       <html>
@@ -124,69 +130,95 @@ class DevServer {
   /**
    * Handle experiments page
    */
-  private handleExperiments(res: import('node:http').ServerResponse): void {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      message: 'Feature experiments and prototypes',
-      available: [
-        'feature-prototypes',
-        'ai-playground',
-        'performance-tests',
-      ],
-    }, null, 2));
+  private handleExperiments(res: import("node:http").ServerResponse): void {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify(
+        {
+          message: "Feature experiments and prototypes",
+          available: [
+            "feature-prototypes",
+            "ai-playground",
+            "performance-tests",
+          ],
+        },
+        null,
+        2
+      )
+    );
   }
 
   /**
    * Handle tools page
    */
-  private handleTools(res: import('node:http').ServerResponse): void {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      message: 'Development tools and utilities',
-      available: [
-        'data-generators',
-        'mock-servers',
-        'test-harnesses',
-      ],
-    }, null, 2));
+  private handleTools(res: import("node:http").ServerResponse): void {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify(
+        {
+          message: "Development tools and utilities",
+          available: ["data-generators", "mock-servers", "test-harnesses"],
+        },
+        null,
+        2
+      )
+    );
   }
 
   /**
    * Handle sandbox page
    */
-  private handleSandbox(res: import('node:http').ServerResponse): void {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      message: 'Sandbox environment for testing',
-      available: [
-        'component-demos',
-        'api-exploration',
-        'integration-tests',
-      ],
-    }, null, 2));
+  private handleSandbox(res: import("node:http").ServerResponse): void {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify(
+        {
+          message: "Sandbox environment for testing",
+          available: [
+            "component-demos",
+            "api-exploration",
+            "integration-tests",
+          ],
+        },
+        null,
+        2
+      )
+    );
   }
 
   /**
    * Handle health check
    */
-  private handleHealth(res: import('node:http').ServerResponse): void {
-    res.writeHead(200, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      status: 'healthy',
-      uptime: process.uptime(),
-      timestamp: new Date().toISOString(),
-    }, null, 2));
+  private handleHealth(res: import("node:http").ServerResponse): void {
+    res.writeHead(200, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify(
+        {
+          status: "healthy",
+          uptime: process.uptime(),
+          timestamp: new Date().toISOString(),
+        },
+        null,
+        2
+      )
+    );
   }
 
   /**
    * Handle 404 not found
    */
-  private handleNotFound(res: import('node:http').ServerResponse): void {
-    res.writeHead(404, { 'Content-Type': 'application/json' });
-    res.end(JSON.stringify({
-      error: 'Not found',
-      message: 'The requested resource does not exist',
-    }, null, 2));
+  private handleNotFound(res: import("node:http").ServerResponse): void {
+    res.writeHead(404, { "Content-Type": "application/json" });
+    res.end(
+      JSON.stringify(
+        {
+          error: "Not found",
+          message: "The requested resource does not exist",
+        },
+        null,
+        2
+      )
+    );
   }
 }
 
@@ -195,20 +227,20 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   const server = new DevServer();
 
   // Handle graceful shutdown
-  process.on('SIGTERM', async () => {
-    console.log('SIGTERM received, shutting down gracefully...');
+  process.on("SIGTERM", async () => {
+    console.log("SIGTERM received, shutting down gracefully...");
     await server.stop();
     process.exit(0);
   });
 
-  process.on('SIGINT', async () => {
-    console.log('SIGINT received, shutting down gracefully...');
+  process.on("SIGINT", async () => {
+    console.log("SIGINT received, shutting down gracefully...");
     await server.stop();
     process.exit(0);
   });
 
   server.start().catch((error) => {
-    console.error('Fatal error:', error);
+    console.error("Fatal error:", error);
     process.exit(1);
   });
 }

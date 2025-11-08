@@ -33,7 +33,8 @@ resource "random_password" "redshift" {
 }
 
 resource "aws_kms_key" "redshift" {
-  description = "KMS key for Redshift encryption"
+  description             = "KMS key for Redshift encryption"
+  enable_key_rotation     = true
   deletion_window_in_days = 7
 
   tags = {

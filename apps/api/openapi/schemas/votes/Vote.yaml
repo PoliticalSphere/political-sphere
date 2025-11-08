@@ -1,0 +1,108 @@
+type: object
+required:
+  - id
+  - title
+  - description
+  - type
+  - status
+  - createdBy
+  - createdAt
+  - votingStartsAt
+  - votingEndsAt
+properties:
+  id:
+    type: string
+    format: uuid
+    description: Unique vote identifier
+    example: "550e8400-e29b-41d4-a716-446655440002"
+  title:
+    type: string
+    minLength: 5
+    maxLength: 200
+    description: Vote title
+    example: "Should the UK adopt proportional representation?"
+  description:
+    type: string
+    minLength: 20
+    maxLength: 5000
+    description: Detailed vote description
+    example: "This referendum proposes changing the UK's voting system from first-past-the-post to proportional representation..."
+  type:
+    type: string
+    enum: [legislation, policy, election, referendum, impeachment, party_vote]
+    description: Type of vote or proposal
+    example: "referendum"
+  status:
+    type: string
+    enum: [draft, pending_approval, active, completed, cancelled, rejected]
+    description: Current vote status
+    example: "active"
+  category:
+    type: string
+    enum:
+      [
+        constitutional,
+        economic,
+        social,
+        environmental,
+        foreign_policy,
+        governance,
+      ]
+    description: Policy category
+    example: "governance"
+  options:
+    type: array
+    minItems: 2
+    maxItems: 10
+    items:
+      type: object
+      required:
+        - id
+        - text
+      properties:
+        id:
+          type: string
+          description: Option identifier
+          example: "yes"
+        text:
+          type: string
+          minLength: 1
+          maxLength: 200
+          description: Option display text
+          example: "Yes, adopt proportional representation"
+    description: Available voting options
+  createdBy:
+    type: string
+    format: uuid
+    description: User ID who created the vote
+    example: "550e8400-e29b-41d4-a716-446655440000"
+  approvedBy:
+    type: string
+    format: uuid
+    description: User ID who approved the vote (if required)
+    example: "550e8400-e29b-41d4-a716-446655440001"
+  votingStartsAt:
+    type: string
+    format: date-time
+    description: When voting begins
+    example: "2025-11-10T00:00:00Z"
+  votingEndsAt:
+    type: string
+    format: date-time
+    description: When voting ends
+    example: "2025-11-17T23:59:59Z"
+  quorum:
+    type: integer
+    minimum: 1
+    description: Minimum votes required for validity
+    example: 1000
+  createdAt:
+    type: string
+    format: date-time
+    description: Vote creation timestamp
+    example: "2025-11-01T10:00:00Z"
+  updatedAt:
+    type: string
+    format: date-time
+    description: Last update timestamp
+    example: "2025-11-08T14:30:00Z"

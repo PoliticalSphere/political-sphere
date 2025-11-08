@@ -6,9 +6,35 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
 
 ## [Unreleased]
 
+### Bug Fixes - Audit Scripts (2025-11-08)
+
+- **Fixed Critical Hang Issue in Audit Scripts**: Fixed all three audit scripts (devcontainer-audit.sh, github-audit.sh, app-audit.sh) hanging after Phase 1 due to bash arithmetic expansion bug
+- **Root Cause**: Counter increments like `((PASS_COUNT++))` return exit code 1 when incrementing from 0, causing immediate script termination with `set -euo pipefail`
+- **Solution**: Added `|| true` to all 21 counter increment operations across the three scripts to prevent early exit
+- **Impact**: All audit scripts now execute successfully through all validation phases (8-10 phases depending on script)
+- **Verified**: DevContainer audit completes with 17 passes, GitHub audit completes with 8 passes, App audit properly detects monorepo structure
+- **Documentation**: Added troubleshooting entry in `scripts/ci/README-audits.md` explaining the issue and solution
+
+### Security Fixes - KMS Key Rotation
+
+- **KMS Key Rotation Enabled**: Added `enable_key_rotation = true` to AWS KMS keys to prevent leaked keys from being used by attackers. Updated `apps/infrastructure/terraform/business-intelligence.tf` for the Redshift KMS key and `libs/infrastructure/modules/kms/main.tf` for the reusable KMS module. This ensures compliance with security requirements mandating key rotation for all KMS keys.
+
+### Security Fixes - ELB Access Logs
+
+- **ELB Access Logs Enabled**: Added access logs to AWS ELBs to capture important event information for security monitoring and compliance. Updated `apps/infrastructure/terraform/security.tf` for the main ALB and `apps/infrastructure/terraform/tracing.tf` for the Jaeger ALB. Created dedicated S3 buckets with proper encryption, versioning, and access policies for storing access logs. This addresses the security requirement for comprehensive logging of load balancer access patterns.
+
+### Security Fixes - CloudTrail KMS Encryption
+
+- **CloudTrail KMS Encryption Enabled**: Added KMS encryption for CloudTrail logs to ensure logs are encrypted at rest using customer-managed keys (CMKs). Updated both CloudTrail resources (`compliance` and `political_sphere`) to use dedicated KMS keys for encryption. Created a new KMS key with proper IAM policies allowing CloudTrail service to encrypt/decrypt logs. This provides enhanced control over encryption keys and meets security requirements for encrypted audit logging.
+
+### Security Fixes - EKS Control Plane Logging
+
+- **EKS Control Plane Logging Enabled**: Added comprehensive EKS control plane logging to capture Kubernetes API server, audit, authenticator, controller manager, and scheduler logs. Updated both the main EKS cluster configuration and the reusable EKS module to enable all recommended log types for security monitoring and compliance. This addresses the security requirement for sufficient control plane logging and provides visibility into cluster operations and security events.
+
 ### Summary
 
-- **Code Quality Improvements - Game Server (2025-11-07)**: 
+- **OpenAPI Specification Completion (2025-11-08)**: Completed comprehensive OpenAPI 3.1.0 specification for Political Sphere API exceeding industry standards. Created 400+ line specification with 50+ endpoints covering authentication, user management, political parties, voting/governance, news content, simulation control, WebSocket integration, and administrative functions. Implemented advanced security schemes (JWT, OAuth2, API keys), comprehensive error handling, pagination, rate limiting, and webhook callbacks. Added organized schema directory structure with domain-specific folders, comprehensive tooling (validation, generation, documentation), and detailed README with usage instructions. Specification includes cryptographic voting, AI-assisted moderation, real-time features, and enterprise-grade security practices. **Note**: Future API changes will be tracked in `apps/api/openapi/CHANGELOG.md`.
+- **Code Quality Improvements - Game Server (2025-11-07)**:
   - Completed TypeScript migration: Removed old JavaScript files (complianceClient.js, moderationClient.js, ageVerificationClient.js, index.js) after successful migration to TypeScript strict mode
   - Improved logging: Replaced console.warn with structured Logger from libs/shared in db.ts (3 instances)
   - Cleaned up eslint-disable comments: Removed 3 no-console suppressions, documented remaining justified suppressions

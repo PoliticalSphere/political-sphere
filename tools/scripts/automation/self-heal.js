@@ -359,6 +359,16 @@ async function main() {
 	}
 
 	const command = args[0];
+
+	// Validate command to prevent command injection
+	if (!/^[a-zA-Z0-9_/-]+$/.test(command)) {
+		console.error(`❌ Invalid command: ${command}`);
+		console.error(
+			"Command must contain only alphanumeric characters, underscores, hyphens, and forward slashes",
+		);
+		process.exit(1);
+	}
+
 	const commandArgs = args.slice(1);
 
 	console.log(
@@ -375,28 +385,40 @@ async function main() {
 	);
 
 	try {
+		// Find and validate test file path to prevent path traversal
+		let testFile = commandArgs.find(
+			(arg) =>
+				arg.includes("test") &&
+				(arg.endsWith(".js") || arg.endsWith(".mjs") || arg.endsWith(".ts")),
+		);
+
+		if (testFile) {
+			// Validate file path to prevent path traversal
+			if (
+				testFile.includes("..") ||
+				testFile.startsWith("/") ||
+				testFile.startsWith("\\")
+			) {
+				console.error(`❌ Invalid file path: ${testFile}`);
+				console.error(
+					"File path must be relative and not contain '..' or absolute paths",
+				);
+				process.exit(1);
+			}
+			// Ensure it matches expected pattern for test files
+			if (!/^[\w\-/]+\.test\.(js|mjs|ts)$/.test(testFile)) {
+				console.error(`❌ Invalid test file format: ${testFile}`);
+				console.error("Test file must match pattern: [name].test.(js|mjs|ts)");
+				process.exit(1);
+			}
+			testFile = join(process.cwd(), testFile);
+		}
+
 		const result = await healer.runCommandWithHealing(command, {
 			args: commandArgs,
 			context: {
 				cwd: process.cwd(),
-				file: commandArgs.find(
-					(arg) =>
-						arg.includes("test") &&
-						(arg.endsWith(".js") ||
-							arg.endsWith(".mjs") ||
-							arg.endsWith(".ts")),
-				)
-					? join(
-							process.cwd(),
-							commandArgs.find(
-								(arg) =>
-									arg.includes("test") &&
-									(arg.endsWith(".js") ||
-										arg.endsWith(".mjs") ||
-										arg.endsWith(".ts")),
-							),
-						)
-					: undefined,
+				file: testFile,
 			},
 		});
 

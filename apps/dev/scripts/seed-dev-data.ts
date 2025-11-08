@@ -1,13 +1,13 @@
 /**
  * Seed Development Data
- * 
+ *
  * Populates the development database with realistic test data for local development.
  * This includes users, political entities, proposals, votes, and other game state.
- * 
+ *
  * @module scripts/seed-dev-data
  */
 
-import { DatabaseConnector } from '../../../data/src/connectors/database-connector.js';
+import { DatabaseConnector } from "../../../data/src/connectors/database-connector.js";
 
 interface SeedConfig {
   users?: number;
@@ -30,20 +30,20 @@ const DEFAULT_CONFIG: SeedConfig = {
  * Seed the development database with test data
  */
 async function seedDevData(config: SeedConfig = DEFAULT_CONFIG): Promise<void> {
-  console.log('🌱 Seeding development database...');
-  console.log('Configuration:', config);
+  console.log("🌱 Seeding development database...");
+  console.log("Configuration:", config);
 
   const db = new DatabaseConnector({
-    host: process.env.DB_HOST || 'localhost',
-    port: Number.parseInt(process.env.DB_PORT || '5432', 10),
-    database: process.env.DB_NAME || 'political_sphere_dev',
-    user: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASSWORD || '',
+    host: process.env.DB_HOST || "localhost",
+    port: Number.parseInt(process.env.DB_PORT || "5432", 10),
+    database: process.env.DB_NAME || "political_sphere_dev",
+    user: process.env.DB_USER || "postgres",
+    password: process.env.DB_PASSWORD || "",
   });
 
   try {
     await db.connect();
-    console.log('✓ Connected to database');
+    console.log("✓ Connected to database");
 
     // Seed users
     if (config.users && config.users > 0) {
@@ -65,9 +65,9 @@ async function seedDevData(config: SeedConfig = DEFAULT_CONFIG): Promise<void> {
       await seedProposals(db, config.proposals);
     }
 
-    console.log('✓ Database seeding completed successfully');
+    console.log("✓ Database seeding completed successfully");
   } catch (error) {
-    console.error('❌ Error seeding database:', error);
+    console.error("❌ Error seeding database:", error);
     throw error;
   } finally {
     await db.disconnect();
@@ -80,12 +80,35 @@ async function seedDevData(config: SeedConfig = DEFAULT_CONFIG): Promise<void> {
 async function seedUsers(db: DatabaseConnector, count: number): Promise<void> {
   console.log(`  → Seeding ${count} users...`);
 
-  const firstNames = ['Alice', 'Bob', 'Charlie', 'Diana', 'Eve', 'Frank', 'Grace', 'Henry', 'Iris', 'Jack'];
-  const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Miller', 'Davis', 'Garcia', 'Rodriguez', 'Wilson'];
+  const firstNames = [
+    "Alice",
+    "Bob",
+    "Charlie",
+    "Diana",
+    "Eve",
+    "Frank",
+    "Grace",
+    "Henry",
+    "Iris",
+    "Jack",
+  ];
+  const lastNames = [
+    "Smith",
+    "Johnson",
+    "Williams",
+    "Brown",
+    "Jones",
+    "Miller",
+    "Davis",
+    "Garcia",
+    "Rodriguez",
+    "Wilson",
+  ];
 
   for (let i = 0; i < count; i++) {
     const firstName = firstNames[i % firstNames.length];
-    const lastName = lastNames[Math.floor(i / firstNames.length) % lastNames.length];
+    const lastName =
+      lastNames[Math.floor(i / firstNames.length) % lastNames.length];
     const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@example.com`;
 
     await db.query(
@@ -102,23 +125,26 @@ async function seedUsers(db: DatabaseConnector, count: number): Promise<void> {
 /**
  * Seed political parties
  */
-async function seedParties(db: DatabaseConnector, count: number): Promise<void> {
+async function seedParties(
+  db: DatabaseConnector,
+  count: number
+): Promise<void> {
   console.log(`  → Seeding ${count} political parties...`);
 
   const partyNames = [
-    'Progressive Party',
-    'Conservative Alliance',
-    'Liberal Democrats',
-    'Green Coalition',
-    'Socialist Workers',
-    'Centrist Union',
-    'National Party',
-    'Reform Movement',
-    'Democratic Front',
-    'People\'s Choice',
+    "Progressive Party",
+    "Conservative Alliance",
+    "Liberal Democrats",
+    "Green Coalition",
+    "Socialist Workers",
+    "Centrist Union",
+    "National Party",
+    "Reform Movement",
+    "Democratic Front",
+    "People's Choice",
   ];
 
-  const ideologies = ['left', 'center-left', 'center', 'center-right', 'right'];
+  const ideologies = ["left", "center-left", "center", "center-right", "right"];
 
   for (let i = 0; i < Math.min(count, partyNames.length); i++) {
     await db.query(
@@ -128,7 +154,9 @@ async function seedParties(db: DatabaseConnector, count: number): Promise<void> 
       [
         partyNames[i],
         ideologies[i % ideologies.length],
-        `A ${ideologies[i % ideologies.length]} political party focused on democratic governance.`,
+        `A ${
+          ideologies[i % ideologies.length]
+        } political party focused on democratic governance.`,
         new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000),
         new Date(),
       ]
@@ -141,15 +169,20 @@ async function seedParties(db: DatabaseConnector, count: number): Promise<void> 
 /**
  * Seed constituencies
  */
-async function seedConstituencies(db: DatabaseConnector, count: number): Promise<void> {
+async function seedConstituencies(
+  db: DatabaseConnector,
+  count: number
+): Promise<void> {
   console.log(`  → Seeding ${count} constituencies...`);
 
-  const regions = ['North', 'South', 'East', 'West', 'Central'];
-  const prefixes = ['Greater', 'New', 'Old', 'Upper', 'Lower'];
-  const suffixes = ['shire', 'ton', 'ville', 'ford', 'bridge'];
+  const regions = ["North", "South", "East", "West", "Central"];
+  const prefixes = ["Greater", "New", "Old", "Upper", "Lower"];
+  const suffixes = ["shire", "ton", "ville", "ford", "bridge"];
 
   for (let i = 0; i < count; i++) {
-    const name = `${prefixes[i % prefixes.length]} ${regions[i % regions.length]}${suffixes[i % suffixes.length]}`;
+    const name = `${prefixes[i % prefixes.length]} ${
+      regions[i % regions.length]
+    }${suffixes[i % suffixes.length]}`;
     const population = Math.floor(50000 + Math.random() * 150000);
 
     await db.query(
@@ -166,23 +199,33 @@ async function seedConstituencies(db: DatabaseConnector, count: number): Promise
 /**
  * Seed legislative proposals
  */
-async function seedProposals(db: DatabaseConnector, count: number): Promise<void> {
+async function seedProposals(
+  db: DatabaseConnector,
+  count: number
+): Promise<void> {
   console.log(`  → Seeding ${count} proposals...`);
 
   const topics = [
-    'Healthcare Reform',
-    'Education Funding',
-    'Climate Action',
-    'Tax Policy',
-    'Infrastructure Development',
-    'Social Security',
-    'Immigration Policy',
-    'Defense Spending',
-    'Housing Affordability',
-    'Digital Rights',
+    "Healthcare Reform",
+    "Education Funding",
+    "Climate Action",
+    "Tax Policy",
+    "Infrastructure Development",
+    "Social Security",
+    "Immigration Policy",
+    "Defense Spending",
+    "Housing Affordability",
+    "Digital Rights",
   ];
 
-  const statuses = ['draft', 'proposed', 'debate', 'voting', 'passed', 'rejected'];
+  const statuses = [
+    "draft",
+    "proposed",
+    "debate",
+    "voting",
+    "passed",
+    "rejected",
+  ];
 
   for (let i = 0; i < count; i++) {
     const topic = topics[i % topics.length];
@@ -195,7 +238,7 @@ async function seedProposals(db: DatabaseConnector, count: number): Promise<void
         `${topic} Act ${2025 + i}`,
         `A comprehensive proposal to address ${topic.toLowerCase()} in the United Kingdom.`,
         status,
-        topics[i % topics.length].split(' ')[0].toLowerCase(),
+        topics[i % topics.length].split(" ")[0].toLowerCase(),
         new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000),
         new Date(),
       ]
@@ -213,8 +256,8 @@ function parseArgs(): SeedConfig {
   const config: SeedConfig = { ...DEFAULT_CONFIG };
 
   for (let i = 0; i < args.length; i += 2) {
-    const key = args[i]?.replace(/^--/, '') as keyof SeedConfig;
-    const value = Number.parseInt(args[i + 1] || '0', 10);
+    const key = args[i]?.replace(/^--/, "") as keyof SeedConfig;
+    const value = Number.parseInt(args[i + 1] || "0", 10);
 
     if (key in config) {
       config[key] = value;
@@ -227,14 +270,14 @@ function parseArgs(): SeedConfig {
 // Run if executed directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const config = parseArgs();
-  
+
   seedDevData(config)
     .then(() => {
-      console.log('✅ Seeding complete');
+      console.log("✅ Seeding complete");
       process.exit(0);
     })
     .catch((error) => {
-      console.error('💥 Seeding failed:', error);
+      console.error("💥 Seeding failed:", error);
       process.exit(1);
     });
 }

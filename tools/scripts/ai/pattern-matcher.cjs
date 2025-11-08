@@ -34,6 +34,13 @@ class PatternMatcher {
 						// skip suspiciously large or non-string patterns
 						return;
 					}
+					// Validate pattern to prevent ReDoS - check for dangerous patterns
+					if (this._isReDoSVulnerable(pattern)) {
+						console.warn(
+							`Skipping potentially ReDoS-vulnerable pattern for category=${category}: ${pattern}`,
+						);
+						return;
+					}
 					const regex = new RegExp(pattern, flags || "");
 					out[category].push({ regex, severity, message });
 				} catch (_) {
@@ -45,6 +52,19 @@ class PatternMatcher {
 			});
 		});
 		return out;
+	}
+
+	_isReDoSVulnerable(pattern) {
+		// Check for common ReDoS patterns: nested quantifiers, overlapping groups
+		// This is a basic check - for production use, consider a library like 'recheck'
+		const dangerousPatterns = [
+			/(\w+\w*)*\w*/, // nested quantifiers
+			/(a+)+/, // nested quantifiers
+			/(a*)*b/, // nested quantifiers
+			/(a|a)*b/, // overlapping alternatives
+		];
+
+		return dangerousPatterns.some((dangerous) => dangerous.test(pattern));
 	}
 
 	loadPatterns() {

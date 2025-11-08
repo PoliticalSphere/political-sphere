@@ -1,0 +1,52 @@
+extends:
+  - recommended
+
+rules:
+  # Security rules
+  security-defined: error
+  security-schemes-defined: error
+
+  # Schema validation
+  schema-description: warn
+  property-description: warn
+  parameter-description: error
+  operation-description: error
+
+  # Naming conventions
+  operation-operationId: error
+  operation-operationId-unique: error
+  no-identical-paths: error
+
+  # Best practices
+  no-unused-components: warn
+  no-unresolved-refs: error
+  spec: error
+
+  # Political Sphere specific rules
+  tag-description: error
+  info-description: error
+
+theme:
+  openapi:
+    disableSearch: false
+    downloadDefinitionUrl: null
+    hideDownloadButton: false
+    hideHostname: false
+    jsonSampleExpandLevel: 2
+    hideLoading: false
+    nativeScrollbars: false
+    disableSidebar: false
+    theme:
+      colors:
+        primary:
+          main: "#1f2937"
+      typography:
+        fontFamily: "Inter, sans-serif"
+        headings:
+          fontFamily: "Inter, sans-serif"
+        code:
+          fontFamily: "Fira Code, monospace"
+
+apis:
+  main:
+    root: ./api.yaml

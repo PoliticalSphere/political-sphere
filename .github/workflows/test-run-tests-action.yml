@@ -52,13 +52,18 @@ jobs:
           timeout-minutes: 10
 
       - name: Verify Outputs
+        env:
+          TESTS_PASSED: ${{ steps.basic-test.outputs.tests-passed }}
+          TESTS_RUN: ${{ steps.basic-test.outputs.tests-run }}
+          TESTS_FAILED: ${{ steps.basic-test.outputs.tests-failed }}
+          DURATION_SECONDS: ${{ steps.basic-test.outputs.duration-seconds }}
         run: |
-          echo "Tests passed: ${{ steps.basic-test.outputs.tests-passed }}"
-          echo "Tests run: ${{ steps.basic-test.outputs.tests-run }}"
-          echo "Tests failed: ${{ steps.basic-test.outputs.tests-failed }}"
-          echo "Duration: ${{ steps.basic-test.outputs.duration-seconds }}s"
+          echo "Tests passed: $TESTS_PASSED"
+          echo "Tests run: $TESTS_RUN"
+          echo "Tests failed: $TESTS_FAILED"
+          echo "Duration: $DURATION_SECONDS s"
 
-          if [[ "${{ steps.basic-test.outputs.tests-passed }}" != "true" ]] && [[ "${{ steps.basic-test.outputs.tests-passed }}" != "false" ]]; then
+          if [[ "$TESTS_PASSED" != "true" ]] && [[ "$TESTS_PASSED" != "false" ]]; then
             echo "ERROR: tests-passed output is invalid"
             exit 1
           fi
@@ -92,12 +97,16 @@ jobs:
         continue-on-error: true
 
       - name: Verify Coverage Outputs
+        env:
+          COVERAGE_PERCENTAGE: ${{ steps.coverage-test.outputs.coverage-percentage }}
+          COVERAGE_PASSED_THRESHOLD: ${{ steps.coverage-test.outputs.coverage-passed-threshold }}
+          COVERAGE_PATH: ${{ steps.coverage-test.outputs.coverage-path }}
         run: |
-          echo "Coverage percentage: ${{ steps.coverage-test.outputs.coverage-percentage }}%"
-          echo "Coverage threshold met: ${{ steps.coverage-test.outputs.coverage-passed-threshold }}"
-          echo "Coverage path: ${{ steps.coverage-test.outputs.coverage-path }}"
+          echo "Coverage percentage: $COVERAGE_PERCENTAGE%"
+          echo "Coverage threshold met: $COVERAGE_PASSED_THRESHOLD"
+          echo "Coverage path: $COVERAGE_PATH"
 
-          if [[ -n "${{ steps.coverage-test.outputs.coverage-path }}" ]]; then
+          if [[ -n "$COVERAGE_PATH" ]]; then
             echo "✅ Coverage path output is set"
           fi
 

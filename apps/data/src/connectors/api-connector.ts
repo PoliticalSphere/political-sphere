@@ -1,9 +1,9 @@
 /**
  * API Connector
- * 
+ *
  * HTTP client for communicating with internal and external APIs.
  * Handles authentication, retries, and error handling.
- * 
+ *
  * @module connectors/api-connector
  */
 
@@ -40,7 +40,7 @@ export class ApiConnector {
     params?: Record<string, string>
   ): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint, params);
-    return this.request<T>('GET', url);
+    return this.request<T>("GET", url);
   }
 
   /**
@@ -51,7 +51,7 @@ export class ApiConnector {
     body?: unknown
   ): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint);
-    return this.request<T>('POST', url, body);
+    return this.request<T>("POST", url, body);
   }
 
   /**
@@ -62,7 +62,7 @@ export class ApiConnector {
     body?: unknown
   ): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint);
-    return this.request<T>('PUT', url, body);
+    return this.request<T>("PUT", url, body);
   }
 
   /**
@@ -70,7 +70,7 @@ export class ApiConnector {
    */
   async delete<T = unknown>(endpoint: string): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint);
-    return this.request<T>('DELETE', url);
+    return this.request<T>("DELETE", url);
   }
 
   /**
@@ -84,10 +84,10 @@ export class ApiConnector {
   ): Promise<ApiResponse<T>> {
     try {
       const headers = this.buildHeaders();
-      
+
       // TODO: Implement actual HTTP request (use fetch or axios)
-      console.log('API Request:', { method, url, headers, body });
-      
+      console.log("API Request:", { method, url, headers, body });
+
       // Mock response for now
       return {
         data: {} as T,
@@ -97,7 +97,7 @@ export class ApiConnector {
     } catch (error) {
       // Retry on failure
       if (retryCount < (this.config.retries || 0)) {
-        await this.delay(Math.pow(2, retryCount) * 1000);
+        await this.delay(2 ** retryCount * 1000);
         return this.request<T>(method, url, body, retryCount + 1);
       }
       throw error;
@@ -107,18 +107,15 @@ export class ApiConnector {
   /**
    * Build full URL with query parameters
    */
-  private buildUrl(
-    endpoint: string,
-    params?: Record<string, string>
-  ): string {
+  private buildUrl(endpoint: string, params?: Record<string, string>): string {
     const url = new URL(endpoint, this.config.baseUrl);
-    
+
     if (params) {
       for (const [key, value] of Object.entries(params)) {
         url.searchParams.append(key, value);
       }
     }
-    
+
     return url.toString();
   }
 
@@ -127,14 +124,14 @@ export class ApiConnector {
    */
   private buildHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
       ...this.config.headers,
     };
-    
+
     if (this.config.apiKey) {
-      headers['Authorization'] = `Bearer ${this.config.apiKey}`;
+      headers["Authorization"] = `Bearer ${this.config.apiKey}`;
     }
-    
+
     return headers;
   }
 
@@ -142,7 +139,7 @@ export class ApiConnector {
    * Delay helper for retries
    */
   private delay(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -150,7 +147,7 @@ export class ApiConnector {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await this.get('/health');
+      const response = await this.get("/health");
       return response.status === 200;
     } catch {
       return false;

@@ -8,6 +8,7 @@ resource "aws_cloudtrail" "compliance" {
   include_global_service_events = true
   is_multi_region_trail         = true
   enable_log_file_validation    = true
+  kms_key_id                    = aws_kms_key.cloudtrail.arn
 
   event_selector {
     read_write_type           = "All"

@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 import fs from "fs";
 import path from "path";
+import {
+	safeJoin,
+	validateFilename,
+} from "../../libs/shared/src/path-security.js";
 
 const rules = {
 	// Root-level allowed files (exceptions from governance per docs/00-foundation/organization.md)
@@ -126,19 +130,26 @@ function main() {
 	function walk(dir) {
 		const files = fs.readdirSync(dir);
 		for (const file of files) {
-			const fullPath = path.join(dir, file);
-			const stat = fs.statSync(fullPath);
-			if (stat.isDirectory()) {
-				// Skip node_modules, .git, etc.
-				if (!["node_modules", ".git", ".nx", "dist", "build"].includes(file)) {
-					walk(fullPath);
+			try {
+				const sanitizedFile = validateFilename(file);
+				const fullPath = safeJoin(dir, sanitizedFile);
+				const stat = fs.statSync(fullPath);
+				if (stat.isDirectory()) {
+					// Skip node_modules, .git, etc.
+					if (
+						!["node_modules", ".git", ".nx", "dist", "build"].includes(
+							sanitizedFile,
+						)
+					) {
+						walk(fullPath);
+					}
+				} else {
+					const error = checkFilePlacement(fullPath);
+					if (error) {
+						errors.push(error);
+					}
 				}
-			} else {
-				const error = checkFilePlacement(fullPath);
-				if (error) {
-					errors.push(error);
-				}
-			}
+			} catch (error) {}
 		}
 	}
 

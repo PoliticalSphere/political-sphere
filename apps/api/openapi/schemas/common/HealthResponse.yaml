@@ -1,0 +1,35 @@
+type: object
+required:
+  - status
+  - timestamp
+properties:
+  status:
+    type: string
+    enum: [ok, degraded, error]
+    description: Overall health status
+  timestamp:
+    type: string
+    format: date-time
+    description: Health check timestamp
+  uptime:
+    type: number
+    description: Server uptime in seconds
+  version:
+    type: string
+    description: API version
+  services:
+    type: object
+    description: Individual service health statuses
+    properties:
+      database:
+        type: string
+        enum: [ok, degraded, error]
+      redis:
+        type: string
+        enum: [ok, degraded, error]
+      websocket:
+        type: string
+        enum: [ok, degraded, error]
+      simulation:
+        type: string
+        enum: [ok, degraded, error]

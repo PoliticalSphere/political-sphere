@@ -123,6 +123,9 @@ jobs:
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EVENT_NAME: ${{ github.event_name }}
+          PR_HEAD_REPO: ${{ github.event.pull_request.head.repo.full_name }}
+          CURRENT_REPO: ${{ github.repository }}
         run: |
           echo "Validating CODEOWNERS teams exist..."
 
@@ -138,8 +141,8 @@ jobs:
           echo "$TEAMS"
 
           # For fork PRs, skip validation as secrets aren't available
-          if [ "${{ github.event_name }}" = "pull_request" ] && \
-             [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+          if [ "$EVENT_NAME" = "pull_request" ] && \
+             [ "$PR_HEAD_REPO" != "$CURRENT_REPO" ]; then
             echo "::notice::Skipping CODEOWNERS validation for fork PR"
             exit 0
           fi
@@ -731,7 +734,10 @@ jobs:
 
           # For fork PRs, allow skipped jobs that require secrets
           IS_FORK_PR=false
-          if [[ "${{ github.event_name }}" == "pull_request" ]] && [[ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]]; then
+          EVENT_NAME="${{ github.event_name }}"
+          PR_HEAD_REPO="${{ github.event.pull_request.head.repo.full_name }}"
+          CURRENT_REPO="${{ github.repository }}"
+          if [[ "$EVENT_NAME" == "pull_request" ]] && [[ "$PR_HEAD_REPO" != "$CURRENT_REPO" ]]; then
             IS_FORK_PR=true
             echo "Detected fork PR - allowing skipped jobs for secret-dependent tasks"
           fi
@@ -795,8 +801,9 @@ jobs:
           fi
 
           # ci-performance-monitoring can be skipped
-          if [[ "${{ needs.ci-performance-monitoring.result }}" != "success" && "${{ needs.ci-performance-monitoring.result }}" != "skipped" ]]; then
-            echo "⚠️  ci-performance-monitoring failed (result: ${{ needs.ci-performance-monitoring.result }})"
+          PERF_MONITOR_RESULT="${{ needs.ci-performance-monitoring.result }}"
+          if [[ "$PERF_MONITOR_RESULT" != "success" && "$PERF_MONITOR_RESULT" != "skipped" ]]; then
+            echo "⚠️  ci-performance-monitoring failed (result: $PERF_MONITOR_RESULT)"
             # Not failing the build for monitoring issues
           fi
 

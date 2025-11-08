@@ -1,17 +1,15 @@
-// Remote webpack config (Module Federation) example (ESM)
-import path from 'path';
-import webpack from 'webpack';
-const { ModuleFederationPlugin } = webpack.container;
+// Remote webpack config (Module Federation) example
+const { ModuleFederationPlugin } = require('webpack').container;
 
-export default {
+module.exports = {
   plugins: [
     new ModuleFederationPlugin({
       name: 'remoteApp',
       filename: 'remoteEntry.js',
       exposes: {
-        './Widget': path.resolve(process.cwd(), 'apps/remote/src/bootstrap.js'),
+        './Widget': './src/bootstrap'
       },
-      shared: { react: { singleton: true }, 'react-dom': { singleton: true } },
-    }),
-  ],
+      shared: { react: { singleton: true }, 'react-dom': { singleton: true } }
+    })
+  ]
 };

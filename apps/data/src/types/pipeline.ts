@@ -1,6 +1,6 @@
 /**
  * Common type definitions for data processing pipelines
- * 
+ *
  * @module types/pipeline
  */
 

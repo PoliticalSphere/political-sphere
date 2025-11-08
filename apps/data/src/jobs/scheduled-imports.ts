@@ -1,14 +1,14 @@
 /**
  * Scheduled Imports Job
- * 
+ *
  * Runs scheduled data import tasks from various sources at configured intervals.
  * Handles incremental imports and error recovery.
- * 
+ *
  * @module jobs/scheduled-imports
  */
 
-import type { ExternalSourcesConnector } from '../connectors/external-sources.js';
-import type { DatabaseConnector } from '../connectors/database-connector.js';
+import type { DatabaseConnector } from "../connectors/database-connector.js";
+import type { ExternalSourcesConnector } from "../connectors/external-sources.js";
 
 export interface ImportJobConfig {
   name: string;
@@ -33,7 +33,7 @@ export class ScheduledImportsJob {
    */
   registerJob(config: ImportJobConfig): void {
     this.jobs.set(config.name, config);
-    
+
     if (config.enabled) {
       this.scheduleJob(config.name);
     }
@@ -49,7 +49,7 @@ export class ScheduledImportsJob {
     // TODO: Implement proper cron parsing
     // For now, use simple interval
     const intervalMs = 60000 * 60; // 1 hour
-    
+
     const timer = setInterval(async () => {
       await this.runJob(jobName);
     }, intervalMs);
@@ -66,23 +66,23 @@ export class ScheduledImportsJob {
       throw new Error(`Job not found: ${jobName}`);
     }
 
-    console.log('Running scheduled import job:', jobName);
-    
+    console.log("Running scheduled import job:", jobName);
+
     try {
       job.lastRun = new Date();
-      
+
       // Fetch data from external source
       const data = await this.externalSources.fetch(job.source);
-      
+
       // Import into database
       await this.database.query(
-        'INSERT INTO imports (job_name, source, data, imported_at) VALUES ($1, $2, $3, $4)',
+        "INSERT INTO imports (job_name, source, data, imported_at) VALUES ($1, $2, $3, $4)",
         [job.name, job.source, JSON.stringify(data), new Date()]
       );
-      
-      console.log('Import job completed:', jobName);
+
+      console.log("Import job completed:", jobName);
     } catch (error) {
-      console.error('Import job failed:', jobName, error);
+      console.error("Import job failed:", jobName, error);
       throw error;
     }
   }
@@ -104,7 +104,7 @@ export class ScheduledImportsJob {
   stopAll(): void {
     for (const [name, timer] of this.timers.entries()) {
       clearInterval(timer);
-      console.log('Stopped job:', name);
+      console.log("Stopped job:", name);
     }
     this.timers.clear();
   }

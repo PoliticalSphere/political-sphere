@@ -32,9 +32,10 @@ function validateFilename(filename) {
 	}
 
 	// Block hidden files that start with dot (optional, can be customized)
-	if (basename.startsWith(".")) {
-		throw new Error("Filename cannot start with a dot");
-	}
+	// Allow dot files for legitimate use cases like .gitignore, .env, etc.
+	// if (basename.startsWith(".")) {
+	// 	throw new Error("Filename cannot start with a dot");
+	// }
 
 	// Validate filename characters (alphanumeric, dash, underscore, dot)
 	if (!/^[a-zA-Z0-9_.-]+$/.test(basename)) {

@@ -27,10 +27,6 @@ For enterprise support, custom development, or training:
 - Email: support@political-sphere.com
 - Website: https://political-sphere.com/support
 
-## Contributing
-
-See [CONTRIBUTING.md](../CONTRIBUTING.md) for guidelines on contributing to the project.
-
 ## Code of Conduct
 
 Please review our [Code of Conduct](../CODE_OF_CONDUCT.md) before participating in the community.

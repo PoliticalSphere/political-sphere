@@ -174,44 +174,52 @@ runs:
     - name: Validate inputs
       id: validate-inputs
       shell: bash
+      env:
+        INPUT_TEST_TYPE: ${{ inputs.test-type }}
+        INPUT_COVERAGE_THRESHOLD: ${{ inputs.coverage-threshold }}
+        INPUT_SHARD_INDEX: ${{ inputs.shard-index }}
+        INPUT_SHARD_TOTAL: ${{ inputs.shard-total }}
+        INPUT_TIMEOUT_MINUTES: ${{ inputs.timeout-minutes }}
+        INPUT_MAX_WORKERS: ${{ inputs.max-workers }}
+        INPUT_RETRY_COUNT: ${{ inputs.retry-count }}
       run: |
         # SEC-01: Input validation for all parameters
         echo "::group::Validating action inputs"
 
         # Validate test-type
         VALID_TEST_TYPES="unit integration e2e coverage api frontend shared"
-        if [[ -n "${{ inputs.test-type }}" ]] && ! echo "$VALID_TEST_TYPES" | grep -qw "${{ inputs.test-type }}"; then
-          echo "::error::Invalid test-type: ${{ inputs.test-type }}. Must be one of: $VALID_TEST_TYPES"
+        if [[ -n "$INPUT_TEST_TYPE" ]] && ! echo "$VALID_TEST_TYPES" | grep -qw "$INPUT_TEST_TYPE"; then
+          echo "::error::Invalid test-type: $INPUT_TEST_TYPE. Must be one of: $VALID_TEST_TYPES"
           exit 1
         fi
 
         # Validate coverage threshold (0-100)
-        if [[ "${{ inputs.coverage-threshold }}" -lt 0 ]] || [[ "${{ inputs.coverage-threshold }}" -gt 100 ]]; then
-          echo "::error::Invalid coverage-threshold: ${{ inputs.coverage-threshold }}. Must be between 0-100"
+        if [[ "$INPUT_COVERAGE_THRESHOLD" -lt 0 ]] || [[ "$INPUT_COVERAGE_THRESHOLD" -gt 100 ]]; then
+          echo "::error::Invalid coverage-threshold: $INPUT_COVERAGE_THRESHOLD. Must be between 0-100"
           exit 1
         fi
 
         # Validate shard configuration
-        if [[ "${{ inputs.shard-index }}" -lt 1 ]] || [[ "${{ inputs.shard-index }}" -gt "${{ inputs.shard-total }}" ]]; then
-          echo "::error::Invalid shard configuration: index ${{ inputs.shard-index }} of ${{ inputs.shard-total }}"
+        if [[ "$INPUT_SHARD_INDEX" -lt 1 ]] || [[ "$INPUT_SHARD_INDEX" -gt "$INPUT_SHARD_TOTAL" ]]; then
+          echo "::error::Invalid shard configuration: index $INPUT_SHARD_INDEX of $INPUT_SHARD_TOTAL"
           exit 1
         fi
 
         # Validate timeout (1-120 minutes)
-        if [[ "${{ inputs.timeout-minutes }}" -lt 1 ]] || [[ "${{ inputs.timeout-minutes }}" -gt 120 ]]; then
-          echo "::error::Invalid timeout-minutes: ${{ inputs.timeout-minutes }}. Must be between 1-120"
+        if [[ "$INPUT_TIMEOUT_MINUTES" -lt 1 ]] || [[ "$INPUT_TIMEOUT_MINUTES" -gt 120 ]]; then
+          echo "::error::Invalid timeout-minutes: $INPUT_TIMEOUT_MINUTES. Must be between 1-120"
           exit 1
         fi
 
         # Validate max-workers (1-16)
-        if [[ "${{ inputs.max-workers }}" -lt 1 ]] || [[ "${{ inputs.max-workers }}" -gt 16 ]]; then
-          echo "::error::Invalid max-workers: ${{ inputs.max-workers }}. Must be between 1-16"
+        if [[ "$INPUT_MAX_WORKERS" -lt 1 ]] || [[ "$INPUT_MAX_WORKERS" -gt 16 ]]; then
+          echo "::error::Invalid max-workers: $INPUT_MAX_WORKERS. Must be between 1-16"
           exit 1
         fi
 
         # Validate retry-count (0-5)
-        if [[ "${{ inputs.retry-count }}" -lt 0 ]] || [[ "${{ inputs.retry-count }}" -gt 5 ]]; then
-          echo "::error::Invalid retry-count: ${{ inputs.retry-count }}. Must be between 0-5"
+        if [[ "$INPUT_RETRY_COUNT" -lt 0 ]] || [[ "$INPUT_RETRY_COUNT" -gt 5 ]]; then
+          echo "::error::Invalid retry-count: $INPUT_RETRY_COUNT. Must be between 0-5"
           exit 1
         fi
 
@@ -301,16 +309,22 @@ runs:
     - name: Check test status
       if: always()
       shell: bash
+      env:
+        TESTS_PASSED: ${{ steps.run-tests.outputs.tests-passed }}
+        COVERAGE_ENABLED: ${{ inputs.coverage-enabled }}
+        COVERAGE_PASSED_THRESHOLD: ${{ steps.run-tests.outputs.coverage-passed-threshold }}
+        COVERAGE_PERCENTAGE: ${{ steps.run-tests.outputs.coverage-percentage }}
+        COVERAGE_THRESHOLD: ${{ inputs.coverage-threshold }}
       run: |
         # QUAL-01: Fail if tests did not pass
-        if [[ "${{ steps.run-tests.outputs.tests-passed }}" != "true" ]]; then
+        if [[ "$TESTS_PASSED" != "true" ]]; then
           echo "::error::Tests failed! See logs above for details."
           exit 1
         fi
 
         # QUAL-05: Fail if coverage below threshold (when enabled)
-        if [[ "${{ inputs.coverage-enabled }}" == "true" ]] && [[ "${{ steps.run-tests.outputs.coverage-passed-threshold }}" != "true" ]]; then
-          echo "::error::Coverage ${{ steps.run-tests.outputs.coverage-percentage }}% below threshold ${{ inputs.coverage-threshold }}%"
+        if [[ "$COVERAGE_ENABLED" == "true" ]] && [[ "$COVERAGE_PASSED_THRESHOLD" != "true" ]]; then
+          echo "::error::Coverage $COVERAGE_PERCENTAGE% below threshold $COVERAGE_THRESHOLD%"
           exit 1
         fi
 

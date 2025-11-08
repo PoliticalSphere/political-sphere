@@ -16,6 +16,12 @@ function getPrBody() {
 }
 
 function extractBlock(name, text) {
+	// Use hardcoded regex to prevent ReDoS - only allow specific block names
+	const allowedBlocks = ["AI-EXECUTION", "ASSUMPTIONS", "CONFIDENCE", "OUTPUT"];
+	if (!allowedBlocks.includes(name)) {
+		return null;
+	}
+
 	// Escape special regex characters to prevent ReDoS
 	const escapedName = name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 	const re = new RegExp(

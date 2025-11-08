@@ -1,9 +1,9 @@
 /**
  * Database Connector
- * 
+ *
  * Manages database connections and provides CRUD operations
  * with connection pooling and error handling.
- * 
+ *
  * @module connectors/database-connector
  */
 
@@ -36,12 +36,12 @@ export class DatabaseConnector {
   async connect(): Promise<void> {
     // TODO: Implement database connection
     // Use pg for PostgreSQL, better-sqlite3 for SQLite, etc.
-    
-    console.log('Connecting to database:', {
+
+    console.log("Connecting to database:", {
       host: this.config.host,
       database: this.config.database,
     });
-    
+
     this.connected = true;
   }
 
@@ -61,12 +61,12 @@ export class DatabaseConnector {
     params?: unknown[]
   ): Promise<QueryResult<T>> {
     if (!this.connected) {
-      throw new Error('Database not connected');
+      throw new Error("Database not connected");
     }
 
     // TODO: Implement parameterized query execution
-    console.log('Executing query:', sql, params);
-    
+    console.log("Executing query:", sql, params);
+
     return {
       rows: [] as T[],
       rowCount: 0,
@@ -81,14 +81,14 @@ export class DatabaseConnector {
   ): Promise<T> {
     // TODO: Implement transaction support
     // BEGIN -> callback -> COMMIT (or ROLLBACK on error)
-    
+
     try {
-      await this.query('BEGIN');
+      await this.query("BEGIN");
       const result = await callback(this);
-      await this.query('COMMIT');
+      await this.query("COMMIT");
       return result;
     } catch (error) {
-      await this.query('ROLLBACK');
+      await this.query("ROLLBACK");
       throw error;
     }
   }
@@ -98,7 +98,7 @@ export class DatabaseConnector {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      await this.query('SELECT 1');
+      await this.query("SELECT 1");
       return true;
     } catch {
       return false;

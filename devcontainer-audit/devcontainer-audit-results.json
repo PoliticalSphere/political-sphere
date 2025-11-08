@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-11-08T18:59:13Z",
+  "summary": {
+    "critical": 0,
+    "high": 0,
+    "medium": 2,
+    "low": 1,
+    "info": 6,
+    "pass": 15,
+    "autoFixed": 0
+  },
+  "findings": [
+    {"severity":"medium","code":"TOOL-001","message":"Hadolint not installed - Dockerfile linting will be skipped","file":"N/A","line":0},{"severity":"low","code":"DOCKERFILE-SEC-006","message":"apt-get install should use --no-install-recommends","file":"/Users/morganlowman/GitHub/political-sphere/.devcontainer/Dockerfile","line":0},{"severity":"medium","code":"SECURITY-001","message":"Trivy found 2 configuration issues","file":"/Users/morganlowman/GitHub/political-sphere/.devcontainer/Dockerfile","line":0}
+  ]
+}

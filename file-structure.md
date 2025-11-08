@@ -1,10 +1,6 @@
 # Political Sphere - File Structure# Political Sphere - Interactive File Structure
 
-
-
 > **Interactive tree diagram - click folders to expand/collapse**> **Click to expand sections and explore the codebase hierarchy**
-
-
 
 <style>## 📋 Quick Navigation
 
@@ -252,7 +248,7 @@ graph LR
 
 </style>
 
-```mermaid
+````mermaid
 
 <div class="legend">graph TB
 
@@ -342,7 +338,7 @@ graph LR
 
         </ul>    Core[Core Services]
 
-      </details></li>    
+      </details></li>
 
           Core --> API[api/]
 
@@ -352,7 +348,7 @@ graph LR
 
         <ul>    API --> apiConfig[config/]
 
-          <li><span class="config">extensions.json</span></li>    
+          <li><span class="config">extensions.json</span></li>
 
           <li><span class="config">settings.json</span></li>    Core --> GameServer[game-server/]
 
@@ -362,7 +358,7 @@ graph LR
 
         </ul>    GameServer --> gsTests[__tests__/]
 
-      </details></li>    
+      </details></li>
 
           Core --> Worker[worker/]
 
@@ -406,7 +402,7 @@ graph LR
 
               <li><span class="folder">deploy/</span></li>    Frontend[Frontend Apps]
 
-            </ul>    
+            </ul>
 
           </details></li>    Frontend --> Web[web/]
 
@@ -416,7 +412,7 @@ graph LR
 
           <li><span class="file">copilot-instructions.md</span></li>    Web --> webComponents[components/]
 
-          <li><span class="file">CODEOWNERS</span></li>    
+          <li><span class="file">CODEOWNERS</span></li>
 
         </ul>    Frontend --> Shell[shell/]
 
@@ -424,7 +420,7 @@ graph LR
 
           Shell --> shellConfig[module-federation.config.js]
 
-      <li><details>    
+      <li><details>
 
         <summary><span class="app">📱 apps/</span> <em>(12 applications)</em></summary>    Frontend --> AuthRemote[feature-auth-remote/]
 
@@ -432,7 +428,7 @@ graph LR
 
           <li><details>    AuthRemote --> authComponents[components/]
 
-            <summary><span class="app">api/</span> <em>REST API services</em></summary>    
+            <summary><span class="app">api/</span> <em>REST API services</em></summary>
 
             <ul>    Frontend --> DashRemote[feature-dashboard-remote/]
 
@@ -468,7 +464,7 @@ graph LR
 
           </details></li><summary><strong>Testing, Documentation & Development</strong></summary>
 
-          
+
 
           <li><details>```mermaid
 
@@ -476,7 +472,7 @@ graph LR
 
             <ul>    Support[Support Apps]
 
-              <li><span class="folder">src/</span></li>    
+              <li><span class="folder">src/</span></li>
 
               <li><span class="folder">jobs/</span></li>    Support --> E2E[e2e/]
 
@@ -486,7 +482,7 @@ graph LR
 
             </ul>    E2E --> e2eConfig[playwright.config.ts]
 
-          </details></li>    
+          </details></li>
 
               Support --> LoadTest[load-test/]
 
@@ -494,7 +490,7 @@ graph LR
 
             <summary><span class="app">web/</span> <em>Main web application</em></summary>    LoadTest --> ltScenarios[scenarios/]
 
-            <ul>    
+            <ul>
 
               <li><span class="folder">src/</span></li>    Support --> DocsApp[docs/]
 
@@ -502,7 +498,7 @@ graph LR
 
               <li><span class="folder">components/</span></li>    DocsApp --> docsPublic[public/]
 
-              <li><span class="folder">public/</span></li>    
+              <li><span class="folder">public/</span></li>
 
               <li><span class="config">vite.config.ts</span></li>    Support --> Dev[dev/]
 
@@ -510,7 +506,7 @@ graph LR
 
             </ul>    Dev --> devPrototypes[prototypes/]
 
-          </details></li>    
+          </details></li>
 
               Support --> Infra[infrastructure/]
 
@@ -548,7 +544,7 @@ graph LR
 
           </details></li>---
 
-          
+
 
           <li><details><details>
 
@@ -572,7 +568,7 @@ graph LR
 
             <summary><span class="app">e2e/</span> <em>End-to-end tests</em></summary>    Shared[shared/]
 
-            <ul>    
+            <ul>
 
               <li><span class="folder">tests/</span></li>    Shared --> Utils[utils/]
 
@@ -582,7 +578,7 @@ graph LR
 
             </ul>    Utils --> helpers[helpers/]
 
-          </details></li>    
+          </details></li>
 
               Shared --> Types[types/]
 
@@ -592,7 +588,7 @@ graph LR
 
             <ul>    Types --> enums[enums/]
 
-              <li><span class="folder">scripts/</span></li>    
+              <li><span class="folder">scripts/</span></li>
 
               <li><span class="folder">scenarios/</span></li>    Shared --> Constants[constants/]
 
@@ -600,7 +596,7 @@ graph LR
 
             </ul>    Constants --> defaults[defaults/]
 
-          </details></li>    
+          </details></li>
 
               Shared --> Config[config/]
 
@@ -636,7 +632,7 @@ graph LR
 
           </details></li><summary><strong>Core Platform Infrastructure</strong></summary>
 
-          
+
 
           <li><details>```mermaid
 
@@ -644,7 +640,7 @@ graph LR
 
             <ul>    Platform[platform/]
 
-              <li><details>    
+              <li><details>
 
                 <summary><span class="infra">terraform/</span></summary>    Platform --> Auth[auth/]
 
@@ -654,7 +650,7 @@ graph LR
 
                   <li><span class="folder">environments/</span></li>    Auth --> authTokens[tokens/]
 
-                  <li><span class="file">main.tf</span></li>    
+                  <li><span class="file">main.tf</span></li>
 
                   <li><span class="file">variables.tf</span></li>    Platform --> APIClient[api-client/]
 
@@ -662,7 +658,7 @@ graph LR
 
               </details></li>    APIClient --> apiInterceptors[interceptors/]
 
-              <li><details>    
+              <li><details>
 
                 <summary><span class="infra">kubernetes/</span></summary>    Platform --> State[state/]
 
@@ -672,7 +668,7 @@ graph LR
 
                   <li><span class="folder">helm/</span></li>    State --> middleware[middleware/]
 
-                  <li><span class="folder">overlays/</span></li>    
+                  <li><span class="folder">overlays/</span></li>
 
                 </ul>    Platform --> Routing[routing/]
 
@@ -716,7 +712,7 @@ graph LR
 
             <summary><span class="lib">shared/</span> <em>Common utilities</em></summary>    GameEngine[game-engine/]
 
-            <ul>    
+            <ul>
 
               <li><details>    GameEngine --> Core[core/]
 
@@ -726,7 +722,7 @@ graph LR
 
                   <li><span class="folder">validation/</span></li>    Core --> systems[systems/]
 
-                  <li><span class="folder">formatting/</span></li>    
+                  <li><span class="folder">formatting/</span></li>
 
                   <li><span class="folder">helpers/</span></li>    GameEngine --> Simulation[simulation/]
 
@@ -736,7 +732,7 @@ graph LR
 
               <li><details>    Simulation --> ai[ai/]
 
-                <summary><span class="folder">types/</span></summary>    
+                <summary><span class="folder">types/</span></summary>
 
                 <ul>    GameEngine --> Events[events/]
 
@@ -758,7 +754,7 @@ graph LR
 
           </details></li>```
 
-          
+
 
           <li><details></details>
 
@@ -780,7 +776,7 @@ graph LR
 
                 </ul>    Infrastructure[infrastructure/]
 
-              </details></li>    
+              </details></li>
 
               <li><details>    Infrastructure --> Database[database/]
 
@@ -790,7 +786,7 @@ graph LR
 
                   <li><span class="folder">endpoints/</span></li>    Database --> seeds[seeds/]
 
-                  <li><span class="folder">interceptors/</span></li>    
+                  <li><span class="folder">interceptors/</span></li>
 
                 </ul>    Infrastructure --> Monitoring[monitoring/]
 
@@ -800,7 +796,7 @@ graph LR
 
                 <summary><span class="folder">state/</span></summary>    Monitoring --> tracing[tracing/]
 
-                <ul>    
+                <ul>
 
                   <li><span class="folder">store/</span></li>    Infrastructure --> Deployment[deployment/]
 
@@ -842,7 +838,7 @@ graph LR
 
               </details></li>    UI[ui/]
 
-              <li><details>    
+              <li><details>
 
                 <summary><span class="folder">simulation/</span></summary>    UI --> Components[components/]
 
@@ -852,7 +848,7 @@ graph LR
 
                   <li><span class="folder">models/</span></li>    Components --> organisms[organisms/]
 
-                  <li><span class="folder">ai/</span></li>    
+                  <li><span class="folder">ai/</span></li>
 
                 </ul>    UI --> DesignSystem[design-system/]
 
@@ -862,7 +858,7 @@ graph LR
 
                 <summary><span class="folder">events/</span></summary>    DesignSystem --> patterns[patterns/]
 
-                <ul>    
+                <ul>
 
                   <li><span class="folder">handlers/</span></li>    UI --> Accessibility[accessibility/]
 
@@ -920,7 +916,7 @@ graph LR
 
               <li><span class="folder">deployment/</span></li>    Foundation[Documentation]
 
-            </ul>    
+            </ul>
 
           </details></li>    Foundation --> F00[00-foundation/]
 
@@ -930,7 +926,7 @@ graph LR
 
             <summary><span class="lib">ui/</span> <em>Design system</em></summary>    F00 --> standards[standards/]
 
-            <ul>    
+            <ul>
 
               <li><details>    Foundation --> F01[01-strategy/]
 
@@ -972,7 +968,7 @@ graph LR
 
               Governance[Governance & Legal]
 
-          <li><span class="lib">ci/</span></li>    
+          <li><span class="lib">ci/</span></li>
 
         </ul>    Governance --> F02[02-governance/]
 
@@ -982,7 +978,7 @@ graph LR
 
       <li><details>    F02 --> constitution[constitution.md]
 
-        <summary><span class="doc">📖 docs/</span> <em>(12 sections)</em></summary>    
+        <summary><span class="doc">📖 docs/</span> <em>(12 sections)</em></summary>
 
         <ul>    Governance --> F03[03-legal-and-compliance/]
 
@@ -1024,7 +1020,7 @@ graph LR
 
           </details></li>    Technical[Technical Docs]
 
-          <li><details>    
+          <li><details>
 
             <summary><span class="doc">02-governance/</span></summary>    Technical --> F04[04-architecture/]
 
@@ -1034,7 +1030,7 @@ graph LR
 
               <li><span class="folder">policies/</span></li>    F04 --> patterns[patterns/]
 
-              <li><span class="file">constitution.md</span></li>    
+              <li><span class="file">constitution.md</span></li>
 
             </ul>    Technical --> F05[05-engineering-and-devops/]
 
@@ -1044,7 +1040,7 @@ graph LR
 
             <summary><span class="doc">03-legal-and-compliance/</span></summary>    F05 --> languages[languages/]
 
-            <ul>    
+            <ul>
 
               <li><span class="folder">gdpr/</span></li>    Technical --> F06[06-security-and-risk/]
 
@@ -1088,7 +1084,7 @@ graph LR
 
             </ul>    Product[Product & Ops]
 
-          </details></li>    
+          </details></li>
 
           <li><details>    Product --> F07[07-ai-and-simulation/]
 
@@ -1098,7 +1094,7 @@ graph LR
 
               <li><span class="folder">security-policies/</span></li>    F07 --> ethics[ethics/]
 
-              <li><span class="file">risk-register.md</span></li>    
+              <li><span class="file">risk-register.md</span></li>
 
               <li><span class="folder">incidents/</span></li>    Product --> F08[08-game-design-and-mechanics/]
 
@@ -1108,7 +1104,7 @@ graph LR
 
           <li><details>    F08 --> content[content/]
 
-            <summary><span class="doc">07-ai-and-simulation/</span></summary>    
+            <summary><span class="doc">07-ai-and-simulation/</span></summary>
 
             <ul>    Product --> F09[09-observability-and-ops/]
 
@@ -1152,7 +1148,7 @@ graph LR
 
             </ul>    Meta[Meta Docs]
 
-          </details></li>    
+          </details></li>
 
           <li><span class="doc">audit-trail/</span></li>    Meta --> Audit[audit-trail/]
 
@@ -1160,7 +1156,7 @@ graph LR
 
         </ul>    Audit --> compliance[compliance-records/]
 
-      </details></li>    
+      </details></li>
 
           Meta --> Control[document-control/]
 
@@ -1214,7 +1210,7 @@ graph LR
 
               <li><span class="folder">eslint/</span></li>    Terraform[apps/infrastructure/terraform/]
 
-              <li><span class="folder">prettier/</span></li>    
+              <li><span class="folder">prettier/</span></li>
 
               <li><span class="folder">vitest/</span></li>    Terraform --> Modules[modules/]
 
@@ -1224,7 +1220,7 @@ graph LR
 
           <li><details>    Modules --> rds[rds/]
 
-            <summary><span class="folder">scripts/</span></summary>    
+            <summary><span class="folder">scripts/</span></summary>
 
             <ul>    Terraform --> Environments[environments/]
 
@@ -1234,7 +1230,7 @@ graph LR
 
             </ul>    Environments --> prod[prod/]
 
-          </details></li>    
+          </details></li>
 
           <li><span class="folder">docker/</span></li>    Terraform --> State[state/]
 
@@ -1242,7 +1238,7 @@ graph LR
 
       </details></li>    State --> locks[locks/]
 
-      
+
 
       <li><details>    style Terraform fill:#00BCD4,stroke:#00838F,stroke-width:3px,color:#fff
 
@@ -1276,7 +1272,7 @@ graph LR
 
               <li><span class="folder">guides/</span></li>    K8s[apps/infrastructure/kubernetes/]
 
-              <li><span class="folder">patterns/</span></li>    
+              <li><span class="folder">patterns/</span></li>
 
             </ul>    K8s --> Base[base/]
 
@@ -1286,7 +1282,7 @@ graph LR
 
           <li><span class="folder">prompts/</span></li>    Base --> deployments[deployments/]
 
-          <li><span class="folder">patterns/</span></li>    
+          <li><span class="folder">patterns/</span></li>
 
           <li><span class="folder">metrics/</span></li>    K8s --> Helm[helm/]
 
@@ -1294,7 +1290,7 @@ graph LR
 
         </ul>    Helm --> values[values/]
 
-      </details></li>    
+      </details></li>
 
           K8s --> Overlays[overlays/]
 
@@ -1302,7 +1298,7 @@ graph LR
 
         <summary><span class="folder">📊 data/</span></summary>    Overlays --> prodOverlay[prod/]
 
-        <ul>    
+        <ul>
 
           <li><span class="folder">fixtures/</span></li>    Docker[apps/infrastructure/docker/]
 
@@ -1328,7 +1324,7 @@ graph LR
 
       </details></li></details>
 
-      
+
 
       <li><details>### Secrets & Configuration
 
@@ -1346,7 +1342,7 @@ graph LR
 
       </details></li>    Config[Configuration]
 
-          
+
 
       <li><span class="folder">📝 logs/</span></li>    Config --> Secrets[secrets/]
 
@@ -1354,7 +1350,7 @@ graph LR
 
     </ul>    Secrets --> templates[templates/]
 
-  </details></li>    
+  </details></li>
 
 </ul>    Config --> Envs[environments/]
 
@@ -1398,16 +1394,16 @@ graph LR
 ```mermaid
 graph TB
     Scripts[scripts/]
-    
+
     Scripts --> CI[ci/]
     CI --> build[build.sh]
     CI --> test[test.sh]
     CI --> deploy[deploy.sh]
-    
+
     Scripts --> Migrations[migrations/]
     Migrations --> db[database/]
     Migrations --> data[data/]
-    
+
     Scripts --> Utils[utilities/]
     Utils --> cleanup[cleanup-processes.sh]
     Utils --> optimize[optimize-workspace.sh]
@@ -1417,7 +1413,7 @@ graph TB
     style CI fill:#A1887F,stroke:#6D4C41,stroke-width:2px
     style Migrations fill:#A1887F,stroke:#6D4C41,stroke-width:2px
     style Utils fill:#A1887F,stroke:#6D4C41,stroke-width:2px
-```
+````
 
 </details>
 
@@ -1429,16 +1425,16 @@ graph TB
 ```mermaid
 graph TB
     Tools[tools/]
-    
+
     Tools --> Config[config/]
     Config --> eslint[eslint/]
     Config --> prettier[prettier/]
     Config --> vitest[vitest/]
-    
+
     Tools --> Scripts[scripts/]
     Scripts --> ai[ai/]
     Scripts --> test[test/]
-    
+
     Tools --> Docker[docker/]
     Docker --> images[images/]
     Docker --> compose[compose/]
@@ -1466,17 +1462,17 @@ graph TB
 ```mermaid
 graph TB
     AIContext[AI Context]
-    
+
     AIContext --> Cache[ai-cache/]
     Cache --> context[context-cache.json]
     Cache --> smart[smart-cache.json]
     Cache --> workspace[workspace-state.json]
-    
+
     AIContext --> Knowledge[ai-knowledge/]
     Knowledge --> articles[articles/]
     Knowledge --> guides[guides/]
     Knowledge --> patterns[patterns/]
-    
+
     AIContext --> Bundles[context-bundles/]
     Bundles --> full[full-context/]
     Bundles --> minimal[minimal/]
@@ -1497,20 +1493,20 @@ graph TB
 ```mermaid
 graph TB
     AITools[AI Tools]
-    
+
     AITools --> Prompts[prompts/]
     Prompts --> templates[templates/]
     Prompts --> chains[chains/]
     Prompts --> examples[examples/]
-    
+
     AITools --> Patterns[patterns/]
     Patterns --> code[code-patterns/]
     Patterns --> arch[architecture/]
-    
+
     AITools --> Metrics[metrics/]
     Metrics --> performance[performance/]
     Metrics --> quality[quality/]
-    
+
     AITools --> Governance[governance/]
     Governance --> rules[rules/]
     Governance --> policies[policies/]
@@ -1538,11 +1534,11 @@ graph TB
 ```mermaid
 graph TB
     Data[data/]
-    
+
     Data --> Fixtures[fixtures/]
     Fixtures --> test[test-data/]
     Fixtures --> seed[seed-data/]
-    
+
     Data --> Seeds[seeds/]
     Seeds --> dev[development/]
     Seeds --> staging[staging/]
@@ -1557,7 +1553,7 @@ graph TB
 ```mermaid
 graph TB
     Static[static/]
-    
+
     Static --> env[environment.js]
     Static --> main[main.js]
     Static --> runtime[runtime.js]
@@ -1571,7 +1567,7 @@ graph TB
 ```mermaid
 graph TB
     Reports[reports/]
-    
+
     Reports --> coverage[coverage-ranked.json]
     Reports --> vitest[vitest-api-output.json]
     Reports --> logs[logs/]
@@ -1606,4 +1602,4 @@ graph TB
 
 ---
 
-*Last Updated: November 7, 2025*
+_Last Updated: November 7, 2025_

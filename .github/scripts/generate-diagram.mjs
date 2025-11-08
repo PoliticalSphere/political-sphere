@@ -43,7 +43,7 @@ async function scanDirectory(dirPath) {
 }
 
 async function generateMermaidDiagram() {
-	let diagram = "graph TD\n    GitHub[📁 .github/]\n\n";
+	let diagram = "graph LR\n    GitHub[📁 .github/]\n\n";
 	let styles = "";
 	const nodeIds = new Set();
 

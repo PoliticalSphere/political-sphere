@@ -5,7 +5,7 @@ This document explains the CI/CD triggers, key jobs, ownership, and how to run w
 ## 📁 .github Directory Structure
 
 ```mermaid
-graph TB
+graph TD
     GitHub[📁 .github/]
 
     GitHub --> .gi_actions[📁 actions/]

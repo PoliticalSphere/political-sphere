@@ -12,7 +12,10 @@ interface UserRow {
 }
 
 export class UserStore {
-  constructor(private db: Database.Database, private cache?: CacheService) {}
+  constructor(
+    private db: Database.Database,
+    private cache?: CacheService,
+  ) {}
 
   async create(input: CreateUserInput): Promise<User> {
     const id = uuidv4();
@@ -23,13 +26,7 @@ export class UserStore {
       VALUES (?, ?, ?, ?, ?)
     `);
 
-    stmt.run(
-      id,
-      input.username,
-      input.email,
-      now.toISOString(),
-      now.toISOString()
-    );
+    stmt.run(id, input.username, input.email, now.toISOString(), now.toISOString());
 
     const user: User = {
       id,
@@ -42,16 +39,8 @@ export class UserStore {
     if (this.cache) {
       await Promise.all([
         this.cache.set(cacheKeys.user(id), user, CACHE_TTL.USER),
-        this.cache.set(
-          cacheKeys.userByUsername(input.username),
-          user,
-          CACHE_TTL.USER
-        ),
-        this.cache.set(
-          cacheKeys.userByEmail(input.email),
-          user,
-          CACHE_TTL.USER
-        ),
+        this.cache.set(cacheKeys.userByUsername(input.username), user, CACHE_TTL.USER),
+        this.cache.set(cacheKeys.userByEmail(input.email), user, CACHE_TTL.USER),
         this.cache.invalidatePattern("user:*:bills"),
         this.cache.invalidatePattern("user:*:votes"),
       ]);
@@ -69,7 +58,7 @@ export class UserStore {
 
     const row = this.db
       .prepare<[string], UserRow>(
-        `SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?`
+        `SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?`,
       )
       .get(id);
     if (!row) return null;
@@ -93,15 +82,13 @@ export class UserStore {
   async getByUsername(username: string): Promise<User | null> {
     // Try cache first
     if (this.cache) {
-      const cached = await this.cache.get<User>(
-        cacheKeys.userByUsername(username)
-      );
+      const cached = await this.cache.get<User>(cacheKeys.userByUsername(username));
       if (cached) return cached;
     }
 
     const row = this.db
       .prepare<[string], UserRow>(
-        `SELECT id, username, email, created_at, updated_at FROM users WHERE username = ?`
+        `SELECT id, username, email, created_at, updated_at FROM users WHERE username = ?`,
       )
       .get(username);
     if (!row) return null;
@@ -116,11 +103,7 @@ export class UserStore {
 
     // Cache the result
     if (this.cache) {
-      await this.cache.set(
-        cacheKeys.userByUsername(username),
-        user,
-        CACHE_TTL.USER
-      );
+      await this.cache.set(cacheKeys.userByUsername(username), user, CACHE_TTL.USER);
     }
 
     return user;
@@ -135,7 +118,7 @@ export class UserStore {
 
     const row = this.db
       .prepare<[string], UserRow>(
-        `SELECT id, username, email, created_at, updated_at FROM users WHERE email = ?`
+        `SELECT id, username, email, created_at, updated_at FROM users WHERE email = ?`,
       )
       .get(email);
     if (!row) return null;

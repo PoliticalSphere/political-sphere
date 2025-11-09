@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-export const ElectionStatusSchema = z.enum(['ANNOUNCED', 'POLLING', 'COUNTING', 'DECLARED']);
+export const ElectionStatusSchema = z.enum(["ANNOUNCED", "POLLING", "COUNTING", "DECLARED"]);
 
 export const ElectionSchema = z.object({
   id: z.string().uuid(),

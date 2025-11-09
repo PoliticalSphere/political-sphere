@@ -36,10 +36,7 @@ vi.mock("./ReportContent", () => ({
       <button type="button" onClick={onClose}>
         Close Report
       </button>
-      <button
-        type="button"
-        onClick={() => onReportSubmitted({ success: true })}
-      >
+      <button type="button" onClick={() => onReportSubmitted({ success: true })}>
         Submit Report
       </button>
     </div>
@@ -82,13 +79,7 @@ describe("GameBoard Component", () => {
 
   describe("Rendering", () => {
     it("should render the game board with proposals", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       expect(screen.getByText("Political Sphere Game")).toBeInTheDocument();
       expect(screen.getByText("Test Proposal 1")).toBeInTheDocument();
@@ -96,26 +87,14 @@ describe("GameBoard Component", () => {
     });
 
     it("should render skip links", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       expect(screen.getByText("Skip to main content")).toBeInTheDocument();
       expect(screen.getByText("Skip to navigation")).toBeInTheDocument();
     });
 
     it("should render proposal form when onProposalSubmit is provided", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       expect(screen.getByText("Submit a Proposal")).toBeInTheDocument();
       expect(screen.getByLabelText("Proposal title")).toBeInTheDocument();
@@ -124,11 +103,7 @@ describe("GameBoard Component", () => {
 
     it("should not render proposal form when onProposalSubmit is not provided", () => {
       render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          onVote={mockCallbacks.onVote}
-        />
+        <GameBoard gameId="game-123" proposals={mockProposals} onVote={mockCallbacks.onVote} />,
       );
 
       expect(screen.queryByText("Submit a Proposal")).not.toBeInTheDocument();
@@ -137,13 +112,7 @@ describe("GameBoard Component", () => {
 
   describe("Voting", () => {
     it("should call onVote when voting for a proposal", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       const forButton = screen.getByLabelText("Vote for Test Proposal 1");
       fireEvent.click(forButton);
@@ -159,17 +128,9 @@ describe("GameBoard Component", () => {
     });
 
     it("should call onVote when voting against a proposal", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
-      const againstButton = screen.getByLabelText(
-        "Vote against Test Proposal 1"
-      );
+      const againstButton = screen.getByLabelText("Vote against Test Proposal 1");
       fireEvent.click(againstButton);
 
       expect(mockCallbacks.onVote).toHaveBeenCalledWith({
@@ -185,17 +146,9 @@ describe("GameBoard Component", () => {
 
   describe("Reporting", () => {
     it("should open report modal when clicking report button", async () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
-      const reportButton = screen.getByLabelText(
-        "Report proposal Test Proposal 1"
-      );
+      const reportButton = screen.getByLabelText("Report proposal Test Proposal 1");
       fireEvent.click(reportButton);
 
       await waitFor(() => {
@@ -204,18 +157,10 @@ describe("GameBoard Component", () => {
     });
 
     it("should close report modal when close button is clicked", async () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       // Open modal
-      const reportButton = screen.getByLabelText(
-        "Report proposal Test Proposal 1"
-      );
+      const reportButton = screen.getByLabelText("Report proposal Test Proposal 1");
       fireEvent.click(reportButton);
 
       await waitFor(() => {
@@ -232,28 +177,14 @@ describe("GameBoard Component", () => {
     });
 
     it("should disable report button for flagged proposals", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
-      const reportButton = screen.getByLabelText(
-        "Report proposal Test Proposal 2"
-      );
+      const reportButton = screen.getByLabelText("Report proposal Test Proposal 2");
       expect(reportButton).toBeDisabled();
     });
 
     it("should show flagged indicator for flagged proposals", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       expect(screen.getByText("Flagged")).toBeInTheDocument();
     });
@@ -262,13 +193,7 @@ describe("GameBoard Component", () => {
   describe("Proposal Submission", () => {
     it("should submit a new proposal with valid data", async () => {
       const user = userEvent.setup();
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       const titleInput = screen.getByLabelText("Proposal title");
       const descriptionInput = screen.getByLabelText("Proposal description");
@@ -288,13 +213,7 @@ describe("GameBoard Component", () => {
     });
 
     it("should require title and description for proposal submission", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       const titleInput = screen.getByLabelText("Proposal title");
       const descriptionInput = screen.getByLabelText("Proposal description");
@@ -306,13 +225,7 @@ describe("GameBoard Component", () => {
 
   describe("Accessibility", () => {
     it("should have proper ARIA labels on main sections", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       expect(screen.getByLabelText("Game board")).toBeInTheDocument();
       expect(screen.getByLabelText("Skip links")).toBeInTheDocument();
@@ -320,13 +233,7 @@ describe("GameBoard Component", () => {
     });
 
     it("should have live region for announcements", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       const liveRegion = screen.getByTestId("announcements");
       expect(liveRegion).toHaveAttribute("aria-live", "polite");
@@ -334,13 +241,7 @@ describe("GameBoard Component", () => {
     });
 
     it("should have proper heading hierarchy", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       const h1 = screen.getByRole("heading", {
         level: 1,
@@ -356,39 +257,19 @@ describe("GameBoard Component", () => {
     });
 
     it("should provide descriptive help text for form fields", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       const titleInput = screen.getByLabelText("Proposal title");
-      expect(titleInput).toHaveAttribute(
-        "aria-describedby",
-        "proposal-title-help"
-      );
+      expect(titleInput).toHaveAttribute("aria-describedby", "proposal-title-help");
 
       const descriptionInput = screen.getByLabelText("Proposal description");
-      expect(descriptionInput).toHaveAttribute(
-        "aria-describedby",
-        "proposal-description-help"
-      );
+      expect(descriptionInput).toHaveAttribute("aria-describedby", "proposal-description-help");
     });
 
     it("should have proper modal attributes when report dialog is open", async () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
-      const reportButton = screen.getByLabelText(
-        "Report proposal Test Proposal 1"
-      );
+      const reportButton = screen.getByLabelText("Report proposal Test Proposal 1");
       fireEvent.click(reportButton);
 
       await waitFor(() => {
@@ -406,13 +287,7 @@ describe("GameBoard Component", () => {
       // environment-dependent; instead assert the keyboard handler prevents
       // default navigation which indicates the handler executed.
 
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       const main = screen.getByLabelText("Game board");
 
@@ -434,13 +309,7 @@ describe("GameBoard Component", () => {
     });
 
     it("should prevent default behavior for arrow keys", () => {
-      render(
-        <GameBoard
-          gameId="game-123"
-          proposals={mockProposals}
-          {...mockCallbacks}
-        />
-      );
+      render(<GameBoard gameId="game-123" proposals={mockProposals} {...mockCallbacks} />);
 
       const main = screen.getByLabelText("Game board");
       const event = new KeyboardEvent("keydown", {

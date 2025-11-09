@@ -5,7 +5,7 @@ export function summarizeNews(items) {
   const tags = {};
 
   for (const item of safeItems) {
-    const category = item?.category ?? 'general';
+    const category = item?.category ?? "general";
     categories[category] = (categories[category] ?? 0) + 1;
 
     if (Array.isArray(item?.tags)) {

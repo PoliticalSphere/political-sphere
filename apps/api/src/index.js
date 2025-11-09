@@ -1,21 +1,4 @@
-// Mock index file for testing
-const express = require("express");
-const { closeDatabase, getDatabase } = require("./modules/stores/index.js");
-
-const app = express();
-app.use(express.json());
-
-// Mock routes
-app.get("/health", (req, res) => {
-	res.json({ status: "ok" });
-});
-
-app.get("/users", (req, res) => {
-	res.json({ users: [] });
-});
-
-app.get("/parties", (req, res) => {
-	res.json({ parties: [] });
-});
-
-module.exports = { app, closeDatabase, getDatabase };
+// ESM shim to align legacy JS entry with the new TypeScript app factory
+// Export only the Express app from the TS source. Avoid re-exporting TS store modules
+// to prevent Node from importing TypeScript directly in environments that bypass Vite.
+export { app } from "./app.ts";

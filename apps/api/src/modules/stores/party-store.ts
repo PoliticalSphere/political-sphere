@@ -13,7 +13,10 @@ interface PartyRow {
 }
 
 export class PartyStore {
-  constructor(private db: Database.Database, private cache?: CacheService) {}
+  constructor(
+    private db: Database.Database,
+    private cache?: CacheService,
+  ) {}
 
   async create(input: CreatePartyInput): Promise<Party> {
     const id = uuidv4();
@@ -24,13 +27,7 @@ export class PartyStore {
       VALUES (?, ?, ?, ?, ?)
     `);
 
-    stmt.run(
-      id,
-      input.name,
-      input.description || null,
-      input.color,
-      now.toISOString()
-    );
+    stmt.run(id, input.name, input.description || null, input.color, now.toISOString());
 
     const party: Party = {
       id,
@@ -62,7 +59,7 @@ export class PartyStore {
       return await retryWithBackoff(async () => {
         const row = this.db
           .prepare<[string], PartyRow>(
-            `SELECT id, name, description, color, created_at FROM parties WHERE id = ?`
+            `SELECT id, name, description, color, created_at FROM parties WHERE id = ?`,
           )
           .get(id);
         if (!row) return null;
@@ -83,9 +80,7 @@ export class PartyStore {
         return party;
       });
     } catch (error) {
-      throw new DatabaseError(
-        `Failed to get party ${id}: ${(error as Error).message}`
-      );
+      throw new DatabaseError(`Failed to get party ${id}: ${(error as Error).message}`);
     }
   }
   async getByName(name: string): Promise<Party | null> {
@@ -99,7 +94,7 @@ export class PartyStore {
       return await retryWithBackoff(async () => {
         const row = this.db
           .prepare<[string], PartyRow>(
-            `SELECT id, name, description, color, created_at FROM parties WHERE name = ?`
+            `SELECT id, name, description, color, created_at FROM parties WHERE name = ?`,
           )
           .get(name);
         if (!row) return null;
@@ -114,31 +109,20 @@ export class PartyStore {
 
         // Cache the result
         if (this.cache) {
-          await this.cache.set(
-            cacheKeys.partyByName(name),
-            party,
-            CACHE_TTL.PARTY
-          );
+          await this.cache.set(cacheKeys.partyByName(name), party, CACHE_TTL.PARTY);
         }
 
         return party;
       });
     } catch (error) {
-      throw new DatabaseError(
-        `Failed to get party by name ${name}: ${(error as Error).message}`
-      );
+      throw new DatabaseError(`Failed to get party by name ${name}: ${(error as Error).message}`);
     }
   }
 
-  async getAll(
-    page: number = 1,
-    limit: number = 10
-  ): Promise<{ parties: Party[]; total: number }> {
+  async getAll(page: number = 1, limit: number = 10): Promise<{ parties: Party[]; total: number }> {
     // Try cache first
     if (this.cache) {
-      const cached = await this.cache.get<{ parties: Party[]; total: number }>(
-        cacheKeys.parties()
-      );
+      const cached = await this.cache.get<{ parties: Party[]; total: number }>(cacheKeys.parties());
       if (cached) return cached;
     }
 
@@ -148,13 +132,13 @@ export class PartyStore {
 
         // Get total count
         const countStmt = this.db.prepare<[], { count: number }>(
-          `SELECT COUNT(*) as count FROM parties`
+          `SELECT COUNT(*) as count FROM parties`,
         );
         const total = countStmt.get()?.count ?? 0;
 
         // Get paginated results
         const stmt = this.db.prepare<[number, number], PartyRow>(
-          `SELECT id, name, description, color, created_at FROM parties ORDER BY created_at DESC LIMIT ? OFFSET ?`
+          `SELECT id, name, description, color, created_at FROM parties ORDER BY created_at DESC LIMIT ? OFFSET ?`,
         );
         const rows = stmt.all(limit, offset);
         const parties = rows.map((row) => ({
@@ -175,9 +159,7 @@ export class PartyStore {
         return result;
       });
     } catch (error) {
-      throw new DatabaseError(
-        `Failed to get all parties: ${(error as Error).message}`
-      );
+      throw new DatabaseError(`Failed to get all parties: ${(error as Error).message}`);
     }
   }
 }

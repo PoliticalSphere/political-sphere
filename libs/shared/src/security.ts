@@ -19,16 +19,8 @@ const DEFAULT_RATE_LIMIT = Object.freeze({
 });
 
 const DEFAULT_ALLOWED_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS"];
-const DEFAULT_ALLOWED_HEADERS = [
-  "Content-Type",
-  "Authorization",
-  "X-CSRF-Token",
-];
-const DEFAULT_EXPOSED_HEADERS = [
-  "X-RateLimit-Limit",
-  "X-RateLimit-Remaining",
-  "X-RateLimit-Reset",
-];
+const DEFAULT_ALLOWED_HEADERS = ["Content-Type", "Authorization", "X-CSRF-Token"];
+const DEFAULT_EXPOSED_HEADERS = ["X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset"];
 
 export const DEFAULT_SECURITY_DIRECTIVES = Object.freeze({
   "default-src": new Set(["'self'"]),
@@ -132,7 +124,7 @@ export function isValidEmail(email: string): boolean {
  */
 export function isValidUrl(
   url: string,
-  allowedProtocols: string[] = DEFAULT_ALLOWED_PROTOCOLS
+  allowedProtocols: string[] = DEFAULT_ALLOWED_PROTOCOLS,
 ): boolean {
   if (typeof url !== "string") {
     return false;
@@ -226,24 +218,18 @@ export function validateTag(tag: string): string | null {
 export function checkRateLimit(
   key: string,
   optionsOrMaxRequests?: number | { maxRequests?: number; windowMs?: number },
-  windowMs?: number
+  windowMs?: number,
 ): boolean {
   let maxRequests: number;
   let windowDuration: number;
 
-  if (
-    typeof optionsOrMaxRequests === "object" &&
-    optionsOrMaxRequests !== null
-  ) {
-    maxRequests =
-      optionsOrMaxRequests.maxRequests ?? DEFAULT_RATE_LIMIT.maxRequests;
-    windowDuration =
-      optionsOrMaxRequests.windowMs ?? DEFAULT_RATE_LIMIT.windowMs;
+  if (typeof optionsOrMaxRequests === "object" && optionsOrMaxRequests !== null) {
+    maxRequests = optionsOrMaxRequests.maxRequests ?? DEFAULT_RATE_LIMIT.maxRequests;
+    windowDuration = optionsOrMaxRequests.windowMs ?? DEFAULT_RATE_LIMIT.windowMs;
   } else {
     maxRequests =
-      (typeof optionsOrMaxRequests === "number"
-        ? optionsOrMaxRequests
-        : undefined) ?? DEFAULT_RATE_LIMIT.maxRequests;
+      (typeof optionsOrMaxRequests === "number" ? optionsOrMaxRequests : undefined) ??
+      DEFAULT_RATE_LIMIT.maxRequests;
     windowDuration = windowMs ?? DEFAULT_RATE_LIMIT.windowMs;
   }
 
@@ -278,7 +264,7 @@ export function checkRateLimit(
  */
 export function getRateLimitInfo(
   key: string,
-  options?: { maxRequests?: number; windowMs?: number }
+  options?: { maxRequests?: number; windowMs?: number },
 ): { remaining: number; reset: number; limit: number } {
   const maxRequests = options?.maxRequests ?? DEFAULT_RATE_LIMIT.maxRequests;
   const windowMs = options?.windowMs ?? DEFAULT_RATE_LIMIT.windowMs;
@@ -338,11 +324,7 @@ export function generateCsrfToken(sessionId: string): string {
 /**
  * Validates a CSRF token
  */
-export function validateCsrfToken(
-  token: string,
-  sessionId: string,
-  maxAge = 3600000
-): boolean {
+export function validateCsrfToken(token: string, sessionId: string, maxAge = 3600000): boolean {
   const stored = csrfTokenStore.get(sessionId);
 
   if (!stored) {
@@ -357,10 +339,7 @@ export function validateCsrfToken(
 
   // Use timing-safe comparison
   try {
-    return timingSafeEqual(
-      Buffer.from(token, "hex"),
-      Buffer.from(stored.token, "hex")
-    );
+    return timingSafeEqual(Buffer.from(token, "hex"), Buffer.from(stored.token, "hex"));
   } catch {
     return false;
   }

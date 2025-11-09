@@ -4,7 +4,10 @@ import { CACHE_TTL, type CacheService, cacheKeys } from "../cache.js";
 import { DatabaseError, retryWithBackoff } from "../error-handler.js";
 
 export class BillStore {
-  constructor(private db: Database.Database, private cache?: CacheService) {}
+  constructor(
+    private db: Database.Database,
+    private cache?: CacheService,
+  ) {}
 
   async create(billData: any) {
     return retryWithBackoff(async () => {
@@ -16,14 +19,7 @@ export class BillStore {
         VALUES (?, ?, ?, ?, ?, ?)
       `);
 
-      stmt.run(
-        id,
-        billData.title,
-        billData.description,
-        billData.status || "draft",
-        now,
-        now
-      );
+      stmt.run(id, billData.title, billData.description, billData.status || "draft", now, now);
 
       // Invalidate cache
       if (this.cache) {
@@ -46,11 +42,7 @@ export class BillStore {
       const bill = stmt.get(id);
 
       if (bill && this.cache) {
-        await this.cache.set(
-          cacheKeys.bill(id),
-          JSON.stringify(bill),
-          CACHE_TTL
-        );
+        await this.cache.set(cacheKeys.bill(id), JSON.stringify(bill), CACHE_TTL);
       }
 
       return bill;
@@ -65,17 +57,11 @@ export class BillStore {
         if (cached) return JSON.parse(cached);
       }
 
-      const stmt = this.db.prepare(
-        "SELECT * FROM bills ORDER BY created_at DESC"
-      );
+      const stmt = this.db.prepare("SELECT * FROM bills ORDER BY created_at DESC");
       const bills = stmt.all();
 
       if (this.cache) {
-        await this.cache.set(
-          cacheKeys.bills(),
-          JSON.stringify(bills),
-          CACHE_TTL
-        );
+        await this.cache.set(cacheKeys.bills(), JSON.stringify(bills), CACHE_TTL);
       }
 
       return bills;

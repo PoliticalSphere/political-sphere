@@ -100,7 +100,7 @@ describe("Dashboard Component", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(/API unavailable: News API responded with 500/i)
+          screen.getByText(/API unavailable: News API responded with 500/i),
         ).toBeInTheDocument();
       });
     });
@@ -128,7 +128,7 @@ describe("Dashboard Component", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(/API unavailable: Metrics API responded with 503/i)
+          screen.getByText(/API unavailable: Metrics API responded with 503/i),
         ).toBeInTheDocument();
       });
     });
@@ -139,9 +139,7 @@ describe("Dashboard Component", () => {
       render(<Dashboard />);
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/API unavailable: Network error/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/API unavailable: Network error/i)).toBeInTheDocument();
       });
     });
   });
@@ -197,9 +195,7 @@ describe("Dashboard Component", () => {
 
       await waitFor(() => {
         expect(
-          screen.getByText(
-            /No stories yet. The data pipeline will populate this feed shortly./i
-          )
+          screen.getByText(/No stories yet. The data pipeline will populate this feed shortly./i),
         ).toBeInTheDocument();
       });
     });
@@ -269,9 +265,7 @@ describe("Dashboard Component", () => {
       render(<Dashboard />);
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/Live data retrieved from API./i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/Live data retrieved from API./i)).toBeInTheDocument();
       });
     });
 
@@ -281,9 +275,7 @@ describe("Dashboard Component", () => {
       render(<Dashboard />);
 
       await waitFor(() => {
-        expect(
-          screen.getByText(/API unavailable: Connection failed/i)
-        ).toBeInTheDocument();
+        expect(screen.getByText(/API unavailable: Connection failed/i)).toBeInTheDocument();
       });
     });
   });

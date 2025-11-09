@@ -30,9 +30,7 @@ function validateCommand(cmd: string): void {
   ];
   for (const pattern of dangerousPatterns) {
     if (pattern.test(cmd)) {
-      throw new Error(
-        `Command contains potentially dangerous pattern: ${pattern.source}`
-      );
+      throw new Error(`Command contains potentially dangerous pattern: ${pattern.source}`);
     }
   }
 }
@@ -86,7 +84,7 @@ function annotate(kind: "error" | "warning" | "notice", message: string) {
 
 async function runShell(
   cmd: string,
-  cwd: string
+  cwd: string,
 ): Promise<{ code: number; stdout: string; stderr: string }> {
   // Validate command to prevent injection attacks
   validateCommand(cmd);
@@ -122,11 +120,7 @@ async function runShell(
 
 function getByPath(obj: unknown, pathStr: string): unknown {
   return pathStr.split(".").reduce<unknown>((acc, key) => {
-    if (
-      acc &&
-      typeof acc === "object" &&
-      key in (acc as Record<string, unknown>)
-    ) {
+    if (acc && typeof acc === "object" && key in (acc as Record<string, unknown>)) {
       return (acc as Record<string, unknown>)[key];
     }
     return undefined;
@@ -185,7 +179,7 @@ async function runMetricControl(ctrl: MetricControl, repoRoot: string) {
   } catch (_e) {
     annotate(
       ctrl.severity === "blocker" ? "error" : "warning",
-      `Metric file not readable: ${metricPath}`
+      `Metric file not readable: ${metricPath}`,
     );
   }
   let passed = false;
@@ -194,18 +188,18 @@ async function runMetricControl(ctrl: MetricControl, repoRoot: string) {
     console.log(
       `Metric ${ctrl.metric.jsonPath} = ${value} ${ctrl.metric.comparison} ${
         ctrl.metric.threshold
-      } => ${passed ? "OK" : "VIOLATION"}`
+      } => ${passed ? "OK" : "VIOLATION"}`,
     );
     if (!passed) {
       annotate(
         ctrl.severity === "blocker" ? "error" : "warning",
-        `${ctrl.name} threshold not met: ${value} ${ctrl.metric.comparison} ${ctrl.metric.threshold}`
+        `${ctrl.name} threshold not met: ${value} ${ctrl.metric.comparison} ${ctrl.metric.threshold}`,
       );
     }
   } else {
     annotate(
       ctrl.severity === "blocker" ? "error" : "warning",
-      `${ctrl.name} metric value is missing or not numeric.`
+      `${ctrl.name} metric value is missing or not numeric.`,
     );
   }
   logGroupEnd();
@@ -231,9 +225,7 @@ async function main() {
     process.exit(2);
   }
 
-  console.log(
-    `Loaded ${config.controls.length} controls (version ${config.version}).`
-  );
+  console.log(`Loaded ${config.controls.length} controls (version ${config.version}).`);
   const results: {
     id: string;
     name: string;
@@ -251,12 +243,8 @@ async function main() {
     }
   }
 
-  const blockersFailed = results.filter(
-    (r) => !r.passed && r.severity === "blocker"
-  );
-  const warningsFailed = results.filter(
-    (r) => !r.passed && r.severity === "warning"
-  );
+  const blockersFailed = results.filter((r) => !r.passed && r.severity === "blocker");
+  const warningsFailed = results.filter((r) => !r.passed && r.severity === "warning");
 
   console.log("\nControls Summary");
   console.log("================");
@@ -265,16 +253,11 @@ async function main() {
   }
 
   if (blockersFailed.length > 0) {
-    console.error(
-      `\nBlocking violations: ${blockersFailed.length}. Failing job.`
-    );
+    console.error(`\nBlocking violations: ${blockersFailed.length}. Failing job.`);
     process.exit(1);
   }
   if (warningsFailed.length > 0) {
-    annotate(
-      "notice",
-      `${warningsFailed.length} warning control(s) did not pass.`
-    );
+    annotate("notice", `${warningsFailed.length} warning control(s) did not pass.`);
   }
   console.log("\nAll blocking controls passed.");
 }

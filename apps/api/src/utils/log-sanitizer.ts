@@ -7,10 +7,7 @@
  * Sanitizes a string value for safe logging by removing control characters
  * and limiting length to prevent log flooding
  */
-export function sanitizeLogString(
-  value: string,
-  maxLength: number = 1000
-): string {
+export function sanitizeLogString(value: string, maxLength: number = 1000): string {
   if (typeof value !== "string") {
     return String(value);
   }
@@ -43,10 +40,7 @@ export function sanitizeLogString(
 /**
  * Sanitizes an object for safe logging by sanitizing all string values
  */
-export function sanitizeLogObject(
-  obj: unknown,
-  maxLength: number = 1000
-): Record<string, unknown> {
+export function sanitizeLogObject(obj: unknown, maxLength: number = 1000): Record<string, unknown> {
   if (!obj || typeof obj !== "object") {
     return {};
   }
@@ -57,7 +51,7 @@ export function sanitizeLogObject(
       sanitized[key] = sanitizeLogString(value, maxLength);
     } else if (Array.isArray(value)) {
       sanitized[key] = value.map((item) =>
-        typeof item === "string" ? sanitizeLogString(item, maxLength) : item
+        typeof item === "string" ? sanitizeLogString(item, maxLength) : item,
       );
     } else if (value && typeof value === "object") {
       sanitized[key] = sanitizeLogObject(value, maxLength);
@@ -71,16 +65,14 @@ export function sanitizeLogObject(
 /**
  * Sanitizes HTTP request data for safe logging
  */
-export function sanitizeRequestForLog(
-  req: Record<string, unknown>
-): Record<string, unknown> {
+export function sanitizeRequestForLog(req: Record<string, unknown>): Record<string, unknown> {
   return {
     method: req.method, // Safe: HTTP method is controlled
     url: sanitizeLogString((req.url as string) || "", 500), // Sanitize: user-controlled
     ip: sanitizeLogString((req.ip as string) || "", 50), // Sanitize: could be spoofed
     userAgent: sanitizeLogString(
       (req as { get?: (key: string) => string }).get?.("User-Agent") || "",
-      500
+      500,
     ), // Sanitize: user-controlled
     requestId: req.requestId, // Safe: generated server-side
   };
@@ -91,7 +83,7 @@ export function sanitizeRequestForLog(
  */
 export function sanitizeErrorForLog(
   err: Error,
-  req?: Record<string, unknown>
+  req?: Record<string, unknown>,
 ): Record<string, unknown> {
   return {
     message: sanitizeLogString(err.message || "", 500),

@@ -12,10 +12,10 @@ export interface Player {
   id: ID;
   displayName: string;
   avatarUrl?: string;
-  role?: 'citizen' | 'moderator' | 'observer' | 'ai';
+  role?: "citizen" | "moderator" | "observer" | "ai";
   createdAt: string; // ISO timestamp
   verifiedAge?: number; // Age verification for compliance
-  contentRating?: 'U' | 'PG' | '12' | '15' | '18'; // Age-appropriate content access
+  contentRating?: "U" | "PG" | "12" | "15" | "18"; // Age-appropriate content access
   userId?: string; // External user ID for API integration
 }
 
@@ -23,7 +23,7 @@ export interface Player {
 export interface Vote {
   playerId: ID;
   proposalId: ID;
-  choice: 'for' | 'against' | 'abstain';
+  choice: "for" | "against" | "abstain";
   weight?: number; // for future weighted voting
   timestamp: string; // ISO
 }
@@ -35,10 +35,10 @@ export interface Proposal {
   description: string;
   proposerId: ID;
   createdAt: string;
-  status: 'draft' | 'voting' | 'enacted' | 'rejected' | 'abandoned' | 'flagged';
+  status: "draft" | "voting" | "enacted" | "rejected" | "abandoned" | "flagged";
   metadata?: Record<string, unknown>;
-  moderationStatus?: 'pending' | 'approved' | 'rejected' | 'flagged'; // Moderation state
-  contentRating?: 'U' | 'PG' | '12' | '15' | '18'; // Age appropriateness
+  moderationStatus?: "pending" | "approved" | "rejected" | "flagged"; // Moderation state
+  contentRating?: "U" | "PG" | "12" | "15" | "18"; // Age appropriateness
   flaggedReasons?: string[]; // Reasons for flagging
 }
 
@@ -52,7 +52,7 @@ export interface EconomyState {
 /** Turn state describes the current turn and phase */
 export interface TurnState {
   turnNumber: number;
-  phase: 'lobby' | 'proposal' | 'debate' | 'voting' | 'resolution' | 'recess';
+  phase: "lobby" | "proposal" | "debate" | "voting" | "resolution" | "recess";
   endsAt?: string; // ISO timestamp when phase ends
 }
 
@@ -67,7 +67,7 @@ export interface GameState {
   turn: TurnState;
   createdAt: string;
   updatedAt?: string;
-  contentRating?: 'U' | 'PG' | '12' | '15' | '18'; // Overall game content rating
+  contentRating?: "U" | "PG" | "12" | "15" | "18"; // Overall game content rating
   moderationEnabled?: boolean; // Whether moderation is active
   ageVerificationRequired?: boolean; // Whether age verification is required to join
 }
@@ -84,6 +84,6 @@ export interface CreateGameResponse {
 
 /** Player action types that mutate game state */
 export type PlayerAction =
-  | { type: 'propose'; payload: { title: string; description: string; proposerId: ID } }
-  | { type: 'vote'; payload: { proposalId: ID; playerId: ID; choice: Vote['choice'] } }
-  | { type: 'comment'; payload: { proposalId: ID; playerId: ID; text: string } };
+  | { type: "propose"; payload: { title: string; description: string; proposerId: ID } }
+  | { type: "vote"; payload: { proposalId: ID; playerId: ID; choice: Vote["choice"] } }
+  | { type: "comment"; payload: { proposalId: ID; playerId: ID; text: string } };

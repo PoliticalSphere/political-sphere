@@ -6,6 +6,36 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
 
 ## [Unreleased]
 
+### Changed - VS Code Workspace Configuration (2025-11-09)
+
+- Refactored `.vscode/tasks.json` for cross-platform portability and better UX:
+  - Converted npm-run shell tasks to `type: "npm"` with explicit `script` fields
+  - Added task `group`, `presentation`, and `runOptions` metadata for consistent behavior
+  - Wired `ai:fast-secure` to depend on `ai:preflight` via `dependsOn`
+  - Kept Vitest watch as a background task with a stable problem matcher
+  - Improved shell-only validation tasks with clearer fallback messages and safer grep flags
+  - Added compound `all:quality` task for sequential preflight → fast-secure → test execution
+  - Created `test:accessibility` task for WCAG 2.2 AA validation with axe-core
+  - Replaced bash-dependent diagnostic tasks with cross-platform Node.js script (`tools/scripts/vscode-diagnostics.mjs`)
+    - Validates .vscode configuration files (settings, tasks, launch, extensions)
+    - Checks installed extension compatibility (ESLint, Prettier, Vitest, Copilot)
+    - Monitors VS Code process health (cross-platform)
+    - Audits security-related settings for hardcoded secrets
+  - Full Windows, macOS, and Linux compatibility for all VS Code tasks
+
+### Added - E2E Stability and Frontend Testing (2025-11-09)
+
+- **Playwright Auto-Start for API and Frontend**: Configured `e2e/playwright.config.ts` to automatically start both API server (port 3001) and frontend server (port 3002) before running smoke tests via `webServer` array.
+- **Frontend E2E Enablement**: Activated frontend smoke tests using custom Node.js server (`apps/web/server.js`) for deterministic, production-like testing environment.
+- **Accessibility Smoke Tests**: Added `e2e/smoke/accessibility.spec.ts` with automated WCAG 2.2 AA validation using axe-core and @axe-core/playwright.
+  - Validates homepage for critical accessibility violations
+  - Tests keyboard navigation and focus management
+  - Checks document structure (lang attribute, viewport, title)
+  - Verifies interactive elements have accessible names
+  - Validates color contrast meets AA standards
+- **Test Runner Convenience**: Added `npm run test:smoke` script for fast local smoke test execution.
+- **Architecture Decision Record**: Created `ADR-0017-frontend-e2e-server.md` documenting decision to use custom server.js over Vite dev server for E2E testing, with rationale based on startup time, determinism, production parity, and CI efficiency.
+
 ### Added - GitHub Audit Enhancements (2025-11-08)
 
 - **Enhanced GitHub Audit Script v1.1.0**: Advanced the audit script with comprehensive new features for improved workflow security validation

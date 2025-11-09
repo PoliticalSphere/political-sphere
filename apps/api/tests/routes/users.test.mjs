@@ -1,11 +1,10 @@
+import assert from "node:assert";
+import request from "supertest";
+import express from "express";
+import usersRouter from "../../src/routes/users.js";
+import { getDatabase, closeDatabase } from "../../src/index.js";
 
-import assert from 'node:assert';
-import request from 'supertest';
-import express from 'express';
-import usersRouter from '../../src/routes/users.js';
-import { getDatabase, closeDatabase } from '../../src/index.js';
-
-describe('Users Routes', () => {
+describe("Users Routes", () => {
   let app;
 
   beforeEach(() => {
@@ -14,14 +13,14 @@ describe('Users Routes', () => {
     // Debugging middleware to capture raw request headers before body parsing
     // eslint-disable-next-line no-console
     app.use((req, res, next) => {
-      console.debug('[test] incoming headers:', req.headers);
+      console.debug("[test] incoming headers:", req.headers);
       next();
     });
     // Use text parser + manual JSON parse to avoid body-parser charset handling quirks in the test environment
-    app.use(express.text({ type: '*/*' }));
+    app.use(express.text({ type: "*/*" }));
     app.use((req, res, next) => {
       try {
-        if (typeof req.body === 'string' && req.body.length > 0) {
+        if (typeof req.body === "string" && req.body.length > 0) {
           // eslint-disable-next-line no-param-reassign
           req.body = JSON.parse(req.body);
         }
@@ -30,20 +29,20 @@ describe('Users Routes', () => {
         return next(err);
       }
     });
-    app.use('/api', usersRouter);
+    app.use("/api", usersRouter);
   });
 
   afterEach(() => {
     closeDatabase();
   });
 
-  describe('POST /api/users', () => {
-    it('should create a new user', async () => {
+  describe("POST /api/users", () => {
+    it("should create a new user", async () => {
       const timestamp = Date.now();
       // Capture full response for debugging (don't use .expect so we can log body on 415)
       const response = await request(app)
-        .post('/api/users')
-        .set('Content-Type', 'application/json; charset=utf-8')
+        .post("/api/users")
+        .set("Content-Type", "application/json; charset=utf-8")
         .send({
           username: `user${timestamp}`,
           email: `test-${timestamp}@example.com`,
@@ -51,13 +50,13 @@ describe('Users Routes', () => {
 
       // Debug output to inspect why a 415 is returned
       // eslint-disable-next-line no-console
-      console.log('[test-debug] status:', response.status);
+      console.log("[test-debug] status:", response.status);
       // eslint-disable-next-line no-console
-      console.log('[test-debug] headers:', response.headers);
+      console.log("[test-debug] headers:", response.headers);
       // eslint-disable-next-line no-console
-      console.log('[test-debug] body:', response.body);
+      console.log("[test-debug] body:", response.body);
       // eslint-disable-next-line no-console
-      console.log('[test-debug] text:', response.text);
+      console.log("[test-debug] text:", response.text);
 
       assert.strictEqual(response.status, 201, `Expected 201 but got ${response.status}`);
       assert(response.body.data.id);
@@ -67,25 +66,25 @@ describe('Users Routes', () => {
       assert(response.body.data.updatedAt);
     });
 
-    it('should return 400 for invalid input', async () => {
+    it("should return 400 for invalid input", async () => {
       const response = await request(app)
-        .post('/api/users')
-        .set('Content-Type', 'application/json')
+        .post("/api/users")
+        .set("Content-Type", "application/json")
         .send({
-          username: '',
-          email: 'invalid-email',
+          username: "",
+          email: "invalid-email",
         })
         .expect(400);
 
       assert(response.body.error);
     });
 
-    it('should return 400 for duplicate username', async () => {
+    it("should return 400 for duplicate username", async () => {
       const timestamp = Date.now();
       // Create first user
       await request(app)
-        .post('/api/users')
-        .set('Content-Type', 'application/json')
+        .post("/api/users")
+        .set("Content-Type", "application/json")
         .send({
           username: `user${timestamp}`,
           email: `test-${timestamp}@example.com`,
@@ -94,8 +93,8 @@ describe('Users Routes', () => {
 
       // Try to create duplicate
       const response = await request(app)
-        .post('/api/users')
-        .set('Content-Type', 'application/json')
+        .post("/api/users")
+        .set("Content-Type", "application/json")
         .send({
           username: `user${timestamp}`,
           email: `test2-${timestamp}@example.com`,
@@ -106,12 +105,12 @@ describe('Users Routes', () => {
     });
   });
 
-  describe('GET /api/users/:id', () => {
-    it('should return user by id', async () => {
+  describe("GET /api/users/:id", () => {
+    it("should return user by id", async () => {
       const timestamp = Date.now();
       const createResponse = await request(app)
-        .post('/api/users')
-        .set('Content-Type', 'application/json')
+        .post("/api/users")
+        .set("Content-Type", "application/json")
         .send({
           username: `user${timestamp}`,
           email: `test-${timestamp}@example.com`,
@@ -120,17 +119,15 @@ describe('Users Routes', () => {
 
       const userId = createResponse.body.data.id;
 
-      const getResponse = await request(app)
-        .get(`/api/users/${userId}`)
-        .expect(200);
+      const getResponse = await request(app).get(`/api/users/${userId}`).expect(200);
 
       assert.deepStrictEqual(getResponse.body, createResponse.body.data);
     });
 
-    it('should return 404 for non-existent user', async () => {
-      const response = await request(app).get('/api/users/non-existent-id').expect(404);
+    it("should return 404 for non-existent user", async () => {
+      const response = await request(app).get("/api/users/non-existent-id").expect(404);
 
-      assert.strictEqual(response.body.error, 'User not found');
+      assert.strictEqual(response.body.error, "User not found");
     });
   });
 });

@@ -170,8 +170,7 @@ function localModeration(text: string): ModerationResult {
   if (/\b(hate|kill|murder|terror|bomb|weapon)\b/.test(lower))
     reasons.push("Potential hate/violence");
   // child safety
-  if (/\b(child|kid|minor).*(sex|porn|naked)\b/.test(lower))
-    reasons.push("Child safety");
+  if (/\b(child|kid|minor).*(sex|porn|naked)\b/.test(lower)) reasons.push("Child safety");
   // profanity
   if (/\b(fuck|shit|bitch|asshole)\b/.test(lower)) reasons.push("Profanity");
 
@@ -187,7 +186,7 @@ const MODERATION_ENDPOINT =
 
 async function remoteModeration(
   text: string,
-  userId: string | null = null
+  userId: string | null = null,
 ): Promise<ModerationResult | null> {
   if (!MODERATION_ENDPOINT) return null;
 
@@ -241,8 +240,7 @@ async function remoteModeration(
 
     return result;
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error("Moderation circuit breaker failed:", errorMessage);
 
     // Record failure in compliance logs for audit
@@ -296,7 +294,7 @@ app.post("/games", async (req: Request, res: Response) => {
     (req.body as { userId?: string })?.userId ||
       (req.user as { id?: string } | undefined)?.id ||
       "anonymous",
-    name
+    name,
   );
 
   return res.status(201).json({ game });
@@ -310,9 +308,7 @@ const AGE_CHECK_ACCESS_ENDPOINT = process.env.API_BASE_URL
   ? `${process.env.API_BASE_URL.replace(/\/$/, "")}/api/age/check-access`
   : "http://localhost:4000/api/age/check-access";
 
-async function checkAgeVerification(
-  userId: string
-): Promise<AgeVerificationStatus> {
+async function checkAgeVerification(userId: string): Promise<AgeVerificationStatus> {
   if (!AGE_STATUS_ENDPOINT) return { verified: false, age: null };
 
   try {
@@ -343,17 +339,13 @@ async function checkAgeVerification(
 
     return result;
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error("Age verification circuit breaker failed:", errorMessage);
     return { verified: false, age: null };
   }
 }
 
-async function checkContentAccess(
-  userId: string,
-  contentRating: string
-): Promise<boolean> {
+async function checkContentAccess(userId: string, contentRating: string): Promise<boolean> {
   if (!AGE_CHECK_ACCESS_ENDPOINT) return false;
 
   try {
@@ -385,8 +377,7 @@ async function checkContentAccess(
 
     return result;
   } catch (error) {
-    const errorMessage =
-      error instanceof Error ? error.message : "Unknown error";
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     console.error("Age check access circuit breaker failed:", errorMessage);
     return false;
   }
@@ -401,8 +392,7 @@ app.post("/games/:id/join", async (req: Request, res: Response) => {
   };
   const game = games.get(id);
   if (!game) return res.status(404).json({ error: "game not found" });
-  if (!displayName)
-    return res.status(400).json({ error: "displayName is required" });
+  if (!displayName) return res.status(400).json({ error: "displayName is required" });
 
   // Check age verification if required
   if (game.ageVerificationRequired) {
@@ -422,10 +412,7 @@ app.post("/games/:id/join", async (req: Request, res: Response) => {
     }
 
     // Check content access
-    const canAccess = await checkContentAccess(
-      userId,
-      game.contentRating || "PG"
-    );
+    const canAccess = await checkContentAccess(userId, game.contentRating || "PG");
     if (!canAccess) {
       return res.status(403).json({
         error: "Content access denied",
@@ -467,75 +454,61 @@ app.get("/games/:id/flags", (req: Request, res: Response) => {
   const game = games.get(req.params.id);
   if (!game) return res.status(404).json({ error: "game not found" });
   const flagged = (game.proposals || []).filter(
-    (p) => p.status === "flagged" || p.moderationStatus === "flagged"
+    (p) => p.status === "flagged" || p.moderationStatus === "flagged",
   );
   return res.json({ flagged });
 });
 
 // Moderator review endpoint for flagged proposals
-app.post(
-  "/games/:id/flags/:proposalId/review",
-  async (req: Request, res: Response) => {
-    const { id: gameId, proposalId } = {
-      id: req.params.id,
-      proposalId: req.params.proposalId,
-    };
-    const { moderatorId, action, note } =
-      (req.body as { moderatorId?: string; action?: string; note?: string }) ||
-      {};
-    const game = games.get(gameId);
-    if (!game) return res.status(404).json({ error: "game not found" });
+app.post("/games/:id/flags/:proposalId/review", async (req: Request, res: Response) => {
+  const { id: gameId, proposalId } = {
+    id: req.params.id,
+    proposalId: req.params.proposalId,
+  };
+  const { moderatorId, action, note } =
+    (req.body as { moderatorId?: string; action?: string; note?: string }) || {};
+  const game = games.get(gameId);
+  if (!game) return res.status(404).json({ error: "game not found" });
 
-    const proposal = (game.proposals || []).find((p) => p.id === proposalId);
-    if (!proposal) return res.status(404).json({ error: "proposal not found" });
-    if (
-      proposal.status !== "flagged" &&
-      proposal.moderationStatus !== "flagged"
-    ) {
-      return res
-        .status(400)
-        .json({ error: "proposal is not flagged for review" });
-    }
-
-    if (!moderatorId || !action)
-      return res
-        .status(400)
-        .json({ error: "moderatorId and action are required" });
-
-    if (action === "approve") {
-      proposal.status = "voting";
-      proposal.moderationStatus = "approved";
-      proposal.reviewedAt = new Date().toISOString();
-      proposal.reviewedBy = moderatorId;
-      proposal.reviewNote = note || null;
-    } else if (action === "reject") {
-      proposal.status = "rejected";
-      proposal.moderationStatus = "rejected";
-      proposal.reviewedAt = new Date().toISOString();
-      proposal.reviewedBy = moderatorId;
-      proposal.reviewNote = note || null;
-    } else {
-      return res
-        .status(400)
-        .json({ error: 'invalid action - must be "approve" or "reject"' });
-    }
-
-    game.updatedAt = new Date().toISOString();
-    games.set(gameId, game);
-    if (db && typeof db.upsertGame === "function")
-      await db.upsertGame(gameId, game);
-
-    // Log moderation action
-    await complianceClient.logModerationAction(
-      proposalId,
-      moderatorId,
-      action,
-      proposal.flaggedReasons || []
-    );
-
-    return res.json({ proposal });
+  const proposal = (game.proposals || []).find((p) => p.id === proposalId);
+  if (!proposal) return res.status(404).json({ error: "proposal not found" });
+  if (proposal.status !== "flagged" && proposal.moderationStatus !== "flagged") {
+    return res.status(400).json({ error: "proposal is not flagged for review" });
   }
-);
+
+  if (!moderatorId || !action)
+    return res.status(400).json({ error: "moderatorId and action are required" });
+
+  if (action === "approve") {
+    proposal.status = "voting";
+    proposal.moderationStatus = "approved";
+    proposal.reviewedAt = new Date().toISOString();
+    proposal.reviewedBy = moderatorId;
+    proposal.reviewNote = note || null;
+  } else if (action === "reject") {
+    proposal.status = "rejected";
+    proposal.moderationStatus = "rejected";
+    proposal.reviewedAt = new Date().toISOString();
+    proposal.reviewedBy = moderatorId;
+    proposal.reviewNote = note || null;
+  } else {
+    return res.status(400).json({ error: 'invalid action - must be "approve" or "reject"' });
+  }
+
+  game.updatedAt = new Date().toISOString();
+  games.set(gameId, game);
+  if (db && typeof db.upsertGame === "function") await db.upsertGame(gameId, game);
+
+  // Log moderation action
+  await complianceClient.logModerationAction(
+    proposalId,
+    moderatorId,
+    action,
+    proposal.flaggedReasons || [],
+  );
+
+  return res.json({ proposal });
+});
 
 // Submit player action (propose, start_debate, speak, vote, advance_turn) — integrated with deterministic engine
 app.post("/games/:id/action", async (req: Request, res: Response) => {
@@ -544,8 +517,7 @@ app.post("/games/:id/action", async (req: Request, res: Response) => {
   if (!game) return res.status(404).json({ error: "game not found" });
 
   const { action } = req.body as { action?: GameAction };
-  if (!action || !action.type)
-    return res.status(400).json({ error: "action.type required" });
+  if (!action || !action.type) return res.status(400).json({ error: "action.type required" });
 
   // Handle propose with moderation first
   if (action.type === "propose") {
@@ -555,9 +527,7 @@ app.post("/games/:id/action", async (req: Request, res: Response) => {
       proposerId?: string;
     };
     if (!title || !proposerId)
-      return res
-        .status(400)
-        .json({ error: "title and proposerId are required" });
+      return res.status(400).json({ error: "title and proposerId are required" });
 
     const text = `${title}\n${description || ""}`;
     const remote = await remoteModeration(text, proposerId);
@@ -579,18 +549,10 @@ app.post("/games/:id/action", async (req: Request, res: Response) => {
       game.proposals.push(flagged);
       game.updatedAt = new Date().toISOString();
       games.set(gameId, game);
-      if (db && typeof db.upsertGame === "function")
-        await db.upsertGame(gameId, game);
+      if (db && typeof db.upsertGame === "function") await db.upsertGame(gameId, game);
 
       // Log flagged proposal
-      await complianceClient.logProposalCreated(
-        gameId,
-        flagged.id,
-        proposerId,
-        title,
-        true,
-        true
-      );
+      await complianceClient.logProposalCreated(gameId, flagged.id, proposerId, title, true, true);
 
       return res.status(201).json({
         proposal: flagged,
@@ -602,8 +564,7 @@ app.post("/games/:id/action", async (req: Request, res: Response) => {
     // Safe — apply via engine
     const newState = advanceGameState(game, [action], Date.now());
     games.set(gameId, newState);
-    if (db && typeof db.upsertGame === "function")
-      await db.upsertGame(gameId, newState);
+    if (db && typeof db.upsertGame === "function") await db.upsertGame(gameId, newState);
     const newProposal = newState.proposals[newState.proposals.length - 1];
 
     // Log successful proposal creation
@@ -613,24 +574,20 @@ app.post("/games/:id/action", async (req: Request, res: Response) => {
       proposerId,
       title,
       true,
-      false
+      false,
     );
 
-    return res
-      .status(201)
-      .json({ proposal: newProposal, flagged: false, game: newState });
+    return res.status(201).json({ proposal: newProposal, flagged: false, game: newState });
   }
 
   // Handle start_debate
   if (action.type === "start_debate") {
     const { proposalId } = (action.payload || {}) as { proposalId?: string };
-    if (!proposalId)
-      return res.status(400).json({ error: "proposalId required" });
+    if (!proposalId) return res.status(400).json({ error: "proposalId required" });
 
     const newState = advanceGameState(game, [action], Date.now());
     games.set(gameId, newState);
-    if (db && typeof db.upsertGame === "function")
-      await db.upsertGame(gameId, newState);
+    if (db && typeof db.upsertGame === "function") await db.upsertGame(gameId, newState);
     const debate = (newState.debates || [])[
       newState.debates?.length ? newState.debates.length - 1 : 0
     ];
@@ -646,9 +603,7 @@ app.post("/games/:id/action", async (req: Request, res: Response) => {
       content?: string;
     };
     if (!debateId || !speakerId || !content)
-      return res
-        .status(400)
-        .json({ error: "debateId, speakerId and content are required" });
+      return res.status(400).json({ error: "debateId, speakerId and content are required" });
 
     const remote = await remoteModeration(content, speakerId);
     const moderation = remote ?? localModeration(content);
@@ -662,8 +617,7 @@ app.post("/games/:id/action", async (req: Request, res: Response) => {
 
     const newState = advanceGameState(game, [action], Date.now());
     games.set(gameId, newState);
-    if (db && typeof db.upsertGame === "function")
-      await db.upsertGame(gameId, newState);
+    if (db && typeof db.upsertGame === "function") await db.upsertGame(gameId, newState);
     const speech = (newState.speeches || [])[
       newState.speeches?.length ? newState.speeches.length - 1 : 0
     ];
@@ -679,14 +633,11 @@ app.post("/games/:id/action", async (req: Request, res: Response) => {
       choice?: string;
     };
     if (!proposalId || !playerId || !choice)
-      return res
-        .status(400)
-        .json({ error: "proposalId, playerId and choice are required" });
+      return res.status(400).json({ error: "proposalId, playerId and choice are required" });
 
     const newState = advanceGameState(game, [action], Date.now());
     games.set(gameId, newState);
-    if (db && typeof db.upsertGame === "function")
-      await db.upsertGame(gameId, newState);
+    if (db && typeof db.upsertGame === "function") await db.upsertGame(gameId, newState);
     const vote = newState.votes[newState.votes.length - 1];
 
     // Log vote for compliance
@@ -699,8 +650,7 @@ app.post("/games/:id/action", async (req: Request, res: Response) => {
   if (action.type === "advance_turn") {
     const newState = advanceGameState(game, [action], Date.now());
     games.set(gameId, newState);
-    if (db && typeof db.upsertGame === "function")
-      await db.upsertGame(gameId, newState);
+    if (db && typeof db.upsertGame === "function") await db.upsertGame(gameId, newState);
 
     return res.status(200).json({ game: newState });
   }
@@ -742,13 +692,12 @@ async function start(): Promise<void> {
         console.log(`Imported ${entries.length} games from legacy JSON store`);
       }
     } catch (impErr) {
-      const errorMessage =
-        impErr instanceof Error ? impErr.message : String(impErr);
+      const errorMessage = impErr instanceof Error ? impErr.message : String(impErr);
       console.warn("Legacy JSON import failed:", errorMessage);
     }
 
     app.listen(Number(PORT), () =>
-      console.log(`Game server listening on http://localhost:${PORT}`)
+      console.log(`Game server listening on http://localhost:${PORT}`),
     );
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);

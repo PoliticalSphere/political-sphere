@@ -1,3 +1,16 @@
+// =============================================================================
+// AI-ASSISTABLE METADATA
+// =============================================================================
+// @artifact-name: VS Code Extensions Recommendations
+// @artifact-purpose: Curated list of recommended and unwanted VS Code extensions
+// @artifact-type: extension-manifest
+// @artifact-category: development-environment
+// @artifact-criticality: low
+// @artifact-owner: engineering
+// @artifact-scope: workspace
+// @artifact-extension-categories: [core-tools, testing, git, ai, utilities]
+// @artifact-features: [performance-optimization, conflict-prevention]
+// =============================================================================
 {
   "recommendations": [
     // Essential - Core development tools (Level 4: Comprehensive tooling)
@@ -22,7 +35,6 @@
     "yoavbls.pretty-ts-errors", // Enhanced error display
     "redhat.vscode-yaml", // YAML editing support
     "bradlc.vscode-tailwindcss", // CSS framework support
-    "ms-vscode.vscode-json", // JSON editing with schema support
     "ms-vscode-remote.remote-containers" // Dev container support
   ],
 
@@ -38,8 +50,6 @@
     "HookyQR.beautify", // Duplicate beautify extension
 
     // Security concerns
-    "ms-vscode-remote.remote-ssh", // Potential security risks in shared environments
-    "ms-vscode.vscode-json", // Already included in recommendations above
-    "ms-vscode-remote.remote-containers" // Already included in recommendations above
+    "ms-vscode-remote.remote-ssh" // Potential security risks in shared environments
   ]
 }

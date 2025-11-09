@@ -9,9 +9,5 @@ import React from "react";
 // Use React.createElement so the file remains valid JS and is importable
 // by the test runner without requiring JSX parsing.
 export default function ReportContentMock() {
-	return React.createElement(
-		"div",
-		{ "data-testid": "report-content" },
-		"ReportContent Mock",
-	);
+  return React.createElement("div", { "data-testid": "report-content" }, "ReportContent Mock");
 }

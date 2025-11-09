@@ -1,6 +1,6 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-export const BillStatusSchema = z.enum(['proposed', 'debating', 'passed', 'rejected']);
+export const BillStatusSchema = z.enum(["proposed", "debating", "passed", "rejected"]);
 
 export type BillStatus = z.infer<typeof BillStatusSchema>;
 
@@ -9,7 +9,7 @@ export const BillSchema = z.object({
   title: z.string().min(1).max(200),
   description: z.string().max(2000).optional(),
   proposerId: z.string().uuid(),
-  status: BillStatusSchema.default('proposed'),
+  status: BillStatusSchema.default("proposed"),
   createdAt: z.date(),
   updatedAt: z.date(),
 });

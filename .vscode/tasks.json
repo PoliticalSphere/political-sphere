@@ -1,26 +1,45 @@
+// =============================================================================
+// AI-ASSISTABLE METADATA
+// =============================================================================
+// @artifact-name: VS Code Tasks Configuration
+// @artifact-purpose: Define runnable tasks for development, testing, and validation
+// @artifact-type: task-definitions
+// @artifact-category: development-automation
+// @artifact-criticality: medium
+// @artifact-owner: engineering
+// @artifact-scope: workspace
+// @artifact-task-groups: [preflight, testing, ai-context, performance, validation]
+// @artifact-dependencies: [npm, vitest, @vscode/vsce, bash]
+// =============================================================================
 {
   "version": "2.0.0",
   "tasks": [
     {
       "label": "ai:preflight",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "preflight"],
-      "problemMatcher": []
+      "type": "npm",
+      "script": "preflight",
+      "problemMatcher": ["$tsc", "$eslint-stylish"],
+      "group": { "kind": "build", "isDefault": false },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "runOptions": { "runOn": "default" }
     },
     {
       "label": "ai:fast-secure",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "fast-secure"],
-      "problemMatcher": []
+      "type": "npm",
+      "script": "fast-secure",
+      "problemMatcher": ["$tsc", "$eslint-stylish"],
+      "dependsOn": ["ai:preflight"],
+      "group": { "kind": "build", "isDefault": false },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "runOptions": { "runOn": "default" }
     },
     {
       "label": "ai:audit",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "audit:full"],
-      "problemMatcher": []
+      "type": "npm",
+      "script": "audit:full",
+      "problemMatcher": ["$eslint-stylish"],
+      "presentation": { "reveal": "always", "panel": "new" },
+      "runOptions": { "runOn": "default" }
     },
 
     // Test tasks preferring Vitest with --changed for minimal runs
@@ -32,7 +51,10 @@
         "-lc",
         "npm run test:changed --if-present || npx vitest --run --changed"
       ],
-      "problemMatcher": []
+      "problemMatcher": ["$tsc"],
+      "group": { "kind": "test", "isDefault": true },
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "runOptions": { "runOn": "default" }
     },
     {
       "label": "test:vitest-watch-changed",
@@ -40,86 +62,121 @@
       "command": "bash",
       "args": ["-lc", "npm run test:watch --if-present || npx vitest --watch"],
       "isBackground": true,
-      "problemMatcher": []
+      "problemMatcher": {
+        "owner": "vitest",
+        "pattern": {
+          "regexp": "^(.*):(\\d+):(\\d+)\\s+-\\s+(.*)$",
+          "file": 1,
+          "line": 2,
+          "column": 3,
+          "message": 4
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "^.*RERUN.*$",
+          "endsPattern": "^.*Waiting for file changes.*$"
+        }
+      },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "runOptions": { "runOn": "default" }
     },
 
     // AI Context & Performance Tasks
     {
       "label": "AI: Build Context",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "ai:context"],
+      "type": "npm",
+      "script": "ai:context",
       "problemMatcher": [],
-      "presentation": {
-        "reveal": "always",
-        "panel": "new"
-      }
+      "presentation": { "reveal": "always", "panel": "new" },
+      "runOptions": { "runOn": "default" }
     },
     {
       "label": "AI: Refresh Knowledge",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "ai:refresh"],
-      "problemMatcher": []
+      "type": "npm",
+      "script": "ai:refresh",
+      "problemMatcher": [],
+      "presentation": { "reveal": "silent", "panel": "shared" },
+      "runOptions": { "runOn": "default" }
     },
     {
       "label": "Performance: Monitor",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "perf:monitor"],
+      "type": "npm",
+      "script": "perf:monitor",
       "problemMatcher": [],
-      "presentation": {
-        "reveal": "always"
-      }
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "isBackground": true,
+      "runOptions": { "runOn": "default" }
     },
     {
       "label": "Performance: Cleanup",
-      "type": "shell",
-      "command": "npm",
-      "args": ["run", "cleanup"],
-      "problemMatcher": []
+      "type": "npm",
+      "script": "cleanup",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "runOptions": { "runOn": "default" }
     },
 
     // Configuration Validation & Testing (Level 4 Enhancement)
     {
       "label": "Validate: VSCode Config",
       "type": "shell",
-      "command": "bash",
-      "args": [
-        "-lc",
-        "npx @vscode/vsce validate .vscode || echo 'VSCode validation not available'"
-      ],
-      "problemMatcher": []
+      "command": "node",
+      "args": ["tools/scripts/vscode-diagnostics.mjs", "validate-config"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "new" },
+      "runOptions": { "runOn": "default" }
     },
     {
       "label": "Test: Extension Compatibility",
       "type": "shell",
-      "command": "bash",
-      "args": [
-        "-lc",
-        "code --list-extensions | grep -E '(eslint|prettier|vitest|copilot)' || echo 'Extensions check complete'"
-      ],
-      "problemMatcher": []
+      "command": "node",
+      "args": ["tools/scripts/vscode-diagnostics.mjs", "check-extensions"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "runOptions": { "runOn": "default" }
     },
     {
       "label": "Monitor: VSCode Health",
       "type": "shell",
-      "command": "bash",
-      "args": [
-        "-lc",
-        "ps aux | grep -i code | head -5 && echo 'VSCode processes monitored'"
-      ],
-      "problemMatcher": []
+      "command": "node",
+      "args": ["tools/scripts/vscode-diagnostics.mjs", "health-check"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "runOptions": { "runOn": "default" }
     },
     {
       "label": "Audit: Security Settings",
       "type": "shell",
+      "command": "node",
+      "args": ["tools/scripts/vscode-diagnostics.mjs", "audit-security"],
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "new" },
+      "runOptions": { "runOn": "default" }
+    },
+
+    // Compound Tasks (sequential workflows)
+    {
+      "label": "all:quality",
+      "dependsOn": ["ai:preflight", "ai:fast-secure", "test:vitest-changed"],
+      "dependsOrder": "sequence",
+      "problemMatcher": [],
+      "presentation": { "reveal": "always", "panel": "shared" },
+      "runOptions": { "runOn": "default" }
+    },
+
+    // Accessibility Testing
+    {
+      "label": "test:accessibility",
+      "type": "shell",
       "command": "bash",
       "args": [
         "-lc",
-        "grep -r 'security|trust|secret' .vscode/ || echo 'Security audit complete'"
+        "npx axe --chrome-options='--headless' http://localhost:3002 || echo 'Accessibility testing requires local server running on port 3002'"
       ],
-      "problemMatcher": []
+      "problemMatcher": [],
+      "group": { "kind": "test", "isDefault": false },
+      "presentation": { "reveal": "always", "panel": "dedicated" },
+      "runOptions": { "runOn": "default" }
     }
   ]
 }

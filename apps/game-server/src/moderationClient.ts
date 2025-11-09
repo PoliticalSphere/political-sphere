@@ -44,7 +44,7 @@ class ModerationClient {
   async analyzeContent(
     content: string,
     type: string = "text",
-    userId: string | null = null
+    userId: string | null = null,
   ): Promise<ModerationResult> {
     try {
       const result = await this.circuitBreaker.execute(async () => {
@@ -58,8 +58,7 @@ class ModerationClient {
 
       return result;
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       console.error("Moderation API failed:", errorMessage);
       // Fail safe - assume unsafe on API failure
       return {
@@ -80,8 +79,7 @@ class ModerationClient {
       const response = await this.client.post("/moderation/report", report);
       return response.data.data;
     } catch (error) {
-      const errorMessage =
-        error instanceof Error ? error.message : "Unknown error";
+      const errorMessage = error instanceof Error ? error.message : "Unknown error";
       console.error("Report submission error:", errorMessage);
       throw error;
     }

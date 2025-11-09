@@ -4,78 +4,76 @@ import { UserService } from "../../src/domain/user-service";
 import { closeDatabase, getDatabase } from "../../src/stores";
 
 describe("BillService", () => {
-	let userService;
-	let billService;
+  let userService;
+  let billService;
 
-	beforeEach(() => {
-		getDatabase();
-		userService = new UserService();
-		billService = new BillService();
-	});
+  beforeEach(() => {
+    getDatabase();
+    userService = new UserService();
+    billService = new BillService();
+  });
 
-	afterEach(() => {
-		closeDatabase();
-	});
+  afterEach(() => {
+    closeDatabase();
+  });
 
-	describe("proposeBill", () => {
-		it("should create a new bill", async () => {
-			const user = await userService.createUser({
-				username: "testuser",
-				email: "test@example.com",
-			});
+  describe("proposeBill", () => {
+    it("should create a new bill", async () => {
+      const user = await userService.createUser({
+        username: "testuser",
+        email: "test@example.com",
+      });
 
-			const input = {
-				title: "Test Bill",
-				description: "A test bill description",
-				proposerId: user.id,
-			};
+      const input = {
+        title: "Test Bill",
+        description: "A test bill description",
+        proposerId: user.id,
+      };
 
-			const bill = await billService.proposeBill(input);
+      const bill = await billService.proposeBill(input);
 
-			expect(bill.title).toBe(input.title);
-			expect(bill.description).toBe(input.description);
-			expect(bill.proposerId).toBe(input.proposerId);
-			expect(bill.status).toBe("proposed");
-			expect(bill.id).toBeTruthy();
-			expect(bill.createdAt).toBeInstanceOf(Date);
-			expect(bill.updatedAt).toBeInstanceOf(Date);
-		});
+      expect(bill.title).toBe(input.title);
+      expect(bill.description).toBe(input.description);
+      expect(bill.proposerId).toBe(input.proposerId);
+      expect(bill.status).toBe("proposed");
+      expect(bill.id).toBeTruthy();
+      expect(bill.createdAt).toBeInstanceOf(Date);
+      expect(bill.updatedAt).toBeInstanceOf(Date);
+    });
 
-		it("should throw error for non-existent proposer", async () => {
-			const input = {
-				title: "Test Bill",
-				description: "A test bill description",
-				proposerId: "non-existent-id",
-			};
+    it("should throw error for non-existent proposer", async () => {
+      const input = {
+        title: "Test Bill",
+        description: "A test bill description",
+        proposerId: "non-existent-id",
+      };
 
-			await expect(billService.proposeBill(input)).rejects.toThrow(
-				/Proposer does not exist/,
-			);
-		});
-	});
+      await expect(billService.proposeBill(input)).rejects.toThrow(/Proposer does not exist/);
+    });
+  });
 
-	describe("getBillById", () => {
-		it("should return bill by id", async () => {
-			const user = await userService.createUser({
-				username: "testuser",
-				email: "test@example.com",
-			});
+  describe("getBillById", () => {
+    it("should return bill by id", async () => {
+      const user = await userService.createUser({
+        username: "testuser",
+        email: "test@example.com",
+      });
 
-			const input = {
-				title: "Test Bill",
-				description: "A test bill description",
-				proposerId: user.id,
-			};
+      const input = {
+        title: "Test Bill",
+        description: "A test bill description",
+        proposerId: user.id,
+      };
 
-			const created = await billService.proposeBill(input);
-			const retrieved = await billService.getBillById(created.id);
+      const created = await billService.proposeBill(input);
+      const retrieved = await billService.getBillById(created.id);
 
-			expect(retrieved).toEqual(created);
-		});
+      expect(retrieved).toEqual(created);
+    });
 
-		it("should return null for non-existent bill", async () => {
-			const bill = await billService.getBillById("non-existent-id");
-			expect(bill).toBeNull();
-		});
-	});
+    it("should return null for non-existent bill", async () => {
+      const bill = await billService.getBillById("non-existent-id");
+      expect(bill).toBeNull();
+    });
+  });
 });

@@ -204,7 +204,7 @@ jobs:
 
             </details>
 
-            See [full audit log](https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}) for details.`;
+            See [full audit log](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for details.`;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,

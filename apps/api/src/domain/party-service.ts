@@ -1,8 +1,4 @@
-import {
-  type CreatePartyInput,
-  CreatePartySchema,
-  type Party,
-} from "@political-sphere/shared";
+import { type CreatePartyInput, CreatePartySchema, type Party } from "@political-sphere/shared";
 import { getDatabase } from "../modules/stores/index.js";
 
 export class PartyService {

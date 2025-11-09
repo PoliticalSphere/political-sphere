@@ -4,9 +4,9 @@
  * Implements WCAG 2.2 AA compliance
  */
 
-import React from 'react';
-import { useAccessibility } from '../../hooks/useAccessibility';
-import './AccessibilityControls.css';
+import React from "react";
+import { useAccessibility } from "../../hooks/useAccessibility";
+import "./AccessibilityControls.css";
 
 const AccessibilityControls = ({ isOpen, onClose }) => {
   const {
@@ -19,44 +19,44 @@ const AccessibilityControls = ({ isOpen, onClose }) => {
     increaseFontSize,
     decreaseFontSize,
     resetFontSize,
-    announce
+    announce,
   } = useAccessibility();
 
   // Announce when controls open
   React.useEffect(() => {
     if (isOpen) {
-      announce('Accessibility controls opened. Use Tab to navigate options.', 'assertive');
+      announce("Accessibility controls opened. Use Tab to navigate options.", "assertive");
     }
   }, [isOpen, announce]);
 
   const handleHighContrastToggle = () => {
     setHighContrast(!highContrast);
-    announce(`${highContrast ? 'High contrast disabled' : 'High contrast enabled'}`, 'polite');
+    announce(`${highContrast ? "High contrast disabled" : "High contrast enabled"}`, "polite");
   };
 
   const handleLargeTextToggle = () => {
     setLargeText(!largeText);
-    announce(`${largeText ? 'Large text disabled' : 'Large text enabled'}`, 'polite');
+    announce(`${largeText ? "Large text disabled" : "Large text enabled"}`, "polite");
   };
 
   const handleReducedMotionToggle = () => {
     setReducedMotion(!reducedMotion);
-    announce(`${reducedMotion ? 'Motion enabled' : 'Reduced motion enabled'}`, 'polite');
+    announce(`${reducedMotion ? "Motion enabled" : "Reduced motion enabled"}`, "polite");
   };
 
   const handleIncreaseFontSize = () => {
     increaseFontSize();
-    announce('Font size increased', 'polite');
+    announce("Font size increased", "polite");
   };
 
   const handleDecreaseFontSize = () => {
     decreaseFontSize();
-    announce('Font size decreased', 'polite');
+    announce("Font size decreased", "polite");
   };
 
   const handleResetFontSize = () => {
     resetFontSize();
-    announce('Font size reset to default', 'polite');
+    announce("Font size reset to default", "polite");
   };
 
   if (!isOpen) return null;
@@ -146,9 +146,7 @@ const AccessibilityControls = ({ isOpen, onClose }) => {
           {/* Font Size Controls */}
           <section className="accessibility-section">
             <h3>Text Size</h3>
-            <p className="accessibility-description">
-              Adjust text size for better readability.
-            </p>
+            <p className="accessibility-description">Adjust text size for better readability.</p>
 
             <div className="accessibility-font-controls">
               <button
@@ -203,9 +201,7 @@ const AccessibilityControls = ({ isOpen, onClose }) => {
           {/* Help and Support */}
           <section className="accessibility-section">
             <h3>Help & Support</h3>
-            <p className="accessibility-description">
-              Need additional accessibility support?
-            </p>
+            <p className="accessibility-description">Need additional accessibility support?</p>
 
             <div className="accessibility-support-links">
               <a
@@ -217,10 +213,7 @@ const AccessibilityControls = ({ isOpen, onClose }) => {
                 Accessibility Statement
               </a>
 
-              <a
-                href="mailto:accessibility@political-sphere.com"
-                className="accessibility-link"
-              >
+              <a href="mailto:accessibility@political-sphere.com" className="accessibility-link">
                 Contact Accessibility Team
               </a>
 
@@ -238,8 +231,8 @@ const AccessibilityControls = ({ isOpen, onClose }) => {
 
         <footer className="accessibility-controls-footer">
           <p className="accessibility-disclaimer">
-            Settings are saved automatically and apply to all pages.
-            Some changes may require refreshing the page.
+            Settings are saved automatically and apply to all pages. Some changes may require
+            refreshing the page.
           </p>
         </footer>
       </div>

@@ -5,24 +5,24 @@
  * Instruments Blackbox and Copilot pipelines to capture acceptance rate, edit distance, and time-to-merge.
  */
 
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import express from 'express';
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import express from "express";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const repoRoot = join(__dirname, '..', '..', '..');
+const repoRoot = join(__dirname, "..", "..", "..");
 
-const telemetryDir = join(repoRoot, 'ai-metrics');
-const telemetryPath = join(telemetryDir, 'telemetry.json');
+const telemetryDir = join(repoRoot, "ai-metrics");
+const telemetryPath = join(telemetryDir, "telemetry.json");
 
 const safeReadJson = async (path, fallback) => {
   try {
-    const raw = await readFile(path, 'utf8');
+    const raw = await readFile(path, "utf8");
     return JSON.parse(raw);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error.code === "ENOENT") {
       return fallback;
     }
     throw error;
@@ -30,7 +30,7 @@ const safeReadJson = async (path, fallback) => {
 };
 
 const recordSuggestion = async (suggestion) => {
-  const requiredFields = ['timestamp', 'source', 'content', 'context'];
+  const requiredFields = ["timestamp", "source", "content", "context"];
   for (const field of requiredFields) {
     if (!suggestion[field]) {
       throw new Error(`Missing required field: ${field}`);
@@ -39,7 +39,7 @@ const recordSuggestion = async (suggestion) => {
 
   await mkdir(telemetryDir, { recursive: true });
 
-  let telemetry = await safeReadJson(telemetryPath, {
+  const telemetry = await safeReadJson(telemetryPath, {
     suggestions: [],
     acceptances: [],
     rejections: [],
@@ -57,18 +57,18 @@ const recordSuggestion = async (suggestion) => {
   }
 
   await writeFile(telemetryPath, JSON.stringify(telemetry, null, 2));
-  console.log('✅ Suggestion recorded');
+  console.log("✅ Suggestion recorded");
 };
 
 const recordAcceptance = async (acceptance) => {
-  const requiredFields = ['suggestionId', 'editDistance', 'timeToAccept'];
+  const requiredFields = ["suggestionId", "editDistance", "timeToAccept"];
   for (const field of requiredFields) {
     if (!acceptance[field]) {
       throw new Error(`Missing required field: ${field}`);
     }
   }
 
-  let telemetry = await safeReadJson(telemetryPath, {
+  const telemetry = await safeReadJson(telemetryPath, {
     suggestions: [],
     acceptances: [],
     rejections: [],
@@ -86,18 +86,18 @@ const recordAcceptance = async (acceptance) => {
   }
 
   await writeFile(telemetryPath, JSON.stringify(telemetry, null, 2));
-  console.log('✅ Acceptance recorded');
+  console.log("✅ Acceptance recorded");
 };
 
 const recordRejection = async (rejection) => {
-  const requiredFields = ['suggestionId', 'reason'];
+  const requiredFields = ["suggestionId", "reason"];
   for (const field of requiredFields) {
     if (!rejection[field]) {
       throw new Error(`Missing required field: ${field}`);
     }
   }
 
-  let telemetry = await safeReadJson(telemetryPath, {
+  const telemetry = await safeReadJson(telemetryPath, {
     suggestions: [],
     acceptances: [],
     rejections: [],
@@ -115,7 +115,7 @@ const recordRejection = async (rejection) => {
   }
 
   await writeFile(telemetryPath, JSON.stringify(telemetry, null, 2));
-  console.log('✅ Rejection recorded');
+  console.log("✅ Rejection recorded");
 };
 
 const calculateMetrics = (telemetry) => {
@@ -148,7 +148,7 @@ const calculateMetrics = (telemetry) => {
       : 0;
 
   return {
-    period: 'last_7_days',
+    period: "last_7_days",
     totalSuggestions: totalRecent,
     accepted: acceptedRecent,
     rejected: rejectedRecent,
@@ -165,7 +165,7 @@ const checkAlerts = (metrics) => {
 
   if (metrics.rejectionRate > 30) {
     alerts.push({
-      level: 'yellow',
+      level: "yellow",
       message: `High rejection rate: ${metrics.rejectionRate}%`,
       threshold: 30,
       current: metrics.rejectionRate,
@@ -174,7 +174,7 @@ const checkAlerts = (metrics) => {
 
   if (metrics.rejectionRate > 50) {
     alerts.push({
-      level: 'red',
+      level: "red",
       message: `Critical rejection rate: ${metrics.rejectionRate}%`,
       threshold: 50,
       current: metrics.rejectionRate,
@@ -184,7 +184,7 @@ const checkAlerts = (metrics) => {
   if (metrics.avgTimeToAccept > 300) {
     // 5 minutes
     alerts.push({
-      level: 'yellow',
+      level: "yellow",
       message: `Slow acceptance time: ${metrics.avgTimeToAccept}s average`,
       threshold: 300,
       current: metrics.avgTimeToAccept,
@@ -198,7 +198,7 @@ const startDashboard = async (port = 3001) => {
   const app = express();
   app.use(express.json());
 
-  app.get('/metrics', async (req, res) => {
+  app.get("/metrics", async (req, res) => {
     try {
       const telemetry = await safeReadJson(telemetryPath, {
         suggestions: [],
@@ -219,28 +219,28 @@ const startDashboard = async (port = 3001) => {
     }
   });
 
-  app.post('/suggestion', async (req, res) => {
+  app.post("/suggestion", async (req, res) => {
     try {
       await recordSuggestion(req.body);
-      res.json({ status: 'recorded' });
+      res.json({ status: "recorded" });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  app.post('/acceptance', async (req, res) => {
+  app.post("/acceptance", async (req, res) => {
     try {
       await recordAcceptance(req.body);
-      res.json({ status: 'recorded' });
+      res.json({ status: "recorded" });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
   });
 
-  app.post('/rejection', async (req, res) => {
+  app.post("/rejection", async (req, res) => {
     try {
       await recordRejection(req.body);
-      res.json({ status: 'recorded' });
+      res.json({ status: "recorded" });
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
@@ -256,10 +256,10 @@ const main = async () => {
   const args = process.argv.slice(2);
   const command = args[0];
 
-  if (command === 'serve') {
+  if (command === "serve") {
     const port = parseInt(args[1]) || 3001;
     await startDashboard(port);
-  } else if (command === 'metrics') {
+  } else if (command === "metrics") {
     const telemetry = await safeReadJson(telemetryPath, {
       suggestions: [],
       acceptances: [],
@@ -270,7 +270,7 @@ const main = async () => {
     const metrics = calculateMetrics(telemetry);
     const alerts = checkAlerts(metrics);
 
-    console.log('📊 AI Suggestions Metrics (Last 7 Days)');
+    console.log("📊 AI Suggestions Metrics (Last 7 Days)");
     console.log(`Total Suggestions: ${metrics.totalSuggestions}`);
     console.log(`Accepted: ${metrics.accepted} (${metrics.acceptanceRate}%)`);
     console.log(`Rejected: ${metrics.rejected} (${metrics.rejectionRate}%)`);
@@ -278,15 +278,15 @@ const main = async () => {
     console.log(`Avg Time to Accept: ${metrics.avgTimeToAccept}s`);
 
     if (alerts.length > 0) {
-      console.log('\n🚨 Alerts:');
+      console.log("\n🚨 Alerts:");
       alerts.forEach((alert) => {
         console.log(`  ${alert.level.toUpperCase()}: ${alert.message}`);
       });
     }
   } else {
-    console.log('Usage:');
-    console.log('  node telemetry-dashboard.mjs serve [port]');
-    console.log('  node telemetry-dashboard.mjs metrics');
+    console.log("Usage:");
+    console.log("  node telemetry-dashboard.mjs serve [port]");
+    console.log("  node telemetry-dashboard.mjs metrics");
   }
 };
 

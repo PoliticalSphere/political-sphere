@@ -74,10 +74,7 @@ const GameBoard = ({ gameId, proposals, onProposalSubmit, onVote }) => {
 
   return (
     <>
-      <nav
-        aria-label="Skip links"
-        className={`skip-links ${skipLinksVisible ? "is-visible" : ""}`}
-      >
+      <nav aria-label="Skip links" className={`skip-links ${skipLinksVisible ? "is-visible" : ""}`}>
         <button
           type="button"
           onClick={(event) => {
@@ -125,15 +122,10 @@ const GameBoard = ({ gameId, proposals, onProposalSubmit, onVote }) => {
           <h2>Current Proposals</h2>
           <ul>
             {proposals.map((proposal) => (
-              <li
-                key={proposal.id}
-                aria-labelledby={`proposal-${proposal.id}-title`}
-              >
+              <li key={proposal.id} aria-labelledby={`proposal-${proposal.id}-title`}>
                 <article id={`proposal-${proposal.id}`}>
                   <header>
-                    <h3 id={`proposal-${proposal.id}-title`}>
-                      {proposal.title}
-                    </h3>
+                    <h3 id={`proposal-${proposal.id}-title`}>{proposal.title}</h3>
                     <p>{proposal.description}</p>
                     <span>Status: {proposal.status}</span>
                     {proposal.moderationStatus === "flagged" && (
@@ -190,10 +182,7 @@ const GameBoard = ({ gameId, proposals, onProposalSubmit, onVote }) => {
         )}
 
         {onProposalSubmit && (
-          <section
-            aria-labelledby="new-proposal-heading"
-            className="proposal-form"
-          >
+          <section aria-labelledby="new-proposal-heading" className="proposal-form">
             <h2 id="new-proposal-heading">Submit a Proposal</h2>
             <form
               onSubmit={(event) => {
@@ -228,9 +217,7 @@ const GameBoard = ({ gameId, proposals, onProposalSubmit, onVote }) => {
               </div>
 
               <div className="proposal-form-field">
-                <label htmlFor="proposal-description">
-                  Proposal description
-                </label>
+                <label htmlFor="proposal-description">Proposal description</label>
                 <textarea
                   id="proposal-description"
                   name="proposalDescription"

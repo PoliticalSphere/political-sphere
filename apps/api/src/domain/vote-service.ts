@@ -1,8 +1,4 @@
-import {
-  type CreateVoteInput,
-  CreateVoteSchema,
-  type Vote,
-} from "@political-sphere/shared";
+import { type CreateVoteInput, CreateVoteSchema, type Vote } from "@political-sphere/shared";
 import { getDatabase } from "../modules/stores/index.js";
 
 export class VoteService {
@@ -28,10 +24,7 @@ export class VoteService {
     }
 
     // Check if user has already voted on this bill (await the async store method)
-    const hasVoted = await this.db.votes.hasUserVotedOnBill(
-      input.userId,
-      input.billId
-    );
+    const hasVoted = await this.db.votes.hasUserVotedOnBill(input.userId, input.billId);
     if (hasVoted) {
       throw new Error("User has already voted on this bill");
     }
@@ -51,9 +44,7 @@ export class VoteService {
     return this.db.votes.getByUserId(userId);
   }
 
-  async getVoteCounts(
-    billId: string
-  ): Promise<{ aye: number; nay: number; abstain: number }> {
+  async getVoteCounts(billId: string): Promise<{ aye: number; nay: number; abstain: number }> {
     return this.db.votes.getVoteCounts(billId);
   }
 }

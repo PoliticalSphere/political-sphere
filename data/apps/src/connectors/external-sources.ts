@@ -70,10 +70,7 @@ export class ExternalSourcesConnector {
   /**
    * Subscribe to real-time updates from a source
    */
-  subscribe(
-    sourceName: string,
-    callback: (data: DataFeed) => void
-  ): () => void {
+  subscribe(sourceName: string, callback: (data: DataFeed) => void): () => void {
     if (!this.listeners.has(sourceName)) {
       this.listeners.set(sourceName, new Set());
     }

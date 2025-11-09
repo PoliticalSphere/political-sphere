@@ -1,10 +1,7 @@
 import type { RedisOptions } from "ioredis";
 import Redis from "ioredis";
 
-type RedisLike = Pick<
-  Redis,
-  "get" | "set" | "setex" | "del" | "scan" | "pipeline" | "quit"
->;
+type RedisLike = Pick<Redis, "get" | "set" | "setex" | "del" | "scan" | "pipeline" | "quit">;
 
 type RedisInput = string | Redis | RedisOptions | RedisLike | undefined;
 
@@ -95,13 +92,7 @@ export class CacheService {
     try {
       let cursor = "0";
       do {
-        const [nextCursor, keys] = await this.redis.scan(
-          cursor,
-          "MATCH",
-          pattern,
-          "COUNT",
-          100
-        );
+        const [nextCursor, keys] = await this.redis.scan(cursor, "MATCH", pattern, "COUNT", 100);
         if (keys.length > 0) {
           const pipeline = this.redis.pipeline();
           for (const key of keys) {

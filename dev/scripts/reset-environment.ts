@@ -37,17 +37,13 @@ const DEFAULT_OPTIONS: ResetOptions = {
 /**
  * Reset the development environment
  */
-async function resetEnvironment(
-  options: ResetOptions = DEFAULT_OPTIONS
-): Promise<void> {
+async function resetEnvironment(options: ResetOptions = DEFAULT_OPTIONS): Promise<void> {
   console.log("🔄 Resetting development environment...");
   console.log("Options:", options);
 
   // Safety check - require confirmation in production-like environments
   if (!options.confirm && process.env.NODE_ENV === "production") {
-    throw new Error(
-      "Cannot reset production environment without explicit confirmation"
-    );
+    throw new Error("Cannot reset production environment without explicit confirmation");
   }
 
   const warnings: string[] = [];
@@ -116,7 +112,7 @@ async function resetDatabase(): Promise<void> {
        FROM pg_stat_activity
        WHERE pg_stat_activity.datname = $1
          AND pid <> pg_backend_pid()`,
-      [dbConfig.database]
+      [dbConfig.database],
     );
 
     // Drop database if exists
@@ -185,12 +181,7 @@ function clearLogs(warnings: string[]): void {
   console.log("  → Clearing logs...");
 
   const logDirs = ["logs", "coverage"];
-  const logFiles = [
-    "npm-debug.log",
-    "yarn-debug.log",
-    "pnpm-debug.log",
-    "vitest-output.log",
-  ];
+  const logFiles = ["npm-debug.log", "yarn-debug.log", "pnpm-debug.log", "vitest-output.log"];
 
   let clearedCount = 0;
 

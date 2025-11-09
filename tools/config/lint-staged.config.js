@@ -5,8 +5,8 @@
 
 export default {
   // JavaScript/TypeScript: ESLint for linting, Prettier and Biome for formatting
-  '*.{ts,tsx,js,jsx}': ['eslint --fix --cache', 'prettier --write --cache', 'biome format --write'],
+  "*.{ts,tsx,js,jsx}": ["eslint --fix --cache", "prettier --write --cache", "biome format --write"],
 
   // JSON, Markdown, YAML: Prettier for formatting
-  '*.{json,md,yml,yaml}': ['prettier --write --cache'],
+  "*.{json,md,yml,yaml}": ["prettier --write --cache"],
 };

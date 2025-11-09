@@ -5,11 +5,11 @@
  * Patterns from langchain-ai/langchainjs proven at scale
  */
 
-const vectorStore = require('./vector-store.cjs');
+const vectorStore = require("./vector-store.cjs");
 
 class AIMemory {
   constructor(options = {}) {
-    this.memoryKey = options.memoryKey || 'history';
+    this.memoryKey = options.memoryKey || "history";
     this.maxMessages = options.maxMessages || 10;
     this.vectorEnabled = options.vectorEnabled !== false;
     this.messages = [];
@@ -39,7 +39,7 @@ class AIMemory {
           text: `Q: ${input.question}\nA: ${output.answer}`,
           vector: input.vector,
           metadata: {
-            type: 'conversation',
+            type: "conversation",
             timestamp: Date.now(),
           },
         },
@@ -51,12 +51,13 @@ class AIMemory {
    * Load relevant memory based on current query
    */
   async loadMemoryVariables(query, queryVector = null) {
-    let context = '';
+    let context = "";
 
     // Add recent conversation history
-    const recentHistory = this.messages.slice(-5).map(m => 
-      `Human: ${m.input.question}\nAI: ${m.output.answer}`
-    ).join('\n\n');
+    const recentHistory = this.messages
+      .slice(-5)
+      .map((m) => `Human: ${m.input.question}\nAI: ${m.output.answer}`)
+      .join("\n\n");
 
     context += recentHistory;
 
@@ -65,13 +66,13 @@ class AIMemory {
       const similarConversations = await vectorStore.search(queryVector, {
         limit: 3,
         filter: {
-          must: [{ key: 'type', match: { value: 'conversation' } }],
+          must: [{ key: "type", match: { value: "conversation" } }],
         },
       });
 
       if (similarConversations.length > 0) {
-        context += '\n\nRelevant past conversations:\n';
-        context += similarConversations.map(c => c.text).join('\n\n');
+        context += "\n\nRelevant past conversations:\n";
+        context += similarConversations.map((c) => c.text).join("\n\n");
       }
     }
 
@@ -105,7 +106,7 @@ class AIMemory {
  */
 class VectorStoreRetrieverMemory {
   constructor(options = {}) {
-    this.memoryKey = options.memoryKey || 'context';
+    this.memoryKey = options.memoryKey || "context";
     this.returnDocs = options.returnDocs || false;
     this.k = options.k || 4; // Number of docs to retrieve
   }
@@ -124,9 +125,7 @@ class VectorStoreRetrieverMemory {
     }
 
     // Format as string context
-    const context = docs
-      .map((doc, i) => `[${i + 1}] ${doc.text}`)
-      .join('\n\n');
+    const context = docs.map((doc, i) => `[${i + 1}] ${doc.text}`).join("\n\n");
 
     return { [this.memoryKey]: context };
   }

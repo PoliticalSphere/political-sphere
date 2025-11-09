@@ -274,7 +274,7 @@ from typing import Any, Dict
 
 @dataclass
 class Config:
-    \"\"\"Configuration contract for ${className}.\"\"\"
+    """Configuration contract for ${className}."""
     params: Dict[str, Any] = field(default_factory=dict)
 
 
@@ -686,7 +686,7 @@ export interface Result {
     }
 
     if (language === "python") {
-      return `\"\"\"${lines.join("\n")}\"\"\"`;
+      return `"""${lines.join("\n")}"""`;
     }
 
     const commentBody = lines.map((line) => ` * ${line}`);
@@ -836,11 +836,13 @@ ${scenarioLine}    result = await subject.execute()
   }
 
   private toSnakeCase(value: string): string {
-    return value
-      .replace(/([A-Z])/g, "_$1")
-      .replace(/^_/, "")
-      .replace(/\W+/g, "_")
-      .toLowerCase() || "target";
+    return (
+      value
+        .replace(/([A-Z])/g, "_$1")
+        .replace(/^_/, "")
+        .replace(/\W+/g, "_")
+        .toLowerCase() || "target"
+    );
   }
 
   private async getPerformanceMetrics(): Promise<MetricsSummary> {

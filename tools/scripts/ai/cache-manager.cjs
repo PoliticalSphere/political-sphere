@@ -4,9 +4,9 @@
  * Caches common queries and responses to speed up AI assistance
  */
 
-const fs = require('fs');
-const path = require('path');
-const crypto = require('crypto');
+const fs = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 
 const ROOT_CACHE_DIR = path.join(__dirname, "../../../ai-cache");
 const LEGACY_CACHE_DIR = path.join(__dirname, "../../../ai/ai-cache");
@@ -48,11 +48,11 @@ class AICache {
   loadCache() {
     try {
       if (fs.existsSync(CACHE_FILE)) {
-        const data = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
+        const data = JSON.parse(fs.readFileSync(CACHE_FILE, "utf8"));
         return data;
       }
     } catch (error) {
-      console.error('Cache load error:', error.message);
+      console.error("Cache load error:", error.message);
     }
     return { entries: {}, metadata: { created: Date.now() } };
   }
@@ -61,37 +61,37 @@ class AICache {
     try {
       fs.writeFileSync(CACHE_FILE, JSON.stringify(this.cache, null, 2));
     } catch (error) {
-      console.error('Cache save error:', error.message);
+      console.error("Cache save error:", error.message);
     }
   }
 
   hashQuery(query) {
-    return crypto.createHash('sha256').update(query).digest('hex').slice(0, 16);
+    return crypto.createHash("sha256").update(query).digest("hex").slice(0, 16);
   }
 
   get(query) {
     const hash = this.hashQuery(query);
     const entry = this.cache.entries[hash];
-    
+
     if (!entry) return null;
-    
+
     // Check if expired
     if (Date.now() - entry.timestamp > CACHE_TTL_MS) {
       delete this.cache.entries[hash];
       this.saveCache();
       return null;
     }
-    
+
     entry.hits = (entry.hits || 0) + 1;
     entry.lastAccessed = Date.now();
     this.saveCache();
-    
+
     return entry.response;
   }
 
   set(query, response) {
     const hash = this.hashQuery(query);
-    
+
     // Enforce size limit
     const entries = Object.keys(this.cache.entries);
     if (entries.length >= MAX_CACHE_SIZE) {
@@ -102,37 +102,41 @@ class AICache {
       }, null);
       if (oldest) delete this.cache.entries[oldest];
     }
-    
+
     this.cache.entries[hash] = {
       query: query.slice(0, 200), // Store truncated query for reference
       response,
       timestamp: Date.now(),
       lastAccessed: Date.now(),
-      hits: 0
+      hits: 0,
     };
-    
+
     this.saveCache();
   }
 
   clear() {
     this.cache = { entries: {}, metadata: { created: Date.now() } };
     this.saveCache();
-    console.log('Cache cleared');
+    console.log("Cache cleared");
   }
 
   stats() {
     const entries = Object.values(this.cache.entries);
     const totalHits = entries.reduce((sum, e) => sum + (e.hits || 0), 0);
-    const avgAge = entries.length > 0 
-      ? entries.reduce((sum, e) => sum + (Date.now() - e.timestamp), 0) / entries.length / 1000 / 60
-      : 0;
-    
+    const avgAge =
+      entries.length > 0
+        ? entries.reduce((sum, e) => sum + (Date.now() - e.timestamp), 0) /
+          entries.length /
+          1000 /
+          60
+        : 0;
+
     return {
       totalEntries: entries.length,
       totalHits: totalHits,
       averageAgeMinutes: Math.round(avgAge),
       cacheSize: entries.length,
-      maxSize: MAX_CACHE_SIZE
+      maxSize: MAX_CACHE_SIZE,
     };
   }
 
@@ -140,29 +144,29 @@ class AICache {
   prepopulate() {
     const commonQueries = [
       {
-        q: 'How do I run tests?',
-        r: 'npm run test:changed'
+        q: "How do I run tests?",
+        r: "npm run test:changed",
       },
       {
-        q: 'Where are the main docs?',
-        r: 'docs/TODO.md, docs/architecture.md, docs/VSCODE-PERFORMANCE.md'
+        q: "Where are the main docs?",
+        r: "docs/TODO.md, docs/architecture.md, docs/VSCODE-PERFORMANCE.md",
       },
       {
-        q: 'How to check performance?',
-        r: 'npm run perf:monitor'
+        q: "How to check performance?",
+        r: "npm run perf:monitor",
       },
       {
-        q: 'Where is the API code?',
-        r: 'apps/api/src/'
+        q: "Where is the API code?",
+        r: "apps/api/src/",
       },
       {
-        q: 'How to cleanup processes?',
-        r: 'npm run cleanup'
+        q: "How to cleanup processes?",
+        r: "npm run cleanup",
       },
       {
-        q: 'Where are test files?',
-        r: '**/__tests__/**/*.{test,spec}.{js,ts}'
-      }
+        q: "Where are test files?",
+        r: "**/__tests__/**/*.{test,spec}.{js,ts}",
+      },
     ];
 
     commonQueries.forEach(({ q, r }) => this.set(q, r));
@@ -176,29 +180,30 @@ if (require.main === module) {
   const command = process.argv[2];
 
   switch (command) {
-    case 'stats':
-      console.log('AI Cache Statistics:', cache.stats());
+    case "stats":
+      console.log("AI Cache Statistics:", cache.stats());
       break;
-    case 'clear':
+    case "clear":
       cache.clear();
       break;
-    case 'prepopulate':
+    case "prepopulate":
       cache.prepopulate();
       break;
-    case 'get':
+    case "get": {
       const query = process.argv[3];
       if (query) {
         const result = cache.get(query);
-        console.log(result || 'Not found in cache');
+        console.log(result || "Not found in cache");
       }
       break;
+    }
     default:
-      console.log('AI Response Cache Manager');
-      console.log('Commands:');
-      console.log('  stats       - Show cache statistics');
-      console.log('  clear       - Clear all cache');
-      console.log('  prepopulate - Add common queries');
-      console.log('  get <query> - Get cached response');
+      console.log("AI Response Cache Manager");
+      console.log("Commands:");
+      console.log("  stats       - Show cache statistics");
+      console.log("  clear       - Clear all cache");
+      console.log("  prepopulate - Add common queries");
+      console.log("  get <query> - Get cached response");
   }
 }
 

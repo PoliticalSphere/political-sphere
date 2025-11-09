@@ -22,7 +22,11 @@ import {
 import { DEFAULT_DB_PATH } from "../src/config.js";
 
 // Test database path - make it unique per test run
-const getTestDbPath = () => path.join(path.dirname(DEFAULT_DB_PATH || "data"), `test-political-sphere-${Date.now()}-${Math.random()}.db`);
+const getTestDbPath = () =>
+  path.join(
+    path.dirname(DEFAULT_DB_PATH || "data"),
+    `test-political-sphere-${Date.now()}-${Math.random()}.db`,
+  );
 
 describe("Database Migrations", () => {
   let db;

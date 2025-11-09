@@ -54,12 +54,10 @@ if (typeof gAny.matchMedia !== "function") {
 // Ensure critical env is present before any module under test is imported
 // Set a strong default JWT secret for tests (32+ chars per security checks)
 process.env.JWT_SECRET =
-  process.env.JWT_SECRET ||
-  "test-secret-key-that-is-at-least-32-characters-long-for-security";
+  process.env.JWT_SECRET || "test-secret-key-that-is-at-least-32-characters-long-for-security";
 // Also set a strong refresh token secret to satisfy security checks in auth.js
 process.env.JWT_REFRESH_SECRET =
-  process.env.JWT_REFRESH_SECRET ||
-  "test-refresh-secret-that-is-also-32-characters-minimum-length";
+  process.env.JWT_REFRESH_SECRET || "test-refresh-secret-that-is-also-32-characters-minimum-length";
 process.env.NODE_ENV = process.env.NODE_ENV || "test";
 
 // Global test setup
@@ -107,7 +105,7 @@ vi.mock("@political-sphere/shared", async () => {
 
   function checkRateLimit(
     key: string,
-    opts: { maxRequests?: number; windowMs?: number } = {}
+    opts: { maxRequests?: number; windowMs?: number } = {},
   ): boolean {
     if (!key) return false;
     const max = opts.maxRequests ?? DEFAULT_LIMIT;
@@ -125,10 +123,7 @@ vi.mock("@political-sphere/shared", async () => {
     return false;
   }
 
-  function getRateLimitInfo(
-    key: string,
-    opts: { maxRequests?: number; windowMs?: number } = {}
-  ) {
+  function getRateLimitInfo(key: string, opts: { maxRequests?: number; windowMs?: number } = {}) {
     const max = opts.maxRequests ?? DEFAULT_LIMIT;
     const windowMs = opts.windowMs ?? DEFAULT_WINDOW_MS;
     const now = Date.now();
@@ -153,7 +148,7 @@ vi.mock("@political-sphere/shared", async () => {
 
   function getCorsHeaders(
     origin?: string | null,
-    opts: { exposedHeaders?: string[] } = {}
+    opts: { exposedHeaders?: string[] } = {},
   ): Record<string, string> {
     const headers: Record<string, string> = {
       Vary: "Origin",

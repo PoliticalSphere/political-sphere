@@ -3,14 +3,14 @@
 // AI Learning and Adaptation System
 // Continuously improves AI capabilities based on feedback and patterns
 
-const fs = require('fs').promises;
-const path = require('path');
+const fs = require("fs").promises;
+const path = require("path");
 
 class AILearningSystem {
   constructor() {
-    this.learningDir = path.join(__dirname, '..', 'ai-learning');
-    this.feedbackFile = path.join(this.learningDir, 'feedback.jsonl');
-    this.patternsFile = path.join(this.learningDir, 'patterns.json');
+    this.learningDir = path.join(__dirname, "..", "ai-learning");
+    this.feedbackFile = path.join(this.learningDir, "feedback.jsonl");
+    this.patternsFile = path.join(this.learningDir, "patterns.json");
   }
 
   async initialize() {
@@ -39,7 +39,7 @@ class AILearningSystem {
       improvements: feedback.improvements || [],
     };
 
-    await fs.appendFile(this.feedbackFile, JSON.stringify(feedbackEntry) + '\n');
+    await fs.appendFile(this.feedbackFile, JSON.stringify(feedbackEntry) + "\n");
 
     // Update patterns
     await this.updatePatterns(feedbackEntry);
@@ -49,7 +49,7 @@ class AILearningSystem {
     const patterns = await this.loadPatterns();
 
     // Track successful prompts
-    if (feedback.type === 'accept' && feedback.userRating >= 4) {
+    if (feedback.type === "accept" && feedback.userRating >= 4) {
       patterns.successfulPrompts.push({
         prompt: feedback.originalPrompt,
         operation: feedback.operation,
@@ -66,7 +66,7 @@ class AILearningSystem {
     }
 
     // Track common issues
-    if (feedback.type === 'reject' || feedback.userRating <= 2) {
+    if (feedback.type === "reject" || feedback.userRating <= 2) {
       const key = `${feedback.operation}:${feedback.comments}`;
       patterns.commonIssues[key] = (patterns.commonIssues[key] || 0) + 1;
     }
@@ -91,8 +91,8 @@ class AILearningSystem {
     const preferences = {};
 
     // Simple keyword extraction - in production, use NLP
-    const positiveKeywords = ['like', 'prefer', 'better', 'good'];
-    const negativeKeywords = ['dislike', 'avoid', 'worse', 'bad'];
+    const positiveKeywords = ["like", "prefer", "better", "good"];
+    const negativeKeywords = ["dislike", "avoid", "worse", "bad"];
 
     for (const keyword of positiveKeywords) {
       if (comments.toLowerCase().includes(keyword)) {
@@ -140,10 +140,10 @@ class AILearningSystem {
 
     if (operationIssues.length > 0) {
       recommendations.push({
-        type: 'issue_prevention',
-        title: 'Address Common Issues',
+        type: "issue_prevention",
+        title: "Address Common Issues",
         items: operationIssues.map(([key, count]) => ({
-          issue: key.split(':')[1],
+          issue: key.split(":")[1],
           frequency: count,
         })),
       });
@@ -156,11 +156,11 @@ class AILearningSystem {
         .slice(0, 3);
 
       recommendations.push({
-        type: 'user_preferences',
-        title: 'User Preferences',
+        type: "user_preferences",
+        title: "User Preferences",
         items: topPrefs.map(([pref, score]) => ({
           preference: pref,
-          sentiment: score > 0 ? 'positive' : 'negative',
+          sentiment: score > 0 ? "positive" : "negative",
           strength: Math.abs(score),
         })),
       });
@@ -171,8 +171,8 @@ class AILearningSystem {
       const recentImprovements = patterns.qualityImprovements.slice(-5); // Last 5 improvements
 
       recommendations.push({
-        type: 'quality_improvements',
-        title: 'Recent Quality Improvements',
+        type: "quality_improvements",
+        title: "Recent Quality Improvements",
         items: recentImprovements,
       });
     }
@@ -194,15 +194,15 @@ class AILearningSystem {
   mergePrompts(basePrompt, successfulPrompt) {
     // Simple merge - extract key successful elements
     const successfulParts = successfulPrompt
-      .split('\n')
+      .split("\n")
       .filter(
-        (line) => line.includes('IMPORTANT') || line.includes('REQUIRE') || line.includes('ENSURE')
+        (line) => line.includes("IMPORTANT") || line.includes("REQUIRE") || line.includes("ENSURE"),
       );
 
     return (
       basePrompt +
-      '\n\nADDITIONAL REQUIREMENTS FROM SUCCESSFUL PATTERNS:\n' +
-      successfulParts.join('\n')
+      "\n\nADDITIONAL REQUIREMENTS FROM SUCCESSFUL PATTERNS:\n" +
+      successfulParts.join("\n")
     );
   }
 
@@ -216,7 +216,7 @@ class AILearningSystem {
       mostSuccessfulOperation: this.getMostSuccessfulOperation(feedback),
       trendingIssues: this.getTrendingIssues(feedback),
       learningProgress: this.calculateLearningProgress(feedback),
-      recommendations: await this.getRecommendations('general'),
+      recommendations: await this.getRecommendations("general"),
     };
 
     return insights;
@@ -250,11 +250,11 @@ class AILearningSystem {
   getTrendingIssues(feedback) {
     const recentFeedback = feedback
       .filter((f) => new Date(f.timestamp) > new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)) // Last 30 days
-      .filter((f) => f.type === 'reject' || f.userRating <= 2);
+      .filter((f) => f.type === "reject" || f.userRating <= 2);
 
     const issueCounts = {};
     for (const item of recentFeedback) {
-      const issue = item.comments || 'unspecified';
+      const issue = item.comments || "unspecified";
       issueCounts[issue] = (issueCounts[issue] || 0) + 1;
     }
 
@@ -265,7 +265,7 @@ class AILearningSystem {
   }
 
   calculateLearningProgress(feedback) {
-    if (feedback.length < 10) return 'insufficient_data';
+    if (feedback.length < 10) return "insufficient_data";
 
     const recent = feedback.slice(-10);
     const older = feedback.slice(-20, -10);
@@ -273,17 +273,17 @@ class AILearningSystem {
     const recentAvg = recent.reduce((sum, f) => sum + (f.userRating || 3), 0) / recent.length;
     const olderAvg = older.reduce((sum, f) => sum + (f.userRating || 3), 0) / older.length;
 
-    if (recentAvg > olderAvg + 0.2) return 'improving';
-    if (recentAvg < olderAvg - 0.2) return 'declining';
-    return 'stable';
+    if (recentAvg > olderAvg + 0.2) return "improving";
+    if (recentAvg < olderAvg - 0.2) return "declining";
+    return "stable";
   }
 
   async loadFeedback() {
     try {
-      const data = await fs.readFile(this.feedbackFile, 'utf8');
+      const data = await fs.readFile(this.feedbackFile, "utf8");
       return data
         .trim()
-        .split('\n')
+        .split("\n")
         .filter((line) => line)
         .map((line) => JSON.parse(line));
     } catch {
@@ -293,7 +293,7 @@ class AILearningSystem {
 
   async loadPatterns() {
     try {
-      const data = await fs.readFile(this.patternsFile, 'utf8');
+      const data = await fs.readFile(this.patternsFile, "utf8");
       return JSON.parse(data);
     } catch {
       return {
@@ -312,7 +312,7 @@ class AILearningSystem {
       await fs.writeFile(this.patternsFile, JSON.stringify(patterns, null, 2));
     } catch (err) {
       // Best-effort: log and continue. Persistence failures should not crash the CLI.
-      console.warn('Failed to save patterns:', err?.message || err);
+      console.warn("Failed to save patterns:", err?.message || err);
     }
   }
 }
@@ -323,31 +323,33 @@ async function main() {
   const command = process.argv[2];
 
   switch (command) {
-    case 'init':
+    case "init":
       await learner.initialize();
-      console.log('AI Learning System initialized');
+      console.log("AI Learning System initialized");
       break;
 
-    case 'insights':
+    case "insights": {
       const insights = await learner.generateInsights();
       console.log(JSON.stringify(insights, null, 2));
       break;
+    }
 
-    case 'feedback':
+    case "feedback": {
       const feedback = {
-        type: process.argv[3] || 'accept',
-        operation: process.argv[4] || 'codeGeneration',
-        originalPrompt: process.argv[5] || 'sample prompt',
-        result: process.argv[6] || 'sample result',
-        userRating: parseInt(process.argv[7] || '4'),
-        comments: process.argv[8] || 'Good work',
+        type: process.argv[3] || "accept",
+        operation: process.argv[4] || "codeGeneration",
+        originalPrompt: process.argv[5] || "sample prompt",
+        result: process.argv[6] || "sample result",
+        userRating: parseInt(process.argv[7] || "4"),
+        comments: process.argv[8] || "Good work",
       };
       await learner.recordFeedback(feedback);
-      console.log('Feedback recorded');
+      console.log("Feedback recorded");
       break;
+    }
 
     default:
-      console.log('Usage: node learning.js <init|insights|feedback>');
+      console.log("Usage: node learning.js <init|insights|feedback>");
   }
 }
 

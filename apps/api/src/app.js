@@ -23,53 +23,46 @@ const app = express();
 const logger = console;
 
 app.use(
-	helmet({
-		contentSecurityPolicy: {
-			directives: {
-				defaultSrc: ["'self'"],
-				styleSrc: ["'self'", "'unsafe-inline'"],
-				scriptSrc: ["'self'"],
-				imgSrc: ["'self'", "data:", "https:"],
-			},
-		},
-	}),
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        scriptSrc: ["'self'"],
+        imgSrc: ["'self'", "data:", "https:"],
+      },
+    },
+  }),
 );
 
 // Configure CORS with secure origin allowlist
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-	? process.env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim())
-	: [
-			"http://localhost:3000",
-			"http://localhost:3001",
-			"http://localhost:5173", // Vite dev server
-		];
+  ? process.env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim())
+  : [
+      "http://localhost:3000",
+      "http://localhost:3001",
+      "http://localhost:5173", // Vite dev server
+    ];
 
 app.use(
-	cors({
-		origin: (origin, callback) => {
-			// Allow requests with no origin (e.g., mobile apps, server-to-server)
-			if (!origin) {
-				return callback(null, true);
-			}
+  cors({
+    origin: (origin, callback) => {
+      // Allow requests with no origin (e.g., mobile apps, server-to-server)
+      if (!origin) {
+        return callback(null, true);
+      }
 
-			if (allowedOrigins.includes(origin)) {
-				callback(null, true);
-			} else {
-				logger.warn(
-					`CORS: Blocked request from unauthorized origin: ${origin}`,
-				);
-				callback(new Error(`Origin ${origin} not allowed by CORS policy`));
-			}
-		},
-		credentials: true,
-		methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-		allowedHeaders: [
-			"Content-Type",
-			"Authorization",
-			"X-Requested-With",
-			"X-CSRF-Token",
-		],
-	}),
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        logger.warn(`CORS: Blocked request from unauthorized origin: ${origin}`);
+        callback(new Error(`Origin ${origin} not allowed by CORS policy`));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "X-CSRF-Token"],
+  }),
 );
 
 app.use(requestId);
@@ -85,89 +78,86 @@ app.use(csrfTokenMiddleware);
 app.use(csrfProtection);
 
 const limiter = rateLimit({
-	windowMs: 15 * 60 * 1000,
-	max: 100,
-	message: {
-		success: false,
-		error: "Too many requests",
-		message: "Too many requests from this IP, please try again later.",
-	},
-	standardHeaders: true,
-	legacyHeaders: false,
-	skipSuccessfulRequests: false,
-	skipFailedRequests: false,
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: {
+    success: false,
+    error: "Too many requests",
+    message: "Too many requests from this IP, please try again later.",
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: false,
+  skipFailedRequests: false,
 });
 app.use(limiter);
 
 app.use((req, res, next) => {
-	const start = Date.now();
-	// Security: Sanitize request data before logging to prevent log injection
-	const sanitizedReq = sanitizeRequestForLog(req);
-	logger.log("Request received", {
-		requestId: sanitizedReq.requestId,
-		method: sanitizedReq.method,
-		url: sanitizedReq.url,
-		ip: sanitizedReq.ip,
-		userAgent: sanitizedReq.userAgent,
-	});
+  const start = Date.now();
+  // Security: Sanitize request data before logging to prevent log injection
+  const sanitizedReq = sanitizeRequestForLog(req);
+  logger.log("Request received", {
+    requestId: sanitizedReq.requestId,
+    method: sanitizedReq.method,
+    url: sanitizedReq.url,
+    ip: sanitizedReq.ip,
+    userAgent: sanitizedReq.userAgent,
+  });
 
-	res.on("finish", () => {
-		const duration = Date.now() - start;
-		logger.log("Request completed", {
-			requestId: sanitizedReq.requestId,
-			method: sanitizedReq.method,
-			url: sanitizedReq.url,
-			status: res.statusCode,
-			duration,
-		});
-	});
+  res.on("finish", () => {
+    const duration = Date.now() - start;
+    logger.log("Request completed", {
+      requestId: sanitizedReq.requestId,
+      method: sanitizedReq.method,
+      url: sanitizedReq.url,
+      status: res.statusCode,
+      duration,
+    });
+  });
 
-	next();
+  next();
 });
 
 app.get("/health", (req, res) => {
-	res.json({
-		status: "healthy",
-		timestamp: new Date().toISOString(),
-		service: "api",
-		requestId: req.requestId,
-	});
+  res.json({
+    status: "healthy",
+    timestamp: new Date().toISOString(),
+    service: "api",
+    requestId: req.requestId,
+  });
 });
 
 app.get("/ready", (req, res) => {
-	// Check database connectivity
-	try {
-		const db = getDatabase();
-		if (db?.open) {
-			res.json({
-				status: "ready",
-				timestamp: new Date().toISOString(),
-				service: "api",
-				database: "connected",
-				requestId: req.requestId,
-			});
-		} else {
-			res.status(503).json({
-				status: "not ready",
-				timestamp: new Date().toISOString(),
-				service: "api",
-				database: "disconnected",
-				requestId: req.requestId,
-			});
-		}
-	} catch (error) {
-		res.status(503).json({
-			status: "not ready",
-			timestamp: new Date().toISOString(),
-			service: "api",
-			database: "error",
-			error:
-				process.env.NODE_ENV === "development"
-					? error.message
-					: "Database check failed",
-			requestId: req.requestId,
-		});
-	}
+  // Check database connectivity
+  try {
+    const db = getDatabase();
+    if (db?.open) {
+      res.json({
+        status: "ready",
+        timestamp: new Date().toISOString(),
+        service: "api",
+        database: "connected",
+        requestId: req.requestId,
+      });
+    } else {
+      res.status(503).json({
+        status: "not ready",
+        timestamp: new Date().toISOString(),
+        service: "api",
+        database: "disconnected",
+        requestId: req.requestId,
+      });
+    }
+  } catch (error) {
+    res.status(503).json({
+      status: "not ready",
+      timestamp: new Date().toISOString(),
+      service: "api",
+      database: "error",
+      error: process.env.NODE_ENV === "development" ? error.message : "Database check failed",
+      requestId: req.requestId,
+    });
+  }
 });
 
 app.use("/api/auth", authRoutes);
@@ -176,58 +166,50 @@ app.use("/api/parties", authenticate, partyRoutes);
 app.use("/api/bills", authenticate, billRoutes);
 app.use("/api/votes", authenticate, voteRoutes);
 app.use("/api/moderation", moderationRoutes);
-app.use(
-	"/api/compliance",
-	authenticate,
-	requireRole("admin"),
-	complianceRoutes,
-);
+app.use("/api/compliance", authenticate, requireRole("admin"), complianceRoutes);
 app.use("/api/age-verification", authenticate, ageVerificationRoutes);
 app.use("/api", newsRoutes);
 app.use("/", newsRoutes);
 
 app.use((err, req, res, _next) => {
-	console.error("Unhandled error", {
-		requestId: req.requestId,
-		error: err.message,
-		stack: err.stack,
-		url: req.url,
-		method: req.method,
-	});
+  console.error("Unhandled error", {
+    requestId: req.requestId,
+    error: err.message,
+    stack: err.stack,
+    url: req.url,
+    method: req.method,
+  });
 
-	res.status(500).json({
-		success: false,
-		error: "Internal server error",
-		message:
-			process.env.NODE_ENV === "development"
-				? err.message
-				: "Something went wrong",
-	});
+  res.status(500).json({
+    success: false,
+    error: "Internal server error",
+    message: process.env.NODE_ENV === "development" ? err.message : "Something went wrong",
+  });
 });
 
 app.use((req, res) => {
-	console.warn("Route not found", {
-		requestId: req.requestId,
-		method: req.method,
-		url: req.url,
-	});
+  console.warn("Route not found", {
+    requestId: req.requestId,
+    method: req.method,
+    url: req.url,
+  });
 
-	res.status(404).json({
-		success: false,
-		error: "Not found",
-		message: "The requested resource was not found",
-	});
+  res.status(404).json({
+    success: false,
+    error: "Not found",
+    message: "The requested resource was not found",
+  });
 });
 
 const gracefulShutdown = () => {
-	console.log("Received shutdown signal, closing server...");
+  console.log("Received shutdown signal, closing server...");
 
-	const db = getDatabase();
-	if (db) {
-		db.close();
-	}
+  const db = getDatabase();
+  if (db) {
+    db.close();
+  }
 
-	process.exit(0);
+  process.exit(0);
 };
 
 process.on("SIGINT", gracefulShutdown);
@@ -237,11 +219,11 @@ const PORT = process.env.PORT || 4000;
 const HOST = process.env.HOST || "0.0.0.0";
 
 app.listen(PORT, HOST, () => {
-	console.log("API server started", {
-		host: HOST,
-		port: PORT,
-		environment: process.env.NODE_ENV || "development",
-	});
+  console.log("API server started", {
+    host: HOST,
+    port: PORT,
+    environment: process.env.NODE_ENV || "development",
+  });
 });
 
 module.exports = app;

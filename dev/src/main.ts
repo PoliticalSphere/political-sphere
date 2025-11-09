@@ -53,15 +53,9 @@ class DevServer {
       console.log("");
       console.log("Available endpoints:");
       console.log(`  → http://localhost:${PORT}/            - Index`);
-      console.log(
-        `  → http://localhost:${PORT}/experiments - Feature experiments`
-      );
-      console.log(
-        `  → http://localhost:${PORT}/tools       - Development tools`
-      );
-      console.log(
-        `  → http://localhost:${PORT}/sandbox     - Sandbox environment`
-      );
+      console.log(`  → http://localhost:${PORT}/experiments - Feature experiments`);
+      console.log(`  → http://localhost:${PORT}/tools       - Development tools`);
+      console.log(`  → http://localhost:${PORT}/sandbox     - Sandbox environment`);
       console.log(`  → http://localhost:${PORT}/health      - Health check`);
     });
   }
@@ -136,15 +130,11 @@ class DevServer {
       JSON.stringify(
         {
           message: "Feature experiments and prototypes",
-          available: [
-            "feature-prototypes",
-            "ai-playground",
-            "performance-tests",
-          ],
+          available: ["feature-prototypes", "ai-playground", "performance-tests"],
         },
         null,
-        2
-      )
+        2,
+      ),
     );
   }
 
@@ -160,8 +150,8 @@ class DevServer {
           available: ["data-generators", "mock-servers", "test-harnesses"],
         },
         null,
-        2
-      )
+        2,
+      ),
     );
   }
 
@@ -174,15 +164,11 @@ class DevServer {
       JSON.stringify(
         {
           message: "Sandbox environment for testing",
-          available: [
-            "component-demos",
-            "api-exploration",
-            "integration-tests",
-          ],
+          available: ["component-demos", "api-exploration", "integration-tests"],
         },
         null,
-        2
-      )
+        2,
+      ),
     );
   }
 
@@ -199,8 +185,8 @@ class DevServer {
           timestamp: new Date().toISOString(),
         },
         null,
-        2
-      )
+        2,
+      ),
     );
   }
 
@@ -216,8 +202,8 @@ class DevServer {
           message: "The requested resource does not exist",
         },
         null,
-        2
-      )
+        2,
+      ),
     );
   }
 }

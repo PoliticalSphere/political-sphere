@@ -19,7 +19,10 @@ interface VoteCountRow {
 }
 
 export class VoteStore {
-  constructor(private db: Database.Database, private cache?: CacheService) {}
+  constructor(
+    private db: Database.Database,
+    private cache?: CacheService,
+  ) {}
 
   async create(input: CreateVoteInput): Promise<Vote> {
     const id = uuidv4();
@@ -62,7 +65,7 @@ export class VoteStore {
       return await retryWithBackoff(async () => {
         const row = this.db
           .prepare<[string], VoteRow>(
-            `SELECT id, bill_id, user_id, vote, created_at FROM votes WHERE id = ?`
+            `SELECT id, bill_id, user_id, vote, created_at FROM votes WHERE id = ?`,
           )
           .get(id);
         if (!row) return null;
@@ -83,25 +86,21 @@ export class VoteStore {
         return vote;
       });
     } catch (error) {
-      throw new DatabaseError(
-        `Failed to get vote ${id}: ${(error as Error).message}`
-      );
+      throw new DatabaseError(`Failed to get vote ${id}: ${(error as Error).message}`);
     }
   }
 
   async getByBillId(billId: string): Promise<Vote[]> {
     // Try cache first
     if (this.cache) {
-      const cached = await this.cache.get<Vote[]>(
-        cacheKeys.votesByBill(billId)
-      );
+      const cached = await this.cache.get<Vote[]>(cacheKeys.votesByBill(billId));
       if (cached) return cached;
     }
 
     try {
       return await retryWithBackoff(async () => {
         const stmt = this.db.prepare<[string], VoteRow>(
-          `SELECT id, bill_id, user_id, vote, created_at FROM votes WHERE bill_id = ? ORDER BY created_at DESC`
+          `SELECT id, bill_id, user_id, vote, created_at FROM votes WHERE bill_id = ? ORDER BY created_at DESC`,
         );
         const rows = stmt.all(billId);
         const votes = rows.map((row) => ({
@@ -114,18 +113,14 @@ export class VoteStore {
 
         // Cache the result
         if (this.cache) {
-          await this.cache.set(
-            cacheKeys.votesByBill(billId),
-            votes,
-            CACHE_TTL.VOTES
-          );
+          await this.cache.set(cacheKeys.votesByBill(billId), votes, CACHE_TTL.VOTES);
         }
 
         return votes;
       });
     } catch (error) {
       throw new DatabaseError(
-        `Failed to get votes for bill ${billId}: ${(error as Error).message}`
+        `Failed to get votes for bill ${billId}: ${(error as Error).message}`,
       );
     }
   }
@@ -133,16 +128,14 @@ export class VoteStore {
   async getByUserId(userId: string): Promise<Vote[]> {
     // Try cache first
     if (this.cache) {
-      const cached = await this.cache.get<Vote[]>(
-        cacheKeys.votesByUser(userId)
-      );
+      const cached = await this.cache.get<Vote[]>(cacheKeys.votesByUser(userId));
       if (cached) return cached;
     }
 
     try {
       return await retryWithBackoff(async () => {
         const stmt = this.db.prepare<[string], VoteRow>(
-          `SELECT id, bill_id, user_id, vote, created_at FROM votes WHERE user_id = ? ORDER BY created_at DESC`
+          `SELECT id, bill_id, user_id, vote, created_at FROM votes WHERE user_id = ? ORDER BY created_at DESC`,
         );
         const rows = stmt.all(userId);
         const votes = rows.map((row) => ({
@@ -155,18 +148,14 @@ export class VoteStore {
 
         // Cache the result
         if (this.cache) {
-          await this.cache.set(
-            cacheKeys.votesByUser(userId),
-            votes,
-            CACHE_TTL.VOTES
-          );
+          await this.cache.set(cacheKeys.votesByUser(userId), votes, CACHE_TTL.VOTES);
         }
 
         return votes;
       });
     } catch (error) {
       throw new DatabaseError(
-        `Failed to get votes for user ${userId}: ${(error as Error).message}`
+        `Failed to get votes for user ${userId}: ${(error as Error).message}`,
       );
     }
   }
@@ -174,27 +163,20 @@ export class VoteStore {
   async hasUserVotedOnBill(userId: string, billId: string): Promise<boolean> {
     try {
       return await retryWithBackoff(async () => {
-        const stmt = this.db.prepare<
-          [string, string],
-          { count: number | null }
-        >(
-          `SELECT COUNT(*) as count FROM votes WHERE user_id = ? AND bill_id = ?`
+        const stmt = this.db.prepare<[string, string], { count: number | null }>(
+          `SELECT COUNT(*) as count FROM votes WHERE user_id = ? AND bill_id = ?`,
         );
         const row = stmt.get(userId, billId);
         return (row?.count ?? 0) > 0;
       });
     } catch (error) {
       throw new DatabaseError(
-        `Failed to check vote for user ${userId} on bill ${billId}: ${
-          (error as Error).message
-        }`
+        `Failed to check vote for user ${userId} on bill ${billId}: ${(error as Error).message}`,
       );
     }
   }
 
-  async getVoteCounts(
-    billId: string
-  ): Promise<{ aye: number; nay: number; abstain: number }> {
+  async getVoteCounts(billId: string): Promise<{ aye: number; nay: number; abstain: number }> {
     // Try cache first
     if (this.cache) {
       const cached = await this.cache.get<{
@@ -213,7 +195,7 @@ export class VoteStore {
             SUM(CASE WHEN vote = 'nay' THEN 1 ELSE 0 END) as nay,
             SUM(CASE WHEN vote = 'abstain' THEN 1 ELSE 0 END) as abstain
           FROM votes
-          WHERE bill_id = ?`
+          WHERE bill_id = ?`,
         );
 
         const row = stmt.get(billId) ?? { aye: 0, nay: 0, abstain: 0 };
@@ -225,20 +207,14 @@ export class VoteStore {
 
         // Cache the result
         if (this.cache) {
-          await this.cache.set(
-            `bill:${billId}:voteCounts`,
-            counts,
-            CACHE_TTL.VOTES
-          );
+          await this.cache.set(`bill:${billId}:voteCounts`, counts, CACHE_TTL.VOTES);
         }
 
         return counts;
       });
     } catch (error) {
       throw new DatabaseError(
-        `Failed to get vote counts for bill ${billId}: ${
-          (error as Error).message
-        }`
+        `Failed to get vote counts for bill ${billId}: ${(error as Error).message}`,
       );
     }
   }

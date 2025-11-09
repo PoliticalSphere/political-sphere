@@ -1,8 +1,4 @@
-import {
-  type CreateUserInput,
-  CreateUserSchema,
-  type User,
-} from "@political-sphere/shared";
+import { type CreateUserInput, CreateUserSchema, type User } from "@political-sphere/shared";
 import { getDatabase } from "../modules/stores/index.js";
 
 export class UserService {

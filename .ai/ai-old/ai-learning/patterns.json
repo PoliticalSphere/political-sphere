@@ -8,9 +8,7 @@
       "status": "stable",
       "usageCount": 3,
       "lastUsed": "2025-10-22T09:15:00Z",
-      "references": [
-        "tools/scripts/ai/context-preloader.js"
-      ]
+      "references": ["tools/scripts/ai/context-preloader.js"]
     },
     {
       "id": "cors-security-restriction",
@@ -18,9 +16,7 @@
       "status": "stable",
       "usageCount": 2,
       "lastUsed": "2025-09-18T12:04:00Z",
-      "references": [
-        "apps/game-server/src/index.js"
-      ]
+      "references": ["apps/game-server/src/index.js"]
     },
     {
       "id": "sqlite-reset-safeguard",
@@ -28,9 +24,7 @@
       "status": "experimental",
       "usageCount": 1,
       "lastUsed": "2025-08-30T16:30:00Z",
-      "references": [
-        "apps/api/src/migrations/index.js"
-      ],
+      "references": ["apps/api/src/migrations/index.js"],
       "notes": "Promote to stable once automated tests cover rollback scenarios."
     },
     {
@@ -39,9 +33,7 @@
       "status": "pilot",
       "usageCount": 0,
       "lastUsed": null,
-      "references": [
-        "tools/scripts/ai/analytics.js"
-      ],
+      "references": ["tools/scripts/ai/analytics.js"],
       "notes": "Adopt across new automation once validation scripts incorporate analytics dashboards."
     },
     {
@@ -50,10 +42,7 @@
       "status": "stable",
       "usageCount": 1,
       "lastUsed": "2025-11-03T19:04:00Z",
-      "references": [
-        "tools/scripts/ai/build-context-bundles.js",
-        "ai/context-bundles/"
-      ]
+      "references": ["tools/scripts/ai/build-context-bundles.js", "ai/context-bundles/"]
     }
   ],
   "notes": "Document new patterns after verifying they work end-to-end. Link to code locations for traceability.",

@@ -5,23 +5,23 @@
  * Creates monthly summaries for engineering guild review.
  */
 
-import { fileURLToPath } from 'node:url';
-import { dirname, join } from 'node:path';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from "node:url";
+import { dirname, join } from "node:path";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const repoRoot = join(__dirname, '..', '..', '..');
+const repoRoot = join(__dirname, "..", "..", "..");
 
-const logsDir = join(repoRoot, 'ai-logs');
-const experimentLogPath = join(logsDir, 'copilot-experiments.json');
+const logsDir = join(repoRoot, "ai-logs");
+const experimentLogPath = join(logsDir, "copilot-experiments.json");
 
 const safeReadJson = async (path, fallback) => {
   try {
-    const raw = await readFile(path, 'utf8');
+    const raw = await readFile(path, "utf8");
     return JSON.parse(raw);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error.code === "ENOENT") {
       return fallback;
     }
     throw error;
@@ -29,7 +29,7 @@ const safeReadJson = async (path, fallback) => {
 };
 
 const logExperiment = async (experiment) => {
-  const requiredFields = ['date', 'promptVariant', 'outcome'];
+  const requiredFields = ["date", "promptVariant", "outcome"];
   for (const field of requiredFields) {
     if (!experiment[field]) {
       throw new Error(`Missing required field: ${field}`);
@@ -51,22 +51,22 @@ const logExperiment = async (experiment) => {
   }
 
   await writeFile(experimentLogPath, JSON.stringify(experiments, null, 2));
-  console.log('✅ Copilot experiment logged successfully');
+  console.log("✅ Copilot experiment logged successfully");
 };
 
 const generateMonthlySummary = async () => {
   const experiments = await safeReadJson(experimentLogPath, []);
   const now = new Date();
-  const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
 
   const monthlyExperiments = experiments.filter((exp) => {
     const expDate = new Date(exp.date);
-    const expMonth = `${expDate.getFullYear()}-${String(expDate.getMonth() + 1).padStart(2, '0')}`;
+    const expMonth = `${expDate.getFullYear()}-${String(expDate.getMonth() + 1).padStart(2, "0")}`;
     return expMonth === currentMonth;
   });
 
   if (monthlyExperiments.length === 0) {
-    console.log('ℹ️  No experiments logged this month');
+    console.log("ℹ️  No experiments logged this month");
     return;
   }
 
@@ -101,7 +101,7 @@ const generateMonthlySummary = async () => {
     // Aggregate metrics if present
     if (exp.metrics) {
       for (const [key, value] of Object.entries(exp.metrics)) {
-        if (typeof value === 'number') {
+        if (typeof value === "number") {
           if (!summary.averageMetrics[key]) {
             summary.averageMetrics[key] = { sum: 0, count: 0 };
           }
@@ -126,15 +126,15 @@ const main = async () => {
   const args = process.argv.slice(2);
   const command = args[0];
 
-  if (command === 'log') {
-    const experimentData = JSON.parse(args[1] || '{}');
+  if (command === "log") {
+    const experimentData = JSON.parse(args[1] || "{}");
     await logExperiment(experimentData);
-  } else if (command === 'summary') {
+  } else if (command === "summary") {
     await generateMonthlySummary();
   } else {
-    console.log('Usage:');
-    console.log('  node copilot-experiment-log.mjs log <experiment-json>');
-    console.log('  node copilot-experiment-log.mjs summary');
+    console.log("Usage:");
+    console.log("  node copilot-experiment-log.mjs log <experiment-json>");
+    console.log("  node copilot-experiment-log.mjs summary");
   }
 };
 

@@ -61,10 +61,7 @@ export class SanitizeInputsTransformer {
     let sanitized = html;
 
     // Remove script tags and their content
-    sanitized = sanitized.replace(
-      /<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi,
-      ""
-    );
+    sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
 
     // Remove event handlers
     sanitized = sanitized.replace(/on\w+\s*=\s*["'][^"']*["']/gi, "");
@@ -88,12 +85,10 @@ export class SanitizeInputsTransformer {
         sanitized[sanitizedKey] = this.sanitizeString(value);
       } else if (Array.isArray(value)) {
         sanitized[sanitizedKey] = value.map((item) =>
-          typeof item === "string" ? this.sanitizeString(item) : item
+          typeof item === "string" ? this.sanitizeString(item) : item,
         );
       } else if (value !== null && typeof value === "object") {
-        sanitized[sanitizedKey] = this.sanitizeObject(
-          value as Record<string, unknown>
-        );
+        sanitized[sanitizedKey] = this.sanitizeObject(value as Record<string, unknown>);
       } else {
         sanitized[sanitizedKey] = value;
       }

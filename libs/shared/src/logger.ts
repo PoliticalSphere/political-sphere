@@ -1,10 +1,10 @@
 // Structured logging utility for Political Sphere
 // Implements best practices for production logging
 
-import { createWriteStream, WriteStream } from "node:fs";
+import { createWriteStream, type WriteStream } from "node:fs";
 import { mkdir } from "node:fs/promises";
 import { dirname } from "node:path";
-import { IncomingMessage, ServerResponse } from "node:http";
+import type { IncomingMessage, ServerResponse } from "node:http";
 
 // Log levels
 export const LOG_LEVELS = {

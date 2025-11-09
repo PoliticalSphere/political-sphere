@@ -51,7 +51,7 @@ class BenchmarkRunner {
   async benchmark(
     name: string,
     fn: () => void | Promise<void>,
-    options: BenchmarkOptions = DEFAULT_OPTIONS
+    options: BenchmarkOptions = DEFAULT_OPTIONS,
   ): Promise<BenchmarkResult> {
     const opts = { ...DEFAULT_OPTIONS, ...options };
 
@@ -92,12 +92,7 @@ class BenchmarkRunner {
     const totalTime = endTotal - startTotal;
 
     // Calculate statistics
-    const result = this.calculateStats(
-      name,
-      times,
-      totalTime,
-      opts.iterations || 1000
-    );
+    const result = this.calculateStats(name, times, totalTime, opts.iterations || 1000);
     this.results.push(result);
     this.printResult(result);
 
@@ -111,7 +106,7 @@ class BenchmarkRunner {
     name: string,
     times: number[],
     totalTime: number,
-    iterations: number
+    iterations: number,
   ): BenchmarkResult {
     const sum = times.reduce((a, b) => a + b, 0);
     const avg = sum / times.length;
@@ -120,8 +115,7 @@ class BenchmarkRunner {
 
     // Calculate standard deviation
     const squareDiffs = times.map((time) => (time - avg) ** 2);
-    const avgSquareDiff =
-      squareDiffs.reduce((a, b) => a + b, 0) / squareDiffs.length;
+    const avgSquareDiff = squareDiffs.reduce((a, b) => a + b, 0) / squareDiffs.length;
     const stdDev = Math.sqrt(avgSquareDiff);
 
     // Calculate throughput (operations per second)
@@ -145,11 +139,7 @@ class BenchmarkRunner {
   private printResult(result: BenchmarkResult): void {
     console.log(`   ✓ ${result.name}`);
     console.log(`     Average: ${result.averageTime.toFixed(3)}ms`);
-    console.log(
-      `     Min: ${result.minTime.toFixed(3)}ms, Max: ${result.maxTime.toFixed(
-        3
-      )}ms`
-    );
+    console.log(`     Min: ${result.minTime.toFixed(3)}ms, Max: ${result.maxTime.toFixed(3)}ms`);
     console.log(`     Std Dev: ${result.standardDeviation.toFixed(3)}ms`);
     if (result.throughput) {
       console.log(`     Throughput: ${result.throughput.toFixed(0)} ops/sec`);
@@ -166,9 +156,7 @@ class BenchmarkRunner {
     for (const result of this.results) {
       const opsPerSec = result.throughput?.toFixed(0) || "N/A";
       console.log(
-        `${result.name.padEnd(40)} ${result.averageTime.toFixed(
-          3
-        )}ms (${opsPerSec} ops/sec)`
+        `${result.name.padEnd(40)} ${result.averageTime.toFixed(3)}ms (${opsPerSec} ops/sec)`,
       );
     }
 
@@ -204,7 +192,7 @@ function benchmarkStringConcat(runner: BenchmarkRunner): void {
         str += "a";
       }
     },
-    { iterations: 10000 }
+    { iterations: 10000 },
   );
 }
 
@@ -220,7 +208,7 @@ function benchmarkArrayOps(runner: BenchmarkRunner): void {
         arr.push(i);
       }
     },
-    { iterations: 10000 }
+    { iterations: 10000 },
   );
 }
 
@@ -239,7 +227,7 @@ function benchmarkObjectCreation(runner: BenchmarkRunner): void {
       };
       return obj;
     },
-    { iterations: 10000 }
+    { iterations: 10000 },
   );
 }
 
@@ -252,7 +240,7 @@ async function benchmarkAsyncOps(runner: BenchmarkRunner): Promise<void> {
     async () => {
       await Promise.resolve("done");
     },
-    { iterations: 1000, async: true }
+    { iterations: 1000, async: true },
   );
 }
 
@@ -273,7 +261,7 @@ function benchmarkJsonOps(runner: BenchmarkRunner): void {
     () => {
       JSON.stringify(data);
     },
-    { iterations: 1000 }
+    { iterations: 1000 },
   );
 
   const jsonString = JSON.stringify(data);
@@ -283,7 +271,7 @@ function benchmarkJsonOps(runner: BenchmarkRunner): void {
     () => {
       JSON.parse(jsonString);
     },
-    { iterations: 1000 }
+    { iterations: 1000 },
   );
 }
 

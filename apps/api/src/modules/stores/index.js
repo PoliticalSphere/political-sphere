@@ -1,13 +1,4 @@
-// Mock database and store exports for testing
-const mockDb = {};
-
-function getDatabase() {
-	return mockDb;
-}
-
-function closeDatabase() {
-	// Mock close function
-	return Promise.resolve();
-}
-
-module.exports = { getDatabase, closeDatabase };
+// ESM shim to align legacy JS imports with the TypeScript implementation
+// Re-export named APIs from the TypeScript source so tooling that touches
+// this file (coverage instrumentation, older tests) resolves cleanly.
+export { getDatabase, closeDatabase } from "./index.ts";

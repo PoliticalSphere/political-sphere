@@ -29,10 +29,7 @@ import {
   sendJson,
 } from "./utils/http-utils.js";
 
-function parsePositiveInt(
-  value: string | undefined | null,
-  fallback: number
-): number {
+function parsePositiveInt(value: string | undefined | null, fallback: number): number {
   const parsed = Number.parseInt(value ?? "", 10);
   if (Number.isFinite(parsed) && parsed > 0) {
     return parsed;
@@ -42,22 +39,13 @@ function parsePositiveInt(
 
 const RATE_LIMIT_OPTIONS = {
   maxRequests: parsePositiveInt(process.env.API_RATE_LIMIT_MAX_REQUESTS, 100),
-  windowMs: parsePositiveInt(
-    process.env.API_RATE_LIMIT_WINDOW_MS,
-    15 * 60 * 1000
-  ),
+  windowMs: parsePositiveInt(process.env.API_RATE_LIMIT_WINDOW_MS, 15 * 60 * 1000),
   maxKeys: parsePositiveInt(process.env.API_RATE_LIMIT_MAX_KEYS, 5000),
 };
 
-const RATE_LIMIT_WINDOW_SECONDS = Math.max(
-  1,
-  Math.floor(RATE_LIMIT_OPTIONS.windowMs / 1000)
-);
+const RATE_LIMIT_WINDOW_SECONDS = Math.max(1, Math.floor(RATE_LIMIT_OPTIONS.windowMs / 1000));
 const RATE_LIMIT_POLICY = `${RATE_LIMIT_OPTIONS.maxRequests};w=${RATE_LIMIT_WINDOW_SECONDS}`;
-const MAX_BODY_BYTES = parsePositiveInt(
-  process.env.API_MAX_BODY_BYTES,
-  1024 * 1024
-);
+const MAX_BODY_BYTES = parsePositiveInt(process.env.API_MAX_BODY_BYTES, 1024 * 1024);
 
 const corsOptions: { exposedHeaders: string[] } = {
   exposedHeaders: [
@@ -70,7 +58,7 @@ const corsOptions: { exposedHeaders: string[] } = {
 
 function applyHeaders(
   res: http.ServerResponse,
-  headers: Record<string, string | number | undefined>
+  headers: Record<string, string | number | undefined>,
 ): void {
   for (const [key, value] of Object.entries(headers)) {
     if (value === undefined) continue;
@@ -85,7 +73,7 @@ function applyHeaders(
         (Array.isArray(existing) ? existing : [existing])
           .flatMap((entry) => String(entry).split(","))
           .map((entry) => entry.trim())
-          .filter(Boolean)
+          .filter(Boolean),
       );
       for (const token of incoming
         .split(",")
@@ -102,8 +90,7 @@ function applyHeaders(
 
 const logger = getLogger({
   service: "api",
-  level:
-    (process.env.LOG_LEVEL as "debug" | "info" | "warn" | "error") || "info",
+  level: (process.env.LOG_LEVEL as "debug" | "info" | "warn" | "error") || "info",
   file: process.env.LOG_FILE,
 });
 
@@ -126,7 +113,7 @@ export interface CreateServerOptions {
 
 export function createNewsServer(
   newsService: NewsService,
-  options: CreateServerOptions = {}
+  options: CreateServerOptions = {},
 ): http.Server {
   const apiBasePath = options.basePath ?? "/api/news";
   const server = http.createServer(async (req, res) => {
@@ -153,7 +140,7 @@ async function handleRequest(
   req: http.IncomingMessage,
   res: http.ServerResponse,
   newsService: NewsService,
-  apiBasePath: string
+  apiBasePath: string,
 ): Promise<void> {
   const method = req.method ?? "GET";
   const originalUrl = req.url ?? "/";
@@ -166,9 +153,7 @@ async function handleRequest(
       : null;
   const clientIp =
     forwardedForHeader ||
-    (typeof req.socket.remoteAddress === "string"
-      ? req.socket.remoteAddress
-      : "unknown");
+    (typeof req.socket.remoteAddress === "string" ? req.socket.remoteAddress : "unknown");
   const origin = req.headers.origin;
 
   // Apply security headers to all responses
@@ -205,7 +190,7 @@ async function handleRequest(
           "X-RateLimit-Reset": rateLimitInfo.reset.toString(),
           "RateLimit-Policy": RATE_LIMIT_POLICY,
           "Cache-Control": "no-store, no-cache, must-revalidate",
-        }
+        },
       );
       return;
     }
@@ -270,11 +255,7 @@ async function handleRequest(
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
         if (error.code === "PAYLOAD_TOO_LARGE") {
-          logger.logSecurityEvent(
-            "payload_too_large",
-            { limit: MAX_BODY_BYTES },
-            req
-          );
+          logger.logSecurityEvent("payload_too_large", { limit: MAX_BODY_BYTES }, req);
           sendError(res, 413, "Payload too large");
           return;
         }
@@ -282,7 +263,7 @@ async function handleRequest(
           logger.logSecurityEvent(
             "unsupported_media_type",
             { contentType: req.headers["content-type"] },
-            req
+            req,
           );
           sendError(res, 415, "Unsupported content type");
           return;
@@ -328,11 +309,7 @@ async function handleRequest(
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
         if (error.code === "PAYLOAD_TOO_LARGE") {
-          logger.logSecurityEvent(
-            "payload_too_large",
-            { limit: MAX_BODY_BYTES },
-            req
-          );
+          logger.logSecurityEvent("payload_too_large", { limit: MAX_BODY_BYTES }, req);
           sendError(res, 413, "Payload too large");
           return;
         }
@@ -340,7 +317,7 @@ async function handleRequest(
           logger.logSecurityEvent(
             "unsupported_media_type",
             { contentType: req.headers["content-type"] },
-            req
+            req,
           );
           sendError(res, 415, "Unsupported content type");
           return;
@@ -578,8 +555,7 @@ async function handleRequest(
       // In production, send email with reset token
       // For now, return token for testing
       sendJson(res, 200, {
-        message:
-          "If an account with that email exists, a password reset link has been sent.",
+        message: "If an account with that email exists, a password reset link has been sent.",
         resetToken, // Remove in production
       });
       return;
@@ -646,11 +622,7 @@ async function handleRequest(
   notFound(res, pathname);
 }
 
-export function startServer(
-  server: http.Server,
-  port: number,
-  host = "0.0.0.0"
-): void {
+export function startServer(server: http.Server, port: number, host = "0.0.0.0"): void {
   server.listen(port, host, () => {
     logger.info("API server started", { host, port });
   });

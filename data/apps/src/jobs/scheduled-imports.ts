@@ -25,7 +25,7 @@ export class ScheduledImportsJob {
 
   constructor(
     private readonly externalSources: ExternalSourcesConnector,
-    private readonly database: DatabaseConnector
+    private readonly database: DatabaseConnector,
   ) {}
 
   /**
@@ -77,7 +77,7 @@ export class ScheduledImportsJob {
       // Import into database
       await this.database.query(
         "INSERT INTO imports (job_name, source, data, imported_at) VALUES ($1, $2, $3, $4)",
-        [job.name, job.source, JSON.stringify(data), new Date()]
+        [job.name, job.source, JSON.stringify(data), new Date()],
       );
 
       console.log("Import job completed:", jobName);

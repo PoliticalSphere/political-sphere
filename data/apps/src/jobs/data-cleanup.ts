@@ -19,7 +19,7 @@ export interface CleanupConfig {
 export class DataCleanupJob {
   constructor(
     private readonly database: DatabaseConnector,
-    private readonly config: CleanupConfig
+    private readonly config: CleanupConfig,
   ) {}
 
   /**
@@ -45,9 +45,7 @@ export class DataCleanupJob {
   /**
    * Cleanup a specific table
    */
-  private async cleanupTable(
-    tableName: string
-  ): Promise<{ deleted: number; archived: number }> {
+  private async cleanupTable(tableName: string): Promise<{ deleted: number; archived: number }> {
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - this.config.retentionDays);
 
@@ -59,10 +57,9 @@ export class DataCleanupJob {
     }
 
     // Delete old records
-    const result = await this.database.query(
-      `DELETE FROM ${tableName} WHERE created_at < $1`,
-      [cutoffDate]
-    );
+    const result = await this.database.query(`DELETE FROM ${tableName} WHERE created_at < $1`, [
+      cutoffDate,
+    ]);
 
     const deleted = result.rowCount;
 
@@ -74,17 +71,13 @@ export class DataCleanupJob {
   /**
    * Archive records before deletion
    */
-  private async archiveRecords(
-    tableName: string,
-    cutoffDate: Date
-  ): Promise<number> {
+  private async archiveRecords(tableName: string, cutoffDate: Date): Promise<number> {
     // TODO: Implement archiving to S3, file system, or archive database
     console.log("Archiving records from", tableName, "before", cutoffDate);
 
-    const result = await this.database.query(
-      `SELECT * FROM ${tableName} WHERE created_at < $1`,
-      [cutoffDate]
-    );
+    const result = await this.database.query(`SELECT * FROM ${tableName} WHERE created_at < $1`, [
+      cutoffDate,
+    ]);
 
     // Write to archive destination
     if (this.config.archiveDestination) {
@@ -113,10 +106,7 @@ export class DataCleanupJob {
   /**
    * Remove duplicate records
    */
-  async deduplicateTable(
-    tableName: string,
-    uniqueColumns: string[]
-  ): Promise<number> {
+  async deduplicateTable(tableName: string, uniqueColumns: string[]): Promise<number> {
     const columns = uniqueColumns.join(", ");
 
     // TODO: Implement deduplication logic based on unique columns
@@ -139,9 +129,7 @@ export class DataCleanupJob {
     const stats: Record<string, number> = {};
 
     for (const table of this.config.tables) {
-      const result = await this.database.query(
-        `SELECT COUNT(*) as count FROM ${table}`
-      );
+      const result = await this.database.query(`SELECT COUNT(*) as count FROM ${table}`);
       stats[table] = Number(result.rows[0]) || 0;
     }
 

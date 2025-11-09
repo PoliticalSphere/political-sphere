@@ -5,25 +5,25 @@
  * Extracts metadata from Markdown sources so prompts can link to canonical facts quickly.
  */
 
-import { fileURLToPath } from 'node:url';
-import { dirname, join, relative } from 'node:path';
-import { mkdir, readdir, readFile, stat, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from "node:url";
+import { dirname, join, relative } from "node:path";
+import { mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const repoRoot = join(__dirname, '..', '..', '..');
-const docsRoot = join(repoRoot, 'docs');
-const outputDir = join(repoRoot, 'ai-cache');
-const outputPath = join(outputDir, 'context-index.json');
+const repoRoot = join(__dirname, "..", "..", "..");
+const docsRoot = join(repoRoot, "docs");
+const outputDir = join(repoRoot, "ai-cache");
+const outputPath = join(outputDir, "context-index.json");
 
-const isMarkdown = (name) => name.toLowerCase().endsWith('.md');
+const isMarkdown = (name) => name.toLowerCase().endsWith(".md");
 
 const safeReadJson = async (filePath, fallback) => {
   try {
-    const raw = await readFile(filePath, 'utf8');
+    const raw = await readFile(filePath, "utf8");
     return JSON.parse(raw);
   } catch (error) {
-    if (error.code === 'ENOENT') {
+    if (error.code === "ENOENT") {
       return fallback;
     }
     throw error;
@@ -58,7 +58,7 @@ const extractTableMetadata = (lines, tableHeader) => {
   }
 
   const cells = lines[dataRowIndex]
-    .split('|')
+    .split("|")
     .map((cell) => cell.trim())
     .filter((cell) => cell.length > 0);
 
@@ -80,7 +80,7 @@ const summarizeContent = (lines) => {
 
   for (const line of lines) {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#') || trimmed.startsWith('>')) {
+    if (!trimmed || trimmed.startsWith("#") || trimmed.startsWith(">")) {
       continue;
     }
 
@@ -90,7 +90,7 @@ const summarizeContent = (lines) => {
     }
   }
 
-  return summaryLines.join(' ');
+  return summaryLines.join(" ");
 };
 
 const buildContextIndex = async () => {
@@ -116,32 +116,32 @@ const buildContextIndex = async () => {
         };
       }
 
-      const content = await readFile(filePath, 'utf8');
-      const lines = content.split('\n');
-      const titleLine = lines.find((line) => line.startsWith('# ')) ?? '';
-      const title = titleLine.replace(/^#\s+/, '').trim() || '(untitled)';
+      const content = await readFile(filePath, "utf8");
+      const lines = content.split("\n");
+      const titleLine = lines.find((line) => line.startsWith("# ")) ?? "";
+      const title = titleLine.replace(/^#\s+/, "").trim() || "(untitled)";
       const summary = summarizeContent(lines);
-      const metadata = extractTableMetadata(lines, 'Classification');
+      const metadata = extractTableMetadata(lines, "Classification");
 
       return {
         doc: {
           path: relativePath,
           title,
           summary,
-          classification: metadata?.classification ?? 'Unknown',
-          version: metadata?.version ?? 'N/A',
-          lastUpdated: metadata?.lastUpdated ?? 'N/A',
-          owner: metadata?.owner ?? 'N/A',
-          reviewCycle: metadata?.reviewCycle ?? 'N/A',
+          classification: metadata?.classification ?? "Unknown",
+          version: metadata?.version ?? "N/A",
+          lastUpdated: metadata?.lastUpdated ?? "N/A",
+          owner: metadata?.owner ?? "N/A",
+          reviewCycle: metadata?.reviewCycle ?? "N/A",
           modifiedAt,
           size: fileStat.size,
         },
       };
-    })
+    }),
   );
 
   const documents = docEntries.map(({ doc }) => {
-    const classification = doc.classification ?? 'Unknown';
+    const classification = doc.classification ?? "Unknown";
     classificationCounts[classification] = (classificationCounts[classification] ?? 0) + 1;
     return doc;
   });
@@ -164,11 +164,11 @@ const buildContextIndex = async () => {
 };
 
 const main = async () => {
-  console.log('📚 Building AI context index from documentation...');
+  console.log("📚 Building AI context index from documentation...");
   const index = await buildContextIndex();
   console.log(`✅ Indexed ${index.totals.documents} documents`);
   console.log(
-    `🔎 Classification coverage: ${Object.keys(index.totals.classifications).join(', ')}`
+    `🔎 Classification coverage: ${Object.keys(index.totals.classifications).join(", ")}`,
   );
 };
 

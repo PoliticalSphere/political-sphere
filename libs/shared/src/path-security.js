@@ -14,35 +14,35 @@ const path = require("path");
  * @throws {Error} If filename contains invalid characters or traversal attempts
  */
 function validateFilename(filename) {
-	if (!filename || typeof filename !== "string") {
-		throw new Error("Filename must be a non-empty string");
-	}
+  if (!filename || typeof filename !== "string") {
+    throw new Error("Filename must be a non-empty string");
+  }
 
-	// Remove any path components - only allow the basename
-	const basename = path.basename(filename);
+  // Remove any path components - only allow the basename
+  const basename = path.basename(filename);
 
-	// Check for path traversal attempts
-	if (filename !== basename) {
-		throw new Error("Filename cannot contain path separators");
-	}
+  // Check for path traversal attempts
+  if (filename !== basename) {
+    throw new Error("Filename cannot contain path separators");
+  }
 
-	// Block null bytes
-	if (basename.includes("\0")) {
-		throw new Error("Filename cannot contain null bytes");
-	}
+  // Block null bytes
+  if (basename.includes("\0")) {
+    throw new Error("Filename cannot contain null bytes");
+  }
 
-	// Block hidden files that start with dot (optional, can be customized)
-	// Allow dot files for legitimate use cases like .gitignore, .env, etc.
-	// if (basename.startsWith(".")) {
-	// 	throw new Error("Filename cannot start with a dot");
-	// }
+  // Block hidden files that start with dot (optional, can be customized)
+  // Allow dot files for legitimate use cases like .gitignore, .env, etc.
+  // if (basename.startsWith(".")) {
+  // 	throw new Error("Filename cannot start with a dot");
+  // }
 
-	// Validate filename characters (alphanumeric, dash, underscore, dot)
-	if (!/^[a-zA-Z0-9_.-]+$/.test(basename)) {
-		throw new Error("Filename contains invalid characters");
-	}
+  // Validate filename characters (alphanumeric, dash, underscore, dot)
+  if (!/^[a-zA-Z0-9_.-]+$/.test(basename)) {
+    throw new Error("Filename contains invalid characters");
+  }
 
-	return basename;
+  return basename;
 }
 
 /**
@@ -54,35 +54,30 @@ function validateFilename(filename) {
  * @throws {Error} If path would escape the base directory
  */
 function safeJoin(baseDir, userInput) {
-	if (!baseDir || typeof baseDir !== "string") {
-		throw new Error("Base directory must be a non-empty string");
-	}
+  if (!baseDir || typeof baseDir !== "string") {
+    throw new Error("Base directory must be a non-empty string");
+  }
 
-	if (!userInput || typeof userInput !== "string") {
-		throw new Error("User input must be a non-empty string");
-	}
+  if (!userInput || typeof userInput !== "string") {
+    throw new Error("User input must be a non-empty string");
+  }
 
-	// Sanitize the user input to just the basename
-	const sanitized = validateFilename(userInput);
+  // Sanitize the user input to just the basename
+  const sanitized = validateFilename(userInput);
 
-	// Join the paths
-	const joined = path.join(baseDir, sanitized);
+  // Join the paths
+  const joined = path.join(baseDir, sanitized);
 
-	// Resolve to absolute path
-	const resolved = path.resolve(joined);
-	const resolvedBase = path.resolve(baseDir);
+  // Resolve to absolute path
+  const resolved = path.resolve(joined);
+  const resolvedBase = path.resolve(baseDir);
 
-	// Ensure the resolved path is within the base directory
-	if (
-		!resolved.startsWith(resolvedBase + path.sep) &&
-		resolved !== resolvedBase
-	) {
-		throw new Error(
-			"Path traversal detected: resulting path is outside base directory",
-		);
-	}
+  // Ensure the resolved path is within the base directory
+  if (!resolved.startsWith(resolvedBase + path.sep) && resolved !== resolvedBase) {
+    throw new Error("Path traversal detected: resulting path is outside base directory");
+  }
 
-	return resolved;
+  return resolved;
 }
 
 /**
@@ -92,21 +87,21 @@ function safeJoin(baseDir, userInput) {
  * @throws {Error} If table name is invalid
  */
 function validateTableName(tableName) {
-	if (!tableName || typeof tableName !== "string") {
-		throw new Error("Table name must be a non-empty string");
-	}
+  if (!tableName || typeof tableName !== "string") {
+    throw new Error("Table name must be a non-empty string");
+  }
 
-	// Table names should only contain alphanumeric characters and underscores
-	if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(tableName)) {
-		throw new Error("Table name contains invalid characters");
-	}
+  // Table names should only contain alphanumeric characters and underscores
+  if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(tableName)) {
+    throw new Error("Table name contains invalid characters");
+  }
 
-	// Limit length to prevent abuse
-	if (tableName.length > 64) {
-		throw new Error("Table name is too long (max 64 characters)");
-	}
+  // Limit length to prevent abuse
+  if (tableName.length > 64) {
+    throw new Error("Table name is too long (max 64 characters)");
+  }
 
-	return tableName;
+  return tableName;
 }
 
 /**
@@ -117,28 +112,28 @@ function validateTableName(tableName) {
  * @throws {Error} If directory name is invalid
  */
 function validateDirectoryName(dirName) {
-	if (!dirName || typeof dirName !== "string") {
-		throw new Error("Directory name must be a non-empty string");
-	}
+  if (!dirName || typeof dirName !== "string") {
+    throw new Error("Directory name must be a non-empty string");
+  }
 
-	// Remove any path components
-	const basename = path.basename(dirName);
+  // Remove any path components
+  const basename = path.basename(dirName);
 
-	if (dirName !== basename) {
-		throw new Error("Directory name cannot contain path separators");
-	}
+  if (dirName !== basename) {
+    throw new Error("Directory name cannot contain path separators");
+  }
 
-	// Block null bytes
-	if (basename.includes("\0")) {
-		throw new Error("Directory name cannot contain null bytes");
-	}
+  // Block null bytes
+  if (basename.includes("\0")) {
+    throw new Error("Directory name cannot contain null bytes");
+  }
 
-	// Validate directory name characters
-	if (!/^[a-zA-Z0-9_.-]+$/.test(basename)) {
-		throw new Error("Directory name contains invalid characters");
-	}
+  // Validate directory name characters
+  if (!/^[a-zA-Z0-9_.-]+$/.test(basename)) {
+    throw new Error("Directory name contains invalid characters");
+  }
 
-	return basename;
+  return basename;
 }
 
 /**
@@ -148,23 +143,20 @@ function validateDirectoryName(dirName) {
  * @returns {boolean} True if testPath is within baseDir
  */
 function isPathWithinBase(baseDir, testPath) {
-	try {
-		const resolvedBase = path.resolve(baseDir);
-		const resolvedTest = path.resolve(testPath);
+  try {
+    const resolvedBase = path.resolve(baseDir);
+    const resolvedTest = path.resolve(testPath);
 
-		return (
-			resolvedTest.startsWith(resolvedBase + path.sep) ||
-			resolvedTest === resolvedBase
-		);
-	} catch {
-		return false;
-	}
+    return resolvedTest.startsWith(resolvedBase + path.sep) || resolvedTest === resolvedBase;
+  } catch {
+    return false;
+  }
 }
 
 module.exports = {
-	validateFilename,
-	validateTableName,
-	validateDirectoryName,
-	safeJoin,
-	isPathWithinBase,
+  validateFilename,
+  validateTableName,
+  validateDirectoryName,
+  safeJoin,
+  isPathWithinBase,
 };

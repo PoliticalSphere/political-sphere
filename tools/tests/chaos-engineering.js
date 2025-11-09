@@ -5,12 +5,12 @@
  * Implements controlled experiments to test system resilience
  */
 
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs/promises";
+import path from "path";
 
-const DEFAULT_CONFIG_PATH = 'apps/dev/testing/config/chaos-plan.json';
-const BASELINE_PATH = 'ai-learning/chaos-baselines.json';
-const HISTORY_LOG_PATH = 'ai-learning/chaos-history.log';
+const DEFAULT_CONFIG_PATH = "apps/dev/testing/config/chaos-plan.json";
+const BASELINE_PATH = "ai-learning/chaos-baselines.json";
+const HISTORY_LOG_PATH = "ai-learning/chaos-history.log";
 
 const priorityOrder = { critical: 3, high: 2, medium: 1, low: 0 };
 
@@ -37,22 +37,22 @@ class ChaosEngineering {
   }
 
   async initialize() {
-    console.log('🌀 Initializing Chaos Engineering Framework...');
+    console.log("🌀 Initializing Chaos Engineering Framework...");
 
     // Load existing experiments and results
     try {
-      const experimentsData = await fs.readFile('ai-learning/chaos-experiments.json', 'utf8');
+      const experimentsData = await fs.readFile("ai-learning/chaos-experiments.json", "utf8");
       this.experiments = JSON.parse(experimentsData);
     } catch (error) {
-      console.log('📊 No existing experiments found, starting fresh...');
+      console.log("📊 No existing experiments found, starting fresh...");
       this.experiments = {};
     }
 
     try {
-      const resultsData = await fs.readFile('ai-learning/chaos-results.json', 'utf8');
+      const resultsData = await fs.readFile("ai-learning/chaos-results.json", "utf8");
       this.results = JSON.parse(resultsData);
     } catch (error) {
-      console.log('📈 No results found, starting fresh...');
+      console.log("📈 No results found, starting fresh...");
       this.results = [];
     }
 
@@ -61,17 +61,17 @@ class ChaosEngineering {
 
   createNetworkLatencyExperiment() {
     return {
-      name: 'network-latency-injection',
-      description: 'Inject network latency to test resilience',
-      type: 'network',
+      name: "network-latency-injection",
+      description: "Inject network latency to test resilience",
+      type: "network",
       duration: 300, // 5 minutes
-      intensity: 'medium',
-      targets: ['api', 'database', 'cache'],
+      intensity: "medium",
+      targets: ["api", "database", "cache"],
       parameters: {
         latency: {
           min: 100, // ms
           max: 2000, // ms
-          distribution: 'normal',
+          distribution: "normal",
         },
         packetLoss: 0.01, // 1%
       },
@@ -80,23 +80,23 @@ class ChaosEngineering {
         maxPacketLoss: 0.05,
         autoRollback: true,
       },
-      metrics: ['responseTime', 'errorRate', 'throughput', 'cpuUsage', 'memoryUsage'],
+      metrics: ["responseTime", "errorRate", "throughput", "cpuUsage", "memoryUsage"],
     };
   }
 
   createResourceExhaustionExperiment() {
     return {
-      name: 'resource-exhaustion',
-      description: 'Simulate resource exhaustion scenarios',
-      type: 'resource',
+      name: "resource-exhaustion",
+      description: "Simulate resource exhaustion scenarios",
+      type: "resource",
       duration: 600, // 10 minutes
-      intensity: 'high',
-      targets: ['application', 'database'],
+      intensity: "high",
+      targets: ["application", "database"],
       parameters: {
         cpuLoad: 0.9, // 90% CPU usage
         memoryPressure: 0.85, // 85% memory usage
-        diskIO: 'high',
-        networkIO: 'saturated',
+        diskIO: "high",
+        networkIO: "saturated",
       },
       safetyLimits: {
         maxCpuUsage: 0.95,
@@ -104,20 +104,20 @@ class ChaosEngineering {
         autoRollback: true,
         circuitBreaker: true,
       },
-      metrics: ['cpuUsage', 'memoryUsage', 'diskIO', 'networkIO', 'responseTime', 'errorRate'],
+      metrics: ["cpuUsage", "memoryUsage", "diskIO", "networkIO", "responseTime", "errorRate"],
     };
   }
 
   createServiceFailureExperiment() {
     return {
-      name: 'service-failure-simulation',
-      description: 'Simulate service failures and cascading effects',
-      type: 'failure',
+      name: "service-failure-simulation",
+      description: "Simulate service failures and cascading effects",
+      type: "failure",
       duration: 180, // 3 minutes
-      intensity: 'critical',
-      targets: ['cache', 'queue', 'external-api'],
+      intensity: "critical",
+      targets: ["cache", "queue", "external-api"],
       parameters: {
-        failureMode: 'crash', // crash, hang, slow
+        failureMode: "crash", // crash, hang, slow
         failureRate: 0.1, // 10% of requests fail
         recoveryTime: 30, // seconds
         cascading: true, // allow cascading failures
@@ -127,21 +127,21 @@ class ChaosEngineering {
         autoRollback: true,
         circuitBreaker: true,
       },
-      metrics: ['errorRate', 'responseTime', 'availability', 'recoveryTime', 'cascadingFailures'],
+      metrics: ["errorRate", "responseTime", "availability", "recoveryTime", "cascadingFailures"],
     };
   }
 
   createDataCorruptionExperiment() {
     return {
-      name: 'data-corruption-test',
-      description: 'Test system resilience to data corruption',
-      type: 'data',
+      name: "data-corruption-test",
+      description: "Test system resilience to data corruption",
+      type: "data",
       duration: 120, // 2 minutes
-      intensity: 'medium',
-      targets: ['database', 'cache'],
+      intensity: "medium",
+      targets: ["database", "cache"],
       parameters: {
         corruptionRate: 0.001, // 0.1% of data corrupted
-        corruptionType: 'random', // random, systematic
+        corruptionType: "random", // random, systematic
         backupIntegrity: true,
       },
       safetyLimits: {
@@ -149,7 +149,7 @@ class ChaosEngineering {
         dataBackup: true,
         autoRollback: true,
       },
-      metrics: ['dataIntegrity', 'errorRate', 'recoveryTime', 'backupSuccess'],
+      metrics: ["dataIntegrity", "errorRate", "recoveryTime", "backupSuccess"],
     };
   }
 
@@ -164,7 +164,7 @@ class ChaosEngineering {
     const configPath = customConfigPath ?? this.configPath;
     try {
       const resolved = path.resolve(configPath);
-      const data = await fs.readFile(resolved, 'utf8');
+      const data = await fs.readFile(resolved, "utf8");
       const parsed = JSON.parse(data);
       const experimentsArray = Array.isArray(parsed) ? parsed : (parsed.experiments ?? []);
       const overrides = {};
@@ -185,30 +185,30 @@ class ChaosEngineering {
   }
 
   async establishBaselines() {
-    console.log('📊 Establishing performance baselines...');
+    console.log("📊 Establishing performance baselines...");
 
     if (!Object.keys(this.baselines).length) {
       // Simulate baseline measurements if none persisted
       this.baselines = {
-        responseTime: { mean: 150, std: 25, unit: 'ms' },
-        errorRate: { mean: 0.005, std: 0.002, unit: 'percentage' },
-        throughput: { mean: 1200, std: 100, unit: 'requests/sec' },
-        cpuUsage: { mean: 0.45, std: 0.1, unit: 'percentage' },
-        memoryUsage: { mean: 0.6, std: 0.15, unit: 'percentage' },
-        availability: { mean: 0.9995, std: 0.0001, unit: 'percentage' },
+        responseTime: { mean: 150, std: 25, unit: "ms" },
+        errorRate: { mean: 0.005, std: 0.002, unit: "percentage" },
+        throughput: { mean: 1200, std: 100, unit: "requests/sec" },
+        cpuUsage: { mean: 0.45, std: 0.1, unit: "percentage" },
+        memoryUsage: { mean: 0.6, std: 0.15, unit: "percentage" },
+        availability: { mean: 0.9995, std: 0.0001, unit: "percentage" },
       };
     }
 
-    console.log('✅ Baselines established');
+    console.log("✅ Baselines established");
     await this.persistBaselines();
     return this.baselines;
   }
 
   async loadBaselinesFromDisk() {
     try {
-      const data = await fs.readFile(BASELINE_PATH, 'utf8');
+      const data = await fs.readFile(BASELINE_PATH, "utf8");
       this.baselines = JSON.parse(data);
-      console.log('📂 Loaded persisted baselines');
+      console.log("📂 Loaded persisted baselines");
     } catch (error) {
       this.baselines = {};
     }
@@ -232,7 +232,7 @@ class ChaosEngineering {
     const executionResult = await this.executeExperiment(experiment);
 
     // Post-experiment measurements
-    const postMetrics = await this.measureSystem({ phase: 'post', experiment, preMetrics });
+    const postMetrics = await this.measureSystem({ phase: "post", experiment, preMetrics });
 
     const safety = this.evaluateSafety(experiment, postMetrics);
 
@@ -245,7 +245,7 @@ class ChaosEngineering {
       preMetrics,
       postMetrics,
       executionResult,
-      safety
+      safety,
     );
 
     const result = {
@@ -260,7 +260,7 @@ class ChaosEngineering {
       executionResult,
       recoveryResult,
       analysis,
-      status: analysis.resilient ? 'passed' : 'failed',
+      status: analysis.resilient ? "passed" : "failed",
     };
 
     this.results.push(result);
@@ -271,20 +271,20 @@ class ChaosEngineering {
     return result;
   }
 
-  async measureSystem({ phase = 'steady', experiment, preMetrics } = {}) {
+  async measureSystem({ phase = "steady", experiment, preMetrics } = {}) {
     const metrics = {
       timestamp: new Date().toISOString(),
-      responseTime: this.sampleMetric('responseTime'),
-      errorRate: this.sampleMetric('errorRate'),
-      throughput: this.sampleMetric('throughput'),
-      cpuUsage: clamp(this.sampleMetric('cpuUsage'), 0, 1),
-      memoryUsage: clamp(this.sampleMetric('memoryUsage'), 0, 1),
-      availability: clamp(this.sampleMetric('availability'), 0, 1),
-      dataIntegrity: clamp(this.sampleMetric('dataIntegrity'), 0, 1),
+      responseTime: this.sampleMetric("responseTime"),
+      errorRate: this.sampleMetric("errorRate"),
+      throughput: this.sampleMetric("throughput"),
+      cpuUsage: clamp(this.sampleMetric("cpuUsage"), 0, 1),
+      memoryUsage: clamp(this.sampleMetric("memoryUsage"), 0, 1),
+      availability: clamp(this.sampleMetric("availability"), 0, 1),
+      dataIntegrity: clamp(this.sampleMetric("dataIntegrity"), 0, 1),
       backupSuccess: true,
     };
 
-    if (phase === 'post' && experiment) {
+    if (phase === "post" && experiment) {
       this.applyExperimentImpact(metrics, experiment, preMetrics);
     }
 
@@ -318,26 +318,26 @@ class ChaosEngineering {
     };
 
     switch (experiment.type) {
-      case 'network':
-        applyChange('responseTime', (v) => v * 1.5);
-        applyChange('errorRate', (v) => clamp(v * 2.5, 0, 1));
-        applyChange('throughput', (v) => v * 0.7);
+      case "network":
+        applyChange("responseTime", (v) => v * 1.5);
+        applyChange("errorRate", (v) => clamp(v * 2.5, 0, 1));
+        applyChange("throughput", (v) => v * 0.7);
         break;
-      case 'resource':
-        applyChange('cpuUsage', (v) => clamp(v + 0.25, 0, 1));
-        applyChange('memoryUsage', (v) => clamp(v + 0.2, 0, 1));
-        applyChange('responseTime', (v) => v * 1.3);
-        applyChange('errorRate', (v) => clamp(v * 1.8, 0, 1));
+      case "resource":
+        applyChange("cpuUsage", (v) => clamp(v + 0.25, 0, 1));
+        applyChange("memoryUsage", (v) => clamp(v + 0.2, 0, 1));
+        applyChange("responseTime", (v) => v * 1.3);
+        applyChange("errorRate", (v) => clamp(v * 1.8, 0, 1));
         break;
-      case 'failure':
-        applyChange('availability', (v) => clamp(v - 0.05, 0, 1));
-        applyChange('errorRate', (v) => clamp(v + 0.02, 0, 1));
-        applyChange('responseTime', (v) => v * 1.4);
+      case "failure":
+        applyChange("availability", (v) => clamp(v - 0.05, 0, 1));
+        applyChange("errorRate", (v) => clamp(v + 0.02, 0, 1));
+        applyChange("responseTime", (v) => v * 1.4);
         break;
-      case 'data':
+      case "data":
         metrics.dataIntegrity = clamp((preMetrics.dataIntegrity ?? 1) - 0.05, 0, 1);
         metrics.backupSuccess = Math.random() > 0.1;
-        applyChange('errorRate', (v) => clamp(v + 0.015, 0, 1));
+        applyChange("errorRate", (v) => clamp(v + 0.015, 0, 1));
         break;
       default:
         break;
@@ -350,28 +350,28 @@ class ChaosEngineering {
     const incidents = [];
 
     switch (experiment.type) {
-      case 'network':
+      case "network":
         if (
           experiment.safetyLimits?.maxLatency &&
           metrics.responseTime > experiment.safetyLimits.maxLatency
         ) {
           incidents.push({
-            metric: 'responseTime',
-            action: 'Terminate network latency experiment early',
-            priority: 'high',
+            metric: "responseTime",
+            action: "Terminate network latency experiment early",
+            priority: "high",
             reason: `Latency ${metrics.responseTime.toFixed(0)}ms exceeded limit ${experiment.safetyLimits.maxLatency}ms`,
           });
         }
         break;
-      case 'resource':
+      case "resource":
         if (
           experiment.safetyLimits?.maxCpuUsage &&
           metrics.cpuUsage > experiment.safetyLimits.maxCpuUsage
         ) {
           incidents.push({
-            metric: 'cpuUsage',
-            action: 'Scale up temporarily or rollback resource experiment',
-            priority: 'high',
+            metric: "cpuUsage",
+            action: "Scale up temporarily or rollback resource experiment",
+            priority: "high",
             reason: `CPU usage ${(metrics.cpuUsage * 100).toFixed(1)}% above limit ${(experiment.safetyLimits.maxCpuUsage * 100).toFixed(1)}%`,
           });
         }
@@ -380,41 +380,41 @@ class ChaosEngineering {
           metrics.memoryUsage > experiment.safetyLimits.maxMemoryUsage
         ) {
           incidents.push({
-            metric: 'memoryUsage',
-            action: 'Trigger memory guardrails',
-            priority: 'high',
+            metric: "memoryUsage",
+            action: "Trigger memory guardrails",
+            priority: "high",
             reason: `Memory usage ${(metrics.memoryUsage * 100).toFixed(1)}% above limit ${(experiment.safetyLimits.maxMemoryUsage * 100).toFixed(1)}%`,
           });
         }
         break;
-      case 'failure':
+      case "failure":
         if (metrics.errorRate > (experiment.safetyLimits?.maxFailureRate ?? 0.5)) {
           incidents.push({
-            metric: 'errorRate',
-            action: 'Invoke circuit breaker to protect downstream services',
-            priority: 'critical',
+            metric: "errorRate",
+            action: "Invoke circuit breaker to protect downstream services",
+            priority: "critical",
             reason: `Error rate ${(metrics.errorRate * 100).toFixed(2)}% exceeded allowed ${(experiment.safetyLimits?.maxFailureRate ?? 0.5) * 100}%`,
           });
         }
         break;
-      case 'data':
+      case "data":
         if (
           experiment.safetyLimits?.maxCorruptionRate &&
           metrics.dataIntegrity < 1 - experiment.safetyLimits.maxCorruptionRate
         ) {
           incidents.push({
-            metric: 'dataIntegrity',
-            action: 'Restore from backups and halt data corruption experiment',
-            priority: 'critical',
-            reason: 'Data integrity dropped beyond safety limits',
+            metric: "dataIntegrity",
+            action: "Restore from backups and halt data corruption experiment",
+            priority: "critical",
+            reason: "Data integrity dropped beyond safety limits",
           });
         }
         if (experiment.safetyLimits?.dataBackup && metrics.backupSuccess === false) {
           incidents.push({
-            metric: 'backupSuccess',
-            action: 'Validate backup pipeline before next chaos run',
-            priority: 'high',
-            reason: 'Backup verification failed during chaos experiment',
+            metric: "backupSuccess",
+            action: "Validate backup pipeline before next chaos run",
+            priority: "high",
+            reason: "Backup verification failed during chaos experiment",
           });
         }
         break;
@@ -431,7 +431,7 @@ class ChaosEngineering {
   updateBaselinesWithObservation(metrics) {
     const alpha = 0.05;
     Object.entries(metrics).forEach(([metric, value]) => {
-      if (typeof value !== 'number') return;
+      if (typeof value !== "number") return;
       const baseline = this.baselines[metric] ?? {
         mean: value,
         std: Math.max(Math.abs(value) * 0.1, 0.0001),
@@ -476,19 +476,19 @@ class ChaosEngineering {
     };
 
     // Add realistic side effects based on experiment type
-    if (experiment.type === 'network') {
-      result.sideEffects.push('Increased response times', 'Higher error rates');
-    } else if (experiment.type === 'resource') {
-      result.sideEffects.push('Degraded performance', 'Potential timeouts');
-    } else if (experiment.type === 'failure') {
-      result.sideEffects.push('Service unavailability', 'Cascading failures');
+    if (experiment.type === "network") {
+      result.sideEffects.push("Increased response times", "Higher error rates");
+    } else if (experiment.type === "resource") {
+      result.sideEffects.push("Degraded performance", "Potential timeouts");
+    } else if (experiment.type === "failure") {
+      result.sideEffects.push("Service unavailability", "Cascading failures");
     }
 
     return result;
   }
 
   async recoverSystem(experiment) {
-    console.log('🔄 Recovering system from experiment...');
+    console.log("🔄 Recovering system from experiment...");
 
     // Simulate recovery process
     const recoveryTime = Math.random() * 60 + 30; // 30-90 seconds
@@ -496,44 +496,44 @@ class ChaosEngineering {
     return {
       success: true,
       recoveryTime,
-      method: experiment.safetyLimits.autoRollback ? 'auto-rollback' : 'manual',
+      method: experiment.safetyLimits.autoRollback ? "auto-rollback" : "manual",
       verified: true,
     };
   }
 
   analyzeExperimentResults(experiment, preMetrics, postMetrics, executionResult, safety) {
-    console.log('📈 Analyzing experiment results...');
+    console.log("📈 Analyzing experiment results...");
 
     const analysis = {
       resilient: true,
       weaknesses: [],
       strengths: [],
       recommendations: [],
-      riskAssessment: 'low',
+      riskAssessment: "low",
       sloBreaches: [],
       safetyIncidents: safety?.incidents ?? [],
     };
 
     // Analyze each metric
     Object.keys(preMetrics).forEach((metric) => {
-      if (typeof preMetrics[metric] === 'number' && typeof postMetrics[metric] === 'number') {
+      if (typeof preMetrics[metric] === "number" && typeof postMetrics[metric] === "number") {
         const baseline = this.baselines[metric];
         const change = postMetrics[metric] - preMetrics[metric];
         const changePercent =
           Math.abs(preMetrics[metric]) > 0
             ? Math.abs(change / preMetrics[metric])
             : Math.abs(change);
-        let severity = 'low';
+        let severity = "low";
         let breached = false;
 
         if (baseline?.std) {
           const zScore = Math.abs((postMetrics[metric] - baseline.mean) / (baseline.std || 1));
           if (zScore > 3) {
-            severity = 'high';
+            severity = "high";
             breached = true;
             analysis.sloBreaches.push({ metric, zScore, baseline: baseline.mean });
           } else if (zScore > 2) {
-            severity = 'medium';
+            severity = "medium";
             breached = true;
             analysis.sloBreaches.push({ metric, zScore, baseline: baseline.mean });
           }
@@ -551,7 +551,7 @@ class ChaosEngineering {
         analysis.weaknesses.push({
           metric,
           change: changePercent,
-          severity: severity === 'low' ? (changePercent > 1 ? 'high' : 'medium') : severity,
+          severity: severity === "low" ? (changePercent > 1 ? "high" : "medium") : severity,
         });
       }
     });
@@ -566,11 +566,11 @@ class ChaosEngineering {
         experiment,
         analysis.weaknesses,
         analysis.sloBreaches,
-        analysis.safetyIncidents
+        analysis.safetyIncidents,
       );
-      analysis.riskAssessment = analysis.weaknesses.some((w) => w.severity === 'high')
-        ? 'high'
-        : 'medium';
+      analysis.riskAssessment = analysis.weaknesses.some((w) => w.severity === "high")
+        ? "high"
+        : "medium";
     }
 
     return analysis;
@@ -580,42 +580,42 @@ class ChaosEngineering {
     const recommendations = [];
 
     weaknesses.forEach((weakness) => {
-      if (weakness.metric === 'responseTime') {
+      if (weakness.metric === "responseTime") {
         recommendations.push({
-          priority: 'high',
-          action: 'Implement response time circuit breakers',
-          rationale: 'System response times degraded significantly during chaos experiment',
+          priority: "high",
+          action: "Implement response time circuit breakers",
+          rationale: "System response times degraded significantly during chaos experiment",
         });
-      } else if (weakness.metric === 'errorRate') {
+      } else if (weakness.metric === "errorRate") {
         recommendations.push({
-          priority: 'high',
-          action: 'Add retry mechanisms and fallback strategies',
-          rationale: 'Error rates increased beyond acceptable thresholds',
+          priority: "high",
+          action: "Add retry mechanisms and fallback strategies",
+          rationale: "Error rates increased beyond acceptable thresholds",
         });
-      } else if (weakness.metric === 'availability') {
+      } else if (weakness.metric === "availability") {
         recommendations.push({
-          priority: 'critical',
-          action: 'Implement redundant systems and failover mechanisms',
-          rationale: 'System availability was compromised during experiment',
+          priority: "critical",
+          action: "Implement redundant systems and failover mechanisms",
+          rationale: "System availability was compromised during experiment",
         });
       }
     });
 
     sloBreaches.forEach((breach) => {
-      if (breach.metric === 'availability') {
+      if (breach.metric === "availability") {
         recommendations.push({
-          priority: 'critical',
-          action: 'Introduce multi-region failover and chaos alerts',
-          rationale: 'Availability SLO breached during chaos experiment',
+          priority: "critical",
+          action: "Introduce multi-region failover and chaos alerts",
+          rationale: "Availability SLO breached during chaos experiment",
         });
       }
     });
 
     safetyIncidents.forEach((incident) => {
       recommendations.push({
-        priority: incident.priority ?? 'high',
+        priority: incident.priority ?? "high",
         action: incident.action,
-        rationale: incident.reason ?? 'Safety limit exceeded during experiment',
+        rationale: incident.reason ?? "Safety limit exceeded during experiment",
       });
     });
 
@@ -623,22 +623,22 @@ class ChaosEngineering {
   }
 
   async generateReport() {
-    console.log('📋 Generating chaos engineering report...');
+    console.log("📋 Generating chaos engineering report...");
 
     const report = {
       timestamp: new Date().toISOString(),
       summary: {
         totalExperiments: this.results.length,
-        passedExperiments: this.results.filter((r) => r.status === 'passed').length,
-        failedExperiments: this.results.filter((r) => r.status === 'failed').length,
+        passedExperiments: this.results.filter((r) => r.status === "passed").length,
+        failedExperiments: this.results.filter((r) => r.status === "failed").length,
         overallResilience: this.calculateOverallResilience(),
         sloBreaches: this.results.reduce(
           (acc, r) => acc + (r?.analysis?.sloBreaches?.length ?? 0),
-          0
+          0,
         ),
         safetyIncidents: this.results.reduce(
           (acc, r) => acc + (r?.safety?.incidents?.length ?? 0),
-          0
+          0,
         ),
       },
       experiments: this.experiments,
@@ -647,8 +647,8 @@ class ChaosEngineering {
       nextSteps: this.generateNextSteps(),
     };
 
-    await fs.mkdir('ai-learning', { recursive: true });
-    await fs.writeFile('ai-learning/chaos-report.json', JSON.stringify(report, null, 2));
+    await fs.mkdir("ai-learning", { recursive: true });
+    await fs.writeFile("ai-learning/chaos-report.json", JSON.stringify(report, null, 2));
 
     return report;
   }
@@ -656,7 +656,7 @@ class ChaosEngineering {
   calculateOverallResilience() {
     if (this.results.length === 0) return 0;
 
-    const passedCount = this.results.filter((r) => r.status === 'passed').length;
+    const passedCount = this.results.filter((r) => r.status === "passed").length;
     return passedCount / this.results.length;
   }
 
@@ -680,7 +680,7 @@ class ChaosEngineering {
     });
 
     return Object.values(grouped).sort(
-      (a, b) => priorityOrder[b.priority] - priorityOrder[a.priority]
+      (a, b) => priorityOrder[b.priority] - priorityOrder[a.priority],
     );
   }
 
@@ -691,28 +691,28 @@ class ChaosEngineering {
 
     if (resilience < 0.7) {
       nextSteps.push({
-        priority: 'high',
-        action: 'Address critical resilience issues before proceeding',
-        timeline: 'Immediate',
+        priority: "high",
+        action: "Address critical resilience issues before proceeding",
+        timeline: "Immediate",
       });
     }
 
     nextSteps.push({
-      priority: 'medium',
-      action: 'Run chaos experiments in staging environment',
-      timeline: 'Next sprint',
+      priority: "medium",
+      action: "Run chaos experiments in staging environment",
+      timeline: "Next sprint",
     });
 
     nextSteps.push({
-      priority: 'medium',
-      action: 'Implement automated chaos testing in CI/CD pipeline',
-      timeline: 'Next release',
+      priority: "medium",
+      action: "Implement automated chaos testing in CI/CD pipeline",
+      timeline: "Next release",
     });
 
     nextSteps.push({
-      priority: 'low',
-      action: 'Expand chaos experiment coverage to new failure scenarios',
-      timeline: 'Future releases',
+      priority: "low",
+      action: "Expand chaos experiment coverage to new failure scenarios",
+      timeline: "Future releases",
     });
 
     return nextSteps;
@@ -726,13 +726,13 @@ class ChaosEngineering {
       lastUpdated: new Date().toISOString(),
     };
 
-    await fs.mkdir('ai-learning', { recursive: true });
+    await fs.mkdir("ai-learning", { recursive: true });
     await fs.writeFile(
-      'ai-learning/chaos-experiments.json',
-      JSON.stringify(this.experiments, null, 2)
+      "ai-learning/chaos-experiments.json",
+      JSON.stringify(this.experiments, null, 2),
     );
-    await fs.writeFile('ai-learning/chaos-results.json', JSON.stringify(this.results, null, 2));
-    await fs.writeFile('ai-learning/chaos-state.json', JSON.stringify(state, null, 2));
+    await fs.writeFile("ai-learning/chaos-results.json", JSON.stringify(this.results, null, 2));
+    await fs.writeFile("ai-learning/chaos-state.json", JSON.stringify(state, null, 2));
     await this.persistBaselines();
   }
 
@@ -749,7 +749,7 @@ class ChaosEngineering {
       let experimentEntries = Object.entries(this.experiments);
       if (experimentName) {
         const selection = experimentEntries.find(
-          ([key, exp]) => key === experimentName || exp.name === experimentName
+          ([key, exp]) => key === experimentName || exp.name === experimentName,
         );
         if (!selection) {
           throw new Error(`Experiment "${experimentName}" not found in configuration`);
@@ -774,13 +774,13 @@ class ChaosEngineering {
       const report = await this.generateReport();
       await this.saveState();
 
-      console.log('✅ Chaos engineering campaign completed');
+      console.log("✅ Chaos engineering campaign completed");
       console.log(`📊 Resilience score: ${(report.summary.overallResilience * 100).toFixed(1)}%`);
       console.log(`🧪 Experiments run: ${report.summary.totalExperiments}`);
 
       return report;
     } catch (error) {
-      console.error('❌ Chaos engineering campaign failed:', error);
+      console.error("❌ Chaos engineering campaign failed:", error);
       throw error;
     }
   }
@@ -798,12 +798,12 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       stabilizationDelay: cliOptions.stabilizationDelay,
     })
     .then((report) => {
-      console.log('\n📋 Chaos Engineering Campaign Summary:');
+      console.log("\n📋 Chaos Engineering Campaign Summary:");
       console.log(`Resilience Score: ${(report.summary.overallResilience * 100).toFixed(1)}%`);
       console.log(`Passed: ${report.summary.passedExperiments}/${report.summary.totalExperiments}`);
 
       if (report.recommendations.length > 0) {
-        console.log('\n💡 Key Recommendations:');
+        console.log("\n💡 Key Recommendations:");
         report.recommendations.slice(0, 3).forEach((rec, index) => {
           console.log(`${index + 1}. ${rec.action} (${rec.priority})`);
         });
@@ -812,7 +812,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       process.exit(0);
     })
     .catch((error) => {
-      console.error('Failed to run chaos engineering campaign:', error);
+      console.error("Failed to run chaos engineering campaign:", error);
       process.exit(1);
     });
 }
@@ -825,12 +825,12 @@ function parseArgs(argv) {
   };
 
   argv.forEach((arg) => {
-    if (arg.startsWith('--experiment=')) {
-      options.experiment = arg.split('=')[1];
-    } else if (arg.startsWith('--config=')) {
-      options.configPath = arg.split('=')[1];
-    } else if (arg.startsWith('--stabilization=')) {
-      const value = Number.parseInt(arg.split('=')[1], 10);
+    if (arg.startsWith("--experiment=")) {
+      options.experiment = arg.split("=")[1];
+    } else if (arg.startsWith("--config=")) {
+      options.configPath = arg.split("=")[1];
+    } else if (arg.startsWith("--stabilization=")) {
+      const value = Number.parseInt(arg.split("=")[1], 10);
       if (!Number.isNaN(value)) {
         options.stabilizationDelay = value;
       }

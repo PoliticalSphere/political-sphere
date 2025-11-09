@@ -46,7 +46,7 @@ export class ExportReportsJob {
       formattedData,
       config.name,
       config.format,
-      config.destination
+      config.destination,
     );
 
     // Send to recipients if configured
@@ -118,7 +118,7 @@ export class ExportReportsJob {
     data: string,
     reportName: string,
     format: string,
-    destination: string
+    destination: string,
   ): Promise<string> {
     const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
     const filename = `${reportName}-${timestamp}.${format}`;
@@ -147,10 +147,7 @@ export class ExportReportsJob {
   /**
    * Send report to recipients via email
    */
-  private async sendReport(
-    config: ReportConfig,
-    outputPath: string
-  ): Promise<void> {
+  private async sendReport(config: ReportConfig, outputPath: string): Promise<void> {
     // TODO: Implement email sending (use nodemailer or similar)
     console.log("Sending report to:", config.recipients);
     console.log("Report path:", outputPath);

@@ -2,17 +2,9 @@ import type { NextFunction, Request, Response } from "express";
 import { sanitizeErrorForLog } from "./log-sanitizer";
 
 export class ErrorHandler {
-  static handleError(
-    err: Error,
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): void {
+  static handleError(err: Error, req: Request, res: Response, next: NextFunction): void {
     // Security: Sanitize error data before logging to prevent log injection
-    const sanitizedError = sanitizeErrorForLog(
-      err,
-      req as unknown as Record<string, unknown>
-    );
+    const sanitizedError = sanitizeErrorForLog(err, req as unknown as Record<string, unknown>);
     console.error("Error:", sanitizedError);
 
     // Don't leak internal errors
@@ -112,7 +104,7 @@ export class CircuitBreaker {
   constructor(
     private failureThreshold: number = 5,
     private recoveryTimeout: number = 60000, // 1 minute
-    private monitoringPeriod: number = 60000 // 1 minute
+    private monitoringPeriod: number = 60000, // 1 minute
   ) {}
 
   async execute<T>(fn: () => Promise<T>): Promise<T> {
@@ -120,10 +112,7 @@ export class CircuitBreaker {
       if (Date.now() - this.lastFailureTime > this.recoveryTimeout) {
         this.state = "HALF_OPEN";
       } else {
-        throw new ExternalServiceError(
-          "CircuitBreaker",
-          "Service is currently unavailable"
-        );
+        throw new ExternalServiceError("CircuitBreaker", "Service is currently unavailable");
       }
     }
 
@@ -160,7 +149,7 @@ export class CircuitBreaker {
 export const retryWithBackoff = async <T>(
   fn: () => Promise<T>,
   maxRetries: number = 3,
-  baseDelay: number = 1000
+  baseDelay: number = 1000,
 ): Promise<T> => {
   let lastError: Error;
 

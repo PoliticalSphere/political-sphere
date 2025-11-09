@@ -5,8 +5,8 @@
  * Analyzes system metrics and provides intelligent optimization recommendations
  */
 
-const fs = require('fs/promises');
-const path = require('path');
+const fs = require("fs/promises");
+const path = require("path");
 
 class PerformanceMonitor {
   constructor() {
@@ -17,14 +17,14 @@ class PerformanceMonitor {
   }
 
   async initialize() {
-    console.log('🚀 Initializing AI Performance Monitor...');
+    console.log("🚀 Initializing AI Performance Monitor...");
 
     // Load baseline metrics
     try {
-      const baselineData = await fs.readFile('ai-metrics.json', 'utf8');
+      const baselineData = await fs.readFile("ai-metrics.json", "utf8");
       this.baselines = JSON.parse(baselineData);
     } catch (error) {
-      console.log('📊 No baseline metrics found, creating new baseline...');
+      console.log("📊 No baseline metrics found, creating new baseline...");
       this.baselines = {
         responseTime: { mean: 100, std: 20 },
         cpuUsage: { mean: 60, std: 10 },
@@ -36,7 +36,7 @@ class PerformanceMonitor {
   }
 
   async collectMetrics() {
-    console.log('📈 Collecting system metrics...');
+    console.log("📈 Collecting system metrics...");
 
     // Simulate metric collection (in real implementation, this would query Prometheus/monitoring systems)
     this.metrics = {
@@ -54,7 +54,7 @@ class PerformanceMonitor {
   }
 
   detectAnomalies() {
-    console.log('🔍 Detecting performance anomalies...');
+    console.log("🔍 Detecting performance anomalies...");
 
     this.anomalies = [];
 
@@ -69,7 +69,7 @@ class PerformanceMonitor {
             metric,
             value: this.metrics[metric],
             baseline: baseline.mean,
-            severity: zScore > 3 ? 'critical' : 'warning',
+            severity: zScore > 3 ? "critical" : "warning",
             zScore: zScore.toFixed(2),
           });
         }
@@ -80,23 +80,23 @@ class PerformanceMonitor {
   }
 
   generateRecommendations() {
-    console.log('💡 Generating optimization recommendations...');
+    console.log("💡 Generating optimization recommendations...");
 
     this.recommendations = [];
 
     // Response time recommendations
     if (this.metrics.responseTime > 150) {
       this.recommendations.push({
-        type: 'performance',
-        priority: 'high',
-        title: 'High Response Time Detected',
+        type: "performance",
+        priority: "high",
+        title: "High Response Time Detected",
         description:
-          'API response times are elevated. Consider implementing caching or optimizing database queries.',
+          "API response times are elevated. Consider implementing caching or optimizing database queries.",
         actions: [
-          'Review slow database queries',
-          'Implement Redis caching for frequently accessed data',
-          'Consider CDN for static assets',
-          'Optimize API endpoints with pagination',
+          "Review slow database queries",
+          "Implement Redis caching for frequently accessed data",
+          "Consider CDN for static assets",
+          "Optimize API endpoints with pagination",
         ],
       });
     }
@@ -104,15 +104,15 @@ class PerformanceMonitor {
     // CPU usage recommendations
     if (this.metrics.cpuUsage > 80) {
       this.recommendations.push({
-        type: 'scalability',
-        priority: 'high',
-        title: 'High CPU Utilization',
-        description: 'CPU usage is above optimal levels. Consider horizontal scaling.',
+        type: "scalability",
+        priority: "high",
+        title: "High CPU Utilization",
+        description: "CPU usage is above optimal levels. Consider horizontal scaling.",
         actions: [
-          'Scale out application instances',
-          'Optimize CPU-intensive operations',
-          'Implement load balancing',
-          'Review background job processing',
+          "Scale out application instances",
+          "Optimize CPU-intensive operations",
+          "Implement load balancing",
+          "Review background job processing",
         ],
       });
     }
@@ -120,15 +120,15 @@ class PerformanceMonitor {
     // Memory usage recommendations
     if (this.metrics.memoryUsage > 85) {
       this.recommendations.push({
-        type: 'performance',
-        priority: 'medium',
-        title: 'High Memory Usage',
-        description: 'Memory consumption is high. Check for memory leaks.',
+        type: "performance",
+        priority: "medium",
+        title: "High Memory Usage",
+        description: "Memory consumption is high. Check for memory leaks.",
         actions: [
-          'Profile memory usage with heap dumps',
-          'Implement memory-efficient data structures',
-          'Review garbage collection settings',
-          'Consider memory-optimized algorithms',
+          "Profile memory usage with heap dumps",
+          "Implement memory-efficient data structures",
+          "Review garbage collection settings",
+          "Consider memory-optimized algorithms",
         ],
       });
     }
@@ -136,15 +136,15 @@ class PerformanceMonitor {
     // Error rate recommendations
     if (this.metrics.errorRate > 0.02) {
       this.recommendations.push({
-        type: 'reliability',
-        priority: 'high',
-        title: 'Elevated Error Rate',
-        description: 'Error rates are above acceptable thresholds.',
+        type: "reliability",
+        priority: "high",
+        title: "Elevated Error Rate",
+        description: "Error rates are above acceptable thresholds.",
         actions: [
-          'Review application logs for error patterns',
-          'Implement circuit breakers',
-          'Add retry mechanisms with exponential backoff',
-          'Enhance error handling and monitoring',
+          "Review application logs for error patterns",
+          "Implement circuit breakers",
+          "Add retry mechanisms with exponential backoff",
+          "Enhance error handling and monitoring",
         ],
       });
     }
@@ -152,15 +152,15 @@ class PerformanceMonitor {
     // Database latency recommendations
     if (this.metrics.databaseLatency > 30) {
       this.recommendations.push({
-        type: 'database',
-        priority: 'medium',
-        title: 'High Database Latency',
-        description: 'Database queries are taking longer than expected.',
+        type: "database",
+        priority: "medium",
+        title: "High Database Latency",
+        description: "Database queries are taking longer than expected.",
         actions: [
-          'Add database indexes for slow queries',
-          'Implement query result caching',
-          'Consider read replicas for heavy read workloads',
-          'Optimize database connection pooling',
+          "Add database indexes for slow queries",
+          "Implement query result caching",
+          "Consider read replicas for heavy read workloads",
+          "Optimize database connection pooling",
         ],
       });
     }
@@ -168,15 +168,15 @@ class PerformanceMonitor {
     // Predictive recommendations based on trends
     if (this.metrics.throughput > this.baselines.throughput.mean * 1.5) {
       this.recommendations.push({
-        type: 'scalability',
-        priority: 'medium',
-        title: 'Traffic Surge Detected',
-        description: 'Throughput has increased significantly. Prepare for scaling.',
+        type: "scalability",
+        priority: "medium",
+        title: "Traffic Surge Detected",
+        description: "Throughput has increased significantly. Prepare for scaling.",
         actions: [
-          'Monitor auto-scaling triggers',
-          'Review rate limiting policies',
-          'Prepare additional infrastructure capacity',
-          'Implement traffic throttling if needed',
+          "Monitor auto-scaling triggers",
+          "Review rate limiting policies",
+          "Prepare additional infrastructure capacity",
+          "Implement traffic throttling if needed",
         ],
       });
     }
@@ -185,7 +185,7 @@ class PerformanceMonitor {
   }
 
   async updateBaselines() {
-    console.log('📊 Updating performance baselines...');
+    console.log("📊 Updating performance baselines...");
 
     // Update baselines with exponential moving average
     const alpha = 0.1; // Learning rate
@@ -198,13 +198,13 @@ class PerformanceMonitor {
         current.mean = alpha * newValue + (1 - alpha) * current.mean;
         // Update standard deviation (simplified)
         current.std = Math.sqrt(
-          alpha * Math.pow(newValue - current.mean, 2) + (1 - alpha) * Math.pow(current.std, 2)
+          alpha * (newValue - current.mean) ** 2 + (1 - alpha) * current.std ** 2,
         );
       }
     });
 
     // Save updated baselines
-    await fs.writeFile('ai-metrics.json', JSON.stringify(this.baselines, null, 2));
+    await fs.writeFile("ai-metrics.json", JSON.stringify(this.baselines, null, 2));
   }
 
   async generateReport() {
@@ -215,14 +215,14 @@ class PerformanceMonitor {
       recommendations: this.recommendations,
       summary: {
         totalAnomalies: this.anomalies.length,
-        criticalIssues: this.anomalies.filter((a) => a.severity === 'critical').length,
+        criticalIssues: this.anomalies.filter((a) => a.severity === "critical").length,
         totalRecommendations: this.recommendations.length,
-        highPriorityActions: this.recommendations.filter((r) => r.priority === 'high').length,
+        highPriorityActions: this.recommendations.filter((r) => r.priority === "high").length,
       },
     };
 
     // Save report
-    const reportDir = 'reports/performance';
+    const reportDir = "reports/performance";
     await fs.mkdir(reportDir, { recursive: true });
     const reportPath = path.join(reportDir, `performance-report-${Date.now()}.json`);
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
@@ -239,13 +239,13 @@ class PerformanceMonitor {
       await this.updateBaselines();
       const report = await this.generateReport();
 
-      console.log('✅ Performance analysis completed');
+      console.log("✅ Performance analysis completed");
       console.log(`📊 Found ${this.anomalies.length} anomalies`);
       console.log(`💡 Generated ${this.recommendations.length} recommendations`);
 
       return report;
     } catch (error) {
-      console.error('❌ Performance analysis failed:', error);
+      console.error("❌ Performance analysis failed:", error);
       throw error;
     }
   }
@@ -258,14 +258,14 @@ if (require.main === module) {
   monitor
     .runAnalysis()
     .then((report) => {
-      console.log('\n📋 Performance Analysis Summary:');
+      console.log("\n📋 Performance Analysis Summary:");
       console.log(`Total Anomalies: ${report.summary.totalAnomalies}`);
       console.log(`Critical Issues: ${report.summary.criticalIssues}`);
       console.log(`Recommendations: ${report.summary.totalRecommendations}`);
       console.log(`High Priority Actions: ${report.summary.highPriorityActions}`);
 
       if (report.recommendations.length > 0) {
-        console.log('\n🔧 Top Recommendations:');
+        console.log("\n🔧 Top Recommendations:");
         report.recommendations.slice(0, 3).forEach((rec, index) => {
           console.log(`${index + 1}. ${rec.title} (${rec.priority})`);
           console.log(`   ${rec.description}`);
@@ -275,7 +275,7 @@ if (require.main === module) {
       process.exit(0);
     })
     .catch((error) => {
-      console.error('Failed to run performance analysis:', error);
+      console.error("Failed to run performance analysis:", error);
       process.exit(1);
     });
 }

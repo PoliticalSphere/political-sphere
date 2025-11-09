@@ -3,7 +3,10 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "workspaces": ["apps/dev/ai/ai-assistant", "libs/*"],
+  "workspaces": [
+    "apps/dev/ai/ai-assistant",
+    "libs/*"
+  ],
   "devDependencies": {
     "ts-node": "^10.9.2",
     "yaml": "^2.6.0",
@@ -17,7 +20,7 @@
     "@playwright/mcp": "^0.0.45",
     "@playwright/test": "^1.45.0",
     "@swc/core": "^1.14.0",
-    
+
     "@types/better-sqlite3": "^7.6.13",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
@@ -30,7 +33,7 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-filenames": "^1.3.2",
     "html-webpack-plugin": "^5.5.0",
-    
+
     "lefthook": "^1.6.10",
     "lint-staged": "^16.2.6",
     "markdownlint-cli": "^0.39.0",

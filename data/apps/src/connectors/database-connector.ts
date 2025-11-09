@@ -56,10 +56,7 @@ export class DatabaseConnector {
   /**
    * Execute a query with parameters (prevents SQL injection)
    */
-  async query<T = unknown>(
-    sql: string,
-    params?: unknown[]
-  ): Promise<QueryResult<T>> {
+  async query<T = unknown>(sql: string, params?: unknown[]): Promise<QueryResult<T>> {
     if (!this.connected) {
       throw new Error("Database not connected");
     }
@@ -76,9 +73,7 @@ export class DatabaseConnector {
   /**
    * Execute query within a transaction
    */
-  async transaction<T>(
-    callback: (connector: DatabaseConnector) => Promise<T>
-  ): Promise<T> {
+  async transaction<T>(callback: (connector: DatabaseConnector) => Promise<T>): Promise<T> {
     // TODO: Implement transaction support
     // BEGIN -> callback -> COMMIT (or ROLLBACK on error)
 

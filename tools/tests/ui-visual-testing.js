@@ -5,7 +5,7 @@
  * Visual testing framework for detecting UI changes and regressions
  */
 
-import fs from 'fs/promises';
+import fs from "fs/promises";
 
 class UIVisualTesting {
   constructor() {
@@ -16,85 +16,85 @@ class UIVisualTesting {
   }
 
   async initialize() {
-    console.log('👁️ Initializing UI Visual Testing Framework...');
+    console.log("👁️ Initializing UI Visual Testing Framework...");
 
     // Load existing baselines and results
     try {
-      const baselinesData = await fs.readFile('ai-learning/ui-baselines.json', 'utf8');
+      const baselinesData = await fs.readFile("ai-learning/ui-baselines.json", "utf8");
       this.baselines = JSON.parse(baselinesData);
     } catch (error) {
-      console.log('📊 No existing UI baselines found, starting fresh...');
+      console.log("📊 No existing UI baselines found, starting fresh...");
       this.baselines = {};
     }
 
     try {
-      const resultsData = await fs.readFile('ai-learning/ui-test-results.json', 'utf8');
+      const resultsData = await fs.readFile("ai-learning/ui-test-results.json", "utf8");
       this.testResults = JSON.parse(resultsData);
     } catch (error) {
-      console.log('📈 No existing UI test results found, starting fresh...');
+      console.log("📈 No existing UI test results found, starting fresh...");
       this.testResults = [];
     }
   }
 
   createVisualTestSuite() {
     return {
-      name: 'ui-visual-regression',
-      description: 'Visual regression testing for UI components and pages',
+      name: "ui-visual-regression",
+      description: "Visual regression testing for UI components and pages",
       viewports: [
-        { name: 'mobile', width: 375, height: 667 },
-        { name: 'tablet', width: 768, height: 1024 },
-        { name: 'desktop', width: 1920, height: 1080 },
+        { name: "mobile", width: 375, height: 667 },
+        { name: "tablet", width: 768, height: 1024 },
+        { name: "desktop", width: 1920, height: 1080 },
       ],
       components: [
         {
-          name: 'Button',
-          selector: '.btn',
-          variants: ['primary', 'secondary', 'disabled'],
-          interactions: ['hover', 'focus', 'active'],
+          name: "Button",
+          selector: ".btn",
+          variants: ["primary", "secondary", "disabled"],
+          interactions: ["hover", "focus", "active"],
         },
         {
-          name: 'Modal',
-          selector: '.modal',
-          variants: ['default', 'large', 'fullscreen'],
-          interactions: ['open', 'close'],
+          name: "Modal",
+          selector: ".modal",
+          variants: ["default", "large", "fullscreen"],
+          interactions: ["open", "close"],
         },
         {
-          name: 'Form',
-          selector: 'form',
-          variants: ['login', 'registration', 'contact'],
-          interactions: ['valid', 'invalid', 'submitting'],
+          name: "Form",
+          selector: "form",
+          variants: ["login", "registration", "contact"],
+          interactions: ["valid", "invalid", "submitting"],
         },
         {
-          name: 'Navigation',
-          selector: 'nav',
-          variants: ['desktop', 'mobile'],
-          interactions: ['expanded', 'collapsed'],
+          name: "Navigation",
+          selector: "nav",
+          variants: ["desktop", "mobile"],
+          interactions: ["expanded", "collapsed"],
         },
         {
-          name: 'DataTable',
-          selector: '.data-table',
-          variants: ['default', 'sortable', 'filterable'],
-          interactions: ['sort-asc', 'sort-desc', 'filter'],
+          name: "DataTable",
+          selector: ".data-table",
+          variants: ["default", "sortable", "filterable"],
+          interactions: ["sort-asc", "sort-desc", "filter"],
         },
       ],
       pages: [
         {
-          name: 'Home',
-          url: '/',
-          elements: ['header', 'hero', 'features', 'footer'],
-          breakpoints: ['mobile', 'tablet', 'desktop'],
+          name: "Home",
+          url: "/",
+          elements: ["header", "hero", "features", "footer"],
+          breakpoints: ["mobile", "tablet", "desktop"],
         },
         {
-          name: 'Dashboard',
-          url: '/dashboard',
-          elements: ['sidebar', 'main-content', 'charts', 'tables'],
-          breakpoints: ['tablet', 'desktop'],
+          name: "Dashboard",
+          url: "/dashboard",
+          elements: ["sidebar", "main-content", "charts", "tables"],
+          breakpoints: ["tablet", "desktop"],
         },
         {
-          name: 'Profile',
-          url: '/profile',
-          elements: ['avatar', 'form', 'tabs', 'actions'],
-          breakpoints: ['mobile', 'desktop'],
+          name: "Profile",
+          url: "/profile",
+          elements: ["avatar", "form", "tabs", "actions"],
+          breakpoints: ["mobile", "desktop"],
         },
       ],
       thresholds: {
@@ -106,7 +106,7 @@ class UIVisualTesting {
   }
 
   async establishBaselines() {
-    console.log('📸 Establishing visual baselines...');
+    console.log("📸 Establishing visual baselines...");
 
     const testSuite = this.createVisualTestSuite();
 
@@ -123,24 +123,24 @@ class UIVisualTesting {
         this.baselines[component.name].variants[variant] = {
           variant,
           screenshots: {},
-          dom: '',
+          dom: "",
           styles: {},
         };
 
         // Capture screenshots for each viewport
         for (const viewport of testSuite.viewports) {
-          const screenshot = await this.captureScreenshot(component, variant, viewport, 'baseline');
+          const screenshot = await this.captureScreenshot(component, variant, viewport, "baseline");
           this.baselines[component.name].variants[variant].screenshots[viewport.name] = screenshot;
         }
 
         // Capture DOM and styles
         this.baselines[component.name].variants[variant].dom = await this.captureDOM(
           component,
-          variant
+          variant,
         );
         this.baselines[component.name].variants[variant].styles = await this.captureStyles(
           component,
-          variant
+          variant,
         );
       }
     }
@@ -158,7 +158,7 @@ class UIVisualTesting {
         this.baselines[page.name].elements[element] = {
           element,
           screenshots: {},
-          dom: '',
+          dom: "",
           styles: {},
         };
 
@@ -166,7 +166,7 @@ class UIVisualTesting {
         for (const breakpoint of page.breakpoints) {
           const viewport = testSuite.viewports.find((v) => v.name === breakpoint);
           if (viewport) {
-            const screenshot = await this.captureScreenshot(page, element, viewport, 'baseline');
+            const screenshot = await this.captureScreenshot(page, element, viewport, "baseline");
             this.baselines[page.name].elements[element].screenshots[breakpoint] = screenshot;
           }
         }
@@ -175,12 +175,12 @@ class UIVisualTesting {
         this.baselines[page.name].elements[element].dom = await this.captureDOM(page, element);
         this.baselines[page.name].elements[element].styles = await this.captureStyles(
           page,
-          element
+          element,
         );
       }
     }
 
-    console.log('✅ Visual baselines established');
+    console.log("✅ Visual baselines established");
     return this.baselines;
   }
 
@@ -191,7 +191,7 @@ class UIVisualTesting {
       viewport: viewport.name,
       width: viewport.width,
       height: viewport.height,
-      format: 'png',
+      format: "png",
       size: Math.floor(Math.random() * 50000) + 10000, // 10-60KB
       hash: this.generateImageHash(),
       capturedAt: new Date().toISOString(),
@@ -214,14 +214,14 @@ class UIVisualTesting {
   async captureStyles(target, variant) {
     // Simulate CSS capture
     return {
-      '.btn': {
-        'background-color': '#007bff',
-        color: '#ffffff',
-        padding: '8px 16px',
-        'border-radius': '4px',
+      ".btn": {
+        "background-color": "#007bff",
+        color: "#ffffff",
+        padding: "8px 16px",
+        "border-radius": "4px",
       },
-      '.btn:hover': {
-        'background-color': '#0056b3',
+      ".btn:hover": {
+        "background-color": "#0056b3",
       },
     };
   }
@@ -234,7 +234,7 @@ class UIVisualTesting {
   }
 
   async runVisualTests() {
-    console.log('🖼️ Running visual regression tests...');
+    console.log("🖼️ Running visual regression tests...");
 
     const testSuite = this.createVisualTestSuite();
     const results = {
@@ -319,8 +319,8 @@ class UIVisualTesting {
           result.failedTests++;
           variantResult.tests.push({
             viewport: viewport.name,
-            status: 'failed',
-            reason: 'No baseline screenshot found',
+            status: "failed",
+            reason: "No baseline screenshot found",
           });
           continue;
         }
@@ -330,14 +330,14 @@ class UIVisualTesting {
           component,
           variant,
           viewport,
-          'test'
+          "test",
         );
 
         // Compare screenshots
         const comparison = await this.compareScreenshots(
           baselineScreenshot,
           currentScreenshot,
-          testSuite.thresholds
+          testSuite.thresholds,
         );
 
         if (comparison.different) {
@@ -347,16 +347,16 @@ class UIVisualTesting {
 
           variantResult.tests.push({
             viewport: viewport.name,
-            status: 'failed',
+            status: "failed",
             difference: comparison.difference,
             perceptualDiff: comparison.perceptualDiff,
             layoutShift: comparison.layoutShift,
-            reason: 'Visual differences detected',
+            reason: "Visual differences detected",
           });
 
           // Store difference for reporting
           this.differences.push({
-            type: 'component',
+            type: "component",
             name: component.name,
             variant,
             viewport: viewport.name,
@@ -370,7 +370,7 @@ class UIVisualTesting {
           result.passedTests++;
           variantResult.tests.push({
             viewport: viewport.name,
-            status: 'passed',
+            status: "passed",
           });
         }
       }
@@ -383,7 +383,7 @@ class UIVisualTesting {
           component,
           variant,
           interaction,
-          testSuite.viewports[0]
+          testSuite.viewports[0],
         );
         if (interactionResult.passed) {
           result.passedTests++;
@@ -395,7 +395,7 @@ class UIVisualTesting {
 
         variantResult.tests.push({
           interaction,
-          status: interactionResult.passed ? 'passed' : 'failed',
+          status: interactionResult.passed ? "passed" : "failed",
           reason: interactionResult.reason,
         });
       }
@@ -438,8 +438,8 @@ class UIVisualTesting {
           result.failedTests++;
           elementResult.tests.push({
             breakpoint,
-            status: 'failed',
-            reason: 'No baseline screenshot found',
+            status: "failed",
+            reason: "No baseline screenshot found",
           });
           continue;
         }
@@ -449,13 +449,13 @@ class UIVisualTesting {
         if (!viewport) continue;
 
         // Capture current screenshot
-        const currentScreenshot = await this.captureScreenshot(page, element, viewport, 'test');
+        const currentScreenshot = await this.captureScreenshot(page, element, viewport, "test");
 
         // Compare screenshots
         const comparison = await this.compareScreenshots(
           baselineScreenshot,
           currentScreenshot,
-          testSuite.thresholds
+          testSuite.thresholds,
         );
 
         if (comparison.different) {
@@ -465,16 +465,16 @@ class UIVisualTesting {
 
           elementResult.tests.push({
             breakpoint,
-            status: 'failed',
+            status: "failed",
             difference: comparison.difference,
             perceptualDiff: comparison.perceptualDiff,
             layoutShift: comparison.layoutShift,
-            reason: 'Visual differences detected',
+            reason: "Visual differences detected",
           });
 
           // Store difference for reporting
           this.differences.push({
-            type: 'page',
+            type: "page",
             name: page.name,
             element,
             breakpoint,
@@ -488,7 +488,7 @@ class UIVisualTesting {
           result.passedTests++;
           elementResult.tests.push({
             breakpoint,
-            status: 'passed',
+            status: "passed",
           });
         }
       }
@@ -532,7 +532,7 @@ class UIVisualTesting {
   }
 
   async generateVisualReport() {
-    console.log('📋 Generating visual regression report...');
+    console.log("📋 Generating visual regression report...");
 
     const latestResults = this.testResults[this.testResults.length - 1];
 
@@ -542,10 +542,10 @@ class UIVisualTesting {
         ...latestResults.summary,
         status:
           latestResults.summary.successRate >= 95
-            ? 'stable'
+            ? "stable"
             : latestResults.summary.successRate >= 85
-              ? 'minor-changes'
-              : 'significant-changes',
+              ? "minor-changes"
+              : "significant-changes",
       },
       components: latestResults.components,
       pages: latestResults.pages,
@@ -554,8 +554,8 @@ class UIVisualTesting {
       baselines: Object.keys(this.baselines),
     };
 
-    await fs.mkdir('ai-learning', { recursive: true });
-    await fs.writeFile('ai-learning/ui-visual-report.json', JSON.stringify(report, null, 2));
+    await fs.mkdir("ai-learning", { recursive: true });
+    await fs.writeFile("ai-learning/ui-visual-report.json", JSON.stringify(report, null, 2));
 
     return report;
   }
@@ -565,21 +565,21 @@ class UIVisualTesting {
 
     if (results.summary.differences > 10) {
       recommendations.push({
-        priority: 'high',
-        category: 'visual-regression',
-        action: 'Review and approve significant visual changes',
+        priority: "high",
+        category: "visual-regression",
+        action: "Review and approve significant visual changes",
         impact: `${results.summary.differences} visual differences detected`,
-        suggestion: 'Compare screenshots and update baselines if changes are intentional',
+        suggestion: "Compare screenshots and update baselines if changes are intentional",
       });
     }
 
     if (results.summary.successRate < 90) {
       recommendations.push({
-        priority: 'medium',
-        category: 'ui-consistency',
-        action: 'Investigate UI consistency issues',
+        priority: "medium",
+        category: "ui-consistency",
+        action: "Investigate UI consistency issues",
         impact: `Visual test success rate: ${results.summary.successRate.toFixed(1)}%`,
-        suggestion: 'Check for unintended style changes or component variations',
+        suggestion: "Check for unintended style changes or component variations",
       });
     }
 
@@ -587,11 +587,11 @@ class UIVisualTesting {
     results.components.forEach((component) => {
       if (component.differences > 2) {
         recommendations.push({
-          priority: 'medium',
-          category: 'component',
+          priority: "medium",
+          category: "component",
           action: `Review visual changes in ${component.name} component`,
           impact: `${component.differences} visual differences`,
-          suggestion: 'Verify component styling and interactions',
+          suggestion: "Verify component styling and interactions",
         });
       }
     });
@@ -600,7 +600,7 @@ class UIVisualTesting {
   }
 
   async updateBaselines() {
-    console.log('🔄 Updating visual baselines...');
+    console.log("🔄 Updating visual baselines...");
 
     // In a real implementation, this would update baselines with current screenshots
     // For demo purposes, we'll just mark baselines as updated
@@ -609,7 +609,7 @@ class UIVisualTesting {
       baseline.version = (baseline.version || 1) + 1;
     }
 
-    console.log('✅ Baselines updated');
+    console.log("✅ Baselines updated");
   }
 
   async saveResults() {
@@ -621,13 +621,13 @@ class UIVisualTesting {
       lastUpdated: new Date().toISOString(),
     };
 
-    await fs.mkdir('ai-learning', { recursive: true });
-    await fs.writeFile('ai-learning/ui-baselines.json', JSON.stringify(this.baselines, null, 2));
+    await fs.mkdir("ai-learning", { recursive: true });
+    await fs.writeFile("ai-learning/ui-baselines.json", JSON.stringify(this.baselines, null, 2));
     await fs.writeFile(
-      'ai-learning/ui-test-results.json',
-      JSON.stringify(this.testResults, null, 2)
+      "ai-learning/ui-test-results.json",
+      JSON.stringify(this.testResults, null, 2),
     );
-    await fs.writeFile('ai-learning/ui-visual-state.json', JSON.stringify(state, null, 2));
+    await fs.writeFile("ai-learning/ui-visual-state.json", JSON.stringify(state, null, 2));
   }
 
   async runVisualRegressionSuite() {
@@ -648,14 +648,14 @@ class UIVisualTesting {
       // Save results
       await this.saveResults();
 
-      console.log('✅ Visual regression testing completed');
+      console.log("✅ Visual regression testing completed");
       console.log(`📊 Success Rate: ${report.summary.successRate.toFixed(1)}%`);
       console.log(`🔍 Visual Differences: ${report.summary.differences}`);
       console.log(`📸 Screenshots Captured: ${Object.keys(this.screenshots).length}`);
 
       return report;
     } catch (error) {
-      console.error('❌ Visual regression testing failed:', error);
+      console.error("❌ Visual regression testing failed:", error);
       throw error;
     }
   }
@@ -668,7 +668,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   visualTesting
     .runVisualRegressionSuite()
     .then((report) => {
-      console.log('\n📋 Visual Regression Test Summary:');
+      console.log("\n📋 Visual Regression Test Summary:");
       console.log(`Status: ${report.summary.status.toUpperCase()}`);
       console.log(`Success Rate: ${report.summary.successRate.toFixed(1)}%`);
       console.log(`Tests Run: ${report.summary.totalTests}`);
@@ -677,7 +677,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       console.log(`Pages Tested: ${report.pages.length}`);
 
       if (report.recommendations.length > 0) {
-        console.log('\n💡 Key Recommendations:');
+        console.log("\n💡 Key Recommendations:");
         report.recommendations.slice(0, 5).forEach((rec, index) => {
           console.log(`${index + 1}. ${rec.action} (${rec.priority})`);
         });
@@ -686,7 +686,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       process.exit(0);
     })
     .catch((error) => {
-      console.error('Failed to run visual regression tests:', error);
+      console.error("Failed to run visual regression tests:", error);
       process.exit(1);
     });
 }

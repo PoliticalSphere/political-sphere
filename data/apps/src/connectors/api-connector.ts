@@ -37,7 +37,7 @@ export class ApiConnector {
    */
   async get<T = unknown>(
     endpoint: string,
-    params?: Record<string, string>
+    params?: Record<string, string>,
   ): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint, params);
     return this.request<T>("GET", url);
@@ -46,10 +46,7 @@ export class ApiConnector {
   /**
    * Perform POST request
    */
-  async post<T = unknown>(
-    endpoint: string,
-    body?: unknown
-  ): Promise<ApiResponse<T>> {
+  async post<T = unknown>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint);
     return this.request<T>("POST", url, body);
   }
@@ -57,10 +54,7 @@ export class ApiConnector {
   /**
    * Perform PUT request
    */
-  async put<T = unknown>(
-    endpoint: string,
-    body?: unknown
-  ): Promise<ApiResponse<T>> {
+  async put<T = unknown>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint);
     return this.request<T>("PUT", url, body);
   }
@@ -80,7 +74,7 @@ export class ApiConnector {
     method: string,
     url: string,
     body?: unknown,
-    retryCount = 0
+    retryCount = 0,
   ): Promise<ApiResponse<T>> {
     try {
       const headers = this.buildHeaders();

@@ -65,10 +65,7 @@ export class DataServer {
     });
 
     // Initialize jobs
-    this.scheduledImports = new ScheduledImportsJob(
-      this.externalSources,
-      this.database
-    );
+    this.scheduledImports = new ScheduledImportsJob(this.externalSources, this.database);
 
     this.cleanupJob = new DataCleanupJob(this.database, {
       retentionDays: 90,

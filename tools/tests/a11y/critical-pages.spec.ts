@@ -1,6 +1,5 @@
 import { test, expect } from "@playwright/test";
 
-
 const pages = [
   "/", // homepage
   "/healthz", // optional health page; will not fail if 404

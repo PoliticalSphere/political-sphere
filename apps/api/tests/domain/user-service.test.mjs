@@ -3,80 +3,80 @@ import { UserService } from "../../src/domain/user-service";
 import { closeDatabase, getDatabase } from "../../src/stores";
 
 describe("UserService", () => {
-	let db;
+  let db;
 
-	beforeEach(() => {
-		db = getDatabase();
-	});
+  beforeEach(() => {
+    db = getDatabase();
+  });
 
-	afterEach(() => {
-		closeDatabase();
-	});
+  afterEach(() => {
+    closeDatabase();
+  });
 
-	describe("createUser", () => {
-		it("should create a new user", async () => {
-			const service = new UserService();
-			const input = {
-				username: "testuser",
-				email: "test@example.com",
-			};
+  describe("createUser", () => {
+    it("should create a new user", async () => {
+      const service = new UserService();
+      const input = {
+        username: "testuser",
+        email: "test@example.com",
+      };
 
-			const user = await service.createUser(input);
-			expect(user.username).toBe(input.username);
-			expect(user.email).toBe(input.email);
-			expect(user.id).toBeTruthy();
-			expect(user.createdAt).toBeInstanceOf(Date);
-			expect(user.updatedAt).toBeInstanceOf(Date);
-		});
+      const user = await service.createUser(input);
+      expect(user.username).toBe(input.username);
+      expect(user.email).toBe(input.email);
+      expect(user.id).toBeTruthy();
+      expect(user.createdAt).toBeInstanceOf(Date);
+      expect(user.updatedAt).toBeInstanceOf(Date);
+    });
 
-		it("should throw error for duplicate username", async () => {
-			const service = new UserService();
-			const input = {
-				username: "testuser",
-				email: "test@example.com",
-			};
+    it("should throw error for duplicate username", async () => {
+      const service = new UserService();
+      const input = {
+        username: "testuser",
+        email: "test@example.com",
+      };
 
-			await service.createUser(input);
-			await expect(async () => await service.createUser(input)).rejects.toThrow(
-				/Username or email already exists/,
-			);
-		});
+      await service.createUser(input);
+      await expect(async () => await service.createUser(input)).rejects.toThrow(
+        /Username or email already exists/,
+      );
+    });
 
-		it("should throw error for duplicate email", async () => {
-			const service = new UserService();
-			const input1 = {
-				username: "testuser1",
-				email: "test@example.com",
-			};
-			const input2 = {
-				username: "testuser2",
-				email: "test@example.com",
-			};
+    it("should throw error for duplicate email", async () => {
+      const service = new UserService();
+      const input1 = {
+        username: "testuser1",
+        email: "test@example.com",
+      };
+      const input2 = {
+        username: "testuser2",
+        email: "test@example.com",
+      };
 
-			await service.createUser(input1);
-			await expect(
-				async () => await service.createUser(input2),
-			).rejects.toThrow(/Username or email already exists/);
-		});
-	});
+      await service.createUser(input1);
+      await expect(async () => await service.createUser(input2)).rejects.toThrow(
+        /Username or email already exists/,
+      );
+    });
+  });
 
-	describe("getUserById", () => {
-		it("should return user by id", async () => {
-			const service = new UserService();
-			const input = {
-				username: "testuser",
-				email: "test@example.com",
-			};
+  describe("getUserById", () => {
+    it("should return user by id", async () => {
+      const service = new UserService();
+      const input = {
+        username: "testuser",
+        email: "test@example.com",
+      };
 
-			const created = await service.createUser(input);
-			const retrieved = await service.getUserById(created.id);
-			expect(retrieved).toEqual(created);
-		});
+      const created = await service.createUser(input);
+      const retrieved = await service.getUserById(created.id);
+      expect(retrieved).toEqual(created);
+    });
 
-		it("should return null for non-existent user", async () => {
-			const service = new UserService();
-			const user = await service.getUserById("non-existent-id");
-			expect(user).toBeNull();
-		});
-	});
+    it("should return null for non-existent user", async () => {
+      const service = new UserService();
+      const user = await service.getUserById("non-existent-id");
+      expect(user).toBeNull();
+    });
+  });
 });

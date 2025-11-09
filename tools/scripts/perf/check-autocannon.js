@@ -1,22 +1,22 @@
 #!/usr/bin/env node
 // Read artifacts/autocannon.json and fail if thresholds are not met.
-const fs = require('fs');
-const path = require('path');
+const fs = require("fs");
+const path = require("path");
 
-const ROOT = path.resolve(__dirname, '../..');
-const REPORT_FILE = path.join(ROOT, 'artifacts', 'autocannon.json');
+const ROOT = path.resolve(__dirname, "../..");
+const REPORT_FILE = path.join(ROOT, "artifacts", "autocannon.json");
 
 if (!fs.existsSync(REPORT_FILE)) {
-  console.error('Autocannon report not found:', REPORT_FILE);
+  console.error("Autocannon report not found:", REPORT_FILE);
   process.exit(2);
 }
 
-const raw = fs.readFileSync(REPORT_FILE, 'utf8');
+const raw = fs.readFileSync(REPORT_FILE, "utf8");
 let data;
 try {
   data = JSON.parse(raw);
 } catch (e) {
-  console.error('Failed to parse autocannon output:', e.message);
+  console.error("Failed to parse autocannon output:", e.message);
   process.exit(2);
 }
 
@@ -29,7 +29,7 @@ const requests = data.requests || {};
 const latency = data.latency || {};
 
 const requestsPerSec = requests.mean || requests.average || data.throughput || 0;
-const p95 = latency.p95 || latency['95'] || 0;
+const p95 = latency.p95 || latency["95"] || 0;
 
 console.log(`Perf summary: req/s ≈ ${requestsPerSec}, p95 ≈ ${p95} ms`);
 console.log(`Thresholds: req/s >= ${THROUGHPUT_MIN}, p95 <= ${P95_MAX_MS} ms`);
@@ -46,9 +46,9 @@ if (p95 > P95_MAX_MS) {
 }
 
 if (failed) {
-  console.error('Performance smoke gate FAILED:\n' + messages.join('\n'));
+  console.error("Performance smoke gate FAILED:\n" + messages.join("\n"));
   process.exit(3);
 }
 
-console.log('Performance smoke gate PASSED');
+console.log("Performance smoke gate PASSED");
 process.exit(0);

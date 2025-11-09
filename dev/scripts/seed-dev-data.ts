@@ -107,15 +107,14 @@ async function seedUsers(db: DatabaseConnector, count: number): Promise<void> {
 
   for (let i = 0; i < count; i++) {
     const firstName = firstNames[i % firstNames.length];
-    const lastName =
-      lastNames[Math.floor(i / firstNames.length) % lastNames.length];
+    const lastName = lastNames[Math.floor(i / firstNames.length) % lastNames.length];
     const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@example.com`;
 
     await db.query(
       `INSERT INTO users (email, username, first_name, last_name, created_at)
        VALUES ($1, $2, $3, $4, $5)
        ON CONFLICT (email) DO NOTHING`,
-      [email, `${firstName}${lastName}${i}`, firstName, lastName, new Date()]
+      [email, `${firstName}${lastName}${i}`, firstName, lastName, new Date()],
     );
   }
 
@@ -125,10 +124,7 @@ async function seedUsers(db: DatabaseConnector, count: number): Promise<void> {
 /**
  * Seed political parties
  */
-async function seedParties(
-  db: DatabaseConnector,
-  count: number
-): Promise<void> {
+async function seedParties(db: DatabaseConnector, count: number): Promise<void> {
   console.log(`  → Seeding ${count} political parties...`);
 
   const partyNames = [
@@ -154,12 +150,10 @@ async function seedParties(
       [
         partyNames[i],
         ideologies[i % ideologies.length],
-        `A ${
-          ideologies[i % ideologies.length]
-        } political party focused on democratic governance.`,
+        `A ${ideologies[i % ideologies.length]} political party focused on democratic governance.`,
         new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000),
         new Date(),
-      ]
+      ],
     );
   }
 
@@ -169,10 +163,7 @@ async function seedParties(
 /**
  * Seed constituencies
  */
-async function seedConstituencies(
-  db: DatabaseConnector,
-  count: number
-): Promise<void> {
+async function seedConstituencies(db: DatabaseConnector, count: number): Promise<void> {
   console.log(`  → Seeding ${count} constituencies...`);
 
   const regions = ["North", "South", "East", "West", "Central"];
@@ -189,7 +180,7 @@ async function seedConstituencies(
       `INSERT INTO constituencies (name, region, population, created_at)
        VALUES ($1, $2, $3, $4)
        ON CONFLICT (name) DO NOTHING`,
-      [name, regions[i % regions.length], population, new Date()]
+      [name, regions[i % regions.length], population, new Date()],
     );
   }
 
@@ -199,10 +190,7 @@ async function seedConstituencies(
 /**
  * Seed legislative proposals
  */
-async function seedProposals(
-  db: DatabaseConnector,
-  count: number
-): Promise<void> {
+async function seedProposals(db: DatabaseConnector, count: number): Promise<void> {
   console.log(`  → Seeding ${count} proposals...`);
 
   const topics = [
@@ -218,14 +206,7 @@ async function seedProposals(
     "Digital Rights",
   ];
 
-  const statuses = [
-    "draft",
-    "proposed",
-    "debate",
-    "voting",
-    "passed",
-    "rejected",
-  ];
+  const statuses = ["draft", "proposed", "debate", "voting", "passed", "rejected"];
 
   for (let i = 0; i < count; i++) {
     const topic = topics[i % topics.length];
@@ -241,7 +222,7 @@ async function seedProposals(
         topics[i % topics.length].split(" ")[0].toLowerCase(),
         new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000),
         new Date(),
-      ]
+      ],
     );
   }
 

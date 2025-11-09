@@ -2,12 +2,7 @@
 import fs from "fs";
 import path from "path";
 
-const outDir = path.join(
-	process.cwd(),
-	"tools",
-	"module-federation",
-	"generated",
-);
+const outDir = path.join(process.cwd(), "tools", "module-federation", "generated");
 if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
 
 const host = `// Shell webpack config (Module Federation) example
@@ -51,5 +46,5 @@ fs.writeFileSync(path.join(outDir, "remote.webpack.config.cjs"), remote);
 console.log("Module Federation starter files written to", outDir);
 
 console.log(
-	"Next steps:\n  - Copy these configs into your app projects\n  - Adjust publicPath/URL and shared deps versions\n  - Serve remote and host apps on distinct ports",
+  "Next steps:\n  - Copy these configs into your app projects\n  - Adjust publicPath/URL and shared deps versions\n  - Serve remote and host apps on distinct ports",
 );

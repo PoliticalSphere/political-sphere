@@ -39,8 +39,7 @@ async function main() {
     prisma.party.create({
       data: {
         name: "Green Future",
-        description:
-          "An environmental party prioritizing climate action and ecological policies.",
+        description: "An environmental party prioritizing climate action and ecological policies.",
         ideology: "green-politics",
       },
     }),
@@ -91,8 +90,7 @@ async function main() {
     prisma.proposal.create({
       data: {
         title: "Universal Basic Income Pilot",
-        description:
-          "Trial program providing £1000/month to 10,000 citizens for 2 years.",
+        description: "Trial program providing £1000/month to 10,000 citizens for 2 years.",
         status: "ACTIVE",
         expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days from now
       },
@@ -105,8 +103,7 @@ async function main() {
     prisma.newsArticle.create({
       data: {
         title: "Political Sphere Platform Launches",
-        excerpt:
-          "New digital democracy platform enables citizens to participate in governance.",
+        excerpt: "New digital democracy platform enables citizens to participate in governance.",
         content:
           "The Political Sphere platform officially launched today, providing a new way for citizens to engage with democratic processes...",
         category: "platform",

@@ -4,29 +4,11 @@
     "description": "Democratically-governed political simulation with strong compliance and audit requirements",
     "architecture": "Workspace of handcrafted Node.js services, React dashboard, and shared utility libraries",
     "techStack": {
-      "frontend": [
-        "React",
-        "JavaScript",
-        "Node HTTP server"
-      ],
-      "backend": [
-        "Node.js",
-        "Express",
-        "Custom HTTP server"
-      ],
-      "data": [
-        "SQLite",
-        "better-sqlite3"
-      ],
-      "testing": [
-        "Node test runner",
-        "Jest (partial)",
-        "Playwright"
-      ],
-      "automation": [
-        "Custom scripts in tools/scripts",
-        "GitHub Actions"
-      ]
+      "frontend": ["React", "JavaScript", "Node HTTP server"],
+      "backend": ["Node.js", "Express", "Custom HTTP server"],
+      "data": ["SQLite", "better-sqlite3"],
+      "testing": ["Node test runner", "Jest (partial)", "Playwright"],
+      "automation": ["Custom scripts in tools/scripts", "GitHub Actions"]
     },
     "keyPrinciples": [
       "Democratic governance",

@@ -2,8 +2,8 @@
 // Configure test environment and global test utilities
 // Refactored to use imported helpers for better maintainability
 
-import { beforeAll, afterAll, beforeEach, afterEach, jest } from '@jest/globals';
-import { mockHelpers } from './apps/api/tests/utils/test-helpers.js';
+import { beforeAll, afterAll, beforeEach, afterEach, jest } from "@jest/globals";
+import { mockHelpers } from "./apps/api/tests/utils/test-helpers.js";
 
 // Mock console methods to reduce noise in tests
 const originalConsoleError = console.error;
@@ -12,8 +12,8 @@ const originalConsoleWarn = console.warn;
 beforeAll(() => {
   console.error = (...args) => {
     if (
-      typeof args[0] === 'string' &&
-      args[0].includes('Warning: ReactDOM.render is no longer supported')
+      typeof args[0] === "string" &&
+      args[0].includes("Warning: ReactDOM.render is no longer supported")
     ) {
       return;
     }
@@ -21,7 +21,7 @@ beforeAll(() => {
   };
 
   console.warn = (...args) => {
-    if (typeof args[0] === 'string' && args[0].includes('Warning: ReactDOM.render is deprecated')) {
+    if (typeof args[0] === "string" && args[0].includes("Warning: ReactDOM.render is deprecated")) {
       return;
     }
     originalConsoleWarn.call(console, ...args);
@@ -40,7 +40,7 @@ global.testUtils = {
 
   // Helper to create mock data
   createMockData: (overrides = {}) => ({
-    id: 'test-id',
+    id: "test-id",
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     ...overrides,
@@ -50,7 +50,7 @@ global.testUtils = {
   mockApiResponse: (data, status = 200) => ({
     data,
     status,
-    statusText: status === 200 ? 'OK' : 'Error',
+    statusText: status === 200 ? "OK" : "Error",
     headers: {},
     config: {},
   }),
@@ -60,7 +60,7 @@ global.testUtils = {
     response: {
       data: { message },
       status,
-      statusText: 'Internal Server Error',
+      statusText: "Internal Server Error",
     },
   }),
 
@@ -72,9 +72,9 @@ global.testUtils = {
 jest.setTimeout(15000);
 
 // Mock environment variables (security: use env vars, fallback to test values)
-process.env.NODE_ENV = 'test';
-process.env.JWT_SECRET = process.env.JWT_SECRET || 'test-jwt-secret';
-process.env.DATABASE_URL = process.env.DATABASE_URL || 'sqlite://:memory:';
+process.env.NODE_ENV = "test";
+process.env.JWT_SECRET = process.env.JWT_SECRET || "test-jwt-secret";
+process.env.DATABASE_URL = process.env.DATABASE_URL || "sqlite://:memory:";
 
 // Clean up after each test
 afterEach(() => {

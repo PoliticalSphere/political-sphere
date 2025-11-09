@@ -11,18 +11,18 @@
  * @integrity SHA256: [computed hash for traceability]
  */
 
-const fs = require('fs').promises;
-const fsSync = require('fs');
-const path = require('path');
-const crypto = require('crypto');
+const fs = require("fs").promises;
+const fsSync = require("fs");
+const path = require("path");
+const crypto = require("crypto");
 const FAST_AI =
-  process.env.FAST_AI === '1' || process.env.FAST_AI === 'true' || process.env.CI === 'true';
+  process.env.FAST_AI === "1" || process.env.FAST_AI === "true" || process.env.CI === "true";
 
 class AIGovernanceManager {
   constructor() {
-    this.metricsFile = path.join(__dirname, '..', 'ai-metrics.json');
-    this.controlsFile = path.join(__dirname, '..', 'ai-controls.json');
-    this.logsDir = path.join(__dirname, '..', 'ai-logs');
+    this.metricsFile = path.join(__dirname, "..", "ai-metrics.json");
+    this.controlsFile = path.join(__dirname, "..", "ai-controls.json");
+    this.logsDir = path.join(__dirname, "..", "ai-logs");
     // in-memory cache to avoid repeated disk I/O for controls
     this._controlsCache = null;
     this._controlsCacheTime = 0;
@@ -192,18 +192,18 @@ class AIGovernanceManager {
       this.detectConstitutionalViolation(interaction.content)
     ) {
       metrics.safetyMetrics.constitutionalViolations++;
-      throw new Error('Constitutional violation detected');
+      throw new Error("Constitutional violation detected");
     }
 
     if (controls.abuseAnticipation.detectAbusePatterns && this.detectAbuse(interaction.content)) {
       metrics.complianceMetrics.abuseDetected++;
-      throw new Error('Abusive content detected');
+      throw new Error("Abusive content detected");
     }
 
     if (controls.realityCheck.validateReality && this.detectHallucination(interaction.content)) {
       metrics.cognitionMetrics.realityChecks++;
       // Log but don't block
-      console.warn('Potential hallucination detected');
+      console.warn("Potential hallucination detected");
     }
 
     // Record metrics
@@ -249,7 +249,7 @@ class AIGovernanceManager {
     }
 
     // Testing requirement
-    if (controls.qualityGates.requireTesting && type === 'code') {
+    if (controls.qualityGates.requireTesting && type === "code") {
       const testResult = await this.checkTestCoverage(content);
       const minCov = FAST_AI
         ? Math.min(controls.qualityGates.minTestCoverage || 0, 50)
@@ -285,7 +285,7 @@ class AIGovernanceManager {
       ];
       for (const pattern of secretPatterns) {
         if (pattern.test(content)) {
-          throw new Error('Content contains potential hardcoded secrets');
+          throw new Error("Content contains potential hardcoded secrets");
         }
       }
       return;
@@ -300,7 +300,7 @@ class AIGovernanceManager {
 
       for (const pattern of secretPatterns) {
         if (pattern.test(content)) {
-          throw new Error('Content contains potential hardcoded secrets');
+          throw new Error("Content contains potential hardcoded secrets");
         }
       }
     }
@@ -311,7 +311,7 @@ class AIGovernanceManager {
       const hasErrorHandling = /throw new Error|catch\s*\(/.test(content);
 
       if (!hasTryCatch && !hasErrorHandling) {
-        console.warn('Warning: No error handling detected in generated content');
+        console.warn("Warning: No error handling detected in generated content");
       }
     }
 
@@ -336,9 +336,9 @@ class AIGovernanceManager {
 
     for (const pattern of biasPatterns) {
       if (pattern.test(content)) {
-        console.warn('Warning: Potential bias detected in content');
+        console.warn("Warning: Potential bias detected in content");
         // Log for review but don't block - allow human oversight
-        this.logEthicalConcern('bias_detected', content.substring(0, 100));
+        this.logEthicalConcern("bias_detected", content.substring(0, 100));
       }
     }
 
@@ -350,7 +350,7 @@ class AIGovernanceManager {
 
     for (const pattern of harmPatterns) {
       if (pattern.test(content)) {
-        throw new Error('Content contains potentially harmful instructions');
+        throw new Error("Content contains potentially harmful instructions");
       }
     }
   }
@@ -364,8 +364,8 @@ class AIGovernanceManager {
 
     for (const pattern of politicalBiasPatterns) {
       if (pattern.test(content)) {
-        console.warn('Warning: Potential political bias detected');
-        this.logEthicalConcern('political_bias', content.substring(0, 100));
+        console.warn("Warning: Potential political bias detected");
+        this.logEthicalConcern("political_bias", content.substring(0, 100));
       }
     }
 
@@ -377,7 +377,7 @@ class AIGovernanceManager {
 
     for (const pattern of censorshipPatterns) {
       if (pattern.test(content)) {
-        throw new Error('Content appears to promote censorship');
+        throw new Error("Content appears to promote censorship");
       }
     }
   }
@@ -387,11 +387,11 @@ class AIGovernanceManager {
       timestamp: new Date().toISOString(),
       type,
       content,
-      severity: 'warning',
+      severity: "warning",
     };
 
-    const ethicsLog = path.join(this.logsDir, 'ethics.log');
-    require('fs').appendFileSync(ethicsLog, JSON.stringify(logEntry) + '\n');
+    const ethicsLog = path.join(this.logsDir, "ethics.log");
+    require("fs").appendFileSync(ethicsLog, JSON.stringify(logEntry) + "\n");
   }
 
   async runLinting(content) {
@@ -401,18 +401,18 @@ class AIGovernanceManager {
 
   detectConstitutionalViolation(content) {
     // Simple check for demo
-    const badWords = ['unconstitutional', 'illegal'];
+    const badWords = ["unconstitutional", "illegal"];
     return badWords.some((word) => content.toLowerCase().includes(word));
   }
 
   detectAbuse(content) {
-    const abusiveWords = ['abuse', 'harm'];
+    const abusiveWords = ["abuse", "harm"];
     return abusiveWords.some((word) => content.toLowerCase().includes(word));
   }
 
   detectHallucination(content) {
     // Simple check, e.g., if contains contradictory statements
-    return content.includes('definitely not') && content.includes('absolutely yes');
+    return content.includes("definitely not") && content.includes("absolutely yes");
   }
 
   async runSecurityScan(content) {
@@ -444,18 +444,18 @@ class AIGovernanceManager {
       metadata: interaction.metadata || {},
     };
 
-    const logFile = path.join(this.logsDir, `${new Date().toISOString().split('T')[0]}.jsonl`);
-    await fs.appendFile(logFile, JSON.stringify(logEntry) + '\n');
+    const logFile = path.join(this.logsDir, `${new Date().toISOString().split("T")[0]}.jsonl`);
+    await fs.appendFile(logFile, JSON.stringify(logEntry) + "\n");
   }
 
   anonymize(data) {
     // Simple anonymization - hash or remove PII
-    return require('crypto').createHash('sha256').update(data).digest('hex').substring(0, 8);
+    return require("crypto").createHash("sha256").update(data).digest("hex").substring(0, 8);
   }
 
   async loadMetrics() {
     try {
-      const data = await fs.readFile(this.metricsFile, 'utf8');
+      const data = await fs.readFile(this.metricsFile, "utf8");
       return JSON.parse(data);
     } catch {
       return {};
@@ -473,7 +473,7 @@ class AIGovernanceManager {
       if (this._controlsCache && now - this._controlsCacheTime < this._controlsTtlMs) {
         return this._controlsCache;
       }
-      const data = await fs.readFile(this.controlsFile, 'utf8');
+      const data = await fs.readFile(this.controlsFile, "utf8");
       const parsed = JSON.parse(data);
       if (FAST_AI) {
         parsed.qualityGates = {
@@ -499,7 +499,7 @@ class AIGovernanceManager {
       await fs.writeFile(this.controlsFile, JSON.stringify(controls, null, 2));
     } catch (err) {
       // Best-effort persistence; surface a warning rather than throwing.
-      console.warn('Failed to save governance controls:', err?.message || err);
+      console.warn("Failed to save governance controls:", err?.message || err);
     }
   }
 
@@ -524,33 +524,33 @@ async function main() {
   const command = process.argv[2];
 
   switch (command) {
-    case 'init':
+    case "init":
       await manager.initialize();
-      console.log('AI Governance initialized');
+      console.log("AI Governance initialized");
       break;
 
-    case 'metrics': {
+    case "metrics": {
       const metrics = await manager.getMetrics();
       console.log(JSON.stringify(metrics, null, 2));
       break;
     }
 
-    case 'controls': {
+    case "controls": {
       const controls = await manager.getControls();
       console.log(JSON.stringify(controls, null, 2));
       break;
     }
 
-    case 'validate': {
-      const content = process.argv[3] || '';
-      const type = process.argv[4] || 'code';
+    case "validate": {
+      const content = process.argv[3] || "";
+      const type = process.argv[4] || "code";
       const result = await manager.validateQuality(content, type);
       console.log(JSON.stringify(result, null, 2));
       break;
     }
 
     default:
-      console.log('Usage: node governance.js <init|metrics|controls|validate>');
+      console.log("Usage: node governance.js <init|metrics|controls|validate>");
   }
 }
 

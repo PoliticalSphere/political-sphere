@@ -5,10 +5,5 @@
     "module": "commonjs",
     "types": ["vitest", "node"]
   },
-  "include": [
-    "src/**/*.test.js",
-    "src/**/*.spec.js",
-    "tests/**/*.test.js",
-    "tests/**/*.spec.js"
-  ]
+  "include": ["src/**/*.test.js", "src/**/*.spec.js", "tests/**/*.test.js", "tests/**/*.spec.js"]
 }

@@ -95,7 +95,7 @@ function initWithBetterSqlite(): DatabaseAdapter {
     upsertGame(id: string, obj: GameData): void {
       const json = JSON.stringify(obj);
       db.prepare(
-        "INSERT INTO games (id, json) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET json=excluded.json"
+        "INSERT INTO games (id, json) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET json=excluded.json",
       ).run(id, json);
     },
     deleteGame(id: string): void {
@@ -108,7 +108,7 @@ function initWithBetterSqlite(): DatabaseAdapter {
       db.prepare("INSERT INTO audit (id, ts, event) VALUES (?, ?, ?)").run(
         eid,
         ts,
-        JSON.stringify(record)
+        JSON.stringify(record),
       );
     },
   };
@@ -121,42 +121,30 @@ async function initWithSqlite3(): Promise<DatabaseAdapter> {
   ensureDir(DB_PATH);
   const db = new sqlite3.Database(DB_PATH);
 
-  function run(
-    sql: string,
-    params: unknown[] = []
-  ): Promise<{ lastID: number; changes: number }> {
+  function run(sql: string, params: unknown[] = []): Promise<{ lastID: number; changes: number }> {
     return new Promise((resolve, reject) =>
-      db.run(
-        sql,
-        params,
-        function (
-          this: { lastID: number; changes: number },
-          err: Error | null
-        ) {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(this);
-          }
+      db.run(sql, params, function (this: { lastID: number; changes: number }, err: Error | null) {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(this);
         }
-      )
+      }),
     );
   }
 
   function all(sql: string, params: unknown[] = []): Promise<unknown[]> {
     return new Promise((resolve, reject) =>
       db.all(sql, params, (err: Error | null, rows: unknown[]) =>
-        err ? reject(err) : resolve(rows)
-      )
+        err ? reject(err) : resolve(rows),
+      ),
     );
   }
 
   async function ensure(): Promise<void> {
+    await run(`CREATE TABLE IF NOT EXISTS games (id TEXT PRIMARY KEY, json TEXT NOT NULL)`);
     await run(
-      `CREATE TABLE IF NOT EXISTS games (id TEXT PRIMARY KEY, json TEXT NOT NULL)`
-    );
-    await run(
-      `CREATE TABLE IF NOT EXISTS audit (id TEXT PRIMARY KEY, ts INTEGER NOT NULL, event TEXT NOT NULL)`
+      `CREATE TABLE IF NOT EXISTS audit (id TEXT PRIMARY KEY, ts INTEGER NOT NULL, event TEXT NOT NULL)`,
     );
   }
 
@@ -175,9 +163,7 @@ async function initWithSqlite3(): Promise<DatabaseAdapter> {
       return map;
     },
     async getGame(id: string): Promise<GameData | null> {
-      const rows = (await all("SELECT json FROM games WHERE id = ?", [
-        id,
-      ])) as Array<{
+      const rows = (await all("SELECT json FROM games WHERE id = ?", [id])) as Array<{
         json: string;
       }>;
       return rows[0] ? (JSON.parse(rows[0].json) as GameData) : null;
@@ -186,7 +172,7 @@ async function initWithSqlite3(): Promise<DatabaseAdapter> {
       const json = JSON.stringify(obj);
       await run(
         "INSERT INTO games (id, json) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET json = excluded.json",
-        [id, json]
+        [id, json],
       );
     },
     async deleteGame(id: string): Promise<void> {
@@ -292,21 +278,16 @@ if (Database) {
     adapter = initWithBetterSqlite();
   } catch (err) {
     const error = err as Error;
-    logger.warn(
-      "better-sqlite3 initialisation failed, falling back to sqlite3/json",
-      {
-        error: error?.message ?? String(error),
-      }
-    );
+    logger.warn("better-sqlite3 initialisation failed, falling back to sqlite3/json", {
+      error: error?.message ?? String(error),
+    });
     Database = null; // allow fallback to continue
     // Retry with sqlite3 or JSON fallback
     try {
       require.resolve("sqlite3");
       adapter = initWithSqlite3();
     } catch {
-      logger.warn(
-        "No sqlite native modules found, using JSON file fallback for persistence"
-      );
+      logger.warn("No sqlite native modules found, using JSON file fallback for persistence");
       adapter = initJsonFallback();
     }
   }
@@ -317,9 +298,7 @@ if (Database) {
     // initialize async sqlite3 adapter
     adapter = initWithSqlite3();
   } catch {
-    logger.warn(
-      "No sqlite native modules found, using JSON file fallback for persistence"
-    );
+    logger.warn("No sqlite native modules found, using JSON file fallback for persistence");
     adapter = initJsonFallback();
   }
 }

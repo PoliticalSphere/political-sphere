@@ -5,17 +5,17 @@
  * Based on proven patterns from @qdrant/js-client and langchain
  */
 
-const { QdrantClient } = require('@qdrant/js-client-rest');
-const fs = require('fs');
-const path = require('path');
+const { QdrantClient } = require("@qdrant/js-client-rest");
+const fs = require("fs");
+const path = require("path");
 
-const COLLECTION_NAME = 'codebase-vectors';
+const COLLECTION_NAME = "codebase-vectors";
 const VECTOR_SIZE = 1536; // OpenAI ada-002 embedding size
 
 class VectorStore {
   constructor() {
     // In-memory mode for development, can switch to persistent later
-    this.client = new QdrantClient({ url: 'http://localhost:6333' });
+    this.client = new QdrantClient({ url: "http://localhost:6333" });
     this.initialized = false;
   }
 
@@ -28,14 +28,14 @@ class VectorStore {
     try {
       // Check if collection exists
       const collections = await this.client.getCollections();
-      const exists = collections.collections.some(c => c.name === COLLECTION_NAME);
+      const exists = collections.collections.some((c) => c.name === COLLECTION_NAME);
 
       if (!exists) {
         // Create collection with optimized settings
         await this.client.createCollection(COLLECTION_NAME, {
           vectors: {
             size: VECTOR_SIZE,
-            distance: 'Cosine', // Best for code similarity
+            distance: "Cosine", // Best for code similarity
             on_disk: false, // Keep in RAM for speed
           },
           optimizers_config: {
@@ -47,12 +47,12 @@ class VectorStore {
             full_scan_threshold: 10000,
           },
         });
-        console.log('✅ Vector collection created');
+        console.log("✅ Vector collection created");
       }
 
       this.initialized = true;
     } catch (error) {
-      console.error('Failed to initialize vector store:', error.message);
+      console.error("Failed to initialize vector store:", error.message);
       // Fall back to non-vector search if Qdrant unavailable
       this.initialized = false;
     }
@@ -65,7 +65,7 @@ class VectorStore {
   async addVectors(items) {
     if (!this.initialized) await this.initialize();
     if (!this.initialized) {
-      console.warn('Vector store not available, skipping...');
+      console.warn("Vector store not available, skipping...");
       return;
     }
 
@@ -75,7 +75,7 @@ class VectorStore {
       payload: {
         text: item.text,
         file: item.metadata?.file,
-        type: item.metadata?.type || 'code',
+        type: item.metadata?.type || "code",
         language: item.metadata?.language,
         timestamp: Date.now(),
       },
@@ -105,7 +105,7 @@ class VectorStore {
       score_threshold: options.scoreThreshold || 0.7, // Only return good matches
     });
 
-    return results.map(r => ({
+    return results.map((r) => ({
       id: r.id,
       score: r.score,
       text: r.payload.text,
@@ -126,7 +126,7 @@ class VectorStore {
     const filter = {
       must: [
         {
-          key: 'text',
+          key: "text",
           match: { text: textQuery },
         },
       ],
@@ -141,7 +141,7 @@ class VectorStore {
   async findSimilarCode(codeVector, language = null, limit = 5) {
     const filter = language
       ? {
-          must: [{ key: 'language', match: { value: language } }],
+          must: [{ key: "language", match: { value: language } }],
         }
       : null;
 
@@ -173,18 +173,19 @@ if (require.main === module) {
 
   async function main() {
     switch (command) {
-      case 'init':
+      case "init":
         await vectorStore.initialize();
-        console.log('✅ Vector store initialized');
+        console.log("✅ Vector store initialized");
         break;
 
-      case 'stats':
+      case "stats": {
         const stats = await vectorStore.getStats();
-        console.log('📊 Vector Store Stats:', JSON.stringify(stats, null, 2));
+        console.log("📊 Vector Store Stats:", JSON.stringify(stats, null, 2));
         break;
+      }
 
       default:
-        console.log('Usage: node vector-store.cjs <init|stats>');
+        console.log("Usage: node vector-store.cjs <init|stats>");
     }
   }
 

@@ -21,8 +21,7 @@ function Dashboard() {
         fetch(`${API_BASE_URL}/metrics/news`),
       ]);
 
-      if (!newsResponse.ok)
-        throw new Error(`News API responded with ${newsResponse.status}`);
+      if (!newsResponse.ok) throw new Error(`News API responded with ${newsResponse.status}`);
       if (!summaryResponse.ok)
         throw new Error(`Metrics API responded with ${summaryResponse.status}`);
 
@@ -36,7 +35,7 @@ function Dashboard() {
           categories: {},
           tags: {},
           latest: null,
-        }
+        },
       );
       setStatusMessage("Live data retrieved from API.");
     } catch (error) {
@@ -53,11 +52,7 @@ function Dashboard() {
 
   const renderNews = () => {
     if (news.length === 0) {
-      return (
-        <li>
-          No stories yet. The data pipeline will populate this feed shortly.
-        </li>
-      );
+      return <li>No stories yet. The data pipeline will populate this feed shortly.</li>;
     }
     return news.map((item) => (
       <li key={item.id}>
@@ -79,8 +74,7 @@ function Dashboard() {
     const { categories = {}, tags = {}, latest } = summary;
     const latestMarkup = latest ? (
       <p className="status">
-        Latest: <strong>{latest.title}</strong> (
-        {new Date(latest.updatedAt).toLocaleString()})
+        Latest: <strong>{latest.title}</strong> ({new Date(latest.updatedAt).toLocaleString()})
       </p>
     ) : (
       <p className="status">No recent updates yet.</p>
@@ -113,9 +107,7 @@ function Dashboard() {
         <p>
           Total stories: <strong>{summary.total}</strong>
         </p>
-        <p className="status">
-          Summary generated at: {new Date().toLocaleString()}
-        </p>
+        <p className="status">Summary generated at: {new Date().toLocaleString()}</p>
         {latestMarkup}
         <div
           style={{
@@ -149,8 +141,7 @@ function Dashboard() {
       <section>
         <h2 id="latest-policy-signals">Latest policy signals</h2>
         <p className="status">
-          Tracking emerging narratives and transparency signals from civic data
-          pipelines.
+          Tracking emerging narratives and transparency signals from civic data pipelines.
         </p>
         <ul aria-labelledby="latest-policy-signals">{renderNews()}</ul>
         <button
@@ -167,14 +158,11 @@ function Dashboard() {
       </section>
       <section>
         <h2 id="coverage-summary">Coverage summary</h2>
-        <p className="status">
-          Quick breakdown of categories and tags in the latest dataset.
-        </p>
+        <p className="status">Quick breakdown of categories and tags in the latest dataset.</p>
         <div>{renderSummary()}</div>
       </section>
       <p className="status">
-        Last updated:{" "}
-        <span aria-live="polite">{new Date().toLocaleString()}</span>
+        Last updated: <span aria-live="polite">{new Date().toLocaleString()}</span>
       </p>
     </main>
   );

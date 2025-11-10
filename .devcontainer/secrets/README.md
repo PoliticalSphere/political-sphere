@@ -5,10 +5,11 @@ This directory contains development secrets for the devcontainer environment.
 ## Setup Instructions
 
 1. **Create actual secret files** (these are gitignored):
+
    ```bash
    # From repository root
    cd .devcontainer/secrets
-   
+
    # Copy example and set your password
    cp postgres_password.txt.example postgres_password.txt
    echo "your_dev_password_here" > postgres_password.txt
@@ -23,6 +24,7 @@ This directory contains development secrets for the devcontainer environment.
 ## Available Secrets
 
 ### `postgres_password.txt`
+
 PostgreSQL database password for local development.
 
 **Default**: `dev123` (from example)
@@ -31,10 +33,12 @@ PostgreSQL database password for local development.
 ## Troubleshooting
 
 **Error: "secret not found"**
+
 - Ensure you've created `postgres_password.txt` from the example
 - Check file location: `.devcontainer/secrets/postgres_password.txt`
 
 **Error: "permission denied"**
+
 - Ensure proper file permissions: `chmod 600 postgres_password.txt`
 
 ## Adding New Secrets

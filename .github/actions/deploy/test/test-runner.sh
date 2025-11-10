@@ -77,6 +77,7 @@ assert_contains() {
     fi
 }
 
+# Assert that a command returns a specific exit code
 assert_exit_code() {
     local expected_code="$1"
     local command="$2"
@@ -85,7 +86,8 @@ assert_exit_code() {
     TESTS_RUN=$((TESTS_RUN + 1))
     
     set +e
-    eval "$command" &>/dev/null
+    # Execute command safely using bash -c with proper quoting
+    bash -c "$command" &>/dev/null
     local actual_code=$?
     set -e
     

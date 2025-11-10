@@ -221,7 +221,7 @@ build_test_command() {
       cmd="${cmd} 'apps/api/**/*.{test,spec}.{js,mjs,ts,tsx}'"
       ;;
     frontend)
-      cmd="${cmd} 'apps/frontend/**/*.{test,spec}.{js,mjs,ts,tsx}'"
+      cmd="${cmd} 'apps/web/**/*.{test,spec}.{js,mjs,ts,tsx}'"
       ;;
     shared)
       cmd="${cmd} 'libs/shared/**/*.{test,spec}.{js,mjs,ts,tsx}'"
@@ -284,9 +284,10 @@ execute_tests() {
   local start_time
   start_time=$(date +%s)
   
-  # Execute with timeout
+  # Execute with timeout using eval to properly expand the command
+  # Note: test_command is constructed entirely from validated inputs above
   local exit_code=0
-  if timeout "${timeout_seconds}s" bash -c "${test_command}"; then
+  if timeout "${timeout_seconds}s" eval "${test_command}"; then
     exit_code=0
   else
     exit_code=$?

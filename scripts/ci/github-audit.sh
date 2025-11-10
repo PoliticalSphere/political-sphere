@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # =============================================================================
-# GitHub Workflows & Actions Audit Script v1.3.0
+# GitHub Workflows & Actions Audit Script v1.4.0
 # =============================================================================
 #
 # Comprehensive validation for GitHub Actions workflows including:
@@ -66,6 +66,7 @@ SKIP_ACTIONLINT="${SKIP_ACTIONLINT:-false}"
 SKIP_YAMLLINT="${SKIP_YAMLLINT:-false}"
 SKIP_SECRET_SCAN="${SKIP_SECRET_SCAN:-false}"
 OUTPUT_DIR="${OUTPUT_DIR:-${PROJECT_ROOT}/github-audit}"
+CACHE_DIR="${CACHE_DIR:-${OUTPUT_DIR}/.cache}"
 FAIL_ON_WARNINGS="${FAIL_ON_WARNINGS:-false}"
 VERBOSE="${VERBOSE:-false}"
 CONFIG_FILE="${CONFIG_FILE:-}"
@@ -74,6 +75,12 @@ LOG_FORMAT="${LOG_FORMAT:-human}"
 GITLEAKS_SCOPE="${GITLEAKS_SCOPE:-$GITHUB_DIR}"
 GITLEAKS_CONFIG="${GITLEAKS_CONFIG:-}"
 GITLEAKS_ARGS="${GITLEAKS_ARGS:-}"
+
+# Validate log format
+case "$LOG_FORMAT" in
+    human|json|sarif) ;;
+    *) log_critical "LOG_FORMAT must be 'human', 'json', or 'sarif', got: $LOG_FORMAT"; exit 3 ;;
+esac
 
 # Color and box drawing detection with NO_COLOR support
 if [[ "${NO_COLOR:-}" == "true" ]] || [[ ! -t 1 ]]; then
@@ -138,8 +145,9 @@ INFO_COUNT=0
 PASS_COUNT=0
 AUTO_FIXED_COUNT=0
 
-# Findings arrays
+# Findings arrays and caching
 declare -a FINDINGS
+declare -A FILE_CACHE  # Cache for file contents to avoid repeated reads
 
 # Backup directory for auto-fixes
 BACKUP_DIR="${OUTPUT_DIR}/backups/$(date +%Y%m%d_%H%M%S)"
@@ -298,6 +306,9 @@ setup_environment() {
 
     # Create output directory
     mkdir -p "$OUTPUT_DIR"
+
+    # Create cache directory
+    mkdir -p "$CACHE_DIR"
 
     # Initialize auto-fix log
     if [[ "$AUTO_FIX" == "true" ]]; then
@@ -623,6 +634,9 @@ check_security_best_practices() {
         local filename=$(basename "$workflow_file")
         log_info "Checking security for: $filename"
 
+        # Cache file content for performance
+        cache_file_content "$workflow_file"
+
         check_pull_request_target "$workflow_file"
         check_script_injection "$workflow_file"
         check_hardcoded_credentials "$workflow_file"
@@ -632,8 +646,25 @@ check_security_best_practices() {
         check_action_pinning "$workflow_file"
         check_checkout_persist_credentials "$workflow_file"
         check_env_injection "$workflow_file"
+        check_reusable_workflows "$workflow_file"
+        check_composite_actions "$workflow_file"
+        check_environment_protection "$workflow_file"
 
     done < <(find "$WORKFLOWS_DIR" \( -name "*.yml" -o -name "*.yaml" \) -print0 2>/dev/null)
+}
+
+# Cache file content to avoid repeated reads
+cache_file_content() {
+    local file="$1"
+    if [[ -z "${FILE_CACHE[$file]}" ]]; then
+        FILE_CACHE["$file"]=$(cat "$file")
+    fi
+}
+
+# Get cached file content
+get_cached_content() {
+    local file="$1"
+    echo "${FILE_CACHE["$file"]}"
 }
 
 check_env_injection() {
@@ -852,6 +883,92 @@ check_checkout_persist_credentials() {
     if grep -A5 "uses:.*actions/checkout" "$workflow_file" | grep -q "persist-credentials: true"; then
         log_medium "$filename: checkout action persists credentials (security risk)"
         add_finding "medium" "SEC-007" "Disable persist-credentials in checkout action unless required" "$workflow_file" 0
+    fi
+}
+
+check_reusable_workflows() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    # Check for workflow_call triggers (reusable workflows)
+    if grep -q "workflow_call:" "$workflow_file"; then
+        log_pass "$filename: Defines reusable workflow (workflow_call)"
+
+        # Check for proper input validation in reusable workflows
+        if ! grep -q "inputs:" "$workflow_file"; then
+            log_medium "$filename: Reusable workflow missing inputs definition"
+            add_finding "medium" "REUSABLE-001" "Reusable workflow should define inputs" "$workflow_file" 0
+        fi
+
+        # Check for secrets definition
+        if ! grep -q "secrets:" "$workflow_file"; then
+            log_info "$filename: Consider defining secrets for reusable workflow"
+            add_finding "info" "REUSABLE-002" "Reusable workflow may need secrets definition" "$workflow_file" 0
+        fi
+    fi
+
+    # Check for uses of reusable workflows
+    if grep -q "uses:.*\.github/workflows/" "$workflow_file"; then
+        log_pass "$filename: Uses reusable workflows"
+
+        # Check if workflow_call is in triggers
+        if ! grep -q "workflow_call:" "$workflow_file"; then
+            log_high "$filename: Uses reusable workflows but missing workflow_call trigger"
+            add_finding "high" "REUSABLE-003" "Workflow using reusable workflows must have workflow_call trigger" "$workflow_file" 0
+        fi
+    fi
+}
+
+check_composite_actions() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    # Check for composite action usage (local actions)
+    if grep -q "uses:.*\./\.github/actions/" "$workflow_file"; then
+        log_pass "$filename: Uses local composite actions"
+
+        # Check if composite action directory exists
+        local action_paths
+        action_paths=$(grep -oE "uses:\s*\./\.github/actions/[^@]+" "$workflow_file" | sed 's/uses:\s*//' | sort -u)
+
+        while IFS= read -r action_path; do
+            local full_path="${GITHUB_DIR}/actions/${action_path#./.github/actions/}"
+            if [[ ! -d "$full_path" ]]; then
+                log_high "$filename: References non-existent composite action: $action_path"
+                add_finding "high" "COMPOSITE-001" "Composite action directory not found: $action_path" "$workflow_file" 0
+            else
+                # Check for action.yml in composite action directory
+                if [[ ! -f "${full_path}/action.yml" && ! -f "${full_path}/action.yaml" ]]; then
+                    log_high "$filename: Composite action missing action.yml: $action_path"
+                    add_finding "high" "COMPOSITE-002" "Composite action missing action.yml file: $action_path" "$workflow_file" 0
+                fi
+            fi
+        done <<< "$action_paths"
+    fi
+}
+
+check_environment_protection() {
+    local workflow_file="$1"
+    local filename=$(basename "$workflow_file")
+
+    # Check for environment targeting
+    if grep -q "environment:" "$workflow_file"; then
+        log_pass "$filename: Uses environment protection"
+
+        # Check for required reviewers on environments
+        local env_lines
+        env_lines=$(grep -n "environment:" "$workflow_file")
+
+        while IFS=: read -r line_num env_line; do
+            # Check if environment has protection rules (this is a basic check)
+            local env_name
+            env_name=$(echo "$env_line" | sed 's/.*environment:\s*//' | tr -d ' ')
+
+            if [[ -n "$env_name" ]]; then
+                log_info "$filename: Targets environment '$env_name' (verify protection rules in repository settings)"
+                add_finding "info" "ENV-001" "Environment '$env_name' targeted - ensure protection rules are configured" "$workflow_file" "$line_num"
+            fi
+        done <<< "$env_lines"
     fi
 }
 
@@ -1098,6 +1215,11 @@ apply_auto_fixes() {
 generate_reports() {
     log_section "Phase 10: Report Generation"
 
+    # Generate SARIF report if requested
+    if [[ "$LOG_FORMAT" == "sarif" ]]; then
+        generate_sarif_report
+    fi
+
     # Generate JSON report using jq if available for safer JSON generation
     local json_report="${OUTPUT_DIR}/github-audit-results.json"
 
@@ -1111,7 +1233,7 @@ generate_reports() {
 
         jq -n \
             --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
-            --arg version "1.3.0" \
+            --arg version "1.4.0" \
             --argjson critical "$CRITICAL_COUNT" \
             --argjson high "$HIGH_COUNT" \
             --argjson medium "$MEDIUM_COUNT" \
@@ -1175,7 +1297,7 @@ EOF
     {
         printf 'GitHub Workflows & Actions Audit Summary\n'
         printf 'Generated: %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)"
-        printf 'Version: 1.3.0\n'
+        printf 'Version: 1.4.0\n'
         printf '================================================================================\n\n'
         printf 'Findings Summary:\n'
         printf '  Critical: %d\n' "$CRITICAL_COUNT"
@@ -1196,6 +1318,123 @@ EOF
     } > "${OUTPUT_DIR}/summary.txt"
 
     log_pass "Summary report generated: ${OUTPUT_DIR}/summary.txt"
+
+    # Generate JUnit XML report for CI integration
+    generate_junit_report
+}
+
+# Generate SARIF report for GitHub Security tab integration
+generate_sarif_report() {
+    local sarif_report="${OUTPUT_DIR}/github-audit-results.sarif"
+
+    if command -v jq &> /dev/null; then
+        # Convert findings to SARIF format
+        local sarif_findings="[]"
+        if [[ ${#FINDINGS[@]} -gt 0 ]]; then
+            # Map severity levels to SARIF levels
+            local severity_mapping='{
+                "critical": "error",
+                "high": "error",
+                "medium": "warning",
+                "low": "note",
+                "info": "note"
+            }'
+
+            sarif_findings=$(printf '%s\n' "${FINDINGS[@]}" | jq -R -s '
+                split("\n") | map(select(. != "")) | map(fromjson) |
+                map({
+                    "ruleId": .code,
+                    "level": (.severity as $sev | $severity_mapping[$sev] // "note"),
+                    "message": {
+                        "text": .message
+                    },
+                    "locations": [{
+                        "physicalLocation": {
+                            "artifactLocation": {
+                                "uri": (.file | sub("'"${PROJECT_ROOT}"'"; ""))
+                            },
+                            "region": {
+                                "startLine": .line
+                            }
+                        }
+                    }]
+                })' --arg PROJECT_ROOT "$PROJECT_ROOT" --argjson severity_mapping "$severity_mapping")
+        fi
+
+        jq -n \
+            --arg timestamp "$(date -u +%Y-%m-%dT%H:%M:%SZ)" \
+            --arg version "1.4.0" \
+            --argjson runs "[{
+                \"tool\": {
+                    \"driver\": {
+                        \"name\": \"GitHub Actions Audit\",
+                        \"version\": \"1.4.0\",
+                        \"informationUri\": \"https://github.com\",
+                        \"rules\": []
+                    }
+                },
+                \"results\": $sarif_findings
+            }]" \
+            '{
+                "$schema": "https://raw.githubusercontent.com/oasis-tcs/sarif-spec/master/Schemata/sarif-schema-2.1.0.json",
+                "version": "2.1.0",
+                "runs": $runs
+            }' > "$sarif_report"
+    else
+        log_info "jq not available, skipping SARIF report generation"
+        return 1
+    fi
+
+    log_pass "SARIF report generated: $sarif_report"
+}
+
+# Generate JUnit XML report for CI integration
+generate_junit_report() {
+    local junit_report="${OUTPUT_DIR}/github-audit-results.xml"
+
+    cat > "$junit_report" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="GitHub Actions Audit" tests="$((CRITICAL_COUNT + HIGH_COUNT + MEDIUM_COUNT + LOW_COUNT + INFO_COUNT + PASS_COUNT))" failures="$((CRITICAL_COUNT + HIGH_COUNT))" time="0">
+  <testsuite name="Security Checks" tests="$((CRITICAL_COUNT + HIGH_COUNT + MEDIUM_COUNT + LOW_COUNT + INFO_COUNT))" failures="$((CRITICAL_COUNT + HIGH_COUNT))" time="0">
+EOF
+
+    # Add test cases for each finding
+    for finding in "${FINDINGS[@]}"; do
+        local severity code message file line
+        severity=$(echo "$finding" | jq -r '.severity')
+        code=$(echo "$finding" | jq -r '.code')
+        message=$(echo "$finding" | jq -r '.message')
+        file=$(echo "$finding" | jq -r '.file')
+        line=$(echo "$finding" | jq -r '.line')
+
+        # Determine if this is a failure (critical/high severity)
+        local failure_tag=""
+        if [[ "$severity" == "critical" || "$severity" == "high" ]]; then
+            failure_tag="<failure message=\"$message\" type=\"$severity\"/>"
+        fi
+
+        cat >> "$junit_report" <<EOF
+    <testcase name="$code" classname="GitHub.Actions.Audit" time="0">
+      $failure_tag
+      <system-out>$message</system-out>
+      <system-err>File: $file, Line: $line</system-err>
+    </testcase>
+EOF
+    done
+
+    # Add pass count as successful tests
+    for ((i=1; i<=PASS_COUNT; i++)); do
+        cat >> "$junit_report" <<EOF
+    <testcase name="PASS-$i" classname="GitHub.Actions.Audit" time="0"/>
+EOF
+    done
+
+    cat >> "$junit_report" <<EOF
+  </testsuite>
+</testsuites>
+EOF
+
+    log_pass "JUnit XML report generated: $junit_report"
 }
 
 # -----------------------------------------------------------------------------
@@ -1207,7 +1446,7 @@ main() {
     for ((i=0; i<63; i++)); do box_line+="$BOX_H"; done
 
     printf '%s%s%s%s%s%s\n' "$BLUE" "$BOX_TL" "$box_line" "$BOX_TR" "$NC"
-    printf '%s%s       GitHub Workflows & Actions Security Audit v1.3.0        %s%s%s\n' "$BLUE" "$BOX_V" "$BOX_V" "$NC"
+    printf '%s%s       GitHub Workflows & Actions Security Audit v1.4.0        %s%s%s\n' "$BLUE" "$BOX_V" "$BOX_V" "$NC"
     printf '%s%s%s%s%s%s\n\n' "$BLUE" "$BOX_BL" "$box_line" "$BOX_BR" "$NC"
     
     setup_environment

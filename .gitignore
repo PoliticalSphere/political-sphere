@@ -88,3 +88,18 @@ ai/ai-knowledge/semantic-index-*.json
 .playwright/
 *.log
 .cache/
+
+# AI System - Write Tier (dynamic data)
+.ai/write/cache/*
+.ai/write/history/interaction-logs/*
+.ai/write/metrics/*.db
+.ai/write/evals/tmp/*
+
+# AI System - System Tier (large indexes)
+.ai/system/index/*.json
+.ai/system/index/*.vectors
+
+# Keep templates and schemas
+!.ai/write/history/templates/
+!.ai/write/cache/.gitkeep
+!.ai/write/evals/.gitkeep

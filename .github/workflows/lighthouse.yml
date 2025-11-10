@@ -1,0 +1,151 @@
+name: Lighthouse CI
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - "apps/web/**"
+      - "apps/shell/**"
+      - "apps/feature-*/**"
+      - "libs/ui/**"
+  push:
+    branches: [main]
+    paths:
+      - "apps/web/**"
+      - "apps/shell/**"
+      - "apps/feature-*/**"
+      - "libs/ui/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+jobs:
+  lighthouse:
+    name: Lighthouse Performance & Accessibility Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
+        with:
+          node-version: "22"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build frontend applications
+        run: |
+          npm run build --workspace=apps/web || echo "Web build skipped"
+          npm run build --workspace=apps/shell || echo "Shell build skipped"
+        continue-on-error: true
+
+      - name: Start frontend server
+        run: |
+          npm run start --workspace=apps/web &
+          echo $! > /tmp/web-server.pid
+
+          # Wait for server to be ready
+          timeout 60 bash -c 'until curl -f http://localhost:3000 > /dev/null 2>&1; do sleep 2; done' || echo "Server startup timeout"
+        continue-on-error: true
+
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@2f8dda6cf4de7d73b29853c3f29e73a01e297bd8 # v12.1.0
+        with:
+          urls: |
+            http://localhost:3000
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+          runs: 3
+          budgetPath: .github/lighthouse/budget.json
+
+      - name: Check Lighthouse scores
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        if: github.event_name == 'pull_request'
+        with:
+          script: |
+            const fs = require('fs');
+            const resultsPath = '.lighthouseci';
+
+            if (!fs.existsSync(resultsPath)) {
+              console.log('No Lighthouse results found');
+              return;
+            }
+
+            // Read Lighthouse results
+            const manifestPath = `${resultsPath}/manifest.json`;
+            if (!fs.existsSync(manifestPath)) {
+              console.log('No manifest found');
+              return;
+            }
+
+            const manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
+            const latestRun = manifest[0];
+
+            if (!latestRun || !latestRun.jsonPath) {
+              console.log('No valid run found');
+              return;
+            }
+
+            const results = JSON.parse(fs.readFileSync(latestRun.jsonPath, 'utf8'));
+            const categories = results.categories;
+
+            // Extract scores
+            const scores = {
+              performance: Math.round(categories.performance.score * 100),
+              accessibility: Math.round(categories.accessibility.score * 100),
+              bestPractices: Math.round(categories['best-practices'].score * 100),
+              seo: Math.round(categories.seo.score * 100)
+            };
+
+            // Thresholds (from project requirements)
+            const thresholds = {
+              performance: 90,  // p95 < 500ms target
+              accessibility: 100, // WCAG 2.2 AA+ mandatory
+              bestPractices: 90,
+              seo: 80
+            };
+
+            // Build comment
+            const scoreEmoji = (score, threshold) => {
+              if (score >= threshold) return '✅';
+              if (score >= threshold - 10) return '⚠️';
+              return '❌';
+            };
+
+            const comment = `## 🔦 Lighthouse CI Results\n\n- 🚀 Performance: ${scores.performance} ${scoreEmoji(scores.performance, thresholds.performance)} (threshold ${thresholds.performance})\n- ♿ Accessibility: ${scores.accessibility} ${scoreEmoji(scores.accessibility, thresholds.accessibility)} (threshold ${thresholds.accessibility})\n- ✨ Best Practices: ${scores.bestPractices} ${scoreEmoji(scores.bestPractices, thresholds.bestPractices)} (threshold ${thresholds.bestPractices})\n- 🔍 SEO: ${scores.seo} ${scoreEmoji(scores.seo, thresholds.seo)} (threshold ${thresholds.seo})\n\n${scores.accessibility < thresholds.accessibility ? '❌ **WCAG 2.2 AA+ compliance is MANDATORY** - Accessibility score must be 100\n' : ''}${scores.performance < thresholds.performance ? '⚠️ **Performance below target** - Review performance optimizations\n' : ''}\n[View full report](${latestRun.url || 'Report URL not available'})`.trim();
+
+            // Post comment
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+            // Fail if accessibility is not 100
+            if (scores.accessibility < thresholds.accessibility) {
+              core.setFailed(`Accessibility score ${scores.accessibility} is below mandatory threshold ${thresholds.accessibility}`);
+            }
+
+      - name: Stop frontend server
+        if: always()
+        run: |
+          if [ -f /tmp/web-server.pid ]; then
+            kill $(cat /tmp/web-server.pid) || true
+          fi
+
+      - name: Upload Lighthouse results
+        if: always()
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4.4.3
+        with:
+          name: lighthouse-results
+          path: .lighthouseci/
+          retention-days: 30

@@ -56,7 +56,7 @@
 
     "ui-components": {
       "description": "User interface components require good coverage",
-      "paths": ["libs/ui/**", "apps/frontend/src/components/**"],
+      "paths": ["libs/ui/**", "apps/web/src/components/**"],
       "thresholds": {
         "lines": 80,
         "functions": 80,

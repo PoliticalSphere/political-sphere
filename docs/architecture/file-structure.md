@@ -175,8 +175,13 @@ political-sphere/
 │   └── launch.json             # Debug configurations
 │
 ├── .devcontainer/              # Development container configuration
-│   ├── devcontainer.json       # Container definition
-│   └── docker-compose.yml      # Multi-container setup
+│   ├── devcontainer.json       # Container definition (VS Code Dev Containers)
+│   ├── docker-compose.yml      # Multi-container development setup
+│   ├── Dockerfile              # Custom dev container image
+│   ├── .dockerignore           # Docker build ignore patterns
+│   └── secrets/                # Development secrets (gitignored except .example)
+│       ├── README.md           # Secret management instructions
+│       └── *.example           # Example secret files (actual secrets gitignored)
 │
 ├── apps/                       # 🚀 Applications (see detailed structure below)
 ├── libs/                       # 📦 Shared libraries (see detailed structure below)

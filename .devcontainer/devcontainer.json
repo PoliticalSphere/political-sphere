@@ -1,6 +1,6 @@
 {
   "name": "Political Sphere Development",
-  "dockerComposeFile": ["docker-compose.dev.yml"],
+  "dockerComposeFile": ["docker-compose.yml"],
   "service": "dev",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "shutdownAction": "stopCompose",

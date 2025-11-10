@@ -27,6 +27,11 @@ Thumbs.db
 .env.local
 .env.*.local
 
+# DevContainer secrets (keep .example files)
+.devcontainer/secrets/*
+!.devcontainer/secrets/*.example
+!.devcontainer/secrets/README.md
+
 # Logs
 logs/
 *.log

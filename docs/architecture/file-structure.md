@@ -228,10 +228,10 @@ Applications are deployable units - services, web apps, tools, and infrastructur
 apps/
 ├── README.md                         # Apps directory overview
 │
-├── api/                              # 🌐 REST API Backend Service
-│   ├── src/
-│   │   ├── server.ts                 # Main server entry point
-│   │   ├── app.ts                    # Express app configuration
+├── **api/**                              # 🌐 REST API Backend Service
+│   ├── **src/**
+│   │   ├── **server.ts**                 # Main server entry point
+│   │   ├── **app.ts**                    # Express app configuration
 │   │   ├── config/                   # Configuration management
 │   │   │   ├── index.ts
 │   │   │   ├── database.config.ts
@@ -242,12 +242,12 @@ apps/
 │   │   │   ├── users.controller.ts
 │   │   │   ├── parties.controller.ts
 │   │   │   └── votes.controller.ts
-│   │   ├── middleware/               # Express middleware
+│   │   ├── **middleware/**               # Express middleware
 │   │   │   ├── auth.middleware.ts
 │   │   │   ├── error.middleware.ts
 │   │   │   ├── logging.middleware.ts
 │   │   │   └── validation.middleware.ts
-│   │   ├── routes/                   # Route definitions
+│   │   ├── **routes/**                   # Route definitions
 │   │   │   ├── index.ts
 │   │   │   ├── auth.routes.ts
 │   │   │   ├── users.routes.ts

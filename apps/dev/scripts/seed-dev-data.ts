@@ -106,8 +106,8 @@ async function seedUsers(db: DatabaseConnector, count: number): Promise<void> {
   ];
 
   for (let i = 0; i < count; i++) {
-    const firstName = firstNames[i % firstNames.length] ?? "John";
-    const lastName = lastNames[Math.floor(i / firstNames.length) % lastNames.length] ?? "Doe";
+    const firstName = firstNames[i % firstNames.length];
+    const lastName = lastNames[Math.floor(i / firstNames.length) % lastNames.length];
     const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}${i}@example.com`;
 
     await db.query(

@@ -12,71 +12,71 @@ class UserStore {
   }
 
   async create(data) {
-    if (typeof this.db.create === "function") {
+    if (typeof this.db.create === 'function') {
       return await this.db.create(data);
     }
-    throw new Error("create() not implemented on mock database");
+    throw new Error('create() not implemented on mock database');
   }
 
   async getById(id) {
-    if (typeof this.db.getById === "function") {
+    if (typeof this.db.getById === 'function') {
       return await this.db.getById(id);
     }
-    throw new Error("getById() not implemented on mock database");
+    throw new Error('getById() not implemented on mock database');
   }
 
   async getByEmail(email) {
-    if (typeof this.db.getByEmail === "function") {
+    if (typeof this.db.getByEmail === 'function') {
       return await this.db.getByEmail(email);
     }
-    throw new Error("getByEmail() not implemented on mock database");
+    throw new Error('getByEmail() not implemented on mock database');
   }
 
   async getByUsername(username) {
-    if (typeof this.db.getByUsername === "function") {
+    if (typeof this.db.getByUsername === 'function') {
       return await this.db.getByUsername(username);
     }
-    throw new Error("getByUsername() not implemented on mock database");
+    throw new Error('getByUsername() not implemented on mock database');
   }
 
   async getAll(filter = {}) {
-    if (typeof this.db.getAll === "function") {
+    if (typeof this.db.getAll === 'function') {
       return await this.db.getAll(filter);
     }
-    throw new Error("getAll() not implemented on mock database");
+    throw new Error('getAll() not implemented on mock database');
   }
 
   async update(id, data) {
-    if (typeof this.db.update === "function") {
+    if (typeof this.db.update === 'function') {
       return await this.db.update(id, data);
     }
-    throw new Error("update() not implemented on mock database");
+    throw new Error('update() not implemented on mock database');
   }
 
   async delete(id) {
-    if (typeof this.db.delete === "function") {
+    if (typeof this.db.delete === 'function') {
       return await this.db.delete(id);
     }
-    throw new Error("delete() not implemented on mock database");
+    throw new Error('delete() not implemented on mock database');
   }
 
   async getByRole(role) {
-    if (typeof this.db.getByRole === "function") {
+    if (typeof this.db.getByRole === 'function') {
       return await this.db.getByRole(role);
     }
-    throw new Error("getByRole() not implemented on mock database");
+    throw new Error('getByRole() not implemented on mock database');
   }
 
   validateUserData(data) {
     if (!data.email || !data.username) {
-      throw new Error("Missing required fields");
+      throw new Error('Missing required fields');
     }
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(data.email)) {
-      throw new Error("Invalid email format");
+      throw new Error('Invalid email format');
     }
     if (data.username && data.username.length < 3) {
-      throw new Error("Invalid username");
+      throw new Error('Invalid username');
     }
   }
 }

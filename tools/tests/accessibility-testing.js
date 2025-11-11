@@ -5,7 +5,7 @@
  * Automated WCAG 2.1 AA compliance testing for frontend components
  */
 
-import fs from "fs/promises";
+import fs from 'fs/promises';
 
 class AccessibilityTesting {
   constructor() {
@@ -16,130 +16,130 @@ class AccessibilityTesting {
   }
 
   async initialize() {
-    console.log("♿ Initializing Accessibility Testing Framework...");
+    console.log('♿ Initializing Accessibility Testing Framework...');
 
     // Load WCAG guidelines and rules
     await this.loadWCAGRules();
 
     // Load existing test results
     try {
-      const resultsData = await fs.readFile("ai-learning/accessibility-test-results.json", "utf8");
+      const resultsData = await fs.readFile('ai-learning/accessibility-test-results.json', 'utf8');
       this.testResults = JSON.parse(resultsData);
     } catch (error) {
-      console.log("📊 No existing accessibility test results found, starting fresh...");
+      console.log('📊 No existing accessibility test results found, starting fresh...');
       this.testResults = [];
     }
   }
 
   async loadWCAGRules() {
-    console.log("📖 Loading WCAG 2.1 AA guidelines...");
+    console.log('📖 Loading WCAG 2.1 AA guidelines...');
 
     this.wcagRules = {
       // Perceivable
-      "1.1.1": {
-        principle: "Perceivable",
-        guideline: "Text Alternatives",
-        level: "A",
-        description: "Non-text content has text alternatives",
+      '1.1.1': {
+        principle: 'Perceivable',
+        guideline: 'Text Alternatives',
+        level: 'A',
+        description: 'Non-text content has text alternatives',
         automated: true,
-        checks: ["img-alt", "input-image-alt", "area-alt", "object-alt"],
+        checks: ['img-alt', 'input-image-alt', 'area-alt', 'object-alt'],
       },
-      "1.3.1": {
-        principle: "Perceivable",
-        guideline: "Info and Relationships",
-        level: "A",
-        description: "Information and relationships are conveyed through presentation or markup",
+      '1.3.1': {
+        principle: 'Perceivable',
+        guideline: 'Info and Relationships',
+        level: 'A',
+        description: 'Information and relationships are conveyed through presentation or markup',
         automated: true,
-        checks: ["semantic-markup", "heading-order", "list-structure"],
+        checks: ['semantic-markup', 'heading-order', 'list-structure'],
       },
-      "1.4.3": {
-        principle: "Perceivable",
-        guideline: "Contrast (Minimum)",
-        level: "AA",
-        description: "Text and images of text have contrast ratio of at least 4.5:1",
+      '1.4.3': {
+        principle: 'Perceivable',
+        guideline: 'Contrast (Minimum)',
+        level: 'AA',
+        description: 'Text and images of text have contrast ratio of at least 4.5:1',
         automated: true,
-        checks: ["color-contrast"],
+        checks: ['color-contrast'],
       },
-      "1.4.6": {
-        principle: "Perceivable",
-        guideline: "Contrast (Enhanced)",
-        level: "AAA",
-        description: "Text and images of text have contrast ratio of at least 7:1",
+      '1.4.6': {
+        principle: 'Perceivable',
+        guideline: 'Contrast (Enhanced)',
+        level: 'AAA',
+        description: 'Text and images of text have contrast ratio of at least 7:1',
         automated: true,
-        checks: ["color-contrast-enhanced"],
+        checks: ['color-contrast-enhanced'],
       },
 
       // Operable
-      "2.1.1": {
-        principle: "Operable",
-        guideline: "Keyboard",
-        level: "A",
-        description: "All functionality is available from a keyboard",
+      '2.1.1': {
+        principle: 'Operable',
+        guideline: 'Keyboard',
+        level: 'A',
+        description: 'All functionality is available from a keyboard',
         automated: false,
-        checks: ["keyboard-navigation", "keyboard-traps", "focus-order"],
+        checks: ['keyboard-navigation', 'keyboard-traps', 'focus-order'],
       },
-      "2.4.1": {
-        principle: "Operable",
-        guideline: "Bypass Blocks",
-        level: "A",
-        description: "A mechanism is available to bypass blocks of content",
+      '2.4.1': {
+        principle: 'Operable',
+        guideline: 'Bypass Blocks',
+        level: 'A',
+        description: 'A mechanism is available to bypass blocks of content',
         automated: true,
-        checks: ["skip-links"],
+        checks: ['skip-links'],
       },
-      "2.4.6": {
-        principle: "Operable",
-        guideline: "Headings and Labels",
-        level: "AA",
-        description: "Headings and labels describe topic or purpose",
+      '2.4.6': {
+        principle: 'Operable',
+        guideline: 'Headings and Labels',
+        level: 'AA',
+        description: 'Headings and labels describe topic or purpose',
         automated: true,
-        checks: ["heading-descriptive", "label-descriptive"],
+        checks: ['heading-descriptive', 'label-descriptive'],
       },
 
       // Understandable
-      "3.1.1": {
-        principle: "Understandable",
-        guideline: "Language of Page",
-        level: "A",
-        description: "The default human language of each page is identified",
+      '3.1.1': {
+        principle: 'Understandable',
+        guideline: 'Language of Page',
+        level: 'A',
+        description: 'The default human language of each page is identified',
         automated: true,
-        checks: ["html-lang", "lang-attribute"],
+        checks: ['html-lang', 'lang-attribute'],
       },
-      "3.3.1": {
-        principle: "Understandable",
-        guideline: "Error Identification",
-        level: "A",
+      '3.3.1': {
+        principle: 'Understandable',
+        guideline: 'Error Identification',
+        level: 'A',
         description:
-          "If an input error is automatically detected, the item is identified and described",
+          'If an input error is automatically detected, the item is identified and described',
         automated: false,
-        checks: ["error-identification", "error-description"],
+        checks: ['error-identification', 'error-description'],
       },
-      "3.3.2": {
-        principle: "Understandable",
-        guideline: "Labels or Instructions",
-        level: "A",
-        description: "Labels or instructions are provided when content requires user input",
+      '3.3.2': {
+        principle: 'Understandable',
+        guideline: 'Labels or Instructions',
+        level: 'A',
+        description: 'Labels or instructions are provided when content requires user input',
         automated: true,
-        checks: ["label-associated", "fieldset-legend"],
+        checks: ['label-associated', 'fieldset-legend'],
       },
 
       // Robust
-      "4.1.1": {
-        principle: "Robust",
-        guideline: "Parsing",
-        level: "A",
+      '4.1.1': {
+        principle: 'Robust',
+        guideline: 'Parsing',
+        level: 'A',
         description:
-          "In content implemented using markup languages, elements have complete start and end tags",
+          'In content implemented using markup languages, elements have complete start and end tags',
         automated: true,
-        checks: ["valid-html", "duplicate-ids", "unique-ids"],
+        checks: ['valid-html', 'duplicate-ids', 'unique-ids'],
       },
-      "4.1.2": {
-        principle: "Robust",
-        guideline: "Name, Role, Value",
-        level: "A",
+      '4.1.2': {
+        principle: 'Robust',
+        guideline: 'Name, Role, Value',
+        level: 'A',
         description:
-          "For all user interface components, the name and role can be programmatically determined",
+          'For all user interface components, the name and role can be programmatically determined',
         automated: true,
-        checks: ["aria-roles", "aria-labels", "form-controls"],
+        checks: ['aria-roles', 'aria-labels', 'form-controls'],
       },
     };
 
@@ -148,85 +148,85 @@ class AccessibilityTesting {
 
   createComponentTestSuite() {
     return {
-      name: "frontend-component-accessibility",
-      description: "Test accessibility compliance of React/Vue components",
+      name: 'frontend-component-accessibility',
+      description: 'Test accessibility compliance of React/Vue components',
       components: [
         {
-          name: "Button",
-          file: "src/components/Button.tsx",
-          tests: ["keyboard-navigation", "aria-labels", "color-contrast", "focus-visible"],
+          name: 'Button',
+          file: 'src/components/Button.tsx',
+          tests: ['keyboard-navigation', 'aria-labels', 'color-contrast', 'focus-visible'],
         },
         {
-          name: "Modal",
-          file: "src/components/Modal.tsx",
-          tests: ["focus-trap", "aria-modal", "escape-key", "backdrop-click"],
+          name: 'Modal',
+          file: 'src/components/Modal.tsx',
+          tests: ['focus-trap', 'aria-modal', 'escape-key', 'backdrop-click'],
         },
         {
-          name: "Form",
-          file: "src/components/Form.tsx",
-          tests: ["label-association", "error-messages", "required-fields", "input-types"],
+          name: 'Form',
+          file: 'src/components/Form.tsx',
+          tests: ['label-association', 'error-messages', 'required-fields', 'input-types'],
         },
         {
-          name: "Navigation",
-          file: "src/components/Navigation.tsx",
-          tests: ["skip-links", "heading-structure", "aria-current", "keyboard-navigation"],
+          name: 'Navigation',
+          file: 'src/components/Navigation.tsx',
+          tests: ['skip-links', 'heading-structure', 'aria-current', 'keyboard-navigation'],
         },
         {
-          name: "DataTable",
-          file: "src/components/DataTable.tsx",
-          tests: ["table-headers", "aria-sort", "keyboard-navigation", "screen-reader-support"],
+          name: 'DataTable',
+          file: 'src/components/DataTable.tsx',
+          tests: ['table-headers', 'aria-sort', 'keyboard-navigation', 'screen-reader-support'],
         },
       ],
       globalTests: [
-        "html-lang",
-        "title-element",
-        "heading-hierarchy",
-        "color-contrast",
-        "alt-text-images",
-        "semantic-markup",
+        'html-lang',
+        'title-element',
+        'heading-hierarchy',
+        'color-contrast',
+        'alt-text-images',
+        'semantic-markup',
       ],
     };
   }
 
   createPageTestSuite() {
     return {
-      name: "page-accessibility",
-      description: "Test accessibility compliance of complete pages",
+      name: 'page-accessibility',
+      description: 'Test accessibility compliance of complete pages',
       pages: [
         {
-          name: "Home Page",
-          url: "/",
+          name: 'Home Page',
+          url: '/',
           tests: [
-            "heading-hierarchy",
-            "skip-links",
-            "color-contrast",
-            "keyboard-navigation",
-            "screen-reader-content",
+            'heading-hierarchy',
+            'skip-links',
+            'color-contrast',
+            'keyboard-navigation',
+            'screen-reader-content',
           ],
         },
         {
-          name: "User Profile",
-          url: "/profile",
-          tests: ["form-accessibility", "aria-live-regions", "focus-management", "error-handling"],
+          name: 'User Profile',
+          url: '/profile',
+          tests: ['form-accessibility', 'aria-live-regions', 'focus-management', 'error-handling'],
         },
         {
-          name: "Search Results",
-          url: "/search",
+          name: 'Search Results',
+          url: '/search',
           tests: [
-            "aria-live-regions",
-            "result-count",
-            "keyboard-navigation",
-            "screen-reader-announcements",
+            'aria-live-regions',
+            'result-count',
+            'keyboard-navigation',
+            'screen-reader-announcements',
           ],
         },
         {
-          name: "Admin Dashboard",
-          url: "/admin",
+          name: 'Admin Dashboard',
+          url: '/admin',
           tests: [
-            "data-table-accessibility",
-            "complex-interactions",
-            "aria-expanded",
-            "role-based-content",
+            'data-table-accessibility',
+            'complex-interactions',
+            'aria-expanded',
+            'role-based-content',
           ],
         },
       ],
@@ -234,7 +234,7 @@ class AccessibilityTesting {
   }
 
   async runAccessibilityTests() {
-    console.log("🧪 Running accessibility tests...");
+    console.log('🧪 Running accessibility tests...');
 
     const testSuite = {
       components: this.createComponentTestSuite(),
@@ -243,7 +243,7 @@ class AccessibilityTesting {
 
     const results = {
       timestamp: new Date().toISOString(),
-      testSuite: "wcag-2-1-aa-compliance",
+      testSuite: 'wcag-2-1-aa-compliance',
       components: [],
       pages: [],
       summary: {
@@ -300,7 +300,7 @@ class AccessibilityTesting {
         result.failedTests++;
         result.violations.push({
           rule: test,
-          impact: testResult.impact || "moderate",
+          impact: testResult.impact || 'moderate',
           description: testResult.description,
           suggestion: testResult.suggestion,
           wcag: this.mapTestToWCAG(test),
@@ -316,53 +316,53 @@ class AccessibilityTesting {
   async runComponentTest(component, test) {
     // Simulate various accessibility tests
     const testResults = {
-      "keyboard-navigation": {
+      'keyboard-navigation': {
         passed: Math.random() > 0.2,
-        impact: "critical",
-        description: "Component must be fully navigable with keyboard",
-        suggestion: "Add tabindex and keyboard event handlers",
+        impact: 'critical',
+        description: 'Component must be fully navigable with keyboard',
+        suggestion: 'Add tabindex and keyboard event handlers',
       },
-      "aria-labels": {
+      'aria-labels': {
         passed: Math.random() > 0.15,
-        impact: "serious",
-        description: "Interactive elements need accessible labels",
-        suggestion: "Add aria-label or aria-labelledby attributes",
+        impact: 'serious',
+        description: 'Interactive elements need accessible labels',
+        suggestion: 'Add aria-label or aria-labelledby attributes',
       },
-      "color-contrast": {
+      'color-contrast': {
         passed: Math.random() > 0.1,
-        impact: "serious",
-        description: "Text contrast ratio must be at least 4.5:1",
-        suggestion: "Adjust text and background colors",
+        impact: 'serious',
+        description: 'Text contrast ratio must be at least 4.5:1',
+        suggestion: 'Adjust text and background colors',
       },
-      "focus-visible": {
+      'focus-visible': {
         passed: Math.random() > 0.25,
-        impact: "moderate",
-        description: "Focus indicators must be clearly visible",
-        suggestion: "Add visible focus styles",
+        impact: 'moderate',
+        description: 'Focus indicators must be clearly visible',
+        suggestion: 'Add visible focus styles',
       },
-      "focus-trap": {
+      'focus-trap': {
         passed: Math.random() > 0.3,
-        impact: "critical",
-        description: "Modal dialogs must trap focus",
-        suggestion: "Implement focus trap functionality",
+        impact: 'critical',
+        description: 'Modal dialogs must trap focus',
+        suggestion: 'Implement focus trap functionality',
       },
-      "aria-modal": {
+      'aria-modal': {
         passed: Math.random() > 0.2,
-        impact: "moderate",
-        description: "Modal dialogs need aria-modal attribute",
+        impact: 'moderate',
+        description: 'Modal dialogs need aria-modal attribute',
         suggestion: 'Add aria-modal="true" to modal container',
       },
-      "label-association": {
+      'label-association': {
         passed: Math.random() > 0.15,
-        impact: "critical",
-        description: "Form inputs must have associated labels",
-        suggestion: "Use <label> elements or aria-label attributes",
+        impact: 'critical',
+        description: 'Form inputs must have associated labels',
+        suggestion: 'Use <label> elements or aria-label attributes',
       },
-      "error-messages": {
+      'error-messages': {
         passed: Math.random() > 0.2,
-        impact: "serious",
-        description: "Error messages must be programmatically associated",
-        suggestion: "Use aria-describedby for error messages",
+        impact: 'serious',
+        description: 'Error messages must be programmatically associated',
+        suggestion: 'Use aria-describedby for error messages',
       },
     };
 
@@ -389,7 +389,7 @@ class AccessibilityTesting {
         result.failedTests++;
         result.violations.push({
           rule: test,
-          impact: testResult.impact || "moderate",
+          impact: testResult.impact || 'moderate',
           description: testResult.description,
           suggestion: testResult.suggestion,
           wcag: this.mapTestToWCAG(test),
@@ -405,53 +405,53 @@ class AccessibilityTesting {
   async runPageTest(page, test) {
     // Simulate page-level accessibility tests
     const testResults = {
-      "heading-hierarchy": {
+      'heading-hierarchy': {
         passed: Math.random() > 0.2,
-        impact: "moderate",
-        description: "Heading structure must be logical and hierarchical",
-        suggestion: "Ensure proper h1-h6 hierarchy without skipping levels",
+        impact: 'moderate',
+        description: 'Heading structure must be logical and hierarchical',
+        suggestion: 'Ensure proper h1-h6 hierarchy without skipping levels',
       },
-      "skip-links": {
+      'skip-links': {
         passed: Math.random() > 0.3,
-        impact: "moderate",
-        description: "Skip links must be provided for keyboard navigation",
-        suggestion: "Add skip links at the beginning of the page",
+        impact: 'moderate',
+        description: 'Skip links must be provided for keyboard navigation',
+        suggestion: 'Add skip links at the beginning of the page',
       },
-      "color-contrast": {
+      'color-contrast': {
         passed: Math.random() > 0.15,
-        impact: "serious",
-        description: "All text must have sufficient contrast",
-        suggestion: "Audit and fix color contrast ratios",
+        impact: 'serious',
+        description: 'All text must have sufficient contrast',
+        suggestion: 'Audit and fix color contrast ratios',
       },
-      "keyboard-navigation": {
+      'keyboard-navigation': {
         passed: Math.random() > 0.25,
-        impact: "critical",
-        description: "All interactive elements must be keyboard accessible",
-        suggestion: "Ensure tab order is logical and all elements are reachable",
+        impact: 'critical',
+        description: 'All interactive elements must be keyboard accessible',
+        suggestion: 'Ensure tab order is logical and all elements are reachable',
       },
-      "screen-reader-content": {
+      'screen-reader-content': {
         passed: Math.random() > 0.2,
-        impact: "moderate",
-        description: "Content must be accessible to screen readers",
-        suggestion: "Add ARIA labels and ensure semantic markup",
+        impact: 'moderate',
+        description: 'Content must be accessible to screen readers',
+        suggestion: 'Add ARIA labels and ensure semantic markup',
       },
-      "form-accessibility": {
+      'form-accessibility': {
         passed: Math.random() > 0.2,
-        impact: "critical",
-        description: "Forms must be fully accessible",
-        suggestion: "Add labels, error messages, and proper form structure",
+        impact: 'critical',
+        description: 'Forms must be fully accessible',
+        suggestion: 'Add labels, error messages, and proper form structure',
       },
-      "aria-live-regions": {
+      'aria-live-regions': {
         passed: Math.random() > 0.4,
-        impact: "moderate",
-        description: "Dynamic content changes must be announced",
-        suggestion: "Use aria-live regions for dynamic content",
+        impact: 'moderate',
+        description: 'Dynamic content changes must be announced',
+        suggestion: 'Use aria-live regions for dynamic content',
       },
-      "data-table-accessibility": {
+      'data-table-accessibility': {
         passed: Math.random() > 0.25,
-        impact: "serious",
-        description: "Data tables must have proper headers and structure",
-        suggestion: "Use <th> elements and scope attributes",
+        impact: 'serious',
+        description: 'Data tables must have proper headers and structure',
+        suggestion: 'Use <th> elements and scope attributes',
       },
     };
 
@@ -460,21 +460,21 @@ class AccessibilityTesting {
 
   mapTestToWCAG(test) {
     const mapping = {
-      "keyboard-navigation": "2.1.1",
-      "aria-labels": "4.1.2",
-      "color-contrast": "1.4.3",
-      "focus-visible": "2.4.7",
-      "focus-trap": "2.1.2",
-      "aria-modal": "4.1.2",
-      "label-association": "3.3.2",
-      "error-messages": "3.3.1",
-      "heading-hierarchy": "1.3.1",
-      "skip-links": "2.4.1",
-      "html-lang": "3.1.1",
-      "semantic-markup": "1.3.1",
+      'keyboard-navigation': '2.1.1',
+      'aria-labels': '4.1.2',
+      'color-contrast': '1.4.3',
+      'focus-visible': '2.4.7',
+      'focus-trap': '2.1.2',
+      'aria-modal': '4.1.2',
+      'label-association': '3.3.2',
+      'error-messages': '3.3.1',
+      'heading-hierarchy': '1.3.1',
+      'skip-links': '2.4.1',
+      'html-lang': '3.1.1',
+      'semantic-markup': '1.3.1',
     };
 
-    return mapping[test] || "Unknown";
+    return mapping[test] || 'Unknown';
   }
 
   calculateSummary(components, pages) {
@@ -490,12 +490,12 @@ class AccessibilityTesting {
     // Count violations from components and pages
     const allResults = [...components, ...pages];
 
-    allResults.forEach((result) => {
+    allResults.forEach(result => {
       summary.totalViolations += result.violations.length;
 
-      result.violations.forEach((violation) => {
-        if (violation.impact === "critical") summary.criticalIssues++;
-        else if (violation.impact === "serious") summary.seriousIssues++;
+      result.violations.forEach(violation => {
+        if (violation.impact === 'critical') summary.criticalIssues++;
+        else if (violation.impact === 'serious') summary.seriousIssues++;
         else summary.moderateIssues++;
       });
 
@@ -512,22 +512,22 @@ class AccessibilityTesting {
   }
 
   async generateAccessibilityReport() {
-    console.log("📋 Generating accessibility compliance report...");
+    console.log('📋 Generating accessibility compliance report...');
 
     const latestResults = this.testResults[this.testResults.length - 1];
 
     const report = {
       timestamp: new Date().toISOString(),
       compliance: {
-        wcagVersion: "2.1",
-        level: "AA",
+        wcagVersion: '2.1',
+        level: 'AA',
         overallScore: latestResults.summary.aaCompliance,
         status:
           latestResults.summary.aaCompliance >= 95
-            ? "compliant"
+            ? 'compliant'
             : latestResults.summary.aaCompliance >= 85
-              ? "mostly-compliant"
-              : "non-compliant",
+              ? 'mostly-compliant'
+              : 'non-compliant',
       },
       violations: {
         total: latestResults.summary.totalViolations,
@@ -541,8 +541,8 @@ class AccessibilityTesting {
       remediation: this.generateRemediationPlan(latestResults),
     };
 
-    await fs.mkdir("ai-learning", { recursive: true });
-    await fs.writeFile("ai-learning/accessibility-report.json", JSON.stringify(report, null, 2));
+    await fs.mkdir('ai-learning', { recursive: true });
+    await fs.writeFile('ai-learning/accessibility-report.json', JSON.stringify(report, null, 2));
 
     return report;
   }
@@ -552,33 +552,33 @@ class AccessibilityTesting {
 
     if (results.summary.criticalIssues > 0) {
       recommendations.push({
-        priority: "critical",
-        category: "accessibility",
-        action: "Fix critical accessibility violations immediately",
+        priority: 'critical',
+        category: 'accessibility',
+        action: 'Fix critical accessibility violations immediately',
         impact: `${results.summary.criticalIssues} critical issues affecting core functionality`,
-        wcag: "Multiple",
+        wcag: 'Multiple',
       });
     }
 
     if (results.summary.aaCompliance < 95) {
       recommendations.push({
-        priority: "high",
-        category: "compliance",
-        action: "Achieve WCAG 2.1 AA compliance across all components",
+        priority: 'high',
+        category: 'compliance',
+        action: 'Achieve WCAG 2.1 AA compliance across all components',
         impact: `Current compliance: ${results.summary.aaCompliance.toFixed(1)}%`,
-        wcag: "All",
+        wcag: 'All',
       });
     }
 
     // Component-specific recommendations
-    results.components.forEach((component) => {
+    results.components.forEach(component => {
       if (component.score < 80) {
         recommendations.push({
-          priority: "high",
-          category: "component",
+          priority: 'high',
+          category: 'component',
           action: `Improve accessibility of ${component.name} component`,
           impact: `Score: ${component.score}/100`,
-          wcag: component.violations.map((v) => v.wcag).join(", "),
+          wcag: component.violations.map(v => v.wcag).join(', '),
         });
       }
     });
@@ -592,38 +592,38 @@ class AccessibilityTesting {
       shortTerm: [],
       longTerm: [],
       tools: [
-        "axe-core for automated testing",
-        "WAVE accessibility evaluation tool",
-        "Screen reader testing (NVDA, JAWS, VoiceOver)",
-        "Color contrast analyzers",
-        "Keyboard navigation testing",
+        'axe-core for automated testing',
+        'WAVE accessibility evaluation tool',
+        'Screen reader testing (NVDA, JAWS, VoiceOver)',
+        'Color contrast analyzers',
+        'Keyboard navigation testing',
       ],
     };
 
     // Immediate fixes (critical issues)
     if (results.summary.criticalIssues > 0) {
       plan.immediate.push(
-        "Fix keyboard navigation issues",
-        "Add missing form labels",
-        "Implement focus management for modals",
-        "Add ARIA labels for interactive elements",
+        'Fix keyboard navigation issues',
+        'Add missing form labels',
+        'Implement focus management for modals',
+        'Add ARIA labels for interactive elements'
       );
     }
 
     // Short-term improvements
     plan.shortTerm.push(
-      "Audit and fix color contrast issues",
-      "Implement proper heading hierarchy",
-      "Add skip links for navigation",
-      "Improve error message accessibility",
+      'Audit and fix color contrast issues',
+      'Implement proper heading hierarchy',
+      'Add skip links for navigation',
+      'Improve error message accessibility'
     );
 
     // Long-term goals
     plan.longTerm.push(
-      "Conduct regular accessibility audits",
-      "Train development team on accessibility best practices",
-      "Implement automated accessibility testing in CI/CD",
-      "Create accessibility guidelines documentation",
+      'Conduct regular accessibility audits',
+      'Train development team on accessibility best practices',
+      'Implement automated accessibility testing in CI/CD',
+      'Create accessibility guidelines documentation'
     );
 
     return plan;
@@ -637,12 +637,12 @@ class AccessibilityTesting {
       lastUpdated: new Date().toISOString(),
     };
 
-    await fs.mkdir("ai-learning", { recursive: true });
+    await fs.mkdir('ai-learning', { recursive: true });
     await fs.writeFile(
-      "ai-learning/accessibility-test-results.json",
-      JSON.stringify(this.testResults, null, 2),
+      'ai-learning/accessibility-test-results.json',
+      JSON.stringify(this.testResults, null, 2)
     );
-    await fs.writeFile("ai-learning/accessibility-state.json", JSON.stringify(state, null, 2));
+    await fs.writeFile('ai-learning/accessibility-state.json', JSON.stringify(state, null, 2));
   }
 
   async runAccessibilityAudit() {
@@ -658,14 +658,14 @@ class AccessibilityTesting {
       // Save results
       await this.saveResults();
 
-      console.log("✅ Accessibility audit completed");
+      console.log('✅ Accessibility audit completed');
       console.log(`📊 WCAG 2.1 AA Compliance: ${report.compliance.overallScore.toFixed(1)}%`);
       console.log(`🚨 Critical Issues: ${report.violations.critical}`);
       console.log(`⚠️ Serious Issues: ${report.violations.serious}`);
 
       return report;
     } catch (error) {
-      console.error("❌ Accessibility audit failed:", error);
+      console.error('❌ Accessibility audit failed:', error);
       throw error;
     }
   }
@@ -677,8 +677,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   accessibilityTesting
     .runAccessibilityAudit()
-    .then((report) => {
-      console.log("\n📋 Accessibility Audit Summary:");
+    .then(report => {
+      console.log('\n📋 Accessibility Audit Summary:');
       console.log(`Compliance Level: ${report.compliance.status.toUpperCase()}`);
       console.log(`Overall Score: ${report.compliance.overallScore.toFixed(1)}%`);
       console.log(`Total Violations: ${report.violations.total}`);
@@ -686,7 +686,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
       console.log(`Pages Tested: ${report.pages.length}`);
 
       if (report.recommendations.length > 0) {
-        console.log("\n💡 Key Recommendations:");
+        console.log('\n💡 Key Recommendations:');
         report.recommendations.slice(0, 5).forEach((rec, index) => {
           console.log(`${index + 1}. ${rec.action} (${rec.priority})`);
         });
@@ -694,8 +694,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
       process.exit(0);
     })
-    .catch((error) => {
-      console.error("Failed to run accessibility audit:", error);
+    .catch(error => {
+      console.error('Failed to run accessibility audit:', error);
       process.exit(1);
     });
 }

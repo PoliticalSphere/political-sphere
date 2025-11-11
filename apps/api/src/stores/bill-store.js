@@ -1,6 +1,3 @@
-const fs = require('fs').promises;
-const path = require('path');
-
 class BillStore {
   constructor(db, cache = null) {
     this.db = db;

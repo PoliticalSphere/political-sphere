@@ -7,7 +7,7 @@
  * @module jobs/data-cleanup
  */
 
-import type { DatabaseConnector } from "../connectors/database-connector.js";
+import type { DatabaseConnector } from '../connectors/database-connector.js';
 
 export interface CleanupConfig {
   retentionDays: number;
@@ -19,14 +19,14 @@ export interface CleanupConfig {
 export class DataCleanupJob {
   constructor(
     private readonly database: DatabaseConnector,
-    private readonly config: CleanupConfig,
+    private readonly config: CleanupConfig
   ) {}
 
   /**
    * Run the cleanup job
    */
   async run(): Promise<{ deleted: number; archived: number }> {
-    console.log("Starting data cleanup job...");
+    console.log('Starting data cleanup job...');
 
     let totalDeleted = 0;
     let totalArchived = 0;
@@ -37,7 +37,7 @@ export class DataCleanupJob {
       totalArchived += archived;
     }
 
-    console.log("Cleanup completed:", { totalDeleted, totalArchived });
+    console.log('Cleanup completed:', { totalDeleted, totalArchived });
 
     return { deleted: totalDeleted, archived: totalArchived };
   }
@@ -73,7 +73,7 @@ export class DataCleanupJob {
    */
   private async archiveRecords(tableName: string, cutoffDate: Date): Promise<number> {
     // TODO: Implement archiving to S3, file system, or archive database
-    console.log("Archiving records from", tableName, "before", cutoffDate);
+    console.log('Archiving records from', tableName, 'before', cutoffDate);
 
     const result = await this.database.query(`SELECT * FROM ${tableName} WHERE created_at < $1`, [
       cutoffDate,
@@ -81,7 +81,7 @@ export class DataCleanupJob {
 
     // Write to archive destination
     if (this.config.archiveDestination) {
-      console.log("Writing to archive:", this.config.archiveDestination);
+      console.log('Writing to archive:', this.config.archiveDestination);
       // TODO: Write archive file
     }
 
@@ -92,13 +92,13 @@ export class DataCleanupJob {
    * Optimize database tables
    */
   async optimize(): Promise<void> {
-    console.log("Optimizing database tables...");
+    console.log('Optimizing database tables...');
 
     for (const table of this.config.tables) {
       // TODO: Run database-specific optimization commands
       // PostgreSQL: VACUUM ANALYZE
       // MySQL: OPTIMIZE TABLE
-      console.log("Optimizing table:", table);
+      console.log('Optimizing table:', table);
       await this.database.query(`VACUUM ANALYZE ${table}`);
     }
   }
@@ -107,7 +107,7 @@ export class DataCleanupJob {
    * Remove duplicate records
    */
   async deduplicateTable(tableName: string, uniqueColumns: string[]): Promise<number> {
-    const columns = uniqueColumns.join(", ");
+    const columns = uniqueColumns.join(', ');
 
     // TODO: Implement deduplication logic based on unique columns
     console.log(`Deduplicating ${tableName} on columns: ${columns}`);

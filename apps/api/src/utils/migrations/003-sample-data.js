@@ -5,29 +5,29 @@
  * @see docs/architecture/decisions/adr-0001-database-migrations.md
  */
 
-import { v4 as uuidv4 } from "uuid";
+import { v4 as uuidv4 } from 'uuid';
 
-const name = "003_sample_data";
+const name = '003_sample_data';
 
 function up(db) {
-  console.log("Running sample data migration up function...");
+  console.log('Running sample data migration up function...');
 
   // Sample users
   const users = [
     {
       id: uuidv4(),
-      username: "alice",
-      email: "alice@example.com",
+      username: 'alice',
+      email: 'alice@example.com',
     },
     {
       id: uuidv4(),
-      username: "bob",
-      email: "bob@example.com",
+      username: 'bob',
+      email: 'bob@example.com',
     },
     {
       id: uuidv4(),
-      username: "charlie",
-      email: "charlie@example.com",
+      username: 'charlie',
+      email: 'charlie@example.com',
     },
   ];
 
@@ -36,7 +36,7 @@ function up(db) {
     VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `);
 
-  users.forEach((user) => {
+  users.forEach(user => {
     insertUser.run(user.id, user.username, user.email);
   });
 
@@ -44,21 +44,21 @@ function up(db) {
   const parties = [
     {
       id: uuidv4(),
-      name: "Green Party",
-      description: "Environmental focus",
-      color: "#00FF00",
+      name: 'Green Party',
+      description: 'Environmental focus',
+      color: '#00FF00',
     },
     {
       id: uuidv4(),
-      name: "Conservative Party",
-      description: "Traditional values",
-      color: "#0000FF",
+      name: 'Conservative Party',
+      description: 'Traditional values',
+      color: '#0000FF',
     },
     {
       id: uuidv4(),
-      name: "Liberal Party",
-      description: "Progressive policies",
-      color: "#FF0000",
+      name: 'Liberal Party',
+      description: 'Progressive policies',
+      color: '#FF0000',
     },
   ];
 
@@ -67,7 +67,7 @@ function up(db) {
     VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `);
 
-  parties.forEach((party) => {
+  parties.forEach(party => {
     insertParty.run(party.id, party.name, party.description, party.color);
   });
 
@@ -76,16 +76,16 @@ function up(db) {
   const bills = [
     {
       id: uuidv4(),
-      title: "Climate Change Initiative",
-      description: "Reduce carbon emissions by 50% by 2030",
-      status: "proposed",
+      title: 'Climate Change Initiative',
+      description: 'Reduce carbon emissions by 50% by 2030',
+      status: 'proposed',
       proposer_id: aliceId,
     },
     {
       id: uuidv4(),
-      title: "Economic Reform Bill",
-      description: "Tax cuts for small businesses",
-      status: "active",
+      title: 'Economic Reform Bill',
+      description: 'Tax cuts for small businesses',
+      status: 'active',
       proposer_id: aliceId,
     },
   ];
@@ -95,7 +95,7 @@ function up(db) {
     VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
   `);
 
-  bills.forEach((bill) => {
+  bills.forEach(bill => {
     insertBill.run(bill.id, bill.title, bill.description, bill.status, bill.proposer_id);
   });
 
@@ -105,13 +105,13 @@ function up(db) {
       id: uuidv4(),
       bill_id: bills[0].id,
       user_id: users[1].id,
-      vote: "yes",
+      vote: 'yes',
     },
     {
       id: uuidv4(),
       bill_id: bills[1].id,
       user_id: users[2].id,
-      vote: "no",
+      vote: 'no',
     },
   ];
 
@@ -120,7 +120,7 @@ function up(db) {
     VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)
   `);
 
-  votes.forEach((vote) => {
+  votes.forEach(vote => {
     insertVote.run(vote.id, vote.bill_id, vote.user_id, vote.vote);
   });
 
@@ -139,17 +139,17 @@ function up(db) {
   const sampleNews = [
     {
       id: uuidv4(),
-      title: "New policy on climate change initiatives",
-      content: "Government announces new environmental measures.",
-      category: "Environment",
-      tags: "climate,policy",
+      title: 'New policy on climate change initiatives',
+      content: 'Government announces new environmental measures.',
+      category: 'Environment',
+      tags: 'climate,policy',
     },
     {
       id: uuidv4(),
-      title: "Parliamentary approval for major economic reforms",
-      content: "Bills passed to stimulate economy.",
-      category: "Economy",
-      tags: "economy,reform",
+      title: 'Parliamentary approval for major economic reforms',
+      content: 'Bills passed to stimulate economy.',
+      category: 'Economy',
+      tags: 'economy,reform',
     },
   ];
 
@@ -158,11 +158,11 @@ function up(db) {
     VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
   `);
 
-  sampleNews.forEach((news) => {
+  sampleNews.forEach(news => {
     insertNews.run(news.id, news.title, news.content, news.category, news.tags);
   });
 
-  console.log("Sample data migration up function completed");
+  console.log('Sample data migration up function completed');
 }
 
 function down(db) {

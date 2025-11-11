@@ -7,7 +7,7 @@
  * @module pipelines/user-data-pipeline
  */
 
-import type { PipelineConfig, PipelineResult } from "../types/pipeline.js";
+import type { PipelineConfig, PipelineResult } from '../types/pipeline.js';
 
 export class UserDataPipeline {
   private config: PipelineConfig;

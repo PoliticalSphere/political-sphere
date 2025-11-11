@@ -1,25 +1,25 @@
 #!/usr/bin/env node
 
-import { execFileSync, spawn } from "child_process";
-import { existsSync, readFileSync, writeFileSync } from "fs";
-import { dirname, join, resolve } from "path";
-import { fileURLToPath } from "url";
+import { execFileSync, spawn } from 'child_process';
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { dirname, join, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-console.log("🤖 Starting Self-Healing Automation System...");
+console.log('🤖 Starting Self-Healing Automation System...');
 
 // Security: Allowlist of commands that can be executed
 // This prevents command injection by limiting to known-safe commands
 const ALLOWED_COMMANDS = new Set([
-  "node",
-  "npm",
-  "npx",
-  "pnpm",
-  "yarn",
-  "git",
-  "vitest",
-  "tsc",
-  "eslint",
-  "prettier",
+  'node',
+  'npm',
+  'npx',
+  'pnpm',
+  'yarn',
+  'git',
+  'vitest',
+  'tsc',
+  'eslint',
+  'prettier',
 ]);
 
 /**
@@ -36,12 +36,12 @@ function isCommandSafe(command) {
   }
 
   // Remove any path components to get just the command name
-  const commandName = command.split("/").pop();
+  const commandName = command.split('/').pop();
 
   // Check against allowlist
   if (!ALLOWED_COMMANDS.has(commandName)) {
     console.error(`❌ Security: Command '${commandName}' is not in the allowlist`);
-    console.error(`   Allowed commands: ${Array.from(ALLOWED_COMMANDS).join(", ")}`);
+    console.error(`   Allowed commands: ${Array.from(ALLOWED_COMMANDS).join(', ')}`);
     return false;
   }
 
@@ -60,7 +60,7 @@ function areArgumentsSafe(args) {
 
   for (const arg of args) {
     // Ensure argument is a string
-    if (typeof arg !== "string") {
+    if (typeof arg !== 'string') {
       console.error(`❌ Security: Non-string argument detected: ${typeof arg}`);
       return false;
     }
@@ -72,7 +72,7 @@ function areArgumentsSafe(args) {
     }
 
     // Prevent null byte injection
-    if (arg.includes("\0")) {
+    if (arg.includes('\0')) {
       console.error(`❌ Security: Argument contains null byte: ${arg}`);
       return false;
     }
@@ -99,7 +99,7 @@ function sanitizeFilePath(filePath, baseDir = process.cwd()) {
     }
 
     // Validate filename pattern
-    const fileName = absolutePath.split("/").pop();
+    const fileName = absolutePath.split('/').pop();
     if (!/^[\w\-/.]+$/.test(fileName)) {
       console.error(`❌ Security: Invalid filename characters: ${fileName}`);
       return null;
@@ -123,62 +123,62 @@ class SelfHealingAutomation {
 
   registerErrorPatterns() {
     // Test framework errors
-    this.errors.set("describe is not defined", {
+    this.errors.set('describe is not defined', {
       pattern: /ReferenceError: describe is not defined/,
       fix: this.fixTestFramework.bind(this),
-      description: "Convert Mocha/Jest style tests to Node.js test runner",
+      description: 'Convert Mocha/Jest style tests to Node.js test runner',
     });
 
-    this.errors.set("it is not defined", {
+    this.errors.set('it is not defined', {
       pattern: /ReferenceError: it is not defined/,
       fix: this.fixTestFramework.bind(this),
-      description: "Convert Mocha/Jest style tests to Node.js test runner",
+      description: 'Convert Mocha/Jest style tests to Node.js test runner',
     });
 
     // Module resolution errors
-    this.errors.set("Cannot find module", {
+    this.errors.set('Cannot find module', {
       pattern: /Error: Cannot find module '(.+)'/,
       fix: this.fixModuleResolution.bind(this),
-      description: "Fix module import paths or install missing dependencies",
+      description: 'Fix module import paths or install missing dependencies',
     });
 
     // Syntax errors
-    this.errors.set("SyntaxError", {
+    this.errors.set('SyntaxError', {
       pattern: /SyntaxError: (.+)/,
       fix: this.fixSyntaxError.bind(this),
-      description: "Attempt to fix common syntax errors",
+      description: 'Attempt to fix common syntax errors',
     });
 
     // Import/export errors
-    this.errors.set("Unexpected token export", {
+    this.errors.set('Unexpected token export', {
       pattern: /SyntaxError: Unexpected token 'export'/,
       fix: this.fixModuleSyntax.bind(this),
-      description: "Fix ES module import/export syntax",
+      description: 'Fix ES module import/export syntax',
     });
 
-    this.errors.set("require is not defined", {
+    this.errors.set('require is not defined', {
       pattern: /ReferenceError: require is not defined/,
       fix: this.fixCommonJS.bind(this),
-      description: "Convert CommonJS to ES modules or add type: module",
+      description: 'Convert CommonJS to ES modules or add type: module',
     });
 
     // TypeScript errors
-    this.errors.set("Cannot find name", {
+    this.errors.set('Cannot find name', {
       pattern: /error TS2304: Cannot find name '(.+)'/,
       fix: this.fixTypeScriptErrors.bind(this),
-      description: "Fix TypeScript type errors",
+      description: 'Fix TypeScript type errors',
     });
 
     // Dependency errors
-    this.errors.set("command not found", {
+    this.errors.set('command not found', {
       pattern: /bash: (.+): command not found/,
       fix: this.fixMissingCommands.bind(this),
-      description: "Install missing system dependencies",
+      description: 'Install missing system dependencies',
     });
   }
 
   async diagnoseAndFix(errorOutput, context = {}) {
-    console.log("🔍 Analyzing error output for self-healing...");
+    console.log('🔍 Analyzing error output for self-healing...');
 
     for (const [errorType, config] of this.errors) {
       const match = errorOutput.match(config.pattern);
@@ -189,7 +189,7 @@ class SelfHealingAutomation {
         try {
           const result = await config.fix(match, errorOutput, context);
           if (result.success) {
-            console.log("✅ Auto-fix applied successfully");
+            console.log('✅ Auto-fix applied successfully');
             return { success: true, error: errorType, fix: config.description };
           }
         } catch (fixError) {
@@ -198,24 +198,24 @@ class SelfHealingAutomation {
       }
     }
 
-    console.log("🤔 No automatic fix available for this error");
-    return { success: false, error: "unknown", fix: null };
+    console.log('🤔 No automatic fix available for this error');
+    return { success: false, error: 'unknown', fix: null };
   }
 
   async fixTestFramework(match, errorOutput, context) {
     // Find the failing test file from context or error output
     const testFile = context.file || this.extractTestFileFromError(errorOutput);
-    console.log("🔍 Looking for test file:", testFile);
-    console.log("🔍 Context file:", context.file);
+    console.log('🔍 Looking for test file:', testFile);
+    console.log('🔍 Context file:', context.file);
 
     if (!testFile || !existsSync(testFile)) {
-      console.log("❌ Test file not found or does not exist");
-      throw new Error("Could not locate test file to fix");
+      console.log('❌ Test file not found or does not exist');
+      throw new Error('Could not locate test file to fix');
     }
 
     console.log(`🔧 Converting test file: ${testFile}`);
 
-    let content = readFileSync(testFile, "utf8");
+    let content = readFileSync(testFile, 'utf8');
 
     // For this specific case, let's do a targeted replacement
     // Convert the known broken pattern to working Node.js test format
@@ -240,8 +240,8 @@ test('self-healing demo - nested tests - nested test case', () => {
     const moduleName = match[1];
 
     // Check if it's a relative path issue
-    if (moduleName.startsWith("./") || moduleName.startsWith("../")) {
-      console.log("🔧 Attempting to fix relative import path");
+    if (moduleName.startsWith('./') || moduleName.startsWith('../')) {
+      console.log('🔧 Attempting to fix relative import path');
       // This would require more context about the file structure
       return { success: false };
     }
@@ -259,8 +259,8 @@ test('self-healing demo - nested tests - nested test case', () => {
 
       // Security: Use execFileSync (NOT execSync) with argument array
       // This prevents shell injection as no shell is invoked
-      execFileSync("npm", ["install", moduleName], {
-        stdio: "inherit",
+      execFileSync('npm', ['install', moduleName], {
+        stdio: 'inherit',
         shell: false, // Explicitly disable shell
       });
       return { success: true };
@@ -275,36 +275,36 @@ test('self-healing demo - nested tests - nested test case', () => {
     console.log(`🔧 Attempting to fix syntax error: ${errorDetails}`);
 
     // Common syntax fixes
-    if (errorDetails.includes("Unexpected end of input")) {
+    if (errorDetails.includes('Unexpected end of input')) {
       return {
         success: false,
-        message: "Missing closing brackets or braces - requires manual review",
+        message: 'Missing closing brackets or braces - requires manual review',
       };
     }
 
-    if (errorDetails.includes("Unexpected token")) {
+    if (errorDetails.includes('Unexpected token')) {
       return {
         success: false,
-        message: "Unexpected token - check for typos or missing syntax elements",
+        message: 'Unexpected token - check for typos or missing syntax elements',
       };
     }
 
     // This is a placeholder - real syntax fixing would require AST parsing
     return {
       success: false,
-      message: "Syntax error fixing requires manual intervention",
+      message: 'Syntax error fixing requires manual intervention',
     };
   }
 
   async fixModuleSyntax(_match, _errorOutput, _context) {
-    console.log("🔧 Attempting to fix ES module syntax");
+    console.log('🔧 Attempting to fix ES module syntax');
 
     // Check package.json for type: module
-    const packageJsonPath = join(process.cwd(), "package.json");
+    const packageJsonPath = join(process.cwd(), 'package.json');
     if (existsSync(packageJsonPath)) {
-      const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"));
-      if (!packageJson.type || packageJson.type !== "module") {
-        packageJson.type = "module";
+      const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf8'));
+      if (!packageJson.type || packageJson.type !== 'module') {
+        packageJson.type = 'module';
         writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
         console.log('✅ Added "type": "module" to package.json');
         return { success: true };
@@ -313,17 +313,17 @@ test('self-healing demo - nested tests - nested test case', () => {
 
     return {
       success: false,
-      message: "ES module syntax issue - check import/export statements",
+      message: 'ES module syntax issue - check import/export statements',
     };
   }
 
   async fixCommonJS(_match, _errorOutput, _context) {
-    console.log("🔧 Attempting to fix CommonJS in ES module environment");
+    console.log('🔧 Attempting to fix CommonJS in ES module environment');
 
     // Suggest converting to ES modules
     return {
       success: false,
-      message: "Consider converting to ES modules: import instead of require",
+      message: 'Consider converting to ES modules: import instead of require',
     };
   }
 
@@ -332,7 +332,7 @@ test('self-healing demo - nested tests - nested test case', () => {
     console.log(`🔧 Attempting to fix TypeScript error: Cannot find name '${missingName}'`);
 
     // Common TypeScript fixes
-    if (["console", "process", "Buffer"].includes(missingName)) {
+    if (['console', 'process', 'Buffer'].includes(missingName)) {
       return {
         success: false,
         message: `Add @types/node dependency for '${missingName}'`,
@@ -341,7 +341,7 @@ test('self-healing demo - nested tests - nested test case', () => {
 
     return {
       success: false,
-      message: "TypeScript error requires type definitions or imports",
+      message: 'TypeScript error requires type definitions or imports',
     };
   }
 
@@ -378,42 +378,42 @@ test('self-healing demo - nested tests - nested test case', () => {
     // Security: Validate arguments
     const args = options.args || [];
     if (!areArgumentsSafe(args)) {
-      throw new Error("Security violation: Command arguments failed safety validation");
+      throw new Error('Security violation: Command arguments failed safety validation');
     }
 
     // Security: Prevent retry loops
     if (this.retryCount >= this.maxRetries) {
       throw new Error(
-        `Maximum retry limit (${this.maxRetries}) exceeded. Preventing potential infinite loop.`,
+        `Maximum retry limit (${this.maxRetries}) exceeded. Preventing potential infinite loop.`
       );
     }
 
     return new Promise((resolve, reject) => {
-      console.log(`🔧 Executing: ${command} ${args.length > 0 ? args.join(" ") : ""}`);
+      console.log(`🔧 Executing: ${command} ${args.length > 0 ? args.join(' ') : ''}`);
 
       // Use spawn with args array (NOT shell) to prevent command injection
       // spawn with array args does NOT invoke a shell, preventing injection
       const child = spawn(command, args, {
-        stdio: ["inherit", "pipe", "pipe"],
+        stdio: ['inherit', 'pipe', 'pipe'],
         shell: false, // Explicitly disable shell to prevent injection
         ...options,
         // Override any shell option passed in options for security
       });
 
-      let stdout = "";
-      let stderr = "";
+      let stdout = '';
+      let stderr = '';
 
-      child.stdout.on("data", (data) => {
+      child.stdout.on('data', data => {
         stdout += data.toString();
         process.stdout.write(data); // Echo stdout
       });
 
-      child.stderr.on("data", (data) => {
+      child.stderr.on('data', data => {
         stderr += data.toString();
         process.stderr.write(data); // Echo stderr
       });
 
-      child.on("close", async (code) => {
+      child.on('close', async code => {
         console.log(`🔍 Command exited with code: ${code}`);
 
         if (code === 0) {
@@ -421,16 +421,16 @@ test('self-healing demo - nested tests - nested test case', () => {
           this.retryCount = 0;
           resolve({ code, stdout, stderr });
         } else {
-          console.log("🚨 Command failed, attempting self-healing...");
-          console.log("📄 Error output (stdout):", stdout);
-          console.log("📄 Error output (stderr):", stderr);
+          console.log('🚨 Command failed, attempting self-healing...');
+          console.log('📄 Error output (stdout):', stdout);
+          console.log('📄 Error output (stderr):', stderr);
 
           // Check both stdout and stderr for errors
-          const fullErrorOutput = stdout + "\n" + stderr;
+          const fullErrorOutput = stdout + '\n' + stderr;
           const healingResult = await this.diagnoseAndFix(fullErrorOutput, options.context);
 
           if (healingResult.success) {
-            console.log("🔄 Retrying command after auto-fix...");
+            console.log('🔄 Retrying command after auto-fix...');
             // Increment retry counter before retrying
             this.retryCount++;
             // Retry the command
@@ -452,8 +452,8 @@ test('self-healing demo - nested tests - nested test case', () => {
         }
       });
 
-      child.on("error", (error) => {
-        console.error("🚨 Spawn error:", error);
+      child.on('error', error => {
+        console.error('🚨 Spawn error:', error);
         // Reset counter
         this.retryCount = 0;
         reject(error);
@@ -464,17 +464,17 @@ test('self-healing demo - nested tests - nested test case', () => {
 
 // CLI interface
 async function main() {
-  console.log("🤖 Self-Healing Automation System Starting...");
+  console.log('🤖 Self-Healing Automation System Starting...');
   const healer = new SelfHealingAutomation();
 
   // Parse command and arguments properly
   const args = process.argv.slice(2);
-  console.log("📋 Arguments received:", args);
+  console.log('📋 Arguments received:', args);
 
   if (args.length === 0) {
-    console.log("Usage: npm run heal -- <command> [args...]");
-    console.log("Example: npm run heal -- node --test tests/unit/broken-test.mjs");
-    console.log(`Allowed commands: ${Array.from(ALLOWED_COMMANDS).join(", ")}`);
+    console.log('Usage: npm run heal -- <command> [args...]');
+    console.log('Example: npm run heal -- node --test tests/unit/broken-test.mjs');
+    console.log(`Allowed commands: ${Array.from(ALLOWED_COMMANDS).join(', ')}`);
     process.exit(1);
   }
 
@@ -490,18 +490,17 @@ async function main() {
 
   // Security: Validate all arguments
   if (!areArgumentsSafe(commandArgs)) {
-    console.error("❌ Security check failed for command arguments");
+    console.error('❌ Security check failed for command arguments');
     process.exit(1);
   }
 
-  console.log(`🚀 Running with self-healing: ${command} ${commandArgs.join(" ")}`);
+  console.log(`🚀 Running with self-healing: ${command} ${commandArgs.join(' ')}`);
 
   try {
     // Find and validate test file path
     let testFile = commandArgs.find(
-      (arg) =>
-        arg.includes("test") &&
-        (arg.endsWith(".js") || arg.endsWith(".mjs") || arg.endsWith(".ts")),
+      arg =>
+        arg.includes('test') && (arg.endsWith('.js') || arg.endsWith('.mjs') || arg.endsWith('.ts'))
     );
 
     if (testFile) {
@@ -523,10 +522,10 @@ async function main() {
       },
     });
 
-    console.log("✅ Command completed successfully");
+    console.log('✅ Command completed successfully');
     if (result.stdout) console.log(result.stdout);
   } catch (error) {
-    console.error("❌ Command failed even after healing attempts:", error.message);
+    console.error('❌ Command failed even after healing attempts:', error.message);
     process.exit(1);
   }
 }

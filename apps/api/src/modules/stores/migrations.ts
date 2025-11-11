@@ -1,20 +1,20 @@
 // os is not required when using in-memory DB for tests
-import fs from "node:fs";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import Database from "better-sqlite3";
+import Database from 'better-sqlite3';
 
 // Support both ESM and CommonJS environments
 const getDbPath = () => {
-  if (typeof __dirname !== "undefined") {
+  if (typeof __dirname !== 'undefined') {
     // CommonJS or transformed code
-    return path.join(__dirname, "../../../data/political_sphere.db");
+    return path.join(__dirname, '../../../data/political_sphere.db');
   } else {
     // Pure ESM
     const __filename = fileURLToPath(import.meta.url);
     const __dirname = path.dirname(__filename);
-    return path.join(__dirname, "../../../data/political_sphere.db");
+    return path.join(__dirname, '../../../data/political_sphere.db');
   }
 };
 
@@ -22,13 +22,13 @@ let DB_PATH = getDbPath();
 
 // For test runs, prefer an in-memory database to avoid filesystem locking and
 // interference between parallel test runs. Use a file-backed DB only outside tests.
-if (process.env.NODE_ENV === "test") {
-  DB_PATH = ":memory:";
+if (process.env.NODE_ENV === 'test') {
+  DB_PATH = ':memory:';
 }
 
 export function initializeDatabase(): Database.Database {
   // If using a file-backed DB, ensure the directory exists before opening it.
-  if (DB_PATH !== ":memory:") {
+  if (DB_PATH !== ':memory:') {
     const dir = path.dirname(DB_PATH);
     try {
       fs.mkdirSync(dir, { recursive: true });
@@ -42,9 +42,9 @@ export function initializeDatabase(): Database.Database {
 
   // Enable WAL mode for better concurrency on file-backed DBs only. WAL is not
   // applicable for in-memory databases and can cause errors or be ignored.
-  if (DB_PATH !== ":memory:") {
+  if (DB_PATH !== ':memory:') {
     try {
-      db.pragma("journal_mode = WAL");
+      db.pragma('journal_mode = WAL');
     } catch (_e) {
       // Ignore pragma failures; concurrency will be lower but tests should proceed.
     }
@@ -52,7 +52,7 @@ export function initializeDatabase(): Database.Database {
 
   // Always enable foreign keys enforcement where supported.
   try {
-    db.pragma("foreign_keys = ON");
+    db.pragma('foreign_keys = ON');
   } catch (_e) {
     // Ignore if pragma not supported in some environments
   }

@@ -2,7 +2,7 @@
  * Game Board Page Object Model
  * Represents the main game interface for political simulation
  */
-import type { Page, Locator } from "@playwright/test";
+import type { Page, Locator } from '@playwright/test';
 
 export class GameBoardPage {
   readonly page: Page;
@@ -15,12 +15,12 @@ export class GameBoardPage {
 
   constructor(page: Page) {
     this.page = page;
-    this.proposalsList = page.getByRole("list").filter({ hasText: /proposals/i });
-    this.createProposalButton = page.getByRole("button", { name: /create proposal|new proposal/i });
+    this.proposalsList = page.getByRole('list').filter({ hasText: /proposals/i });
+    this.createProposalButton = page.getByRole('button', { name: /create proposal|new proposal/i });
     this.proposalTitleInput = page.getByLabel(/title/i);
     this.proposalDescriptionInput = page.getByLabel(/description/i);
-    this.submitProposalButton = page.getByRole("button", { name: /submit proposal/i });
-    this.leaveGameButton = page.getByRole("button", { name: /leave game/i });
+    this.submitProposalButton = page.getByRole('button', { name: /submit proposal/i });
+    this.leaveGameButton = page.getByRole('button', { name: /leave game/i });
   }
 
   /**
@@ -43,9 +43,9 @@ export class GameBoardPage {
   /**
    * Vote on a proposal by title
    */
-  async voteOnProposal(proposalTitle: string, vote: "aye" | "nay" | "abstain") {
-    const proposalItem = this.page.getByRole("listitem").filter({ hasText: proposalTitle });
-    const voteButton = proposalItem.getByRole("button", { name: new RegExp(vote, "i") });
+  async voteOnProposal(proposalTitle: string, vote: 'aye' | 'nay' | 'abstain') {
+    const proposalItem = this.page.getByRole('listitem').filter({ hasText: proposalTitle });
+    const voteButton = proposalItem.getByRole('button', { name: new RegExp(vote, 'i') });
     await voteButton.click();
   }
 
@@ -53,12 +53,12 @@ export class GameBoardPage {
    * Get proposal titles currently displayed
    */
   async getProposalTitles(): Promise<string[]> {
-    const items = await this.proposalsList.getByRole("listitem").all();
+    const items = await this.proposalsList.getByRole('listitem').all();
     return Promise.all(
-      items.map(async (item) => {
-        const heading = item.getByRole("heading");
-        return (await heading.textContent()) || "";
-      }),
+      items.map(async item => {
+        const heading = item.getByRole('heading');
+        return (await heading.textContent()) || '';
+      })
     );
   }
 
@@ -70,16 +70,16 @@ export class GameBoardPage {
     nay: number;
     abstain: number;
   }> {
-    const proposalItem = this.page.getByRole("listitem").filter({ hasText: proposalTitle });
+    const proposalItem = this.page.getByRole('listitem').filter({ hasText: proposalTitle });
 
     const ayeText = await proposalItem.getByText(/aye:\s*(\d+)/i).textContent();
     const nayText = await proposalItem.getByText(/nay:\s*(\d+)/i).textContent();
     const abstainText = await proposalItem.getByText(/abstain:\s*(\d+)/i).textContent();
 
     return {
-      aye: Number.parseInt(ayeText?.match(/\d+/)?.[0] || "0"),
-      nay: Number.parseInt(nayText?.match(/\d+/)?.[0] || "0"),
-      abstain: Number.parseInt(abstainText?.match(/\d+/)?.[0] || "0"),
+      aye: Number.parseInt(ayeText?.match(/\d+/)?.[0] || '0'),
+      nay: Number.parseInt(nayText?.match(/\d+/)?.[0] || '0'),
+      abstain: Number.parseInt(abstainText?.match(/\d+/)?.[0] || '0'),
     };
   }
 
@@ -94,6 +94,6 @@ export class GameBoardPage {
    * Wait for proposals list to load
    */
   async waitForProposalsLoad() {
-    await this.proposalsList.waitFor({ state: "visible" });
+    await this.proposalsList.waitFor({ state: 'visible' });
   }
 }

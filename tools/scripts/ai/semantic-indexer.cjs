@@ -6,13 +6,13 @@
  * Optimized for lightning-fast AI assistance
  */
 
-const crypto = require("crypto");
-const fs = require("fs");
-const path = require("path");
+const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 
-const PROJECT_ROOT = path.join(__dirname, "../../..");
-const INDEX_DIR = path.join(PROJECT_ROOT, "ai/ai-index");
-const INDEX_FILE = path.join(INDEX_DIR, "semantic-index.json");
+const PROJECT_ROOT = path.join(__dirname, '../../..');
+const INDEX_DIR = path.join(PROJECT_ROOT, 'ai/ai-index');
+const INDEX_FILE = path.join(INDEX_DIR, 'semantic-index.json');
 
 const PATTERNS = {
   functions: /(?:function|const|let|var)\s+(\w+)\s*=?\s*(?:async\s*)?\(?/g,
@@ -55,22 +55,22 @@ class SemanticIndexer {
 
   shouldIndex(filePath) {
     const exclude = [
-      "node_modules",
-      ".git",
-      "dist",
-      "coverage",
-      ".nx",
-      "ai-cache",
-      "ai-index",
-      ".cache",
-      "logs",
-      "reports",
+      'node_modules',
+      '.git',
+      'dist',
+      'coverage',
+      '.nx',
+      'ai-cache',
+      'ai-index',
+      '.cache',
+      'logs',
+      'reports',
     ];
-    return !exclude.some((ex) => filePath.includes(ex));
+    return !exclude.some(ex => filePath.includes(ex));
   }
 
   hashContent(content) {
-    return crypto.createHash("sha256").update(content).digest("hex").slice(0, 8);
+    return crypto.createHash('sha256').update(content).digest('hex').slice(0, 8);
   }
 
   extractSymbols(content, filePath) {
@@ -110,7 +110,7 @@ class SemanticIndexer {
 
   indexFile(filePath) {
     try {
-      const content = fs.readFileSync(filePath, "utf8");
+      const content = fs.readFileSync(filePath, 'utf8');
       const hash = this.hashContent(content);
       const relativePath = path.relative(PROJECT_ROOT, filePath);
 
@@ -120,7 +120,7 @@ class SemanticIndexer {
       this.index.files[relativePath] = {
         hash,
         size: content.length,
-        lines: content.split("\n").length,
+        lines: content.split('\n').length,
         symbols: Object.entries(symbols).reduce((acc, [key, val]) => {
           if (val.length > 0) acc[key] = val;
           return acc;
@@ -131,7 +131,7 @@ class SemanticIndexer {
 
       // Build reverse index for symbols
       Object.entries(symbols).forEach(([type, names]) => {
-        names.forEach((name) => {
+        names.forEach(name => {
           if (!this.index.symbols[name]) {
             this.index.symbols[name] = [];
           }
@@ -140,7 +140,7 @@ class SemanticIndexer {
       });
 
       // Track dependency graph
-      dependencies.forEach((dep) => {
+      dependencies.forEach(dep => {
         if (!this.index.dependencies[dep]) {
           this.index.dependencies[dep] = [];
         }
@@ -150,7 +150,7 @@ class SemanticIndexer {
       return true;
     } catch (error) {
       // Security: Separate format string from variable to prevent log injection
-      console.error("Error indexing file:", filePath, error.message);
+      console.error('Error indexing file:', filePath, error.message);
       return false;
     }
   }
@@ -167,7 +167,7 @@ class SemanticIndexer {
         }
       } else if (entry.isFile()) {
         const ext = path.extname(entry.name);
-        if ([".js", ".ts", ".jsx", ".tsx", ".mjs", ".cjs"].includes(ext)) {
+        if (['.js', '.ts', '.jsx', '.tsx', '.mjs', '.cjs'].includes(ext)) {
           if (this.shouldIndex(fullPath)) {
             if (this.indexFile(fullPath)) {
               this.index.metadata.fileCount++;
@@ -191,7 +191,7 @@ class SemanticIndexer {
 
   findCommonPrefixes(symbols) {
     const prefixes = {};
-    symbols.forEach((symbol) => {
+    symbols.forEach(symbol => {
       const prefix = symbol.slice(0, 3).toLowerCase();
       prefixes[prefix] = (prefixes[prefix] || 0) + 1;
     });
@@ -204,9 +204,9 @@ class SemanticIndexer {
   detectNamingConventions() {
     const files = Object.keys(this.index.files);
     return {
-      kebabCase: files.filter((f) => f.includes("-")).length,
-      camelCase: files.filter((f) => /[a-z][A-Z]/.test(f)).length,
-      snakeCase: files.filter((f) => f.includes("_")).length,
+      kebabCase: files.filter(f => f.includes('-')).length,
+      camelCase: files.filter(f => /[a-z][A-Z]/.test(f)).length,
+      snakeCase: files.filter(f => f.includes('_')).length,
     };
   }
 
@@ -233,7 +233,7 @@ class SemanticIndexer {
 
   load() {
     if (fs.existsSync(INDEX_FILE)) {
-      this.index = JSON.parse(fs.readFileSync(INDEX_FILE, "utf8"));
+      this.index = JSON.parse(fs.readFileSync(INDEX_FILE, 'utf8'));
       return true;
     }
     return false;
@@ -256,7 +256,7 @@ class SemanticIndexer {
     });
 
     // Search file paths
-    Object.keys(this.index.files).forEach((file) => {
+    Object.keys(this.index.files).forEach(file => {
       if (file.toLowerCase().includes(lowerQuery)) {
         results.files.push(file);
       }
@@ -295,42 +295,42 @@ if (require.main === module) {
   const command = process.argv[2];
 
   switch (command) {
-    case "build":
-      console.log("🔍 Building semantic index...");
+    case 'build':
+      console.log('🔍 Building semantic index...');
       indexer.scanDirectory(PROJECT_ROOT);
       indexer.buildPatternIndex();
       indexer.save();
       break;
 
-    case "search": {
+    case 'search': {
       const query = process.argv[3];
       if (!query) {
-        console.log("Usage: semantic-indexer.cjs search <query>");
+        console.log('Usage: semantic-indexer.cjs search <query>');
         process.exit(1);
       }
       if (!indexer.load()) {
-        console.log("No index found. Run: npm run ai:index");
+        console.log('No index found. Run: npm run ai:index');
         process.exit(1);
       }
       const results = indexer.search(query);
-      console.log("Search Results:", JSON.stringify(results, null, 2));
+      console.log('Search Results:', JSON.stringify(results, null, 2));
       break;
     }
 
-    case "stats":
+    case 'stats':
       if (!indexer.load()) {
-        console.log("No index found. Run: npm run ai:index");
+        console.log('No index found. Run: npm run ai:index');
         process.exit(1);
       }
-      console.log("Index Statistics:", indexer.stats());
+      console.log('Index Statistics:', indexer.stats());
       break;
 
     default:
-      console.log("Semantic Code Indexer");
-      console.log("Commands:");
-      console.log("  build        - Build/rebuild index");
-      console.log("  search <q>   - Search index");
-      console.log("  stats        - Show statistics");
+      console.log('Semantic Code Indexer');
+      console.log('Commands:');
+      console.log('  build        - Build/rebuild index');
+      console.log('  search <q>   - Search index');
+      console.log('  stats        - Show statistics');
   }
 }
 

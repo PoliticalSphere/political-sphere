@@ -87,8 +87,8 @@ describe('PartyService', () => {
       const parties = await service.getAllParties();
 
       expect(parties.length).toBeGreaterThanOrEqual(2);
-      expect(parties.some((p) => p.id === party1.id)).toBe(true);
-      expect(parties.some((p) => p.id === party2.id)).toBe(true);
+      expect(parties.some(p => p.id === party1.id)).toBe(true);
+      expect(parties.some(p => p.id === party2.id)).toBe(true);
     });
   });
 });

@@ -10,8 +10,8 @@
  * Standards: Constitutional governance requirements
  */
 
-import type { Request, Response } from "express";
-import { z } from "zod";
+import type { Request, Response } from 'express';
+import { z } from 'zod';
 
 // ============================================================================
 // SCHEMAS
@@ -19,7 +19,7 @@ import { z } from "zod";
 
 const CastVoteSchema = z.object({
   billId: z.string().regex(/^bill-\d+$/),
-  position: z.enum(["for", "against", "abstain"]),
+  position: z.enum(['for', 'against', 'abstain']),
   reason: z.string().max(5000).optional(),
   isPublic: z.boolean().default(true),
 });
@@ -33,13 +33,13 @@ export async function castVote(req: Request, res: Response): Promise<void> {
 
   try {
     // Start transaction for atomicity
-    await client.query("BEGIN");
+    await client.query('BEGIN');
 
     // 1. Validate input
     const data = CastVoteSchema.parse(req.body);
     const userId = req.user?.userId;
     if (!userId) {
-      res.status(401).json({ error: "Not authenticated" });
+      res.status(401).json({ error: 'Not authenticated' });
       return;
     }
 
@@ -48,21 +48,21 @@ export async function castVote(req: Request, res: Response): Promise<void> {
       `SELECT id, status, voting_starts_at, voting_ends_at 
        FROM bills 
        WHERE id = $1 FOR UPDATE`, // Lock for consistency
-      [data.billId],
+      [data.billId]
     );
 
     const bill = billResult.rows[0];
 
     if (!bill) {
-      await client.query("ROLLBACK");
-      res.status(404).json({ error: "Bill not found" });
+      await client.query('ROLLBACK');
+      res.status(404).json({ error: 'Bill not found' });
       return;
     }
 
-    if (bill.status !== "active_voting") {
-      await client.query("ROLLBACK");
+    if (bill.status !== 'active_voting') {
+      await client.query('ROLLBACK');
       res.status(400).json({
-        error: "Bill is not accepting votes",
+        error: 'Bill is not accepting votes',
         currentStatus: bill.status,
       });
       return;
@@ -71,22 +71,22 @@ export async function castVote(req: Request, res: Response): Promise<void> {
     // 3. Check voting window
     const now = new Date();
     if (now < new Date(bill.voting_starts_at) || now > new Date(bill.voting_ends_at)) {
-      await client.query("ROLLBACK");
-      res.status(400).json({ error: "Voting window has closed" });
+      await client.query('ROLLBACK');
+      res.status(400).json({ error: 'Voting window has closed' });
       return;
     }
 
     // 4. CHECK: One vote per user (CRITICAL - Democratic Integrity)
     const existingVoteResult = await client.query(
-      "SELECT id FROM votes WHERE bill_id = $1 AND user_id = $2",
-      [data.billId, userId],
+      'SELECT id FROM votes WHERE bill_id = $1 AND user_id = $2',
+      [data.billId, userId]
     );
 
     if (existingVoteResult.rows.length > 0) {
-      await client.query("ROLLBACK");
+      await client.query('ROLLBACK');
       res.status(409).json({
-        error: "Vote already cast",
-        message: "Users can only vote once per bill. Votes are immutable.",
+        error: 'Vote already cast',
+        message: 'Users can only vote once per bill. Votes are immutable.',
       });
       return;
     }
@@ -96,22 +96,22 @@ export async function castVote(req: Request, res: Response): Promise<void> {
       `INSERT INTO votes (bill_id, user_id, position, weight, reason, is_public, created_at)
        VALUES ($1, $2, $3, 1.0, $4, $5, NOW())
        RETURNING id, bill_id, user_id, position, weight, created_at`,
-      [data.billId, userId, data.position, data.reason || null, data.isPublic],
+      [data.billId, userId, data.position, data.reason || null, data.isPublic]
     );
 
     const vote = voteResult.rows[0];
 
     // 6. Update bill vote tallies
     const columnMap = {
-      for: "votes_for",
-      against: "votes_against",
-      abstain: "votes_abstain",
+      for: 'votes_for',
+      against: 'votes_against',
+      abstain: 'votes_abstain',
     };
     const column = columnMap[data.position];
 
     await client.query(
       `UPDATE bills SET ${column} = ${column} + 1, updated_at = NOW() WHERE id = $1`,
-      [data.billId],
+      [data.billId]
     );
 
     // 7. Create audit log (tamper-evident)
@@ -127,11 +127,11 @@ export async function castVote(req: Request, res: Response): Promise<void> {
           isPublic: data.isPublic,
           timestamp: vote.created_at,
         }),
-      ],
+      ]
     );
 
     // 8. Commit transaction
-    await client.query("COMMIT");
+    await client.query('COMMIT');
 
     // 9. Send response
     res.status(201).json({
@@ -142,21 +142,21 @@ export async function castVote(req: Request, res: Response): Promise<void> {
         weight: vote.weight,
         createdAt: vote.created_at,
       },
-      message: "Vote recorded successfully",
+      message: 'Vote recorded successfully',
     });
   } catch (error) {
-    await client.query("ROLLBACK");
+    await client.query('ROLLBACK');
 
     if (error instanceof z.ZodError) {
       res.status(400).json({
-        error: "Validation failed",
+        error: 'Validation failed',
         details: error.errors,
       });
       return;
     }
 
-    console.error("Vote casting error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Vote casting error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   } finally {
     client.release();
   }
@@ -172,7 +172,7 @@ export async function getVoteResults(req: Request, res: Response): Promise<void>
 
     // Validate bill ID format
     if (!/^bill-\d+$/.test(billId)) {
-      res.status(400).json({ error: "Invalid bill ID format" });
+      res.status(400).json({ error: 'Invalid bill ID format' });
       return;
     }
 
@@ -190,13 +190,13 @@ export async function getVoteResults(req: Request, res: Response): Promise<void>
         (b.votes_for + b.votes_against + b.votes_abstain) as total_votes
        FROM bills b
        WHERE b.id = $1`,
-      [billId],
+      [billId]
     );
 
     const bill = result.rows[0];
 
     if (!bill) {
-      res.status(404).json({ error: "Bill not found" });
+      res.status(404).json({ error: 'Bill not found' });
       return;
     }
 
@@ -229,8 +229,8 @@ export async function getVoteResults(req: Request, res: Response): Promise<void>
 
     res.status(200).json(results);
   } catch (error) {
-    console.error("Get vote results error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Get vote results error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
@@ -243,7 +243,7 @@ export async function getUserVote(req: Request, res: Response): Promise<void> {
     const { billId } = req.params;
     const userId = req.user?.userId;
     if (!userId) {
-      res.status(401).json({ error: "Not authenticated" });
+      res.status(401).json({ error: 'Not authenticated' });
       return;
     }
 
@@ -251,12 +251,12 @@ export async function getUserVote(req: Request, res: Response): Promise<void> {
       `SELECT id, position, reason, is_public, created_at
        FROM votes
        WHERE bill_id = $1 AND user_id = $2`,
-      [billId, userId],
+      [billId, userId]
     );
 
     if (result.rows.length === 0) {
       res.status(404).json({
-        error: "No vote found",
+        error: 'No vote found',
         hasVoted: false,
       });
       return;
@@ -274,8 +274,8 @@ export async function getUserVote(req: Request, res: Response): Promise<void> {
       },
     });
   } catch (error) {
-    console.error("Get user vote error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Get user vote error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 

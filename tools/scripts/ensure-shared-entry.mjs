@@ -1,8 +1,8 @@
-import { writeFileSync, mkdirSync } from "node:fs";
-import { join } from "node:path";
+import { writeFileSync, mkdirSync } from 'node:fs';
+import { join } from 'node:path';
 
-const distRoot = join(process.cwd(), "libs", "shared", "dist");
-const entryPath = join(distRoot, "index.js");
+const distRoot = join(process.cwd(), 'libs', 'shared', 'dist');
+const entryPath = join(distRoot, 'index.js');
 
 mkdirSync(distRoot, { recursive: true });
 
@@ -11,5 +11,5 @@ export * from './src/security.js';
 export * from './src/logger.js';
 `;
 
-writeFileSync(entryPath, content, "utf8");
-console.log("Wrote", entryPath);
+writeFileSync(entryPath, content, 'utf8');
+console.log('Wrote', entryPath);

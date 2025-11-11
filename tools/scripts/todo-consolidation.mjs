@@ -6,24 +6,24 @@
  * Prevents fragmentation of task management
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // Configuration
-const REPO_ROOT = path.resolve(__dirname, "../../../");
-const TODO_FILE = path.join(REPO_ROOT, "docs/TODO.md");
+const REPO_ROOT = path.resolve(__dirname, '../../../');
+const TODO_FILE = path.join(REPO_ROOT, 'docs/TODO.md');
 const IGNORE_PATTERNS = [
-  "node_modules",
-  ".git",
-  "dist",
-  "build",
-  "coverage",
-  "*.log",
-  "tmp",
-  "cache",
+  'node_modules',
+  '.git',
+  'dist',
+  'build',
+  'coverage',
+  '*.log',
+  'tmp',
+  'cache',
 ];
 
 /**
@@ -47,11 +47,11 @@ function findTodoFiles() {
 
       // Skip ignored patterns
       if (
-        IGNORE_PATTERNS.some((pattern) => {
-          if (pattern.includes("*")) {
+        IGNORE_PATTERNS.some(pattern => {
+          if (pattern.includes('*')) {
             // Security: Use regex with global flag to replace ALL asterisks
             // Reference: CWE-182 Incomplete Sanitization
-            return item.includes(pattern.replace(/\*/g, ""));
+            return item.includes(pattern.replace(/\*/g, ''));
           }
           return item === pattern;
         })
@@ -78,16 +78,16 @@ function isTodoFile(filename, filepath) {
   const todoPatterns = [/^todo/i, /todo-/i, /-todo/i, /todo_/i, /_todo/i];
 
   // Check filename
-  if (todoPatterns.some((pattern) => pattern.test(filename))) {
+  if (todoPatterns.some(pattern => pattern.test(filename))) {
     return true;
   }
 
   // Check file extension
-  if (path.extname(filename) === ".md") {
+  if (path.extname(filename) === '.md') {
     try {
-      const content = fs.readFileSync(filepath, "utf8");
+      const content = fs.readFileSync(filepath, 'utf8');
       // Check if file contains TODO markers
-      return content.includes("# TODO") || content.includes("- [ ]") || content.includes("TODO:");
+      return content.includes('# TODO') || content.includes('- [ ]') || content.includes('TODO:');
     } catch (error) {
       return false;
     }
@@ -100,9 +100,9 @@ function isTodoFile(filename, filepath) {
  * Parse TODO entries from a file
  */
 function parseTodoEntries(filepath) {
-  const content = fs.readFileSync(filepath, "utf8");
+  const content = fs.readFileSync(filepath, 'utf8');
   const entries = [];
-  const lines = content.split("\n");
+  const lines = content.split('\n');
 
   let currentEntry = null;
   let inCodeBlock = false;
@@ -111,7 +111,7 @@ function parseTodoEntries(filepath) {
     const line = lines[i];
 
     // Skip code blocks
-    if (line.trim().startsWith("```")) {
+    if (line.trim().startsWith('```')) {
       inCodeBlock = !inCodeBlock;
       continue;
     }
@@ -126,20 +126,20 @@ function parseTodoEntries(filepath) {
 
       currentEntry = {
         text: todoMatch[3].trim(),
-        completed: todoMatch[2] === "x",
+        completed: todoMatch[2] === 'x',
         file: path.relative(REPO_ROOT, filepath),
         line: i + 1,
         context: [],
       };
     } else if (
       currentEntry &&
-      line.trim().startsWith("-") &&
-      !line.includes("[ ]") &&
-      !line.includes("[x]")
+      line.trim().startsWith('-') &&
+      !line.includes('[ ]') &&
+      !line.includes('[x]')
     ) {
       // Continuation of current entry
       currentEntry.context.push(line.trim().substring(1).trim());
-    } else if (line.trim() === "" && currentEntry) {
+    } else if (line.trim() === '' && currentEntry) {
       // End of entry
       entries.push(currentEntry);
       currentEntry = null;
@@ -183,8 +183,8 @@ function findDuplicates(entries) {
 function normalizeText(text) {
   return text
     .toLowerCase()
-    .replace(/[^\w\s]/g, "")
-    .replace(/\s+/g, " ")
+    .replace(/[^\w\s]/g, '')
+    .replace(/\s+/g, ' ')
     .trim();
 }
 
@@ -199,8 +199,8 @@ function generateReport(allEntries, duplicates, todoFiles) {
       duplicateEntries: duplicates.length,
       uniqueEntries: allEntries.length - duplicates.length,
     },
-    files: todoFiles.map((f) => path.relative(REPO_ROOT, f)),
-    duplicates: duplicates.map((d) => ({
+    files: todoFiles.map(f => path.relative(REPO_ROOT, f)),
+    duplicates: duplicates.map(d => ({
       text: d.original.text,
       files: [`${d.original.file}:${d.original.line}`, `${d.duplicate.file}:${d.duplicate.line}`],
     })),
@@ -210,13 +210,13 @@ function generateReport(allEntries, duplicates, todoFiles) {
   // Generate recommendations
   if (duplicates.length > 0) {
     report.recommendations.push(
-      "Found duplicate TODO entries. Consider consolidating them in docs/TODO.md",
+      'Found duplicate TODO entries. Consider consolidating them in docs/TODO.md'
     );
   }
 
   if (todoFiles.length > 1) {
     report.recommendations.push(
-      "Multiple TODO files detected. Consider consolidating into docs/TODO.md",
+      'Multiple TODO files detected. Consider consolidating into docs/TODO.md'
     );
   }
 
@@ -227,7 +227,7 @@ function generateReport(allEntries, duplicates, todoFiles) {
  * Main execution
  */
 function main() {
-  console.log("🔍 Scanning for TODO files...");
+  console.log('🔍 Scanning for TODO files...');
 
   const todoFiles = findTodoFiles();
   console.log(`📁 Found ${todoFiles.length} TODO files`);
@@ -247,27 +247,27 @@ function main() {
   const report = generateReport(allEntries, duplicates, todoFiles);
 
   // Output report
-  console.log("\n📋 Consolidation Report:");
+  console.log('\n📋 Consolidation Report:');
   console.log(`   Files scanned: ${report.summary.totalFiles}`);
   console.log(`   Total entries: ${report.summary.totalEntries}`);
   console.log(`   Unique entries: ${report.summary.uniqueEntries}`);
   console.log(`   Duplicates: ${report.summary.duplicateEntries}`);
 
   if (report.duplicates.length > 0) {
-    console.log("\n⚠️  Duplicates found:");
+    console.log('\n⚠️  Duplicates found:');
     report.duplicates.forEach((dup, index) => {
       console.log(`   ${index + 1}. "${dup.text}"`);
-      console.log(`      Files: ${dup.files.join(", ")}`);
+      console.log(`      Files: ${dup.files.join(', ')}`);
     });
   }
 
   if (report.recommendations.length > 0) {
-    console.log("\n💡 Recommendations:");
-    report.recommendations.forEach((rec) => console.log(`   • ${rec}`));
+    console.log('\n💡 Recommendations:');
+    report.recommendations.forEach(rec => console.log(`   • ${rec}`));
   }
 
   // Save detailed report
-  const reportPath = path.join(REPO_ROOT, "reports/todo-consolidation-report.json");
+  const reportPath = path.join(REPO_ROOT, 'reports/todo-consolidation-report.json');
   try {
     fs.writeFileSync(reportPath, JSON.stringify(report, null, 2));
     console.log(`\n📄 Detailed report saved to: ${path.relative(REPO_ROOT, reportPath)}`);
@@ -277,10 +277,10 @@ function main() {
 
   // Exit with error code if issues found
   if (duplicates.length > 0 || todoFiles.length > 1) {
-    console.log("\n❌ Issues detected. Run consolidation manually.");
+    console.log('\n❌ Issues detected. Run consolidation manually.');
     process.exit(1);
   } else {
-    console.log("\n✅ No consolidation issues found.");
+    console.log('\n✅ No consolidation issues found.');
   }
 }
 

@@ -7,7 +7,7 @@
 class MigrationError extends Error {
   constructor(message, migrationName, originalError = null) {
     super(message);
-    this.name = "MigrationError";
+    this.name = 'MigrationError';
     this.migrationName = migrationName;
     this.originalError = originalError;
   }
@@ -20,14 +20,14 @@ class MigrationError extends Error {
 class MigrationRollbackError extends MigrationError {
   constructor(message, migrationName, originalError = null) {
     super(message, migrationName, originalError);
-    this.name = "MigrationRollbackError";
+    this.name = 'MigrationRollbackError';
   }
 }
 
 class MigrationValidationError extends MigrationError {
   constructor(message, migrationName, originalError = null) {
     super(message, migrationName, originalError);
-    this.name = "MigrationValidationError";
+    this.name = 'MigrationValidationError';
   }
 }
 

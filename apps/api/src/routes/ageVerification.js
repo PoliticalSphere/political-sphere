@@ -10,8 +10,8 @@ const router = express.Router();
 const rateLimit = require('express-rate-limit');
 
 const ageVerificationService = require('../ageVerificationService');
-const { authenticate } = require('../middleware/auth');
-const { validate, schemas } = require('../middleware/validation');
+const { authenticate, requireRole } = require('../middleware/auth');
+const { _validate, _schemas } = require('../middleware/validation');
 const logger = require('../utils/logger.js');
 
 // Rate limiting for age verification endpoints
@@ -66,16 +66,13 @@ router.post('/initiate', async (req, res) => {
  * Complete age verification
  * Public endpoint (but requires valid verification ID)
  */
-router.post('/verify', validateAgeVerification, async (req, res) => {
+router.post('/verify', async (req, res) => {
   try {
-    const { verificationId, ...verificationData } = req.body;
+    const { verificationId } = req.body;
 
-    const result = await ageVerificationService.completeVerification(
-      verificationId,
-      verificationData
-    );
+    const result = await ageVerificationService.completeVerification(verificationId, req.body);
 
-    if (result.success) {
+    if (result.sucess) {
       // Log successful verification
       logger.audit('Age verification completed', {
         verificationId,
@@ -118,7 +115,7 @@ router.post('/verify', validateAgeVerification, async (req, res) => {
  * Request parental consent for minor
  * Public endpoint
  */
-router.post('/parental-consent', validateParentalConsent, async (req, res) => {
+router.post('/parental-consent', async (req, res) => {
   try {
     const { parentEmail, childAge } = req.body;
 

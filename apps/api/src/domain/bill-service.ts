@@ -1,11 +1,11 @@
-import { getDatabase } from "../modules/stores/index.js";
-
 import {
   type Bill,
   type BillStatus,
   type CreateBillInput,
   CreateBillSchema,
-} from "@political-sphere/shared";
+} from '@political-sphere/shared';
+
+import { getDatabase } from '../modules/stores/index.js';
 
 export class BillService {
   // Lazy getter to avoid stale DB connections in tests
@@ -20,7 +20,7 @@ export class BillService {
     // Verify proposer exists
     const proposer = await this.db.users.getById(input.proposerId);
     if (!proposer) {
-      throw new Error("Proposer does not exist");
+      throw new Error('Proposer does not exist');
     }
 
     // Force initial status to 'proposed' regardless of caller input for consistency
@@ -28,7 +28,7 @@ export class BillService {
       title: input.title,
       ...(input.description !== undefined && { description: input.description }),
       proposerId: input.proposerId,
-      status: "proposed",
+      status: 'proposed',
     });
 
     // Map database result to Bill type (handle null description and ensure status type)
@@ -54,7 +54,7 @@ export class BillService {
 
   async getAllBills(
     page: number = 1,
-    limit: number = 10,
+    limit: number = 10
   ): Promise<{
     bills: Bill[];
     total: number;
@@ -64,7 +64,7 @@ export class BillService {
     const allBills = await this.db.bills.getAll();
 
     // Map database results to Bill type
-    const bills = allBills.map((bill) => ({
+    const bills = allBills.map(bill => ({
       ...bill,
       status: bill.status as BillStatus,
       description: bill.description ?? undefined,
@@ -86,8 +86,8 @@ export class BillService {
     // BillStore doesn't have getByProposerId, so filter all bills
     const allBills = await this.db.bills.getAll();
     return allBills
-      .filter((bill) => bill.proposerId === proposerId)
-      .map((bill) => ({
+      .filter(bill => bill.proposerId === proposerId)
+      .map(bill => ({
         ...bill,
         status: bill.status as BillStatus,
         description: bill.description ?? undefined,

@@ -11,15 +11,15 @@
  * Standards: QUAL-01 to QUAL-09
  */
 
-import { UserFactory, BillFactory } from "@political-sphere/testing/factories";
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
+import { UserFactory, BillFactory } from '@political-sphere/testing/factories';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 // ============================================================================
 // EXAMPLE 1: Testing Pure Functions
 // ============================================================================
 
-describe("calculateVotePercentage", () => {
-  it("should return correct percentage for simple case", () => {
+describe('calculateVotePercentage', () => {
+  it('should return correct percentage for simple case', () => {
     // Arrange
     const votesFor = 75;
     const totalVotes = 100;
@@ -31,7 +31,7 @@ describe("calculateVotePercentage", () => {
     expect(percentage).toBe(75);
   });
 
-  it("should handle zero total votes without division error", () => {
+  it('should handle zero total votes without division error', () => {
     // Arrange
     const votesFor = 0;
     const totalVotes = 0;
@@ -43,7 +43,7 @@ describe("calculateVotePercentage", () => {
     expect(percentage).toBe(0);
   });
 
-  it("should round to 2 decimal places", () => {
+  it('should round to 2 decimal places', () => {
     // Arrange
     const votesFor = 1;
     const totalVotes = 3;
@@ -55,7 +55,7 @@ describe("calculateVotePercentage", () => {
     expect(percentage).toBe(33.33);
   });
 
-  it("should handle edge case of 100% votes", () => {
+  it('should handle edge case of 100% votes', () => {
     // Arrange
     const votesFor = 100;
     const totalVotes = 100;
@@ -78,7 +78,7 @@ function calculateVotePercentage(votes: number, total: number): number {
 // EXAMPLE 2: Testing with Factories
 // ============================================================================
 
-describe("UserService", () => {
+describe('UserService', () => {
   let userService: UserService;
   let mockRepository: MockRepository;
 
@@ -93,8 +93,8 @@ describe("UserService", () => {
     vi.clearAllMocks();
   });
 
-  describe("createUser", () => {
-    it("should create user with valid data", async () => {
+  describe('createUser', () => {
+    it('should create user with valid data', async () => {
       // Arrange
       const userData = UserFactory.build({
         id: undefined, // Will be assigned by DB
@@ -112,14 +112,14 @@ describe("UserService", () => {
         expect.objectContaining({
           username: userData.username,
           email: userData.email,
-        }),
+        })
       );
       expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
 
-    it("should hash password before saving", async () => {
+    it('should hash password before saving', async () => {
       // Arrange
-      const plainPassword = "SecurePass123!";
+      const plainPassword = 'SecurePass123!';
       const userData = UserFactory.build({ password: plainPassword });
 
       // Act
@@ -131,14 +131,14 @@ describe("UserService", () => {
       expect(savedData.passwordHash).not.toBe(plainPassword);
     });
 
-    it("should reject duplicate email", async () => {
+    it('should reject duplicate email', async () => {
       // Arrange
       const existingUser = UserFactory.build();
       const newUserData = UserFactory.build({ email: existingUser.email });
       mockRepository.findByEmail.mockResolvedValue(existingUser);
 
       // Act & Assert
-      await expect(userService.createUser(newUserData)).rejects.toThrow("Email already exists");
+      await expect(userService.createUser(newUserData)).rejects.toThrow('Email already exists');
       expect(mockRepository.save).not.toHaveBeenCalled();
     });
 
@@ -151,7 +151,7 @@ describe("UserService", () => {
 
       // Assert
       const savedData = mockRepository.save.mock.calls[0][0];
-      expect(savedData.role).toBe("user");
+      expect(savedData.role).toBe('user');
     });
   });
 });
@@ -160,7 +160,7 @@ describe("UserService", () => {
 // EXAMPLE 3: Testing Async Operations
 // ============================================================================
 
-describe("BillService", () => {
+describe('BillService', () => {
   let billService: BillService;
   let mockBillRepo: MockBillRepository;
   let mockVoteRepo: MockVoteRepository;
@@ -171,8 +171,8 @@ describe("BillService", () => {
     billService = new BillService(mockBillRepo, mockVoteRepo);
   });
 
-  describe("finalizeBill", () => {
-    it("should mark bill as passed when votes favor passage", async () => {
+  describe('finalizeBill', () => {
+    it('should mark bill as passed when votes favor passage', async () => {
       // Arrange
       const bill = BillFactory.ActiveVoting({
         votesFor: 60,
@@ -180,20 +180,20 @@ describe("BillService", () => {
         votesAbstain: 0,
       });
       mockBillRepo.findById.mockResolvedValue(bill);
-      mockBillRepo.update.mockResolvedValue({ ...bill, status: "passed" });
+      mockBillRepo.update.mockResolvedValue({ ...bill, status: 'passed' });
 
       // Act
       const result = await billService.finalizeBill(bill.id);
 
       // Assert
-      expect(result.status).toBe("passed");
+      expect(result.status).toBe('passed');
       expect(mockBillRepo.update).toHaveBeenCalledWith(
         bill.id,
-        expect.objectContaining({ status: "passed" }),
+        expect.objectContaining({ status: 'passed' })
       );
     });
 
-    it("should mark bill as rejected when votes oppose passage", async () => {
+    it('should mark bill as rejected when votes oppose passage', async () => {
       // Arrange
       const bill = BillFactory.ActiveVoting({
         votesFor: 40,
@@ -201,31 +201,31 @@ describe("BillService", () => {
         votesAbstain: 0,
       });
       mockBillRepo.findById.mockResolvedValue(bill);
-      mockBillRepo.update.mockResolvedValue({ ...bill, status: "rejected" });
+      mockBillRepo.update.mockResolvedValue({ ...bill, status: 'rejected' });
 
       // Act
       const result = await billService.finalizeBill(bill.id);
 
       // Assert
-      expect(result.status).toBe("rejected");
+      expect(result.status).toBe('rejected');
     });
 
-    it("should throw error if bill not found", async () => {
+    it('should throw error if bill not found', async () => {
       // Arrange
       mockBillRepo.findById.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(billService.finalizeBill("bill-999")).rejects.toThrow("Bill not found");
+      await expect(billService.finalizeBill('bill-999')).rejects.toThrow('Bill not found');
     });
 
-    it("should throw error if bill not in active_voting status", async () => {
+    it('should throw error if bill not in active_voting status', async () => {
       // Arrange
       const draftBill = BillFactory.Draft();
       mockBillRepo.findById.mockResolvedValue(draftBill);
 
       // Act & Assert
       await expect(billService.finalizeBill(draftBill.id)).rejects.toThrow(
-        "Bill is not in voting phase",
+        'Bill is not in voting phase'
       );
     });
   });
@@ -235,45 +235,45 @@ describe("BillService", () => {
 // EXAMPLE 4: Testing Error Handling
 // ============================================================================
 
-describe("VotingService", () => {
+describe('VotingService', () => {
   let votingService: VotingService;
 
   beforeEach(() => {
     votingService = new VotingService();
   });
 
-  describe("castVote", () => {
-    it("should throw on invalid bill ID format", async () => {
+  describe('castVote', () => {
+    it('should throw on invalid bill ID format', async () => {
       // Arrange
-      const invalidId = "not-a-bill-id";
+      const invalidId = 'not-a-bill-id';
 
       // Act & Assert
-      await expect(votingService.castVote(invalidId, "user-1", "for")).rejects.toThrow(
-        "Invalid bill ID format",
+      await expect(votingService.castVote(invalidId, 'user-1', 'for')).rejects.toThrow(
+        'Invalid bill ID format'
       );
     });
 
-    it("should throw on invalid position", async () => {
+    it('should throw on invalid position', async () => {
       // Arrange
-      const billId = "bill-1";
-      const userId = "user-1";
-      const invalidPosition = "maybe" as string;
+      const billId = 'bill-1';
+      const userId = 'user-1';
+      const invalidPosition = 'maybe' as string;
 
       // Act & Assert
       await expect(votingService.castVote(billId, userId, invalidPosition)).rejects.toThrow(
-        "Invalid vote position",
+        'Invalid vote position'
       );
     });
 
-    it("should handle database connection failure gracefully", async () => {
+    it('should handle database connection failure gracefully', async () => {
       // Arrange
-      const billId = "bill-1";
-      const userId = "user-1";
-      mockBillRepo.findById.mockRejectedValue(new Error("Connection refused"));
+      const billId = 'bill-1';
+      const userId = 'user-1';
+      mockBillRepo.findById.mockRejectedValue(new Error('Connection refused'));
 
       // Act & Assert
-      await expect(votingService.castVote(billId, userId, "for")).rejects.toThrow(
-        "Database operation failed",
+      await expect(votingService.castVote(billId, userId, 'for')).rejects.toThrow(
+        'Database operation failed'
       );
     });
   });
@@ -283,7 +283,7 @@ describe("VotingService", () => {
 // EXAMPLE 5: Testing with Timers
 // ============================================================================
 
-describe("VotingWindow", () => {
+describe('VotingWindow', () => {
   beforeEach(() => {
     // Use fake timers
     vi.useFakeTimers();
@@ -294,7 +294,7 @@ describe("VotingWindow", () => {
     vi.useRealTimers();
   });
 
-  it("should close voting window after specified duration", () => {
+  it('should close voting window after specified duration', () => {
     // Arrange
     const onClose = vi.fn();
     const votingWindow = new VotingWindow(5000, onClose); // 5 seconds
@@ -307,7 +307,7 @@ describe("VotingWindow", () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it("should not close if duration not elapsed", () => {
+  it('should not close if duration not elapsed', () => {
     // Arrange
     const onClose = vi.fn();
     const votingWindow = new VotingWindow(5000, onClose);
@@ -325,8 +325,8 @@ describe("VotingWindow", () => {
 // EXAMPLE 6: Snapshot Testing
 // ============================================================================
 
-describe("BillSummary Component", () => {
-  it("should match snapshot for standard bill", () => {
+describe('BillSummary Component', () => {
+  it('should match snapshot for standard bill', () => {
     // Arrange
     const bill = BillFactory.ActiveVoting();
 
@@ -337,7 +337,7 @@ describe("BillSummary Component", () => {
     expect(summary).toMatchSnapshot();
   });
 
-  it("should match snapshot for passed bill", () => {
+  it('should match snapshot for passed bill', () => {
     // Arrange
     const bill = BillFactory.Passed();
 
@@ -394,25 +394,25 @@ class UserService {
   constructor(private repo: MockRepository) {}
   async createUser(data: Record<string, unknown>) {
     const existing = await this.repo.findByEmail(data.email);
-    if (existing) throw new Error("Email already exists");
-    return this.repo.save({ ...data, role: data.role || "user" });
+    if (existing) throw new Error('Email already exists');
+    return this.repo.save({ ...data, role: data.role || 'user' });
   }
 }
 
 class BillService {
   constructor(
     private billRepo: MockBillRepository,
-    _voteRepo: MockVoteRepository,
+    _voteRepo: MockVoteRepository
   ) {}
 
   async finalizeBill(billId: string) {
     const bill = await this.billRepo.findById(billId);
-    if (!bill) throw new Error("Bill not found");
-    if (bill.status !== "active_voting") {
-      throw new Error("Bill is not in voting phase");
+    if (!bill) throw new Error('Bill not found');
+    if (bill.status !== 'active_voting') {
+      throw new Error('Bill is not in voting phase');
     }
 
-    const status = bill.votesFor > bill.votesAgainst ? "passed" : "rejected";
+    const status = bill.votesFor > bill.votesAgainst ? 'passed' : 'rejected';
     return this.billRepo.update(billId, { status });
   }
 }
@@ -420,10 +420,10 @@ class BillService {
 class VotingService {
   async castVote(billId: string, _userId: string, position: string) {
     if (!/^bill-\d+$/.test(billId)) {
-      throw new Error("Invalid bill ID format");
+      throw new Error('Invalid bill ID format');
     }
-    if (!["for", "against", "abstain"].includes(position)) {
-      throw new Error("Invalid vote position");
+    if (!['for', 'against', 'abstain'].includes(position)) {
+      throw new Error('Invalid vote position');
     }
     // Implementation
   }
@@ -432,7 +432,7 @@ class VotingService {
 class VotingWindow {
   constructor(
     private duration: number,
-    private onClose: () => void,
+    private onClose: () => void
   ) {}
 
   start() {

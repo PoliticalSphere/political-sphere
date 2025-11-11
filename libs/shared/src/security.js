@@ -1,15 +1,15 @@
 // Security utility functions for the Political Sphere API
 // Implements OWASP best practices for input validation and sanitization
 
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
-import process from "node:process";
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+import process from 'node:process';
 
-const DEFAULT_ALLOWED_PROTOCOLS = ["http", "https"];
+const DEFAULT_ALLOWED_PROTOCOLS = ['http', 'https'];
 
 const DEFAULT_ALLOWED_ORIGINS = [
-  "https://political-sphere.com",
-  "https://www.political-sphere.com",
-  "https://staging.political-sphere.com",
+  'https://political-sphere.com',
+  'https://www.political-sphere.com',
+  'https://staging.political-sphere.com',
 ];
 
 const DEFAULT_RATE_LIMIT = Object.freeze({
@@ -18,36 +18,36 @@ const DEFAULT_RATE_LIMIT = Object.freeze({
   maxKeys: 5000,
 });
 
-const DEFAULT_ALLOWED_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS"];
-const DEFAULT_ALLOWED_HEADERS = ["Content-Type", "Authorization", "X-CSRF-Token"];
-const DEFAULT_EXPOSED_HEADERS = ["X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset"];
+const DEFAULT_ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'];
+const DEFAULT_ALLOWED_HEADERS = ['Content-Type', 'Authorization', 'X-CSRF-Token'];
+const DEFAULT_EXPOSED_HEADERS = ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'];
 
 const DEFAULT_SECURITY_DIRECTIVES = Object.freeze({
-  "default-src": new Set(["'self'"]),
-  "script-src": new Set(["'self'"]),
-  "style-src": new Set(["'self'"]),
-  "img-src": new Set(["'self'", "data:", "https:"]),
-  "font-src": new Set(["'self'"]),
-  "connect-src": new Set(["'self'"]),
-  "frame-ancestors": new Set(["'none'"]),
-  "base-uri": new Set(["'self'"]),
-  "form-action": new Set(["'self'"]),
+  'default-src': new Set(["'self'"]),
+  'script-src': new Set(["'self'"]),
+  'style-src': new Set(["'self'"]),
+  'img-src': new Set(["'self'", 'data:', 'https:']),
+  'font-src': new Set(["'self'"]),
+  'connect-src': new Set(["'self'"]),
+  'frame-ancestors': new Set(["'none'"]),
+  'base-uri': new Set(["'self'"]),
+  'form-action': new Set(["'self'"]),
 });
 
 const VALID_CATEGORIES = new Set([
-  "politics",
-  "economy",
-  "social",
-  "technology",
-  "environment",
-  "health",
-  "finance",
-  "governance",
-  "policy",
-  "general",
+  'politics',
+  'economy',
+  'social',
+  'technology',
+  'environment',
+  'health',
+  'finance',
+  'governance',
+  'policy',
+  'general',
 ]);
 
-const ALLOWED_STATUSES = new Set(["draft", "published", "archived"]);
+const ALLOWED_STATUSES = new Set(['draft', 'published', 'archived']);
 
 /**
  * Validates and sanitizes HTML input to prevent XSS attacks
@@ -55,15 +55,15 @@ const ALLOWED_STATUSES = new Set(["draft", "published", "archived"]);
  * @returns {string} - Sanitized HTML string
  */
 export function sanitizeHtml(input) {
-  if (typeof input !== "string") return "";
+  if (typeof input !== 'string') return '';
 
   return input
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&#x27;")
-    .replace(/\//g, "&#x2F;");
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#x27;')
+    .replace(/\//g, '&#x2F;');
 }
 
 /**
@@ -72,7 +72,7 @@ export function sanitizeHtml(input) {
  * @returns {boolean} - True if input is safe
  */
 export function isValidInput(input) {
-  if (typeof input !== "string") return false;
+  if (typeof input !== 'string') return false;
 
   // Check for common injection patterns
   const dangerousPatterns = [
@@ -95,7 +95,7 @@ export function isValidInput(input) {
     /\bor\b\s+1\s*=\s*1/i,
   ];
 
-  return !dangerousPatterns.some((pattern) => pattern.test(input));
+  return !dangerousPatterns.some(pattern => pattern.test(input));
 }
 
 /**
@@ -114,10 +114,10 @@ export function isValidEmail(email) {
  * @param {string[]} allowedProtocols - Allowed protocols (default: ['http', 'https'])
  * @returns {boolean} - True if URL is valid
  */
-export function isValidUrl(url, allowedProtocols = ["http", "https"]) {
+export function isValidUrl(url, allowedProtocols = ['http', 'https']) {
   try {
     const parsed = new URL(url);
-    return allowedProtocols.includes(parsed.protocol.replace(":", ""));
+    return allowedProtocols.includes(parsed.protocol.replace(':', ''));
   } catch {
     return false;
   }
@@ -131,7 +131,7 @@ export function isValidUrl(url, allowedProtocols = ["http", "https"]) {
  * @returns {boolean} - True if length is valid
  */
 export function isValidLength(input, min = 1, max = 10000) {
-  if (typeof input !== "string") return false;
+  if (typeof input !== 'string') return false;
   return input.length >= min && input.length <= max;
 }
 
@@ -140,7 +140,7 @@ function resolveSecret(envKey, fallback) {
   if (candidate && candidate !== fallback) {
     return candidate;
   }
-  if (process.env.NODE_ENV === "production") {
+  if (process.env.NODE_ENV === 'production') {
     throw new Error(`${envKey} must be set to a secure value in production environments`);
   }
   return fallback;
@@ -153,9 +153,9 @@ function resolveSecret(envKey, fallback) {
  */
 export function generateSecureToken(length = 32) {
   if (!Number.isInteger(length) || length <= 0) {
-    throw new TypeError("Token length must be a positive integer");
+    throw new TypeError('Token length must be a positive integer');
   }
-  return randomBytes(length).toString("hex");
+  return randomBytes(length).toString('hex');
 }
 
 /**
@@ -164,7 +164,7 @@ export function generateSecureToken(length = 32) {
  * @returns {string} - Hex-encoded hash
  */
 export function hashValue(value) {
-  return createHash("sha256").update(value).digest("hex");
+  return createHash('sha256').update(value).digest('hex');
 }
 
 /**
@@ -173,7 +173,7 @@ export function hashValue(value) {
  * @returns {string|null} - Sanitized category or null if invalid
  */
 export function validateCategory(category) {
-  if (typeof category !== "string") return null;
+  if (typeof category !== 'string') return null;
   const sanitized = category.toLowerCase().trim();
 
   return VALID_CATEGORIES.has(sanitized) ? sanitized : null;
@@ -185,7 +185,7 @@ export function validateCategory(category) {
  * @returns {string|null} - Sanitized tag or null if invalid
  */
 export function validateTag(tag) {
-  if (typeof tag !== "string") return null;
+  if (typeof tag !== 'string') return null;
 
   const sanitized = tag.trim();
 
@@ -201,7 +201,7 @@ export function validateTag(tag) {
 const rateLimitStore = new Map();
 
 function normalizeRateLimitOptions(options = {}) {
-  if (typeof options === "number") {
+  if (typeof options === 'number') {
     return {
       maxRequests: Number.isFinite(options)
         ? Math.max(1, Math.floor(options))
@@ -309,7 +309,7 @@ export function cleanupRateLimitStore() {
 
 // Clean up every 5 minutes
 const cleanupInterval = setInterval(cleanupRateLimitStore, 5 * 60 * 1000);
-if (typeof cleanupInterval.unref === "function") {
+if (typeof cleanupInterval.unref === 'function') {
   cleanupInterval.unref();
 }
 
@@ -319,13 +319,13 @@ if (typeof cleanupInterval.unref === "function") {
  * @returns {string} - CSRF token
  */
 export function generateCsrfToken(sessionId) {
-  if (typeof sessionId !== "string" || !sessionId.trim()) {
-    throw new TypeError("sessionId must be a non-empty string");
+  if (typeof sessionId !== 'string' || !sessionId.trim()) {
+    throw new TypeError('sessionId must be a non-empty string');
   }
 
-  const secret = resolveSecret("CSRF_SECRET", "change-me-in-production");
+  const secret = resolveSecret('CSRF_SECRET', 'change-me-in-production');
   const timestamp = Date.now().toString();
-  const token = createHash("sha256").update(`${sessionId}${timestamp}${secret}`).digest("hex");
+  const token = createHash('sha256').update(`${sessionId}${timestamp}${secret}`).digest('hex');
 
   return `${timestamp}.${token}`;
 }
@@ -338,22 +338,22 @@ export function generateCsrfToken(sessionId) {
  * @returns {boolean} - True if token is valid
  */
 export function validateCsrfToken(token, sessionId, maxAge = 60 * 60 * 1000) {
-  if (!token || typeof token !== "string") return false;
+  if (!token || typeof token !== 'string') return false;
 
-  const [timestamp, hash] = token.split(".");
+  const [timestamp, hash] = token.split('.');
   if (!timestamp || !hash) return false;
 
   const tokenAge = Date.now() - parseInt(timestamp, 10);
   if (tokenAge > maxAge || tokenAge < 0) return false;
 
-  const secret = resolveSecret("CSRF_SECRET", "change-me-in-production");
-  const expectedHash = createHash("sha256")
+  const secret = resolveSecret('CSRF_SECRET', 'change-me-in-production');
+  const expectedHash = createHash('sha256')
     .update(`${sessionId}${timestamp}${secret}`)
-    .digest("hex");
+    .digest('hex');
 
   try {
-    const expectedBuffer = Buffer.from(expectedHash, "hex");
-    const providedBuffer = Buffer.from(hash, "hex");
+    const expectedBuffer = Buffer.from(expectedHash, 'hex');
+    const providedBuffer = Buffer.from(hash, 'hex');
     if (expectedBuffer.length !== providedBuffer.length) {
       return false;
     }
@@ -385,68 +385,68 @@ export function createSecurityHeaders(options = {}) {
     formAction = ["'self'"],
     baseUri = ["'self'"],
     upgradeInsecureRequests = false,
-    referrerPolicy = "strict-origin-when-cross-origin",
-    permissionsPolicy = "geolocation=(), microphone=(), camera=(), payment=(), usb=()",
-    crossOriginEmbedderPolicy = "require-corp",
-    crossOriginOpenerPolicy = "same-origin",
-    crossOriginResourcePolicy = "same-origin",
+    referrerPolicy = 'strict-origin-when-cross-origin',
+    permissionsPolicy = 'geolocation=(), microphone=(), camera=(), payment=(), usb=()',
+    crossOriginEmbedderPolicy = 'require-corp',
+    crossOriginOpenerPolicy = 'same-origin',
+    crossOriginResourcePolicy = 'same-origin',
   } = options;
 
   const directives = cloneSecurityDirectiveMap();
 
   if (scriptNonce) {
-    directives.get("script-src").add(`'nonce-${scriptNonce}'`);
+    directives.get('script-src').add(`'nonce-${scriptNonce}'`);
   }
 
-  for (const value of connectSrc) directives.get("connect-src").add(value);
-  for (const value of styleSrc) directives.get("style-src").add(value);
-  for (const value of imgSrc) directives.get("img-src").add(value);
-  for (const value of fontSrc) directives.get("font-src").add(value);
+  for (const value of connectSrc) directives.get('connect-src').add(value);
+  for (const value of styleSrc) directives.get('style-src').add(value);
+  for (const value of imgSrc) directives.get('img-src').add(value);
+  for (const value of fontSrc) directives.get('font-src').add(value);
 
-  directives.set("frame-ancestors", new Set(frameAncestors.length ? frameAncestors : ["'none'"]));
-  directives.set("form-action", new Set(formAction.length ? formAction : ["'self'"]));
-  directives.set("base-uri", new Set(baseUri.length ? baseUri : ["'self'"]));
+  directives.set('frame-ancestors', new Set(frameAncestors.length ? frameAncestors : ["'none'"]));
+  directives.set('form-action', new Set(formAction.length ? formAction : ["'self'"]));
+  directives.set('base-uri', new Set(baseUri.length ? baseUri : ["'self'"]));
 
   if (upgradeInsecureRequests) {
-    directives.set("upgrade-insecure-requests", new Set());
+    directives.set('upgrade-insecure-requests', new Set());
   }
 
   const csp = Array.from(directives.entries())
     .map(([directive, values]) => {
       if (values.size === 0) return directive;
-      return `${directive} ${Array.from(values).join(" ")}`;
+      return `${directive} ${Array.from(values).join(' ')}`;
     })
-    .join("; ");
+    .join('; ');
 
-  const frameOptions = frameAncestors.includes("'none'") ? "DENY" : "SAMEORIGIN";
+  const frameOptions = frameAncestors.includes("'none'") ? 'DENY' : 'SAMEORIGIN';
 
   return {
-    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": frameOptions,
-    "X-XSS-Protection": "1; mode=block",
-    "X-DNS-Prefetch-Control": "off",
-    "X-Permitted-Cross-Domain-Policies": "none",
-    "Referrer-Policy": referrerPolicy,
-    "Permissions-Policy": permissionsPolicy,
-    "Cross-Origin-Embedder-Policy": crossOriginEmbedderPolicy,
-    "Cross-Origin-Opener-Policy": crossOriginOpenerPolicy,
-    "Cross-Origin-Resource-Policy": crossOriginResourcePolicy,
-    "Content-Security-Policy": csp,
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': frameOptions,
+    'X-XSS-Protection': '1; mode=block',
+    'X-DNS-Prefetch-Control': 'off',
+    'X-Permitted-Cross-Domain-Policies': 'none',
+    'Referrer-Policy': referrerPolicy,
+    'Permissions-Policy': permissionsPolicy,
+    'Cross-Origin-Embedder-Policy': crossOriginEmbedderPolicy,
+    'Cross-Origin-Opener-Policy': crossOriginOpenerPolicy,
+    'Cross-Origin-Resource-Policy': crossOriginResourcePolicy,
+    'Content-Security-Policy': csp,
   };
 }
 
 export const SECURITY_HEADERS = Object.freeze(createSecurityHeaders());
 
 function resolveAllowedOrigins(customOrigins = []) {
-  const envOrigins = (process.env.CORS_ALLOWED_ORIGINS ?? "")
-    .split(",")
-    .map((origin) => origin.trim())
+  const envOrigins = (process.env.CORS_ALLOWED_ORIGINS ?? '')
+    .split(',')
+    .map(origin => origin.trim())
     .filter(Boolean);
 
   const devOrigins =
-    process.env.NODE_ENV === "development"
-      ? ["http://localhost:3000", "http://localhost:3001", "http://127.0.0.1:3000"]
+    process.env.NODE_ENV === 'development'
+      ? ['http://localhost:3000', 'http://localhost:3001', 'http://127.0.0.1:3000']
       : [];
 
   return Array.from(
@@ -455,7 +455,7 @@ function resolveAllowedOrigins(customOrigins = []) {
       ...customOrigins.filter(Boolean),
       ...envOrigins,
       ...devOrigins,
-    ]),
+    ])
   );
 }
 
@@ -473,23 +473,23 @@ export function getCorsHeaders(origin, options = {}) {
   } = options;
 
   const headers = {
-    Vary: "Origin",
+    Vary: 'Origin',
   };
 
-  if (!origin || typeof origin !== "string") {
+  if (!origin || typeof origin !== 'string') {
     return headers;
   }
 
   const normalizedOrigin = origin.trim();
 
   if (allowedOrigins.includes(normalizedOrigin)) {
-    headers["Access-Control-Allow-Origin"] = normalizedOrigin;
-    headers["Access-Control-Allow-Methods"] = allowedMethods.join(", ");
-    headers["Access-Control-Allow-Headers"] = allowedHeaders.join(", ");
-    headers["Access-Control-Expose-Headers"] = exposedHeaders.join(", ");
-    headers["Access-Control-Max-Age"] = String(maxAgeSeconds);
+    headers['Access-Control-Allow-Origin'] = normalizedOrigin;
+    headers['Access-Control-Allow-Methods'] = allowedMethods.join(', ');
+    headers['Access-Control-Allow-Headers'] = allowedHeaders.join(', ');
+    headers['Access-Control-Expose-Headers'] = exposedHeaders.join(', ');
+    headers['Access-Control-Max-Age'] = String(maxAgeSeconds);
     if (allowCredentials) {
-      headers["Access-Control-Allow-Credentials"] = "true";
+      headers['Access-Control-Allow-Credentials'] = 'true';
     }
   }
 
@@ -503,7 +503,7 @@ export function getCorsHeaders(origin, options = {}) {
  * @returns {boolean} - True if IP is allowed
  */
 export function isIpAllowed(ip, blocklist = []) {
-  if (typeof ip !== "string" || !ip) {
+  if (typeof ip !== 'string' || !ip) {
     return false;
   }
 

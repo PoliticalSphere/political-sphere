@@ -102,7 +102,7 @@ function verifyAccessToken(token) {
   try {
     const payload = jwt.verify(token, JWT_SECRET);
     return payload;
-  } catch (_err) {
+  } catch {
     return null;
   }
 }
@@ -113,7 +113,7 @@ function verifyRefreshToken(token) {
     const decoded = jwt.verify(token, JWT_REFRESH_SECRET);
     if (decoded && decoded.type === 'refresh') return decoded;
     return null;
-  } catch (_err) {
+  } catch {
     return null;
   }
 }

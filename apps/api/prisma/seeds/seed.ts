@@ -1,46 +1,46 @@
 // Prisma seed script for Political Sphere
 // Populates the database with initial development data
 
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 async function main() {
-  console.log("🌱 Starting database seed...");
+  console.log('🌱 Starting database seed...');
 
   // Clear existing data (development only)
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === 'development') {
     await prisma.vote.deleteMany();
     await prisma.user.deleteMany();
     await prisma.party.deleteMany();
     await prisma.proposal.deleteMany();
     await prisma.newsArticle.deleteMany();
-    console.log("✓ Cleared existing data");
+    console.log('✓ Cleared existing data');
   }
 
   // Seed political parties
   const parties = await Promise.all([
     prisma.party.create({
       data: {
-        name: "Progressive Alliance",
+        name: 'Progressive Alliance',
         description:
-          "A center-left political party focused on social justice and environmental sustainability.",
-        ideology: "social-democracy",
+          'A center-left political party focused on social justice and environmental sustainability.',
+        ideology: 'social-democracy',
       },
     }),
     prisma.party.create({
       data: {
-        name: "Conservative Union",
+        name: 'Conservative Union',
         description:
-          "A center-right political party emphasizing traditional values and fiscal responsibility.",
-        ideology: "conservatism",
+          'A center-right political party emphasizing traditional values and fiscal responsibility.',
+        ideology: 'conservatism',
       },
     }),
     prisma.party.create({
       data: {
-        name: "Green Future",
-        description: "An environmental party prioritizing climate action and ecological policies.",
-        ideology: "green-politics",
+        name: 'Green Future',
+        description: 'An environmental party prioritizing climate action and ecological policies.',
+        ideology: 'green-politics',
       },
     }),
   ]);
@@ -50,26 +50,26 @@ async function main() {
   const users = await Promise.all([
     prisma.user.create({
       data: {
-        email: "admin@political-sphere.com",
-        username: "admin",
-        password: "$2b$10$placeholder.hash.for.development", // Replace with actual hash
-        role: "ADMIN",
+        email: 'admin@political-sphere.com',
+        username: 'admin',
+        password: '$2b$10$placeholder.hash.for.development', // Replace with actual hash
+        role: 'ADMIN',
       },
     }),
     prisma.user.create({
       data: {
-        email: "moderator@political-sphere.com",
-        username: "moderator",
-        password: "$2b$10$placeholder.hash.for.development",
-        role: "MODERATOR",
+        email: 'moderator@political-sphere.com',
+        username: 'moderator',
+        password: '$2b$10$placeholder.hash.for.development',
+        role: 'MODERATOR',
       },
     }),
     prisma.user.create({
       data: {
-        email: "user1@political-sphere.com",
-        username: "citizen_one",
-        password: "$2b$10$placeholder.hash.for.development",
-        role: "USER",
+        email: 'user1@political-sphere.com',
+        username: 'citizen_one',
+        password: '$2b$10$placeholder.hash.for.development',
+        role: 'USER',
         partyId: parties[0].id,
       },
     }),
@@ -80,18 +80,18 @@ async function main() {
   const proposals = await Promise.all([
     prisma.proposal.create({
       data: {
-        title: "Climate Action Bill 2025",
+        title: 'Climate Action Bill 2025',
         description:
-          "Proposal to reduce carbon emissions by 50% by 2030 through renewable energy investments.",
-        status: "ACTIVE",
+          'Proposal to reduce carbon emissions by 50% by 2030 through renewable energy investments.',
+        status: 'ACTIVE',
         expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
       },
     }),
     prisma.proposal.create({
       data: {
-        title: "Universal Basic Income Pilot",
-        description: "Trial program providing £1000/month to 10,000 citizens for 2 years.",
-        status: "ACTIVE",
+        title: 'Universal Basic Income Pilot',
+        description: 'Trial program providing £1000/month to 10,000 citizens for 2 years.',
+        status: 'ACTIVE',
         expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days from now
       },
     }),
@@ -102,23 +102,23 @@ async function main() {
   const articles = await Promise.all([
     prisma.newsArticle.create({
       data: {
-        title: "Political Sphere Platform Launches",
-        excerpt: "New digital democracy platform enables citizens to participate in governance.",
+        title: 'Political Sphere Platform Launches',
+        excerpt: 'New digital democracy platform enables citizens to participate in governance.',
         content:
-          "The Political Sphere platform officially launched today, providing a new way for citizens to engage with democratic processes...",
-        category: "platform",
-        status: "PUBLISHED",
+          'The Political Sphere platform officially launched today, providing a new way for citizens to engage with democratic processes...',
+        category: 'platform',
+        status: 'PUBLISHED',
       },
     }),
   ]);
   console.log(`✓ Created ${articles.length} news articles`);
 
-  console.log("✅ Database seed completed successfully!");
+  console.log('✅ Database seed completed successfully!');
 }
 
 main()
-  .catch((e) => {
-    console.error("❌ Seed failed:", e);
+  .catch(e => {
+    console.error('❌ Seed failed:', e);
     process.exit(1);
   })
   .finally(async () => {

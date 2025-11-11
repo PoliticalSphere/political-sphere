@@ -26,19 +26,19 @@
  *   const similarity = engine.cosineSimilarity(embedding1, embedding2);
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 class EmbeddingEngine {
   constructor(options = {}) {
     this.pipe = null;
     this.cache = new Map();
-    this.modelName = options.model || "Xenova/all-MiniLM-L6-v2";
+    this.modelName = options.model || 'Xenova/all-MiniLM-L6-v2';
     this.cacheDir =
       options.cacheDir ||
       this.resolveCacheDir(
-        path.join(__dirname, "../../../ai-cache"),
-        path.join(__dirname, "../../../ai/ai-cache"),
+        path.join(__dirname, '../../../ai-cache'),
+        path.join(__dirname, '../../../ai/ai-cache')
       );
     this.maxCacheSize = options.maxCacheSize || 1000;
     this.dimensions = 384; // all-MiniLM-L6-v2 output dimensions
@@ -61,7 +61,7 @@ class EmbeddingEngine {
       return primary;
     } catch (error) {
       console.warn(
-        `Embedding engine: unable to initialise ${primary}, falling back to ${fallback} (${error.message})`,
+        `Embedding engine: unable to initialise ${primary}, falling back to ${fallback} (${error.message})`
       );
       if (!fs.existsSync(fallback)) {
         fs.mkdirSync(fallback, { recursive: true });
@@ -87,17 +87,17 @@ class EmbeddingEngine {
     }
 
     try {
-      console.log("🚀 Initializing embedding engine...");
+      console.log('🚀 Initializing embedding engine...');
       console.log(`📦 Model: ${this.modelName}`);
 
       // Dynamically import transformers.js
-      const { pipeline } = await import("@xenova/transformers");
+      const { pipeline } = await import('@xenova/transformers');
 
       const startTime = Date.now();
       this.pipe = await pipeline(
-        "feature-extraction",
+        'feature-extraction',
         this.modelName,
-        { quantized: true }, // Use quantized model for faster loading
+        { quantized: true } // Use quantized model for faster loading
       );
 
       const loadTime = Date.now() - startTime;
@@ -106,10 +106,9 @@ class EmbeddingEngine {
       // Load cache from disk
       await this.loadCache();
     } catch (error) {
-      if (error.code === "ERR_MODULE_NOT_FOUND") {
+      if (error.code === 'ERR_MODULE_NOT_FOUND') {
         throw new Error(
-          "@xenova/transformers not installed.\n" +
-            "Install with: npm install @xenova/transformers",
+          '@xenova/transformers not installed.\n' + 'Install with: npm install @xenova/transformers'
         );
       }
       throw error;
@@ -142,7 +141,7 @@ class EmbeddingEngine {
 
     try {
       const output = await this.pipe(normalized, {
-        pooling: options.pooling || "mean",
+        pooling: options.pooling || 'mean',
         normalize: options.normalize !== false, // Default: true
       });
 
@@ -173,7 +172,7 @@ class EmbeddingEngine {
       await this.initialize();
     }
 
-    const normalized = texts.map((t) => this.normalizeText(t));
+    const normalized = texts.map(t => this.normalizeText(t));
     const uncached = [];
     const results = new Array(texts.length);
 
@@ -191,10 +190,10 @@ class EmbeddingEngine {
     // Embed uncached texts
     if (uncached.length > 0) {
       const startTime = Date.now();
-      const textsToEmbed = uncached.map((u) => u.text);
+      const textsToEmbed = uncached.map(u => u.text);
 
       const output = await this.pipe(textsToEmbed, {
-        pooling: "mean",
+        pooling: 'mean',
         normalize: true,
       });
 
@@ -223,7 +222,7 @@ class EmbeddingEngine {
    */
   cosineSimilarity(a, b) {
     if (a.length !== b.length) {
-      throw new Error("Embeddings must have same dimensions");
+      throw new Error('Embeddings must have same dimensions');
     }
 
     let dot = 0;
@@ -247,7 +246,7 @@ class EmbeddingEngine {
    * @returns {array} Top K similar items with scores
    */
   findSimilar(queryEmbedding, candidates, topK = 5) {
-    const scores = candidates.map((candidate) => ({
+    const scores = candidates.map(candidate => ({
       ...candidate,
       score: this.cosineSimilarity(queryEmbedding, candidate.embedding),
     }));
@@ -266,7 +265,7 @@ class EmbeddingEngine {
   normalizeText(text) {
     return text
       .trim()
-      .replace(/\s+/g, " ") // Normalize whitespace
+      .replace(/\s+/g, ' ') // Normalize whitespace
       .substring(0, 512); // Limit length (model max: 512 tokens)
   }
 
@@ -305,11 +304,11 @@ class EmbeddingEngine {
    * @returns {Promise<void>}
    */
   async loadCache() {
-    const cacheFile = path.join(this.cacheDir, "embeddings-cache.json");
+    const cacheFile = path.join(this.cacheDir, 'embeddings-cache.json');
 
     try {
       if (fs.existsSync(cacheFile)) {
-        const data = JSON.parse(fs.readFileSync(cacheFile, "utf8"));
+        const data = JSON.parse(fs.readFileSync(cacheFile, 'utf8'));
 
         // Restore cache (up to maxCacheSize)
         const entries = Object.entries(data.cache).slice(0, this.maxCacheSize);
@@ -327,11 +326,11 @@ class EmbeddingEngine {
    * @returns {Promise<void>}
    */
   async saveCache() {
-    const cacheFile = path.join(this.cacheDir, "embeddings-cache.json");
+    const cacheFile = path.join(this.cacheDir, 'embeddings-cache.json');
 
     try {
       const data = {
-        version: "1.0.0",
+        version: '1.0.0',
         model: this.modelName,
         dimensions: this.dimensions,
         lastUpdate: Date.now(),
@@ -371,7 +370,7 @@ class EmbeddingEngine {
    */
   clearCache() {
     this.cache.clear();
-    console.log("🗑️  Cache cleared");
+    console.log('🗑️  Cache cleared');
   }
 }
 
@@ -383,53 +382,53 @@ if (require.main === module) {
   async function run() {
     const engine = new EmbeddingEngine();
 
-    if (command === "test") {
-      console.log("🧪 Testing embedding engine...\n");
+    if (command === 'test') {
+      console.log('🧪 Testing embedding engine...\n');
 
       await engine.initialize();
 
       // Test embeddings
       const texts = [
-        "function authenticate(user, password)",
-        "async function login(username, pwd)",
-        "class UserAuthenticator { verify() }",
-        "const sum = (a, b) => a + b",
+        'function authenticate(user, password)',
+        'async function login(username, pwd)',
+        'class UserAuthenticator { verify() }',
+        'const sum = (a, b) => a + b',
       ];
 
-      console.log("Generating embeddings...");
+      console.log('Generating embeddings...');
       const embeddings = await engine.embedBatch(texts);
 
-      console.log("\n📊 Results:\n");
+      console.log('\n📊 Results:\n');
       for (let i = 0; i < texts.length; i++) {
         console.log(`[${i}] ${texts[i]}`);
         console.log(`    Dims: ${embeddings[i].length}`);
         console.log(
           `    Sample: [${embeddings[i]
             .slice(0, 3)
-            .map((v) => v.toFixed(4))
-            .join(", ")}...]`,
+            .map(v => v.toFixed(4))
+            .join(', ')}...]`
         );
       }
 
       // Test similarity
-      console.log("\n🔍 Similarity matrix:\n");
+      console.log('\n🔍 Similarity matrix:\n');
       for (let i = 0; i < texts.length; i++) {
         const similarities = [];
         for (let j = 0; j < texts.length; j++) {
           const sim = engine.cosineSimilarity(embeddings[i], embeddings[j]);
           similarities.push(sim.toFixed(3));
         }
-        console.log(`  [${i}] ${similarities.join("  ")}`);
+        console.log(`  [${i}] ${similarities.join('  ')}`);
       }
 
       // Stats
-      console.log("\n📈 Stats:");
+      console.log('\n📈 Stats:');
       console.log(engine.getStats());
 
       // Save cache
       await engine.saveCache();
-    } else if (command === "embed" && args[1]) {
-      const text = args.slice(1).join(" ");
+    } else if (command === 'embed' && args[1]) {
+      const text = args.slice(1).join(' ');
 
       await engine.initialize();
       const embedding = await engine.embed(text);
@@ -439,11 +438,11 @@ if (require.main === module) {
       console.log(
         `First 10 values: [${embedding
           .slice(0, 10)
-          .map((v) => v.toFixed(4))
-          .join(", ")}...]`,
+          .map(v => v.toFixed(4))
+          .join(', ')}...]`
       );
       console.log(`\n${JSON.stringify(embedding, null, 2)}`);
-    } else if (command === "similar" && args.length >= 3) {
+    } else if (command === 'similar' && args.length >= 3) {
       const query = args[1];
       const candidates = args.slice(2);
 
@@ -463,7 +462,7 @@ if (require.main === module) {
 
       const results = engine.findSimilar(queryEmbedding, candidateObjects, candidates.length);
 
-      console.log("Results (sorted by similarity):\n");
+      console.log('Results (sorted by similarity):\n');
       results.forEach((result, i) => {
         console.log(`${i + 1}. [${(result.score * 100).toFixed(1)}%] ${result.text}`);
       });
@@ -484,7 +483,7 @@ Examples:
     }
   }
 
-  run().catch((error) => {
+  run().catch(error => {
     console.error(`❌ Error: ${error.message}`);
     process.exit(1);
   });

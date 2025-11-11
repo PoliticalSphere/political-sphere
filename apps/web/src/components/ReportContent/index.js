@@ -4,14 +4,14 @@
  * Integrates with moderation API
  */
 
-import React, { useState } from "react";
+import React, { useState } from 'react';
 
-import { useAccessibility } from "../../hooks/useAccessibility";
-import "./ReportContent.css";
+import { useAccessibility } from '../../hooks/useAccessibility';
+import './ReportContent.css';
 
-const ReportContent = ({ contentId, contentType = "proposal", onClose, onReportSubmitted }) => {
-  const [reason, setReason] = useState("");
-  const [evidence, setEvidence] = useState("");
+const ReportContent = ({ contentId, contentType = 'proposal', onClose, onReportSubmitted }) => {
+  const [reason, setReason] = useState('');
+  const [evidence, setEvidence] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
@@ -19,21 +19,21 @@ const ReportContent = ({ contentId, contentType = "proposal", onClose, onReportS
   const { announce, trapFocus } = useAccessibility();
 
   const reportReasons = [
-    { value: "hate_speech", label: "Hate Speech or Discrimination" },
-    { value: "harassment", label: "Harassment or Bullying" },
-    { value: "violence", label: "Threats of Violence" },
-    { value: "child_safety", label: "Child Safety Concern" },
-    { value: "spam", label: "Spam or Misleading Content" },
-    { value: "inappropriate", label: "Inappropriate Content" },
-    { value: "other", label: "Other" },
+    { value: 'hate_speech', label: 'Hate Speech or Discrimination' },
+    { value: 'harassment', label: 'Harassment or Bullying' },
+    { value: 'violence', label: 'Threats of Violence' },
+    { value: 'child_safety', label: 'Child Safety Concern' },
+    { value: 'spam', label: 'Spam or Misleading Content' },
+    { value: 'inappropriate', label: 'Inappropriate Content' },
+    { value: 'other', label: 'Other' },
   ];
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async e => {
     e.preventDefault();
 
     if (!reason) {
-      setError("Please select a reason for the report");
-      announce("Please select a reason for the report", "assertive");
+      setError('Please select a reason for the report');
+      announce('Please select a reason for the report', 'assertive');
       return;
     }
 
@@ -41,12 +41,12 @@ const ReportContent = ({ contentId, contentType = "proposal", onClose, onReportS
     setError(null);
 
     try {
-      const response = await fetch("/api/moderation/report", {
-        method: "POST",
+      const response = await fetch('/api/moderation/report', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           // Add auth header if available
-          Authorization: `Bearer ${localStorage.getItem("authToken") || ""}`,
+          Authorization: `Bearer ${localStorage.getItem('authToken') || ''}`,
         },
         body: JSON.stringify({
           contentId,
@@ -57,13 +57,13 @@ const ReportContent = ({ contentId, contentType = "proposal", onClose, onReportS
       });
 
       if (!response.ok) {
-        throw new Error("Failed to submit report");
+        throw new Error('Failed to submit report');
       }
 
       const result = await response.json();
 
       setSuccess(true);
-      announce("Report submitted successfully", "polite");
+      announce('Report submitted successfully', 'polite');
 
       if (onReportSubmitted) {
         onReportSubmitted(result);
@@ -74,24 +74,24 @@ const ReportContent = ({ contentId, contentType = "proposal", onClose, onReportS
         if (onClose) onClose();
       }, 2000);
     } catch (err) {
-      setError("Failed to submit report. Please try again.");
-      announce("Failed to submit report. Please try again.", "assertive");
+      setError('Failed to submit report. Please try again.');
+      announce('Failed to submit report. Please try again.', 'assertive');
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleKeyDown = (e) => {
-    if (e.key === "Escape" && onClose) {
+  const handleKeyDown = e => {
+    if (e.key === 'Escape' && onClose) {
       onClose();
     }
   };
 
   React.useEffect(() => {
-    announce("Report content dialog opened", "assertive");
+    announce('Report content dialog opened', 'assertive');
 
     // Trap focus in the modal
-    const modalElement = document.querySelector(".report-content-modal");
+    const modalElement = document.querySelector('.report-content-modal');
     if (modalElement) {
       const cleanup = trapFocus(modalElement);
       return cleanup;
@@ -151,12 +151,12 @@ const ReportContent = ({ contentId, contentType = "proposal", onClose, onReportS
             <select
               id="report-reason"
               value={reason}
-              onChange={(e) => setReason(e.target.value)}
+              onChange={e => setReason(e.target.value)}
               required
               aria-describedby="reason-help"
             >
               <option value="">Select a reason...</option>
-              {reportReasons.map((option) => (
+              {reportReasons.map(option => (
                 <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
@@ -170,7 +170,7 @@ const ReportContent = ({ contentId, contentType = "proposal", onClose, onReportS
             <textarea
               id="report-evidence"
               value={evidence}
-              onChange={(e) => setEvidence(e.target.value)}
+              onChange={e => setEvidence(e.target.value)}
               placeholder="Provide any additional context or evidence..."
               rows={4}
               maxLength={1000}
@@ -201,7 +201,7 @@ const ReportContent = ({ contentId, contentType = "proposal", onClose, onReportS
               className="report-content-submit"
               disabled={isSubmitting || !reason}
             >
-              {isSubmitting ? "Submitting..." : "Submit Report"}
+              {isSubmitting ? 'Submitting...' : 'Submit Report'}
             </button>
           </div>
         </form>

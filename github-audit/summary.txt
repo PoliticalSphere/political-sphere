@@ -1,5 +1,5 @@
 GitHub Workflows & Actions Audit Summary
-Generated: 2025-11-11T22:09:43Z
+Generated: 2025-11-11T22:40:45Z
 Version: 1.4.0
 ================================================================================
 
@@ -8,7 +8,7 @@ Findings Summary:
   High:     4
   Medium:   14
   Low:      0
-  Info:     57
+  Info:     54
   Pass:     143
 
 Auto-fixes Applied: 0

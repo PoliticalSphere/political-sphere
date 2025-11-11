@@ -5,22 +5,22 @@
  * Tests network failures, timeouts, invalid data, concurrent operations,
  * and edge cases to ensure application resilience.
  */
-import { test, expect } from "@playwright/test";
-import type { Page, Route } from "@playwright/test";
+import { test, expect } from '@playwright/test';
+import type { Page, Route } from '@playwright/test';
 
-import { GameBoardPage } from "../pages/GameBoardPage";
-import { LoginPage } from "../pages/LoginPage";
+import { GameBoardPage } from '../pages/GameBoardPage';
+import { LoginPage } from '../pages/LoginPage';
 
-test.describe("Error Handling - Network Failures", () => {
-  test("should handle API server unavailable", async ({ page }) => {
+test.describe('Error Handling - Network Failures', () => {
+  test('should handle API server unavailable', async ({ page }) => {
     const loginPage = new LoginPage(page);
 
     // Block all API requests
-    await page.route("**/api/**", (route: Route) => route.abort());
+    await page.route('**/api/**', (route: Route) => route.abort());
 
     await loginPage.goto();
-    await page.fill('input[type="email"]', "test@example.com");
-    await page.fill('input[type="password"]', "password123");
+    await page.fill('input[type="email"]', 'test@example.com');
+    await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
 
     // Should show network error message
@@ -31,11 +31,11 @@ test.describe("Error Handling - Network Failures", () => {
     expect(errorText).toMatch(/network|connection|server|unavailable/i);
   });
 
-  test("should handle slow network with loading indicators", async ({ page, context }) => {
+  test('should handle slow network with loading indicators', async ({ page, context }) => {
     // Throttle network to simulate slow connection
     const client = await context.newCDPSession(page);
-    await client.send("Network.enable");
-    await client.send("Network.emulateNetworkConditions", {
+    await client.send('Network.enable');
+    await client.send('Network.emulateNetworkConditions', {
       offline: false,
       downloadThroughput: (500 * 1024) / 8, // 500kbps
       uploadThroughput: (500 * 1024) / 8,
@@ -45,8 +45,8 @@ test.describe("Error Handling - Network Failures", () => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
 
-    await page.fill('input[type="email"]', "test@example.com");
-    await page.fill('input[type="password"]', "password123");
+    await page.fill('input[type="email"]', 'test@example.com');
+    await page.fill('input[type="password"]', 'password123');
 
     const submitPromise = page.click('button[type="submit"]');
 
@@ -60,14 +60,14 @@ test.describe("Error Handling - Network Failures", () => {
     await submitPromise;
   });
 
-  test("should retry failed requests", async ({ page }) => {
+  test('should retry failed requests', async ({ page }) => {
     let attemptCount = 0;
 
     // Fail first request, succeed on retry
-    await page.route("**/api/login", (route: Route) => {
+    await page.route('**/api/login', (route: Route) => {
       attemptCount++;
       if (attemptCount === 1) {
-        route.abort("failed");
+        route.abort('failed');
       } else {
         route.continue();
       }
@@ -75,19 +75,19 @@ test.describe("Error Handling - Network Failures", () => {
 
     const loginPage = new LoginPage(page);
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
 
     // Should eventually succeed after retry
-    await page.waitForURL("**/game", { timeout: 10000 });
+    await page.waitForURL('**/game', { timeout: 10000 });
     expect(attemptCount).toBeGreaterThan(1);
   });
 
-  test("should handle intermittent WebSocket failures", async ({ page }) => {
+  test('should handle intermittent WebSocket failures', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
 
     // Simulate WebSocket disconnection
@@ -100,7 +100,7 @@ test.describe("Error Handling - Network Failures", () => {
       };
 
       // Force close existing connections
-      Object.values(window).forEach((value) => {
+      Object.values(window).forEach(value => {
         if (value instanceof WebSocket) {
           value.close();
         }
@@ -118,13 +118,13 @@ test.describe("Error Handling - Network Failures", () => {
   });
 });
 
-test.describe("Error Handling - Invalid Data", () => {
-  test("should validate email format", async ({ page }) => {
+test.describe('Error Handling - Invalid Data', () => {
+  test('should validate email format', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
 
-    await page.fill('input[type="email"]', "invalid-email");
-    await page.fill('input[type="password"]', "password123");
+    await page.fill('input[type="email"]', 'invalid-email');
+    await page.fill('input[type="password"]', 'password123');
     await page.click('button[type="submit"]');
 
     // Should show validation error
@@ -132,24 +132,24 @@ test.describe("Error Handling - Invalid Data", () => {
     expect(errorText).toMatch(/email|invalid|valid/i);
   });
 
-  test("should enforce minimum password length", async ({ page }) => {
+  test('should enforce minimum password length', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
 
-    await page.fill('input[type="email"]', "test@example.com");
-    await page.fill('input[type="password"]', "123"); // Too short
+    await page.fill('input[type="email"]', 'test@example.com');
+    await page.fill('input[type="password"]', '123'); // Too short
     await page.click('button[type="submit"]');
 
     const errorText = await loginPage.getErrorText();
     expect(errorText).toMatch(/password|short|length|characters/i);
   });
 
-  test("should reject XSS attempts in proposal titles", async ({ page }) => {
+  test('should reject XSS attempts in proposal titles', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
     await gamePage.waitForProposalsLoad();
 
@@ -161,33 +161,33 @@ test.describe("Error Handling - Invalid Data", () => {
     // Check that the title is sanitized (text content, not HTML)
     const proposals = await page.evaluate(() => {
       const proposalElements = document.querySelectorAll('[data-testid="proposal-title"]');
-      return Array.from(proposalElements).map((el) => ({
+      return Array.from(proposalElements).map(el => ({
         textContent: el.textContent,
         innerHTML: el.innerHTML,
       }));
     });
 
     // Find our proposal
-    const xssProposal = proposals.find((p) => p.textContent?.includes("script"));
+    const xssProposal = proposals.find(p => p.textContent?.includes('script'));
 
     if (xssProposal) {
       // Should be text, not executable HTML
-      expect(xssProposal.innerHTML).not.toContain("<script>");
-      expect(xssProposal.textContent).toContain("script"); // Sanitized as text
+      expect(xssProposal.innerHTML).not.toContain('<script>');
+      expect(xssProposal.textContent).toContain('script'); // Sanitized as text
     }
   });
 
-  test("should handle extremely long proposal titles", async ({ page }) => {
+  test('should handle extremely long proposal titles', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
     await gamePage.waitForProposalsLoad();
 
-    const longTitle = "A".repeat(500); // Very long title
-    const description = "Test long title handling";
+    const longTitle = 'A'.repeat(500); // Very long title
+    const description = 'Test long title handling';
 
     try {
       await gamePage.createProposal(longTitle, description);
@@ -211,8 +211,8 @@ test.describe("Error Handling - Invalid Data", () => {
   });
 });
 
-test.describe("Error Handling - Concurrent Operations", () => {
-  test("should handle race condition on simultaneous proposal creation", async ({
+test.describe('Error Handling - Concurrent Operations', () => {
+  test('should handle race condition on simultaneous proposal creation', async ({
     page,
     browser,
   }) => {
@@ -220,7 +220,7 @@ test.describe("Error Handling - Concurrent Operations", () => {
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
     await gamePage.waitForProposalsLoad();
 
@@ -231,7 +231,7 @@ test.describe("Error Handling - Concurrent Operations", () => {
     const game2 = new GameBoardPage(page2);
 
     await login2.goto();
-    await login2.login("user2@example.com", "password123");
+    await login2.login('user2@example.com', 'password123');
     await login2.waitForSuccess();
     await game2.waitForProposalsLoad();
 
@@ -239,8 +239,8 @@ test.describe("Error Handling - Concurrent Operations", () => {
 
     // Both create proposal simultaneously
     await Promise.all([
-      gamePage.createProposal(title, "User 1 proposal"),
-      game2.createProposal(title, "User 2 proposal"),
+      gamePage.createProposal(title, 'User 1 proposal'),
+      game2.createProposal(title, 'User 2 proposal'),
     ]);
 
     // Both should succeed or one should get clear error
@@ -248,25 +248,25 @@ test.describe("Error Handling - Concurrent Operations", () => {
     const proposals2 = await game2.getProposalTitles();
 
     // At least one should have the proposal
-    const hasProposal1 = proposals1.some((p) => p.includes(title));
-    const hasProposal2 = proposals2.some((p) => p.includes(title));
+    const hasProposal1 = proposals1.some(p => p.includes(title));
+    const hasProposal2 = proposals2.some(p => p.includes(title));
 
     expect(hasProposal1 || hasProposal2).toBe(true);
 
     await context2.close();
   });
 
-  test("should handle concurrent votes on same proposal", async ({ page, browser }) => {
+  test('should handle concurrent votes on same proposal', async ({ page, browser }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
     await gamePage.waitForProposalsLoad();
 
     const title = `Concurrent Vote Test ${Date.now()}`;
-    await gamePage.createProposal(title, "Testing concurrent voting");
+    await gamePage.createProposal(title, 'Testing concurrent voting');
 
     // Second user
     const context2 = await browser.newContext();
@@ -275,12 +275,12 @@ test.describe("Error Handling - Concurrent Operations", () => {
     const game2 = new GameBoardPage(page2);
 
     await login2.goto();
-    await login2.login("user2@example.com", "password123");
+    await login2.login('user2@example.com', 'password123');
     await login2.waitForSuccess();
     await game2.waitForProposalsLoad();
 
     // Both vote simultaneously
-    await Promise.all([gamePage.voteOnProposal(title, "aye"), game2.voteOnProposal(title, "nay")]);
+    await Promise.all([gamePage.voteOnProposal(title, 'aye'), game2.voteOnProposal(title, 'nay')]);
 
     // Votes should be recorded correctly
     await page.waitForTimeout(1000); // Allow state to sync
@@ -293,13 +293,13 @@ test.describe("Error Handling - Concurrent Operations", () => {
   });
 });
 
-test.describe("Error Handling - Session Management", () => {
-  test("should handle expired session gracefully", async ({ page }) => {
+test.describe('Error Handling - Session Management', () => {
+  test('should handle expired session gracefully', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
 
     // Clear session storage/cookies to simulate expiration
@@ -308,10 +308,10 @@ test.describe("Error Handling - Session Management", () => {
 
     // Try to perform action
     try {
-      await gamePage.createProposal("Test", "Should fail");
+      await gamePage.createProposal('Test', 'Should fail');
 
       // Should redirect to login or show error
-      const onLoginPage = page.url().includes("/login");
+      const onLoginPage = page.url().includes('/login');
       const hasErrorAlert = await page.locator('[role="alert"]').isVisible({ timeout: 3000 });
 
       expect(onLoginPage || hasErrorAlert).toBe(true);
@@ -321,12 +321,12 @@ test.describe("Error Handling - Session Management", () => {
     }
   });
 
-  test("should prevent multiple simultaneous login attempts", async ({ page }) => {
+  test('should prevent multiple simultaneous login attempts', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
 
-    await page.fill('input[type="email"]', "test@example.com");
-    await page.fill('input[type="password"]', "password123");
+    await page.fill('input[type="email"]', 'test@example.com');
+    await page.fill('input[type="password"]', 'password123');
 
     // Click submit multiple times rapidly
     const promises = [
@@ -339,19 +339,19 @@ test.describe("Error Handling - Session Management", () => {
 
     // Should handle gracefully (either disable button or deduplicate requests)
     // Navigation should succeed once
-    await page.waitForURL("**/game", { timeout: 5000 });
-    expect(page.url()).toContain("/game");
+    await page.waitForURL('**/game', { timeout: 5000 });
+    expect(page.url()).toContain('/game');
   });
 });
 
-test.describe("Error Handling - Edge Cases", () => {
-  test("should handle zero proposals state", async ({ page }) => {
+test.describe('Error Handling - Edge Cases', () => {
+  test('should handle zero proposals state', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     // Login with account that has no proposals
     await loginPage.goto();
-    await loginPage.login("newuser@example.com", "password123");
+    await loginPage.login('newuser@example.com', 'password123');
     await loginPage.waitForSuccess();
 
     // Should show empty state message
@@ -369,17 +369,17 @@ test.describe("Error Handling - Edge Cases", () => {
     }
   });
 
-  test("should handle browser back/forward navigation", async ({ page }) => {
+  test('should handle browser back/forward navigation', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
 
     // Create proposal to change state
     const title = `Back Button Test ${Date.now()}`;
-    await gamePage.createProposal(title, "Testing navigation");
+    await gamePage.createProposal(title, 'Testing navigation');
 
     // Go back
     await page.goBack();
@@ -392,15 +392,15 @@ test.describe("Error Handling - Edge Cases", () => {
     await page.goForward();
 
     // Should return to game
-    expect(page.url()).toContain("/game");
+    expect(page.url()).toContain('/game');
   });
 
-  test("should handle page refresh mid-operation", async ({ page }) => {
+  test('should handle page refresh mid-operation', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
     await gamePage.waitForProposalsLoad();
 
@@ -416,23 +416,23 @@ test.describe("Error Handling - Edge Cases", () => {
     expect(Array.isArray(proposals)).toBe(true);
   });
 
-  test("should handle special characters in user input", async ({ page }) => {
+  test('should handle special characters in user input', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
     await gamePage.waitForProposalsLoad();
 
-    const specialTitle = "Test 🚀 Emoji & Special chars: <>&\"' ©®™";
-    const specialDesc = "Testing: !@#$%^&*()_+-=[]{}|;:,.<>?/~`";
+    const specialTitle = 'Test 🚀 Emoji & Special chars: <>&"\' ©®™';
+    const specialDesc = 'Testing: !@#$%^&*()_+-=[]{}|;:,.<>?/~`';
 
     await gamePage.createProposal(specialTitle, specialDesc);
 
     // Should handle special characters safely
     const proposals = await gamePage.getProposalTitles();
-    const found = proposals.some((p) => p.includes("Test") && p.includes("Emoji"));
+    const found = proposals.some(p => p.includes('Test') && p.includes('Emoji'));
 
     expect(found).toBe(true);
   });

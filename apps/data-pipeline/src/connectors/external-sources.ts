@@ -9,7 +9,7 @@
 
 export interface ExternalSourceConfig {
   name: string;
-  type: "rest" | "graphql" | "webhook" | "feed";
+  type: 'rest' | 'graphql' | 'webhook' | 'feed';
   url: string;
   apiKey?: string;
   refreshInterval?: number;
@@ -32,7 +32,7 @@ export class ExternalSourcesConnector {
    */
   registerSource(config: ExternalSourceConfig): void {
     this.sources.set(config.name, config);
-    console.log("Registered external source:", config.name);
+    console.log('Registered external source:', config.name);
   }
 
   /**
@@ -53,7 +53,7 @@ export class ExternalSourcesConnector {
     }
 
     // TODO: Implement actual data fetching based on source type
-    console.log("Fetching from external source:", source);
+    console.log('Fetching from external source:', source);
 
     return {
       id: crypto.randomUUID(),
@@ -112,7 +112,7 @@ export class ExternalSourcesConnector {
         const data = await this.fetch(sourceName);
         this.emit(sourceName, data);
       } catch (error) {
-        console.error("Error polling external source:", sourceName, error);
+        console.error('Error polling external source:', sourceName, error);
       }
     }, interval);
 

@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-export const DebateStateSchema = z.enum(["QUEUED", "LIVE", "SUSPENDED", "ADJOURNED", "CLOSED"]);
+export const DebateStateSchema = z.enum(['QUEUED', 'LIVE', 'SUSPENDED', 'ADJOURNED', 'CLOSED']);
 
 export const DebateSchema = z.object({
   id: z.string().uuid(),

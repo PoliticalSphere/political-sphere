@@ -6,12 +6,12 @@
          node scripts/ai/code-indexer.js search <query>
 */
 
-import { createHash } from "crypto";
-import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from "fs";
-import { extname, join, relative } from "path";
+import { createHash } from 'crypto';
+import { existsSync, readdirSync, readFileSync, statSync, writeFileSync } from 'fs';
+import { extname, join, relative } from 'path';
 
-const INDEX_FILE = "ai-index/codebase-index.json";
-const SUPPORTED_EXTS = [".js", ".ts", ".tsx", ".jsx", ".json", ".md"];
+const INDEX_FILE = 'ai-index/codebase-index.json';
+const SUPPORTED_EXTS = ['.js', '.ts', '.tsx', '.jsx', '.json', '.md'];
 const MAX_INDEX_SIZE = 10_000_000; // 10MB limit
 
 function tokenize(text) {
@@ -19,21 +19,21 @@ function tokenize(text) {
   const tokens = text
     .toLowerCase()
     .split(/[^A-Za-z0-9_]+/)
-    .filter((token) => token.length > 2);
+    .filter(token => token.length > 2);
 
   // Add semantic variations for better recall
   const semanticTokens = new Set(tokens);
   for (const token of tokens) {
     // Add camelCase splits (e.g., "getUserData" -> "get", "user", "data")
-    const camelSplits = token.replace(/([a-z])([A-Z])/g, "$1 $2").split(" ");
-    camelSplits.forEach((split) => {
+    const camelSplits = token.replace(/([a-z])([A-Z])/g, '$1 $2').split(' ');
+    camelSplits.forEach(split => {
       if (split.length > 2) semanticTokens.add(split);
     });
 
     // Add common abbreviations
-    if (token === "function") semanticTokens.add("func");
-    if (token === "component") semanticTokens.add("comp");
-    if (token === "interface") semanticTokens.add("iface");
+    if (token === 'function') semanticTokens.add('func');
+    if (token === 'component') semanticTokens.add('comp');
+    if (token === 'interface') semanticTokens.add('iface');
   }
 
   return semanticTokens;
@@ -41,11 +41,11 @@ function tokenize(text) {
 
 function validateIndex(index) {
   // Ensure index integrity and correctness
-  if (!index.files || typeof index.files !== "object") {
-    throw new Error("Invalid index: missing or invalid files object");
+  if (!index.files || typeof index.files !== 'object') {
+    throw new Error('Invalid index: missing or invalid files object');
   }
-  if (!index.tokens || typeof index.tokens !== "object") {
-    throw new Error("Invalid index: missing or invalid tokens object");
+  if (!index.tokens || typeof index.tokens !== 'object') {
+    throw new Error('Invalid index: missing or invalid tokens object');
   }
 
   // Validate file entries
@@ -60,7 +60,7 @@ function validateIndex(index) {
     if (!Array.isArray(files)) {
       throw new Error(`Invalid token entry for ${token}: files must be an array`);
     }
-    if (files.some((file) => typeof file !== "string")) {
+    if (files.some(file => typeof file !== 'string')) {
       throw new Error(`Invalid token entry for ${token}: all files must be strings`);
     }
   }
@@ -68,7 +68,7 @@ function validateIndex(index) {
   return true;
 }
 
-async function buildIndex(rootDir = ".") {
+async function buildIndex(rootDir = '.') {
   const index = {
     files: {},
     tokens: {},
@@ -83,16 +83,16 @@ async function buildIndex(rootDir = ".") {
       const fullPath = join(dir, file);
       const stat = statSync(fullPath);
 
-      if (stat.isDirectory() && !file.startsWith(".") && file !== "node_modules") {
+      if (stat.isDirectory() && !file.startsWith('.') && file !== 'node_modules') {
         promises.push(walk(fullPath));
       } else if (stat.isFile() && SUPPORTED_EXTS.includes(extname(file))) {
         const relPath = relative(rootDir, fullPath);
         // Skip test/spec files and tooling scripts to avoid indexing test
         // harnesses that may contain the query strings used in tests.
         if (
-          relPath.includes(".spec.") ||
-          relPath.includes(".test.") ||
-          relPath.startsWith("tools/")
+          relPath.includes('.spec.') ||
+          relPath.includes('.test.') ||
+          relPath.startsWith('tools/')
         ) {
           continue;
         }
@@ -105,9 +105,9 @@ async function buildIndex(rootDir = ".") {
 
   async function processFile(fullPath, rootDir, index) {
     const relPath = relative(rootDir, fullPath);
-    const content = readFileSync(fullPath, "utf8");
+    const content = readFileSync(fullPath, 'utf8');
     const tokens = tokenize(content);
-    const hash = createHash("sha256").update(content).digest("hex");
+    const hash = createHash('sha256').update(content).digest('hex');
 
     index.files[relPath] = {
       hash,
@@ -129,14 +129,14 @@ async function buildIndex(rootDir = ".") {
   try {
     validateIndex(index);
   } catch (error) {
-    console.error("Index validation failed:", error.message);
+    console.error('Index validation failed:', error.message);
     throw error;
   }
 
   const indexString = JSON.stringify(index, null, 2);
   if (indexString.length > MAX_INDEX_SIZE) {
     console.warn(
-      `Index size (${indexString.length} bytes) exceeds limit (${MAX_INDEX_SIZE} bytes). Consider incremental indexing.`,
+      `Index size (${indexString.length} bytes) exceeds limit (${MAX_INDEX_SIZE} bytes). Consider incremental indexing.`
     );
   }
 
@@ -150,7 +150,7 @@ function searchIndex(query) {
     process.exit(1);
   }
 
-  const index = JSON.parse(readFileSync(INDEX_FILE, "utf8"));
+  const index = JSON.parse(readFileSync(INDEX_FILE, 'utf8'));
   const queryTokens = tokenize(query);
   const scores = {};
 
@@ -170,10 +170,10 @@ function searchIndex(query) {
   // Filter out internal index files from results so searches for nonsense
   // tokens (used by tests) don't return the index itself.
   const filtered = results.filter(
-    (r) =>
-      !r.file.endsWith("codebase-index.json") &&
-      !r.file.startsWith("ai-index/") &&
-      !r.file.startsWith("ai/index/"),
+    r =>
+      !r.file.endsWith('codebase-index.json') &&
+      !r.file.startsWith('ai-index/') &&
+      !r.file.startsWith('ai/index/')
   );
 
   // Print a human-friendly header for tests that expect textual output,
@@ -187,10 +187,10 @@ function searchIndex(query) {
 }
 
 const command = process.argv[2];
-if (command === "build") {
+if (command === 'build') {
   buildIndex().catch(console.error);
-} else if (command === "search") {
+} else if (command === 'search') {
   searchIndex(process.argv[3]);
 } else {
-  console.log("Usage: node scripts/ai/code-indexer.js build|search <query>");
+  console.log('Usage: node scripts/ai/code-indexer.js build|search <query>');
 }

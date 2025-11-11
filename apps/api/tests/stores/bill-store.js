@@ -12,66 +12,66 @@ class BillStore {
   }
 
   async create(data) {
-    if (typeof this.db.create === "function") {
+    if (typeof this.db.create === 'function') {
       return await this.db.create(data);
     }
-    throw new Error("create() not implemented on mock database");
+    throw new Error('create() not implemented on mock database');
   }
 
   async getById(id) {
-    if (typeof this.db.getById === "function") {
+    if (typeof this.db.getById === 'function') {
       return await this.db.getById(id);
     }
-    throw new Error("getById() not implemented on mock database");
+    throw new Error('getById() not implemented on mock database');
   }
 
   async getAll(_filter = {}) {
-    if (typeof this.db.getAll === "function") {
+    if (typeof this.db.getAll === 'function') {
       return await this.db.getAll(_filter);
     }
-    throw new Error("getAll() not implemented on mock database");
+    throw new Error('getAll() not implemented on mock database');
   }
 
   async update(id, data) {
-    if (typeof this.db.update === "function") {
+    if (typeof this.db.update === 'function') {
       return await this.db.update(id, data);
     }
-    throw new Error("update() not implemented on mock database");
+    throw new Error('update() not implemented on mock database');
   }
 
   async delete(id) {
-    if (typeof this.db.delete === "function") {
+    if (typeof this.db.delete === 'function') {
       return await this.db.delete(id);
     }
-    throw new Error("delete() not implemented on mock database");
+    throw new Error('delete() not implemented on mock database');
   }
 
   async getByStatus(status) {
-    if (typeof this.db.getByStatus === "function") {
+    if (typeof this.db.getByStatus === 'function') {
       return await this.db.getByStatus(status);
     }
-    throw new Error("getByStatus() not implemented on mock database");
+    throw new Error('getByStatus() not implemented on mock database');
   }
 
   validateBillData(data) {
     if (!data.title || !data.description) {
-      throw new Error("Missing required fields");
+      throw new Error('Missing required fields');
     }
-    const allowedStatuses = ["draft", "proposed", "active", "passed", "rejected"];
+    const allowedStatuses = ['draft', 'proposed', 'active', 'passed', 'rejected'];
     if (data.status && !allowedStatuses.includes(data.status)) {
-      throw new Error("Invalid bill status");
+      throw new Error('Invalid bill status');
     }
   }
 
   async addVote(billId, _userId, voteType) {
-    const allowedVotes = ["yes", "no", "abstain"];
+    const allowedVotes = ['yes', 'no', 'abstain'];
     if (!allowedVotes.includes(voteType)) {
-      throw new Error("Invalid vote type");
+      throw new Error('Invalid vote type');
     }
 
     const bill = await this.getById(billId);
     if (!bill) {
-      throw new Error("Bill not found");
+      throw new Error('Bill not found');
     }
 
     // Initialize votes if not present
@@ -89,7 +89,7 @@ class BillStore {
   async getVoteResults(billId) {
     const bill = await this.getById(billId);
     if (!bill) {
-      throw new Error("Bill not found");
+      throw new Error('Bill not found');
     }
 
     const votes = bill.votes || { yes: 0, no: 0, abstain: 0 };

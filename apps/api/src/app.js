@@ -1,25 +1,25 @@
-const compression = require("compression");
-const cookieParser = require("cookie-parser");
-const cors = require("cors");
-const express = require("express");
-const rateLimit = require("express-rate-limit");
-const helmet = require("helmet");
+const compression = require('compression');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const express = require('express');
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 
-const { authenticate, requireRole } = require("./middleware/auth");
-const { csrfProtection, csrfTokenMiddleware } = require("./middleware/csrf");
-const requestId = require("./middleware/request-id");
-const ageVerificationRoutes = require("./routes/ageVerification");
-const authRoutes = require("./routes/auth");
-const billRoutes = require("./routes/bills");
-const complianceRoutes = require("./routes/compliance");
-const moderationRoutes = require("./routes/moderation");
-const newsRoutes = require("./routes/news");
-const partyRoutes = require("./routes/parties");
-const userRoutes = require("./routes/users");
-const voteRoutes = require("./routes/votes");
-const { sanitizeRequestForLog } = require("./utils/log-sanitizer");
+const { authenticate, requireRole } = require('./middleware/auth');
+const { csrfProtection, csrfTokenMiddleware } = require('./middleware/csrf');
+const requestId = require('./middleware/request-id');
+const ageVerificationRoutes = require('./routes/ageVerification');
+const authRoutes = require('./routes/auth');
+const billRoutes = require('./routes/bills');
+const complianceRoutes = require('./routes/compliance');
+const moderationRoutes = require('./routes/moderation');
+const newsRoutes = require('./routes/news');
+const partyRoutes = require('./routes/parties');
+const userRoutes = require('./routes/users');
+const voteRoutes = require('./routes/votes');
+const { sanitizeRequestForLog } = require('./utils/log-sanitizer');
 
-const { getDatabase } = require("./index");
+const { getDatabase } = require('./index');
 
 const app = express();
 const logger = console;
@@ -31,19 +31,19 @@ app.use(
         defaultSrc: ["'self'"],
         styleSrc: ["'self'", "'unsafe-inline'"],
         scriptSrc: ["'self'"],
-        imgSrc: ["'self'", "data:", "https:"],
+        imgSrc: ["'self'", 'data:', 'https:'],
       },
     },
-  }),
+  })
 );
 
 // Configure CORS with secure origin allowlist
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim())
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
   : [
-      "http://localhost:3000",
-      "http://localhost:3001",
-      "http://localhost:5173", // Vite dev server
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:5173', // Vite dev server
     ];
 
 app.use(
@@ -58,23 +58,27 @@ app.use(
         callback(null, true);
       } else {
         // Sanitize origin header before logging to prevent log injection
-        const sanitizedOrigin = origin ? String(origin).replace(/[\r\n\t]/g, ' ').substring(0, 200) : 'unknown';
+        const sanitizedOrigin = origin
+          ? String(origin)
+              .replace(/[\r\n\t]/g, ' ')
+              .substring(0, 200)
+          : 'unknown';
         logger.warn(`CORS: Blocked request from unauthorized origin: ${sanitizedOrigin}`);
         callback(new Error(`Origin ${sanitizedOrigin} not allowed by CORS policy`));
       }
     },
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "X-CSRF-Token"],
-  }),
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token'],
+  })
 );
 
 app.use(requestId);
 app.use(compression());
 app.use(cookieParser()); // Required for CSRF double-submit cookie pattern
 
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // CSRF protection: apply after body parsers, before authenticated routes
 // Uses modern csrf-csrf package with double-submit cookie pattern
@@ -86,8 +90,8 @@ const limiter = rateLimit({
   max: 100,
   message: {
     success: false,
-    error: "Too many requests",
-    message: "Too many requests from this IP, please try again later.",
+    error: 'Too many requests',
+    message: 'Too many requests from this IP, please try again later.',
   },
   standardHeaders: true,
   legacyHeaders: false,
@@ -100,7 +104,7 @@ app.use((req, res, next) => {
   const start = Date.now();
   // Security: Sanitize request data before logging to prevent log injection
   const sanitizedReq = sanitizeRequestForLog(req);
-  logger.log("Request received", {
+  logger.log('Request received', {
     requestId: sanitizedReq.requestId,
     method: sanitizedReq.method,
     url: sanitizedReq.url,
@@ -108,9 +112,9 @@ app.use((req, res, next) => {
     userAgent: sanitizedReq.userAgent,
   });
 
-  res.on("finish", () => {
+  res.on('finish', () => {
     const duration = Date.now() - start;
-    logger.log("Request completed", {
+    logger.log('Request completed', {
       requestId: sanitizedReq.requestId,
       method: sanitizedReq.method,
       url: sanitizedReq.url,
@@ -122,61 +126,61 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get("/health", (req, res) => {
+app.get('/health', (req, res) => {
   res.json({
-    status: "healthy",
+    status: 'healthy',
     timestamp: new Date().toISOString(),
-    service: "api",
+    service: 'api',
     requestId: req.requestId,
   });
 });
 
-app.get("/ready", (req, res) => {
+app.get('/ready', (req, res) => {
   // Check database connectivity
   try {
     const db = getDatabase();
     if (db?.open) {
       res.json({
-        status: "ready",
+        status: 'ready',
         timestamp: new Date().toISOString(),
-        service: "api",
-        database: "connected",
+        service: 'api',
+        database: 'connected',
         requestId: req.requestId,
       });
     } else {
       res.status(503).json({
-        status: "not ready",
+        status: 'not ready',
         timestamp: new Date().toISOString(),
-        service: "api",
-        database: "disconnected",
+        service: 'api',
+        database: 'disconnected',
         requestId: req.requestId,
       });
     }
   } catch (error) {
     res.status(503).json({
-      status: "not ready",
+      status: 'not ready',
       timestamp: new Date().toISOString(),
-      service: "api",
-      database: "error",
-      error: process.env.NODE_ENV === "development" ? error.message : "Database check failed",
+      service: 'api',
+      database: 'error',
+      error: process.env.NODE_ENV === 'development' ? error.message : 'Database check failed',
       requestId: req.requestId,
     });
   }
 });
 
-app.use("/api/auth", authRoutes);
-app.use("/api/users", authenticate, userRoutes);
-app.use("/api/parties", authenticate, partyRoutes);
-app.use("/api/bills", authenticate, billRoutes);
-app.use("/api/votes", authenticate, voteRoutes);
-app.use("/api/moderation", moderationRoutes);
-app.use("/api/compliance", authenticate, requireRole("admin"), complianceRoutes);
-app.use("/api/age-verification", authenticate, ageVerificationRoutes);
-app.use("/api", newsRoutes);
-app.use("/", newsRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', authenticate, userRoutes);
+app.use('/api/parties', authenticate, partyRoutes);
+app.use('/api/bills', authenticate, billRoutes);
+app.use('/api/votes', authenticate, voteRoutes);
+app.use('/api/moderation', moderationRoutes);
+app.use('/api/compliance', authenticate, requireRole('admin'), complianceRoutes);
+app.use('/api/age-verification', authenticate, ageVerificationRoutes);
+app.use('/api', newsRoutes);
+app.use('/', newsRoutes);
 
 app.use((err, req, res, _next) => {
-  console.error("Unhandled error", {
+  console.error('Unhandled error', {
     requestId: req.requestId,
     error: err.message,
     stack: err.stack,
@@ -186,13 +190,13 @@ app.use((err, req, res, _next) => {
 
   res.status(500).json({
     success: false,
-    error: "Internal server error",
-    message: process.env.NODE_ENV === "development" ? err.message : "Something went wrong",
+    error: 'Internal server error',
+    message: process.env.NODE_ENV === 'development' ? err.message : 'Something went wrong',
   });
 });
 
 app.use((req, res) => {
-  console.warn("Route not found", {
+  console.warn('Route not found', {
     requestId: req.requestId,
     method: req.method,
     url: req.url,
@@ -200,13 +204,13 @@ app.use((req, res) => {
 
   res.status(404).json({
     success: false,
-    error: "Not found",
-    message: "The requested resource was not found",
+    error: 'Not found',
+    message: 'The requested resource was not found',
   });
 });
 
 const gracefulShutdown = () => {
-  console.log("Received shutdown signal, closing server...");
+  console.log('Received shutdown signal, closing server...');
 
   const db = getDatabase();
   if (db) {
@@ -216,17 +220,17 @@ const gracefulShutdown = () => {
   process.exit(0);
 };
 
-process.on("SIGINT", gracefulShutdown);
-process.on("SIGTERM", gracefulShutdown);
+process.on('SIGINT', gracefulShutdown);
+process.on('SIGTERM', gracefulShutdown);
 
 const PORT = process.env.PORT || 4000;
-const HOST = process.env.HOST || "0.0.0.0";
+const HOST = process.env.HOST || '0.0.0.0';
 
 app.listen(PORT, HOST, () => {
-  console.log("API server started", {
+  console.log('API server started', {
     host: HOST,
     port: PORT,
-    environment: process.env.NODE_ENV || "development",
+    environment: process.env.NODE_ENV || 'development',
   });
 });
 

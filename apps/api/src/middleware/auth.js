@@ -133,7 +133,7 @@ function optionalAuth(req, _res, next) {
         };
       }
     }
-  } catch (_error) {
+  } catch {
     // Ignore auth errors for optional auth
   }
 

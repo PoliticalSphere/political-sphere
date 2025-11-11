@@ -1,11 +1,11 @@
-import fs from "node:fs";
-import path from "node:path";
+import fs from 'node:fs';
+import path from 'node:path';
 
-import type BetterSqlite3 from "better-sqlite3";
+import type BetterSqlite3 from 'better-sqlite3';
 
-import { Logger } from "../../../libs/shared/src/logger";
+import { Logger } from '../../../libs/shared/src/logger';
 
-const logger = new Logger({ service: "game-server-db" });
+const logger = new Logger({ service: 'game-server-db' });
 
 /**
  * Game data structure stored in the database
@@ -38,14 +38,14 @@ interface DatabaseAdapter {
 // Use better-sqlite3 if available for synchronous, simple usage. Fall back to sqlite3 if not.
 let Database: typeof BetterSqlite3 | null = null;
 try {
-  Database = require("better-sqlite3") as typeof BetterSqlite3;
+  Database = require('better-sqlite3') as typeof BetterSqlite3;
 } catch {
   // will attempt to use sqlite3 and a small wrapper
   Database = null;
 }
 
 const DB_PATH: string =
-  process.env.GAME_SERVER_DB || path.join(__dirname, "..", "data", "games.db");
+  process.env.GAME_SERVER_DB || path.join(__dirname, '..', 'data', 'games.db');
 
 function ensureDir(filePath: string): void {
   const dir = path.dirname(filePath);
@@ -56,7 +56,7 @@ function ensureDir(filePath: string): void {
 
 function initWithBetterSqlite(): DatabaseAdapter {
   if (!Database) {
-    throw new Error("better-sqlite3 not available");
+    throw new Error('better-sqlite3 not available');
   }
 
   ensureDir(DB_PATH);
@@ -77,18 +77,18 @@ function initWithBetterSqlite(): DatabaseAdapter {
 
   return {
     getAllGames(): Map<string, GameData> {
-      const rows = db.prepare("SELECT id, json FROM games").all() as Array<{
+      const rows = db.prepare('SELECT id, json FROM games').all() as Array<{
         id: string;
         json: string;
       }>;
       const map = new Map<string, GameData>();
-      rows.forEach((r) => {
+      rows.forEach(r => {
         map.set(r.id, JSON.parse(r.json) as GameData);
       });
       return map;
     },
     getGame(id: string): GameData | null {
-      const row = db.prepare("SELECT json FROM games WHERE id = ?").get(id) as
+      const row = db.prepare('SELECT json FROM games WHERE id = ?').get(id) as
         | { json: string }
         | undefined;
       return row ? (JSON.parse(row.json) as GameData) : null;
@@ -96,20 +96,20 @@ function initWithBetterSqlite(): DatabaseAdapter {
     upsertGame(id: string, obj: GameData): void {
       const json = JSON.stringify(obj);
       db.prepare(
-        "INSERT INTO games (id, json) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET json=excluded.json",
+        'INSERT INTO games (id, json) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET json=excluded.json'
       ).run(id, json);
     },
     deleteGame(id: string): void {
-      db.prepare("DELETE FROM games WHERE id = ?").run(id);
+      db.prepare('DELETE FROM games WHERE id = ?').run(id);
     },
     logAudit(contentId: string, event: string): void {
       const ts = Date.now();
       const eid = `audit_${ts}_${Math.random().toString(36).slice(2, 9)}`;
       const record: AuditRecord = { id: eid, contentId, ts, event };
-      db.prepare("INSERT INTO audit (id, ts, event) VALUES (?, ?, ?)").run(
+      db.prepare('INSERT INTO audit (id, ts, event) VALUES (?, ?, ?)').run(
         eid,
         ts,
-        JSON.stringify(record),
+        JSON.stringify(record)
       );
     },
   };
@@ -118,7 +118,7 @@ function initWithBetterSqlite(): DatabaseAdapter {
 async function initWithSqlite3(): Promise<DatabaseAdapter> {
   // Basic async wrapper using sqlite3
 
-  const sqlite3 = require("better-sqlite3");
+  const sqlite3 = require('better-sqlite3');
   ensureDir(DB_PATH);
   const db = new sqlite3.Database(DB_PATH);
 
@@ -130,22 +130,22 @@ async function initWithSqlite3(): Promise<DatabaseAdapter> {
         } else {
           resolve(this);
         }
-      }),
+      })
     );
   }
 
   function all(sql: string, params: unknown[] = []): Promise<unknown[]> {
     return new Promise((resolve, reject) =>
       db.all(sql, params, (err: Error | null, rows: unknown[]) =>
-        err ? reject(err) : resolve(rows),
-      ),
+        err ? reject(err) : resolve(rows)
+      )
     );
   }
 
   async function ensure(): Promise<void> {
     await run(`CREATE TABLE IF NOT EXISTS games (id TEXT PRIMARY KEY, json TEXT NOT NULL)`);
     await run(
-      `CREATE TABLE IF NOT EXISTS audit (id TEXT PRIMARY KEY, ts INTEGER NOT NULL, event TEXT NOT NULL)`,
+      `CREATE TABLE IF NOT EXISTS audit (id TEXT PRIMARY KEY, ts INTEGER NOT NULL, event TEXT NOT NULL)`
     );
   }
 
@@ -153,18 +153,18 @@ async function initWithSqlite3(): Promise<DatabaseAdapter> {
 
   return {
     async getAllGames(): Promise<Map<string, GameData>> {
-      const rows = (await all("SELECT id, json FROM games")) as Array<{
+      const rows = (await all('SELECT id, json FROM games')) as Array<{
         id: string;
         json: string;
       }>;
       const map = new Map<string, GameData>();
-      rows.forEach((r) => {
+      rows.forEach(r => {
         map.set(r.id, JSON.parse(r.json) as GameData);
       });
       return map;
     },
     async getGame(id: string): Promise<GameData | null> {
-      const rows = (await all("SELECT json FROM games WHERE id = ?", [id])) as Array<{
+      const rows = (await all('SELECT json FROM games WHERE id = ?', [id])) as Array<{
         json: string;
       }>;
       return rows[0] ? (JSON.parse(rows[0].json) as GameData) : null;
@@ -172,18 +172,18 @@ async function initWithSqlite3(): Promise<DatabaseAdapter> {
     async upsertGame(id: string, obj: GameData): Promise<void> {
       const json = JSON.stringify(obj);
       await run(
-        "INSERT INTO games (id, json) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET json = excluded.json",
-        [id, json],
+        'INSERT INTO games (id, json) VALUES (?, ?) ON CONFLICT(id) DO UPDATE SET json = excluded.json',
+        [id, json]
       );
     },
     async deleteGame(id: string): Promise<void> {
-      await run("DELETE FROM games WHERE id = ?", [id]);
+      await run('DELETE FROM games WHERE id = ?', [id]);
     },
     async logAudit(contentId: string, event: string): Promise<void> {
       const ts = Date.now();
       const eid = `audit_${ts}_${Math.random().toString(36).slice(2, 9)}`;
       const record: AuditRecord = { id: eid, contentId, ts, event };
-      await run("INSERT INTO audit (id, ts, event) VALUES (?, ?, ?)", [
+      await run('INSERT INTO audit (id, ts, event) VALUES (?, ?, ?)', [
         eid,
         ts,
         JSON.stringify(record),
@@ -193,12 +193,12 @@ async function initWithSqlite3(): Promise<DatabaseAdapter> {
 }
 
 function initJsonFallback(): DatabaseAdapter {
-  const DATA_FILE = path.join(__dirname, "..", "data", "games.json");
-  const AUDIT_FILE = path.join(__dirname, "..", "data", "audit.json");
+  const DATA_FILE = path.join(__dirname, '..', 'data', 'games.json');
+  const AUDIT_FILE = path.join(__dirname, '..', 'data', 'audit.json');
 
   function loadGames(): Map<string, GameData> {
     try {
-      const raw = fs.readFileSync(DATA_FILE, "utf8");
+      const raw = fs.readFileSync(DATA_FILE, 'utf8');
       const obj = JSON.parse(raw) as Record<string, GameData>;
       return new Map(Object.entries(obj));
     } catch {
@@ -213,10 +213,10 @@ function initJsonFallback(): DatabaseAdapter {
       if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
       }
-      fs.writeFileSync(DATA_FILE, JSON.stringify(obj, null, 2), "utf8");
+      fs.writeFileSync(DATA_FILE, JSON.stringify(obj, null, 2), 'utf8');
     } catch (err) {
       const error = err as Error;
-      logger.warn("Failed to persist games store (fallback)", {
+      logger.warn('Failed to persist games store (fallback)', {
         error: error.message || String(error),
       });
     }
@@ -236,12 +236,12 @@ function initJsonFallback(): DatabaseAdapter {
       };
       let arr: AuditRecord[] = [];
       try {
-        arr = JSON.parse(fs.readFileSync(AUDIT_FILE, "utf8")) as AuditRecord[];
+        arr = JSON.parse(fs.readFileSync(AUDIT_FILE, 'utf8')) as AuditRecord[];
       } catch {
         arr = [];
       }
       arr.push(rec);
-      fs.writeFileSync(AUDIT_FILE, JSON.stringify(arr, null, 2), "utf8");
+      fs.writeFileSync(AUDIT_FILE, JSON.stringify(arr, null, 2), 'utf8');
     } catch {
       // swallow
     }
@@ -279,27 +279,27 @@ if (Database) {
     adapter = initWithBetterSqlite();
   } catch (err) {
     const error = err as Error;
-    logger.warn("better-sqlite3 initialisation failed, falling back to sqlite3/json", {
+    logger.warn('better-sqlite3 initialisation failed, falling back to sqlite3/json', {
       error: error?.message ?? String(error),
     });
     Database = null; // allow fallback to continue
     // Retry with sqlite3 or JSON fallback
     try {
-      require.resolve("sqlite3");
+      require.resolve('sqlite3');
       adapter = initWithSqlite3();
     } catch {
-      logger.warn("No sqlite native modules found, using JSON file fallback for persistence");
+      logger.warn('No sqlite native modules found, using JSON file fallback for persistence');
       adapter = initJsonFallback();
     }
   }
 } else {
   // try sqlite3 runtime; if not available, fall back to a pure-JS JSON adapter
   try {
-    require.resolve("sqlite3");
+    require.resolve('sqlite3');
     // initialize async sqlite3 adapter
     adapter = initWithSqlite3();
   } catch {
-    logger.warn("No sqlite native modules found, using JSON file fallback for persistence");
+    logger.warn('No sqlite native modules found, using JSON file fallback for persistence');
     adapter = initJsonFallback();
   }
 }

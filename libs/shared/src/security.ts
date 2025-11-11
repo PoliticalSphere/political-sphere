@@ -1,15 +1,15 @@
 // Security utility functions for the Political Sphere API
 // Implements OWASP best practices for input validation and sanitization
 
-import { createHash, randomBytes, timingSafeEqual } from "node:crypto";
-import { env } from "node:process";
+import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
+import { env } from 'node:process';
 
-const DEFAULT_ALLOWED_PROTOCOLS = ["http", "https"];
+const DEFAULT_ALLOWED_PROTOCOLS = ['http', 'https'];
 
 const DEFAULT_ALLOWED_ORIGINS = [
-  "https://political-sphere.com",
-  "https://www.political-sphere.com",
-  "https://staging.political-sphere.com",
+  'https://political-sphere.com',
+  'https://www.political-sphere.com',
+  'https://staging.political-sphere.com',
 ];
 
 const DEFAULT_RATE_LIMIT = Object.freeze({
@@ -18,36 +18,36 @@ const DEFAULT_RATE_LIMIT = Object.freeze({
   maxKeys: 5000,
 });
 
-const DEFAULT_ALLOWED_METHODS = ["GET", "POST", "PUT", "DELETE", "OPTIONS"];
-const DEFAULT_ALLOWED_HEADERS = ["Content-Type", "Authorization", "X-CSRF-Token"];
-const DEFAULT_EXPOSED_HEADERS = ["X-RateLimit-Limit", "X-RateLimit-Remaining", "X-RateLimit-Reset"];
+const DEFAULT_ALLOWED_METHODS = ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'];
+const DEFAULT_ALLOWED_HEADERS = ['Content-Type', 'Authorization', 'X-CSRF-Token'];
+const DEFAULT_EXPOSED_HEADERS = ['X-RateLimit-Limit', 'X-RateLimit-Remaining', 'X-RateLimit-Reset'];
 
 export const DEFAULT_SECURITY_DIRECTIVES = Object.freeze({
-  "default-src": new Set(["'self'"]),
-  "script-src": new Set(["'self'"]),
-  "style-src": new Set(["'self'"]),
-  "img-src": new Set(["'self'", "data:", "https:"]),
-  "font-src": new Set(["'self'"]),
-  "connect-src": new Set(["'self'"]),
-  "frame-ancestors": new Set(["'none'"]),
-  "base-uri": new Set(["'self'"]),
-  "form-action": new Set(["'self'"]),
+  'default-src': new Set(["'self'"]),
+  'script-src': new Set(["'self'"]),
+  'style-src': new Set(["'self'"]),
+  'img-src': new Set(["'self'", 'data:', 'https:']),
+  'font-src': new Set(["'self'"]),
+  'connect-src': new Set(["'self'"]),
+  'frame-ancestors': new Set(["'none'"]),
+  'base-uri': new Set(["'self'"]),
+  'form-action': new Set(["'self'"]),
 });
 
 const VALID_CATEGORIES = new Set([
-  "politics",
-  "economy",
-  "social",
-  "technology",
-  "environment",
-  "health",
-  "finance",
-  "governance",
-  "policy",
-  "general",
+  'politics',
+  'economy',
+  'social',
+  'technology',
+  'environment',
+  'health',
+  'finance',
+  'governance',
+  'policy',
+  'general',
 ]);
 
-const ALLOWED_STATUSES = new Set(["draft", "published", "archived"]);
+const ALLOWED_STATUSES = new Set(['draft', 'published', 'archived']);
 
 // Export ALLOWED_STATUSES as NEWS_ALLOWED_STATUSES for API compatibility
 export const NEWS_ALLOWED_STATUSES = ALLOWED_STATUSES;
@@ -62,31 +62,31 @@ const csrfTokenStore = new Map<string, { token: string; created: number }>();
  * Sanitizes HTML input to prevent XSS attacks
  */
 export function sanitizeHtml(input: string): string {
-  if (typeof input !== "string") {
-    return "";
+  if (typeof input !== 'string') {
+    return '';
   }
 
   // Basic HTML sanitization - replace dangerous tags
   return input
-    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
-    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, "")
-    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, "")
-    .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, "")
-    .replace(/javascript:/gi, "")
-    .replace(/on\w+\s*=/gi, "")
-    .replace(/<[^>]*>/g, ""); // Remove all remaining HTML tags
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
+    .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
+    .replace(/<embed\b[^<]*(?:(?!<\/embed>)<[^<]*)*<\/embed>/gi, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .replace(/<[^>]*>/g, ''); // Remove all remaining HTML tags
 }
 
 /**
  * Validates general input for security
  */
 export function isValidInput(input: string): boolean {
-  if (typeof input !== "string") {
+  if (typeof input !== 'string') {
     return false;
   }
 
   // Check for null bytes
-  if (input.includes("\0")) {
+  if (input.includes('\0')) {
     return false;
   }
 
@@ -104,14 +104,14 @@ export function isValidInput(input: string): boolean {
     /('|(\\x27)|(\\x2D\\x2D)|(;)|(\\\\)|(\\')|(\\")|(\\x23)|(\\x3B)|(\\x2F\\x2A)|(\\x2A\\x2F))/i, // SQL injection patterns
   ];
 
-  return !suspiciousPatterns.some((pattern) => pattern.test(input));
+  return !suspiciousPatterns.some(pattern => pattern.test(input));
 }
 
 /**
  * Validates email format
  */
 export function isValidEmail(email: string): boolean {
-  if (typeof email !== "string") {
+  if (typeof email !== 'string') {
     return false;
   }
 
@@ -124,9 +124,9 @@ export function isValidEmail(email: string): boolean {
  */
 export function isValidUrl(
   url: string,
-  allowedProtocols: string[] = DEFAULT_ALLOWED_PROTOCOLS,
+  allowedProtocols: string[] = DEFAULT_ALLOWED_PROTOCOLS
 ): boolean {
-  if (typeof url !== "string") {
+  if (typeof url !== 'string') {
     return false;
   }
 
@@ -134,14 +134,14 @@ export function isValidUrl(
     const parsedUrl = new URL(url);
 
     // Check protocol
-    if (!allowedProtocols.includes(parsedUrl.protocol.replace(":", ""))) {
+    if (!allowedProtocols.includes(parsedUrl.protocol.replace(':', ''))) {
       return false;
     }
 
     // Check for localhost in production
     if (
-      env["NODE_ENV"] === "production" &&
-      (parsedUrl.hostname === "localhost" || parsedUrl.hostname === "127.0.0.1")
+      env['NODE_ENV'] === 'production' &&
+      (parsedUrl.hostname === 'localhost' || parsedUrl.hostname === '127.0.0.1')
     ) {
       return false;
     }
@@ -156,7 +156,7 @@ export function isValidUrl(
  * Validates string length
  */
 export function isValidLength(input: string, min = 0, max = 10000): boolean {
-  if (typeof input !== "string") {
+  if (typeof input !== 'string') {
     return false;
   }
 
@@ -167,21 +167,21 @@ export function isValidLength(input: string, min = 0, max = 10000): boolean {
  * Generates a secure random token
  */
 export function generateSecureToken(length = 32): string {
-  return randomBytes(length).toString("hex");
+  return randomBytes(length).toString('hex');
 }
 
 /**
  * Hashes a value using SHA-256
  */
 export function hashValue(value: string): string {
-  return createHash("sha256").update(value).digest("hex");
+  return createHash('sha256').update(value).digest('hex');
 }
 
 /**
  * Validates category against allowed values
  */
 export function validateCategory(category: string): string | null {
-  if (typeof category !== "string") {
+  if (typeof category !== 'string') {
     return null;
   }
 
@@ -193,7 +193,7 @@ export function validateCategory(category: string): string | null {
  * Validates tag format
  */
 export function validateTag(tag: string): string | null {
-  if (typeof tag !== "string") {
+  if (typeof tag !== 'string') {
     return null;
   }
 
@@ -218,17 +218,17 @@ export function validateTag(tag: string): string | null {
 export function checkRateLimit(
   key: string,
   optionsOrMaxRequests?: number | { maxRequests?: number; windowMs?: number },
-  windowMs?: number,
+  windowMs?: number
 ): boolean {
   let maxRequests: number;
   let windowDuration: number;
 
-  if (typeof optionsOrMaxRequests === "object" && optionsOrMaxRequests !== null) {
+  if (typeof optionsOrMaxRequests === 'object' && optionsOrMaxRequests !== null) {
     maxRequests = optionsOrMaxRequests.maxRequests ?? DEFAULT_RATE_LIMIT.maxRequests;
     windowDuration = optionsOrMaxRequests.windowMs ?? DEFAULT_RATE_LIMIT.windowMs;
   } else {
     maxRequests =
-      (typeof optionsOrMaxRequests === "number" ? optionsOrMaxRequests : undefined) ??
+      (typeof optionsOrMaxRequests === 'number' ? optionsOrMaxRequests : undefined) ??
       DEFAULT_RATE_LIMIT.maxRequests;
     windowDuration = windowMs ?? DEFAULT_RATE_LIMIT.windowMs;
   }
@@ -264,7 +264,7 @@ export function checkRateLimit(
  */
 export function getRateLimitInfo(
   key: string,
-  options?: { maxRequests?: number; windowMs?: number },
+  options?: { maxRequests?: number; windowMs?: number }
 ): { remaining: number; reset: number; limit: number } {
   const maxRequests = options?.maxRequests ?? DEFAULT_RATE_LIMIT.maxRequests;
   const windowMs = options?.windowMs ?? DEFAULT_RATE_LIMIT.windowMs;
@@ -339,7 +339,7 @@ export function validateCsrfToken(token: string, sessionId: string, maxAge = 360
 
   // Use timing-safe comparison
   try {
-    return timingSafeEqual(Buffer.from(token, "hex"), Buffer.from(stored.token, "hex"));
+    return timingSafeEqual(Buffer.from(token, 'hex'), Buffer.from(stored.token, 'hex'));
   } catch {
     return false;
   }
@@ -351,7 +351,7 @@ export function validateCsrfToken(token: string, sessionId: string, maxAge = 360
  */
 export function isIpAllowed(ip: string, blocklist: string[] = []): boolean {
   // Validate IP format
-  if (!ip || typeof ip !== "string") {
+  if (!ip || typeof ip !== 'string') {
     return false;
   }
 
@@ -361,7 +361,7 @@ export function isIpAllowed(ip: string, blocklist: string[] = []): boolean {
   }
 
   // Allow localhost IPs
-  if (ip === "127.0.0.1" || ip === "::1" || ip === "localhost") {
+  if (ip === '127.0.0.1' || ip === '::1' || ip === 'localhost') {
     return true;
   }
 
@@ -374,21 +374,21 @@ export function isIpAllowed(ip: string, blocklist: string[] = []): boolean {
     /^fe80:/, // IPv6 link-local
   ];
 
-  return privateIpPatterns.some((pattern) => pattern.test(ip));
+  return privateIpPatterns.some(pattern => pattern.test(ip));
 }
 
 /**
  * Security headers for HTTP responses
  */
 export const SECURITY_HEADERS: Record<string, string> = {
-  "X-Content-Type-Options": "nosniff",
-  "X-Frame-Options": "DENY",
-  "X-XSS-Protection": "1; mode=block",
-  "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
-  "Content-Security-Policy":
+  'X-Content-Type-Options': 'nosniff',
+  'X-Frame-Options': 'DENY',
+  'X-XSS-Protection': '1; mode=block',
+  'Strict-Transport-Security': 'max-age=31536000; includeSubDomains',
+  'Content-Security-Policy':
     "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: https:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'; form-action 'self'",
-  "Referrer-Policy": "strict-origin-when-cross-origin",
-  "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
+  'Referrer-Policy': 'strict-origin-when-cross-origin',
+  'Permissions-Policy': 'geolocation=(), microphone=(), camera=()',
 };
 
 /**
@@ -397,15 +397,15 @@ export const SECURITY_HEADERS: Record<string, string> = {
 export function getCorsHeaders(origin: string): Record<string, string> {
   const isAllowedOrigin =
     DEFAULT_ALLOWED_ORIGINS.includes(origin) ||
-    (env["NODE_ENV"] !== "production" && origin?.includes("localhost"));
+    (env['NODE_ENV'] !== 'production' && origin?.includes('localhost'));
 
   return {
-    "Access-Control-Allow-Origin": isAllowedOrigin ? origin : "",
-    "Access-Control-Allow-Methods": DEFAULT_ALLOWED_METHODS.join(", "),
-    "Access-Control-Allow-Headers": DEFAULT_ALLOWED_HEADERS.join(", "),
-    "Access-Control-Expose-Headers": DEFAULT_EXPOSED_HEADERS.join(", "),
-    "Access-Control-Allow-Credentials": "true",
-    "Access-Control-Max-Age": "86400", // 24 hours
+    'Access-Control-Allow-Origin': isAllowedOrigin ? origin : '',
+    'Access-Control-Allow-Methods': DEFAULT_ALLOWED_METHODS.join(', '),
+    'Access-Control-Allow-Headers': DEFAULT_ALLOWED_HEADERS.join(', '),
+    'Access-Control-Expose-Headers': DEFAULT_EXPOSED_HEADERS.join(', '),
+    'Access-Control-Allow-Credentials': 'true',
+    'Access-Control-Max-Age': '86400', // 24 hours
   };
 }
 

@@ -15,12 +15,12 @@
 
 export class SanitizeInputsTransformer {
   private readonly maxStringLength = 10000;
-  private readonly allowedHtmlTags = ["b", "i", "em", "strong", "p", "br"];
+  private readonly allowedHtmlTags = ['b', 'i', 'em', 'strong', 'p', 'br'];
 
   /**
    * Sanitize a single string value for safe HTML output
    * This prevents XSS attacks when displaying user content.
-   * 
+   *
    * NOTE: This does NOT prevent SQL injection. Use parameterized queries
    * at the database layer for that protection.
    */
@@ -49,15 +49,15 @@ export class SanitizeInputsTransformer {
    */
   private escapeHtml(text: string): string {
     const entityMap: Record<string, string> = {
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;",
-      "/": "&#x2F;",
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;',
+      '/': '&#x2F;',
     };
 
-    return text.replace(/[&<>"'/]/g, (char) => entityMap[char] || char);
+    return text.replace(/[&<>"'/]/g, char => entityMap[char] || char);
   }
 
   /**
@@ -71,13 +71,13 @@ export class SanitizeInputsTransformer {
     let sanitized = html;
 
     // Remove script tags and their content
-    sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
+    sanitized = sanitized.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '');
 
     // Remove event handlers
-    sanitized = sanitized.replace(/on\w+\s*=\s*["'][^"']*["']/gi, "");
+    sanitized = sanitized.replace(/on\w+\s*=\s*["'][^"']*["']/gi, '');
 
     // Remove javascript: protocol
-    sanitized = sanitized.replace(/javascript:/gi, "");
+    sanitized = sanitized.replace(/javascript:/gi, '');
 
     return sanitized;
   }
@@ -91,13 +91,13 @@ export class SanitizeInputsTransformer {
     for (const [key, value] of Object.entries(obj)) {
       const sanitizedKey = this.sanitizeString(key);
 
-      if (typeof value === "string") {
+      if (typeof value === 'string') {
         sanitized[sanitizedKey] = this.sanitizeString(value);
       } else if (Array.isArray(value)) {
-        sanitized[sanitizedKey] = value.map((item) =>
-          typeof item === "string" ? this.sanitizeString(item) : item,
+        sanitized[sanitizedKey] = value.map(item =>
+          typeof item === 'string' ? this.sanitizeString(item) : item
         );
-      } else if (value !== null && typeof value === "object") {
+      } else if (value !== null && typeof value === 'object') {
         sanitized[sanitizedKey] = this.sanitizeObject(value as Record<string, unknown>);
       } else {
         sanitized[sanitizedKey] = value;
@@ -116,7 +116,7 @@ export class SanitizeInputsTransformer {
     // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(sanitized)) {
-      throw new Error("Invalid email format");
+      throw new Error('Invalid email format');
     }
 
     return sanitized;
@@ -130,13 +130,13 @@ export class SanitizeInputsTransformer {
       const parsed = new URL(url);
 
       // Only allow http and https protocols
-      if (!["http:", "https:"].includes(parsed.protocol)) {
-        throw new Error("Invalid URL protocol");
+      if (!['http:', 'https:'].includes(parsed.protocol)) {
+        throw new Error('Invalid URL protocol');
       }
 
       return parsed.toString();
     } catch {
-      throw new Error("Invalid URL format");
+      throw new Error('Invalid URL format');
     }
   }
 }

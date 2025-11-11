@@ -3,14 +3,14 @@
  * Manages game state and actions using the game engine
  */
 
-import { advanceGameState } from "../../../../libs/game-engine/src/engine.js"; // engine is JS ESM
+import { advanceGameState } from '../../../../libs/game-engine/src/engine.js'; // engine is JS ESM
 
 export interface GameState {
   id: string;
   name: string;
   createdAt: string;
   currentTurn: number;
-  phase: "lobby" | "debate" | "voting" | "enacted";
+  phase: 'lobby' | 'debate' | 'voting' | 'enacted';
   players: Array<{
     id: string;
     username: string;
@@ -31,11 +31,11 @@ export interface GameState {
     turnDuration: number; // seconds
     debateDuration: number; // seconds
   };
-  status: "waiting" | "active" | "paused" | "finished";
+  status: 'waiting' | 'active' | 'paused' | 'finished';
 }
 
 export interface PlayerAction {
-  type: "propose" | "vote" | "speak" | "start_debate" | "advance_turn";
+  type: 'propose' | 'vote' | 'speak' | 'start_debate' | 'advance_turn';
   playerId: string;
   payload?: Record<string, unknown>;
 }
@@ -53,10 +53,10 @@ export class GameService {
 
     const game: GameState = {
       id: gameId,
-      name: name || "New Game",
+      name: name || 'New Game',
       createdAt: new Date().toISOString(),
       currentTurn: 1,
-      phase: "lobby",
+      phase: 'lobby',
       players: [
         {
           id: creatorId,
@@ -79,7 +79,7 @@ export class GameService {
         turnDuration: 300, // 5 minutes
         debateDuration: 180, // 3 minutes
       },
-      status: "waiting",
+      status: 'waiting',
     };
 
     games.set(gameId, game);
@@ -119,7 +119,7 @@ export class GameService {
     }
 
     return Array.from(gameIds)
-      .map((id) => games.get(id))
+      .map(id => games.get(id))
       .filter((game): game is GameState => game !== undefined);
   }
 
@@ -129,19 +129,19 @@ export class GameService {
   joinGame(gameId: string, playerId: string, username: string): GameState {
     const game = games.get(gameId);
     if (!game) {
-      throw new Error("Game not found");
+      throw new Error('Game not found');
     }
 
-    if (game.status === "finished") {
-      throw new Error("Game has finished");
+    if (game.status === 'finished') {
+      throw new Error('Game has finished');
     }
 
     if (game.players.length >= game.settings.maxPlayers) {
-      throw new Error("Game is full");
+      throw new Error('Game is full');
     }
 
-    if (game.players.some((p) => p.id === playerId)) {
-      throw new Error("Already in this game");
+    if (game.players.some(p => p.id === playerId)) {
+      throw new Error('Already in this game');
     }
 
     game.players.push({
@@ -168,17 +168,17 @@ export class GameService {
   processAction(gameId: string, action: PlayerAction): GameState {
     const game = games.get(gameId);
     if (!game) {
-      throw new Error("Game not found");
+      throw new Error('Game not found');
     }
 
-    if (game.status !== "active" && game.status !== "waiting") {
-      throw new Error("Game is not active");
+    if (game.status !== 'active' && game.status !== 'waiting') {
+      throw new Error('Game is not active');
     }
 
     // Verify player is in game
-    const player = game.players.find((p) => p.id === action.playerId);
+    const player = game.players.find(p => p.id === action.playerId);
     if (!player) {
-      throw new Error("Player not in this game");
+      throw new Error('Player not in this game');
     }
 
     // Enrich payload with implicit player identifiers so clients don't need to duplicate
@@ -187,14 +187,14 @@ export class GameService {
       payload: { ...(action.payload || {}) },
     };
     if (
-      enrichedAction.type === "vote" &&
+      enrichedAction.type === 'vote' &&
       enrichedAction.payload &&
       !enrichedAction.payload.playerId
     ) {
       enrichedAction.payload.playerId = enrichedAction.playerId;
     }
     if (
-      enrichedAction.type === "propose" &&
+      enrichedAction.type === 'propose' &&
       enrichedAction.payload &&
       !enrichedAction.payload.proposerId
     ) {
@@ -224,24 +224,24 @@ export class GameService {
   startGame(gameId: string, playerId: string): GameState {
     const game = games.get(gameId);
     if (!game) {
-      throw new Error("Game not found");
+      throw new Error('Game not found');
     }
 
     // Verify player is creator (first player)
     if (!game.players[0] || game.players[0].id !== playerId) {
-      throw new Error("Only game creator can start the game");
+      throw new Error('Only game creator can start the game');
     }
 
-    if (game.status !== "waiting") {
-      throw new Error("Game already started");
+    if (game.status !== 'waiting') {
+      throw new Error('Game already started');
     }
 
     if (game.players.length < 2) {
-      throw new Error("Need at least 2 players to start");
+      throw new Error('Need at least 2 players to start');
     }
 
-    game.status = "active";
-    game.phase = "debate";
+    game.status = 'active';
+    game.phase = 'debate';
 
     return game;
   }
@@ -252,16 +252,16 @@ export class GameService {
   deleteGame(gameId: string, playerId: string): void {
     const game = games.get(gameId);
     if (!game) {
-      throw new Error("Game not found");
+      throw new Error('Game not found');
     }
 
     // Only creator can delete
     if (!game.players[0] || game.players[0].id !== playerId) {
-      throw new Error("Only game creator can delete the game");
+      throw new Error('Only game creator can delete the game');
     }
 
     // Remove from all players' lists
-    game.players.forEach((player) => {
+    game.players.forEach(player => {
       const playerGameSet = playerGames.get(player.id);
       if (playerGameSet) {
         playerGameSet.delete(gameId);

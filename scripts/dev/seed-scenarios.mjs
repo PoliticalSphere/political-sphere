@@ -11,28 +11,28 @@
  * Usage: npm run seed:scenarios [scenario-name]
  */
 
-import fs from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { BillFactory } from "../libs/testing/factories/bill.factory.js";
-import { PartyFactory } from "../libs/testing/factories/party.factory.js";
-import { UserFactory } from "../libs/testing/factories/user.factory.js";
-import { VoteFactory } from "../libs/testing/factories/vote.factory.js";
+import { BillFactory } from '../libs/testing/factories/bill.factory.js';
+import { PartyFactory } from '../libs/testing/factories/party.factory.js';
+import { UserFactory } from '../libs/testing/factories/user.factory.js';
+import { VoteFactory } from '../libs/testing/factories/vote.factory.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const OUTPUT_DIR = path.join(__dirname, "..", "data", "seeds", "scenarios");
+const OUTPUT_DIR = path.join(__dirname, '..', 'data', 'seeds', 'scenarios');
 
 /**
  * Available scenarios
  */
 const SCENARIOS = {
-  "coalition-govt": generateCoalitionGovernment,
-  "hung-parliament": generateHungParliament,
-  "contentious-bill": generateContentiousBill,
-  "emergency-vote": generateEmergencyVote,
+  'coalition-govt': generateCoalitionGovernment,
+  'hung-parliament': generateHungParliament,
+  'contentious-bill': generateContentiousBill,
+  'emergency-vote': generateEmergencyVote,
 };
 
 /**
@@ -40,7 +40,7 @@ const SCENARIOS = {
  * Two major parties form coalition with slim majority
  */
 async function generateCoalitionGovernment() {
-  console.log("🤝 Generating Coalition Government scenario...\n");
+  console.log('🤝 Generating Coalition Government scenario...\n');
 
   const users = [];
   const parties = [];
@@ -49,22 +49,22 @@ async function generateCoalitionGovernment() {
 
   // Create two major coalition parties
   const party1 = PartyFactory.build({
-    name: "Progressive Alliance",
-    abbreviation: "PA",
+    name: 'Progressive Alliance',
+    abbreviation: 'PA',
     memberCount: 12000,
     isActive: true,
   });
   const party2 = PartyFactory.build({
-    name: "Democratic Coalition",
-    abbreviation: "DC",
+    name: 'Democratic Coalition',
+    abbreviation: 'DC',
     memberCount: 8000,
     isActive: true,
   });
 
   // Create opposition party
   const opposition = PartyFactory.build({
-    name: "Conservative Party",
-    abbreviation: "CON",
+    name: 'Conservative Party',
+    abbreviation: 'CON',
     memberCount: 18000,
     isActive: true,
   });
@@ -84,7 +84,7 @@ async function generateCoalitionGovernment() {
 
   // Create coalition agreement bill (passed)
   const coalitionBill = BillFactory.Passed({
-    title: "Coalition Government Agreement",
+    title: 'Coalition Government Agreement',
     proposerId: users[0].id,
     votesFor: 35,
     votesAgainst: 32,
@@ -94,7 +94,7 @@ async function generateCoalitionGovernment() {
 
   // Create contentious policy bill (narrow margin)
   const policyBill = BillFactory.Passed({
-    title: "Healthcare Reform Act",
+    title: 'Healthcare Reform Act',
     proposerId: users[1].id,
     votesFor: 36,
     votesAgainst: 29,
@@ -103,8 +103,8 @@ async function generateCoalitionGovernment() {
   bills.push(policyBill);
 
   return {
-    name: "Coalition Government",
-    description: "Two-party coalition with slim majority facing strong opposition",
+    name: 'Coalition Government',
+    description: 'Two-party coalition with slim majority facing strong opposition',
     users,
     parties,
     bills,
@@ -117,7 +117,7 @@ async function generateCoalitionGovernment() {
  * No party has clear majority, multiple small parties hold balance
  */
 async function generateHungParliament() {
-  console.log("⚖️  Generating Hung Parliament scenario...\n");
+  console.log('⚖️  Generating Hung Parliament scenario...\n');
 
   const users = [];
   const parties = [];
@@ -125,28 +125,28 @@ async function generateHungParliament() {
 
   // Create multiple parties with fragmented support
   const party1 = PartyFactory.build({
-    name: "Labour Party",
-    abbreviation: "LAB",
+    name: 'Labour Party',
+    abbreviation: 'LAB',
     memberCount: 15000,
   });
   const party2 = PartyFactory.build({
-    name: "Conservative Party",
-    abbreviation: "CON",
+    name: 'Conservative Party',
+    abbreviation: 'CON',
     memberCount: 14500,
   });
   const party3 = PartyFactory.build({
-    name: "Liberal Democrats",
-    abbreviation: "LD",
+    name: 'Liberal Democrats',
+    abbreviation: 'LD',
     memberCount: 5000,
   });
   const party4 = PartyFactory.build({
-    name: "Green Party",
-    abbreviation: "GRN",
+    name: 'Green Party',
+    abbreviation: 'GRN',
     memberCount: 3000,
   });
   const party5 = PartyFactory.build({
-    name: "Reform Party",
-    abbreviation: "REF",
+    name: 'Reform Party',
+    abbreviation: 'REF',
     memberCount: 2500,
   });
 
@@ -161,7 +161,7 @@ async function generateHungParliament() {
 
   // Create bills that fail due to fragmentation
   const failedBill1 = BillFactory.Rejected({
-    title: "Electoral Reform Bill",
+    title: 'Electoral Reform Bill',
     proposerId: users[0].id,
     votesFor: 38,
     votesAgainst: 45,
@@ -169,7 +169,7 @@ async function generateHungParliament() {
   });
 
   const failedBill2 = BillFactory.Rejected({
-    title: "Budget Proposal",
+    title: 'Budget Proposal',
     proposerId: users[1].id,
     votesFor: 41,
     votesAgainst: 42,
@@ -179,8 +179,8 @@ async function generateHungParliament() {
   bills.push(failedBill1, failedBill2);
 
   return {
-    name: "Hung Parliament",
-    description: "Fragmented parliament with no clear majority, frequent deadlocks",
+    name: 'Hung Parliament',
+    description: 'Fragmented parliament with no clear majority, frequent deadlocks',
     users,
     parties,
     bills,
@@ -193,7 +193,7 @@ async function generateHungParliament() {
  * Highly divisive legislation with strong opinions on both sides
  */
 async function generateContentiousBill() {
-  console.log("⚔️  Generating Contentious Bill scenario...\n");
+  console.log('⚔️  Generating Contentious Bill scenario...\n');
 
   const users = [];
   const parties = [];
@@ -211,9 +211,9 @@ async function generateContentiousBill() {
 
   // Create highly contentious bill
   const contentiousBill = BillFactory.ActiveVoting({
-    title: "Climate Emergency and Economic Transition Act",
+    title: 'Climate Emergency and Economic Transition Act',
     description:
-      "Comprehensive climate legislation with significant economic restructuring requirements",
+      'Comprehensive climate legislation with significant economic restructuring requirements',
     proposerId: users[0].id,
     votesFor: 0,
     votesAgainst: 0,
@@ -227,8 +227,8 @@ async function generateContentiousBill() {
       VoteFactory.For({
         billId: contentiousBill.id,
         userId: users[i].id,
-        reason: "Critical action needed on climate change",
-      }),
+        reason: 'Critical action needed on climate change',
+      })
     );
   }
 
@@ -237,8 +237,8 @@ async function generateContentiousBill() {
       VoteFactory.Against({
         billId: contentiousBill.id,
         userId: users[i].id,
-        reason: "Economic impact too severe",
-      }),
+        reason: 'Economic impact too severe',
+      })
     );
   }
 
@@ -247,7 +247,7 @@ async function generateContentiousBill() {
       VoteFactory.Abstain({
         billId: contentiousBill.id,
         userId: users[i].id,
-      }),
+      })
     );
   }
 
@@ -257,8 +257,8 @@ async function generateContentiousBill() {
   contentiousBill.votesAbstain = 10;
 
   return {
-    name: "Contentious Bill",
-    description: "Deeply divisive legislation splitting parliament 50-50",
+    name: 'Contentious Bill',
+    description: 'Deeply divisive legislation splitting parliament 50-50',
     users,
     parties,
     bills,
@@ -271,7 +271,7 @@ async function generateContentiousBill() {
  * Fast-tracked emergency legislation with time pressure
  */
 async function generateEmergencyVote() {
-  console.log("🚨 Generating Emergency Vote scenario...\n");
+  console.log('🚨 Generating Emergency Vote scenario...\n');
 
   const users = [];
   const parties = [];
@@ -289,8 +289,8 @@ async function generateEmergencyVote() {
   const votingEnds = new Date(now.getTime() + 24 * 60 * 60 * 1000); // 24 hours
 
   const emergencyBill = BillFactory.ActiveVoting({
-    title: "Emergency Powers Act - Public Health Crisis",
-    description: "Emergency legislation granting temporary powers to handle immediate crisis",
+    title: 'Emergency Powers Act - Public Health Crisis',
+    description: 'Emergency legislation granting temporary powers to handle immediate crisis',
     proposerId: users[0].id,
     votingStartsAt: now.toISOString(),
     votingEndsAt: votingEnds.toISOString(),
@@ -303,7 +303,7 @@ async function generateEmergencyVote() {
       VoteFactory.For({
         billId: emergencyBill.id,
         userId: users[i].id,
-      }),
+      })
     );
   }
 
@@ -312,7 +312,7 @@ async function generateEmergencyVote() {
       VoteFactory.Against({
         billId: emergencyBill.id,
         userId: users[i].id,
-      }),
+      })
     );
   }
 
@@ -321,8 +321,8 @@ async function generateEmergencyVote() {
   emergencyBill.votesAbstain = 0;
 
   return {
-    name: "Emergency Vote",
-    description: "Fast-tracked emergency legislation with 24-hour voting window",
+    name: 'Emergency Vote',
+    description: 'Fast-tracked emergency legislation with 24-hour voting window',
     users,
     parties,
     bills,
@@ -337,13 +337,13 @@ async function saveScenario(scenarioName, data) {
   const scenarioDir = path.join(OUTPUT_DIR, scenarioName);
   await fs.mkdir(scenarioDir, { recursive: true });
 
-  await fs.writeFile(path.join(scenarioDir, "users.json"), JSON.stringify(data.users, null, 2));
+  await fs.writeFile(path.join(scenarioDir, 'users.json'), JSON.stringify(data.users, null, 2));
 
-  await fs.writeFile(path.join(scenarioDir, "parties.json"), JSON.stringify(data.parties, null, 2));
+  await fs.writeFile(path.join(scenarioDir, 'parties.json'), JSON.stringify(data.parties, null, 2));
 
-  await fs.writeFile(path.join(scenarioDir, "bills.json"), JSON.stringify(data.bills, null, 2));
+  await fs.writeFile(path.join(scenarioDir, 'bills.json'), JSON.stringify(data.bills, null, 2));
 
-  await fs.writeFile(path.join(scenarioDir, "votes.json"), JSON.stringify(data.votes, null, 2));
+  await fs.writeFile(path.join(scenarioDir, 'votes.json'), JSON.stringify(data.votes, null, 2));
 
   const metadata = {
     name: data.name,
@@ -357,7 +357,7 @@ async function saveScenario(scenarioName, data) {
     },
   };
 
-  await fs.writeFile(path.join(scenarioDir, "_metadata.json"), JSON.stringify(metadata, null, 2));
+  await fs.writeFile(path.join(scenarioDir, '_metadata.json'), JSON.stringify(metadata, null, 2));
 
   console.log(`✅ Scenario saved to: ${scenarioDir}\n`);
   console.log(`📊 Generated:`);
@@ -397,10 +397,10 @@ Examples:
   const data = await generator();
   await saveScenario(scenarioName, data);
 
-  console.log("✨ Scenario generation complete!\n");
+  console.log('✨ Scenario generation complete!\n');
 }
 
-main().catch((error) => {
-  console.error("❌ Error generating scenario:", error);
+main().catch(error => {
+  console.error('❌ Error generating scenario:', error);
   process.exit(1);
 });

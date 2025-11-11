@@ -1,10 +1,10 @@
-import type Database from "better-sqlite3";
-import { v4 as uuidv4 } from "uuid";
+import type Database from 'better-sqlite3';
+import { v4 as uuidv4 } from 'uuid';
 
 // eslint-disable-next-line no-restricted-imports
-import { CACHE_TTL, type CacheService, cacheKeys } from "../../utils/cache.ts";
+import { CACHE_TTL, type CacheService, cacheKeys } from '../../utils/cache.ts';
 // eslint-disable-next-line no-restricted-imports
-import { retryWithBackoff } from "../../utils/error-handler.js";
+import { retryWithBackoff } from '../../utils/error-handler.js';
 
 interface BillRow {
   id: string;
@@ -19,7 +19,7 @@ interface BillRow {
 export class BillStore {
   constructor(
     private db: Database.Database,
-    private cache?: CacheService,
+    private cache?: CacheService
   ) {}
 
   async create(billData: {
@@ -32,7 +32,7 @@ export class BillStore {
       const id = uuidv4();
       const nowDate = new Date();
       const now = nowDate.toISOString();
-      const status = billData.status || "proposed";
+      const status = billData.status || 'proposed';
       const proposerId = billData.proposerId;
 
       const stmt = this.db.prepare(`
@@ -85,7 +85,7 @@ export class BillStore {
           };
         }
       }
-      const stmt = this.db.prepare("SELECT * FROM bills WHERE id = ?");
+      const stmt = this.db.prepare('SELECT * FROM bills WHERE id = ?');
       const row = stmt.get(id) as BillRow | undefined;
       if (!row) return null;
       const bill = {
@@ -120,7 +120,7 @@ export class BillStore {
           updated_at?: string;
         }> | null>(cacheKeys.bills());
         if (cached) {
-          return cached.map((c) => ({
+          return cached.map(c => ({
             id: c.id,
             title: c.title,
             description: c.description,
@@ -131,9 +131,9 @@ export class BillStore {
           }));
         }
       }
-      const stmt = this.db.prepare("SELECT * FROM bills ORDER BY created_at DESC");
+      const stmt = this.db.prepare('SELECT * FROM bills ORDER BY created_at DESC');
       const rows = stmt.all() as BillRow[];
-      const bills = rows.map((r) => ({
+      const bills = rows.map(r => ({
         id: r.id,
         title: r.title,
         description: r.description,
@@ -155,14 +155,14 @@ export class BillStore {
       title: string;
       description: string;
       status: string;
-    }>,
+    }>
   ) {
     return retryWithBackoff(async () => {
       const now = new Date().toISOString();
 
       const setClause = Object.keys(updates)
-        .map((key) => `${key} = ?`)
-        .join(", ");
+        .map(key => `${key} = ?`)
+        .join(', ');
       const values = [...Object.values(updates), now, id];
 
       const stmt = this.db.prepare(`
@@ -187,7 +187,7 @@ export class BillStore {
 
   async delete(id: string) {
     return retryWithBackoff(async () => {
-      const stmt = this.db.prepare("DELETE FROM bills WHERE id = ?");
+      const stmt = this.db.prepare('DELETE FROM bills WHERE id = ?');
       const result = stmt.run(id);
 
       // Invalidate cache

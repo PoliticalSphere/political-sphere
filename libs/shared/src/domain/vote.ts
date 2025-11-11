@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-export const VoteTypeSchema = z.enum(["aye", "nay", "abstain"]);
+export const VoteTypeSchema = z.enum(['aye', 'nay', 'abstain']);
 
 export type VoteType = z.infer<typeof VoteTypeSchema>;
 

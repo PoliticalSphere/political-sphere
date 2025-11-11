@@ -62,19 +62,19 @@ describe('DatabaseConnection cache integration', () => {
     });
 
     const userSets = cache.calls.filter(
-      (call) => call.method === 'set' && String(call.key).startsWith('user:'),
+      call => call.method === 'set' && String(call.key).startsWith('user:')
     );
     expect(userSets.length).toBeGreaterThanOrEqual(3);
 
     expect(
-      cache.calls.some((call) => call.method === 'del' && call.key === `bill:${bill.id}:votes`),
+      cache.calls.some(call => call.method === 'del' && call.key === `bill:${bill.id}:votes`)
     ).toBe(true);
     expect(
-      cache.calls.some((call) => call.method === 'del' && call.key === `user:${user.id}:votes`),
+      cache.calls.some(call => call.method === 'del' && call.key === `user:${user.id}:votes`)
     ).toBe(true);
 
     closeDatabase();
 
-    expect(cache.calls.some((call) => call.method === 'close')).toBe(false);
+    expect(cache.calls.some(call => call.method === 'close')).toBe(false);
   });
 });

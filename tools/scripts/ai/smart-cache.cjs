@@ -17,8 +17,8 @@
  * @source Node.js built-in Map optimization
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 class SmartCache {
   constructor(options = {}) {
@@ -26,7 +26,7 @@ class SmartCache {
     this.ttl = options.ttl || 3600000; // 1 hour default
     this.cache = new Map();
     this.accessOrder = new Map(); // key -> timestamp
-    this.persistPath = options.persistPath || "ai-cache/smart-cache.json";
+    this.persistPath = options.persistPath || 'ai-cache/smart-cache.json';
 
     // Statistics
     this.stats = {
@@ -220,7 +220,7 @@ class SmartCache {
     }
 
     try {
-      const data = JSON.parse(fs.readFileSync(this.persistPath, "utf8"));
+      const data = JSON.parse(fs.readFileSync(this.persistPath, 'utf8'));
 
       // Filter out expired entries
       const now = Date.now();
@@ -234,7 +234,7 @@ class SmartCache {
 
       return true;
     } catch (error) {
-      console.error("Failed to load cache:", error.message);
+      console.error('Failed to load cache:', error.message);
       return false;
     }
   }
@@ -273,23 +273,23 @@ if (require.main === module) {
   const command = process.argv[2];
   const cache = new SmartCache({ maxSize: 100, ttl: 60000 });
 
-  if (command === "set") {
+  if (command === 'set') {
     const key = process.argv[3];
     const value = process.argv[4];
 
     if (!key || !value) {
-      console.error("Usage: node smart-cache.cjs set <key> <value>");
+      console.error('Usage: node smart-cache.cjs set <key> <value>');
       process.exit(1);
     }
 
     cache.set(key, value);
     cache.save();
     console.log(`✅ Set: ${key} = ${value}`);
-  } else if (command === "get") {
+  } else if (command === 'get') {
     const key = process.argv[3];
 
     if (!key) {
-      console.error("Usage: node smart-cache.cjs get <key>");
+      console.error('Usage: node smart-cache.cjs get <key>');
       process.exit(1);
     }
 
@@ -300,42 +300,42 @@ if (require.main === module) {
     } else {
       console.log(`❌ Key not found: ${key}`);
     }
-  } else if (command === "stats") {
-    console.log("📊 Cache Statistics:");
+  } else if (command === 'stats') {
+    console.log('📊 Cache Statistics:');
     console.log(cache.getStats());
-  } else if (command === "cleanup") {
+  } else if (command === 'cleanup') {
     const cleaned = cache.cleanup();
     console.log(`🧹 Cleaned ${cleaned} expired entries`);
     cache.save();
-  } else if (command === "test") {
-    console.log("🧪 Testing Smart Cache...\n");
+  } else if (command === 'test') {
+    console.log('🧪 Testing Smart Cache...\n');
 
     // Test basic operations
-    console.log("1. Setting values...");
-    cache.set("key1", "value1");
-    cache.set("key2", "value2");
-    cache.set("key3", "value3");
-    console.log("✅ Set 3 values\n");
+    console.log('1. Setting values...');
+    cache.set('key1', 'value1');
+    cache.set('key2', 'value2');
+    cache.set('key3', 'value3');
+    console.log('✅ Set 3 values\n');
 
     // Test retrieval
-    console.log("2. Getting values...");
-    console.log(`   key1: ${cache.get("key1")}`);
-    console.log(`   key2: ${cache.get("key2")}`);
-    console.log(`   missing: ${cache.get("missing")}`);
+    console.log('2. Getting values...');
+    console.log(`   key1: ${cache.get('key1')}`);
+    console.log(`   key2: ${cache.get('key2')}`);
+    console.log(`   missing: ${cache.get('missing')}`);
     console.log();
 
     // Test variable names in test
-    console.log("3. Testing variable names...");
-    const myKey = "testKey";
-    const myValue = "testValue";
+    console.log('3. Testing variable names...');
+    const myKey = 'testKey';
+    const myValue = 'testValue';
     cache.set(myKey, myValue);
     console.log(`   Set ${myKey}: ${cache.get(myKey)}`);
     console.log();
 
     // Test memoization
-    console.log("3. Testing memoization...");
+    console.log('3. Testing memoization...');
     let callCount = 0;
-    const expensiveFn = (x) => {
+    const expensiveFn = x => {
       callCount++;
       return x * x;
     };
@@ -347,20 +347,20 @@ if (require.main === module) {
     console.log(`   Function called ${callCount} time(s)\n`);
 
     // Test LRU eviction
-    console.log("4. Testing LRU eviction...");
+    console.log('4. Testing LRU eviction...');
     const smallCache = new SmartCache({ maxSize: 3 });
-    smallCache.set("a", 1);
-    smallCache.set("b", 2);
-    smallCache.set("c", 3);
+    smallCache.set('a', 1);
+    smallCache.set('b', 2);
+    smallCache.set('c', 3);
     console.log(`   Cache size: ${smallCache.cache.size}`);
-    smallCache.set("d", 4); // Should evict 'a'
+    smallCache.set('d', 4); // Should evict 'a'
     console.log(`   Added 'd', evicted oldest`);
-    console.log(`   'a' exists: ${smallCache.has("a")}`);
-    console.log(`   'd' exists: ${smallCache.has("d")}`);
+    console.log(`   'a' exists: ${smallCache.has('a')}`);
+    console.log(`   'd' exists: ${smallCache.has('d')}`);
     console.log();
 
     // Show stats
-    console.log("5. Final statistics:");
+    console.log('5. Final statistics:');
     console.log(cache.getStats());
 
     cache.save();

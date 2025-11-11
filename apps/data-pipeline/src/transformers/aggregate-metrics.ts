@@ -62,21 +62,21 @@ export class AggregateMetricsTransformer {
    * Calculate aggregate statistics
    */
   private calculateStats(metrics: MetricData[]): AggregatedMetric {
-    const values = metrics.map((m) => m.value);
-    const timestamps = metrics.map((m) => m.timestamp);
+    const values = metrics.map(m => m.value);
+    const timestamps = metrics.map(m => m.timestamp);
     const firstMetric = metrics[0];
     const dimensions = firstMetric?.dimensions;
 
     return {
-      metric: firstMetric?.metric || "unknown",
+      metric: firstMetric?.metric || 'unknown',
       count: metrics.length,
       sum: values.reduce((a, b) => a + b, 0),
       min: Math.min(...values),
       max: Math.max(...values),
       avg: values.reduce((a, b) => a + b, 0) / values.length,
       period: {
-        start: new Date(Math.min(...timestamps.map((t) => t.getTime()))),
-        end: new Date(Math.max(...timestamps.map((t) => t.getTime()))),
+        start: new Date(Math.min(...timestamps.map(t => t.getTime()))),
+        end: new Date(Math.max(...timestamps.map(t => t.getTime()))),
       },
       ...(dimensions !== undefined && { dimensions }),
     };
@@ -89,7 +89,7 @@ export class AggregateMetricsTransformer {
     const grouped = new Map<string, MetricData[]>();
 
     for (const metric of metrics) {
-      const key = metric.dimensions?.[dimension] || "unknown";
+      const key = metric.dimensions?.[dimension] || 'unknown';
       const existing = grouped.get(key) || [];
       existing.push(metric);
       grouped.set(key, existing);

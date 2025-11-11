@@ -10,10 +10,10 @@ o; /**
  * Standards: OWASP ASVS 4.0.3 Authentication
  */
 
-import bcrypt from "bcrypt";
-import type { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
-import { z } from "zod";
+import bcrypt from 'bcrypt';
+import type { Request, Response, NextFunction } from 'express';
+import jwt from 'jsonwebtoken';
+import { z } from 'zod';
 
 // ============================================================================
 // SCHEMAS
@@ -30,9 +30,9 @@ const RegisterSchema = z.object({
     .string()
     .min(8)
     .max(128)
-    .regex(/[A-Z]/, "Must contain uppercase letter")
-    .regex(/[a-z]/, "Must contain lowercase letter")
-    .regex(/[0-9]/, "Must contain number"),
+    .regex(/[A-Z]/, 'Must contain uppercase letter')
+    .regex(/[a-z]/, 'Must contain lowercase letter')
+    .regex(/[0-9]/, 'Must contain number'),
 });
 
 const LoginSchema = z.object({
@@ -46,7 +46,7 @@ const LoginSchema = z.object({
 
 interface JWTPayload {
   userId: string;
-  role: "user" | "moderator" | "admin";
+  role: 'user' | 'moderator' | 'admin';
 }
 
 declare global {
@@ -67,14 +67,14 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
     const data = RegisterSchema.parse(req.body);
 
     // 2. Check if user already exists
-    const existingUser = await db.query("SELECT id FROM users WHERE email = $1 OR username = $2", [
+    const existingUser = await db.query('SELECT id FROM users WHERE email = $1 OR username = $2', [
       data.email,
       data.username,
     ]);
 
     if (existingUser.rows.length > 0) {
       res.status(409).json({
-        error: "User with this email or username already exists",
+        error: 'User with this email or username already exists',
       });
       return;
     }
@@ -87,7 +87,7 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
       `INSERT INTO users (username, email, password_hash, role, is_active, created_at, updated_at)
        VALUES ($1, $2, $3, 'user', true, NOW(), NOW())
        RETURNING id, username, email, role, created_at`,
-      [data.username, data.email, passwordHash],
+      [data.username, data.email, passwordHash]
     );
 
     const user = result.rows[0];
@@ -105,7 +105,7 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
     // 6. Store refresh token (for revocation capability)
     await db.query(
       "INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, NOW() + INTERVAL '7 days')",
-      [user.id, refreshToken],
+      [user.id, refreshToken]
     );
 
     // 7. Send response (NEVER send password hash)
@@ -126,14 +126,14 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({
-        error: "Validation failed",
+        error: 'Validation failed',
         details: error.errors,
       });
       return;
     }
 
-    console.error("Registration error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Registration error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
@@ -148,8 +148,8 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
 
     // 2. Find user by email
     const result = await db.query(
-      "SELECT id, username, email, password_hash, role, is_active FROM users WHERE email = $1",
-      [data.email],
+      'SELECT id, username, email, password_hash, role, is_active FROM users WHERE email = $1',
+      [data.email]
     );
 
     const user = result.rows[0];
@@ -157,21 +157,21 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
     // 3. Check if user exists (use constant-time comparison to prevent timing attacks)
     if (!user) {
       // Perform dummy bcrypt to prevent timing attacks
-      await bcrypt.compare(data.password, "$2b$12$dummyhashtopreventtimingattack");
-      res.status(401).json({ error: "Invalid credentials" });
+      await bcrypt.compare(data.password, '$2b$12$dummyhashtopreventtimingattack');
+      res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
 
     // 4. Check if account is active
     if (!user.is_active) {
-      res.status(403).json({ error: "Account is inactive" });
+      res.status(403).json({ error: 'Account is inactive' });
       return;
     }
 
     // 5. Verify password
     const isValid = await bcrypt.compare(data.password, user.password_hash);
     if (!isValid) {
-      res.status(401).json({ error: "Invalid credentials" });
+      res.status(401).json({ error: 'Invalid credentials' });
       return;
     }
 
@@ -188,11 +188,11 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
     // 7. Store refresh token
     await db.query(
       "INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, NOW() + INTERVAL '7 days')",
-      [user.id, refreshToken],
+      [user.id, refreshToken]
     );
 
     // 8. Update last login
-    await db.query("UPDATE users SET last_login_at = NOW() WHERE id = $1", [user.id]);
+    await db.query('UPDATE users SET last_login_at = NOW() WHERE id = $1', [user.id]);
 
     // 9. Send response
     res.status(200).json({
@@ -211,14 +211,14 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
   } catch (error) {
     if (error instanceof z.ZodError) {
       res.status(400).json({
-        error: "Validation failed",
+        error: 'Validation failed',
         details: error.errors,
       });
       return;
     }
 
-    console.error("Login error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Login error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
@@ -230,8 +230,8 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
   try {
     // 1. Extract token from Authorization header
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      res.status(401).json({ error: "No token provided" });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      res.status(401).json({ error: 'No token provided' });
       return;
     }
 
@@ -240,7 +240,7 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
     // 2. Verify token
     const secret = process.env.JWT_SECRET;
     if (!secret) {
-      throw new Error("JWT_SECRET not configured");
+      throw new Error('JWT_SECRET not configured');
     }
     const payload = jwt.verify(token, secret) as JWTPayload;
 
@@ -250,16 +250,16 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
-      res.status(401).json({ error: "Token expired" });
+      res.status(401).json({ error: 'Token expired' });
       return;
     }
     if (error instanceof jwt.JsonWebTokenError) {
-      res.status(401).json({ error: "Invalid token" });
+      res.status(401).json({ error: 'Invalid token' });
       return;
     }
 
-    console.error("Authentication error:", error);
-    res.status(500).json({ error: "Internal server error" });
+    console.error('Authentication error:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 }
 
@@ -267,15 +267,15 @@ export function authenticate(req: Request, res: Response, next: NextFunction): v
 // EXAMPLE 4: Role-Based Authorization
 // ============================================================================
 
-export function authorize(...roles: Array<"user" | "moderator" | "admin">) {
+export function authorize(...roles: Array<'user' | 'moderator' | 'admin'>) {
   return (req: Request, res: Response, next: NextFunction): void => {
     if (!req.user) {
-      res.status(401).json({ error: "Not authenticated" });
+      res.status(401).json({ error: 'Not authenticated' });
       return;
     }
 
     if (!roles.includes(req.user.role)) {
-      res.status(403).json({ error: "Insufficient permissions" });
+      res.status(403).json({ error: 'Insufficient permissions' });
       return;
     }
 
@@ -290,22 +290,22 @@ export function authorize(...roles: Array<"user" | "moderator" | "admin">) {
 function generateAccessToken(payload: JWTPayload): string {
   const secret = process.env.JWT_SECRET;
   if (!secret) {
-    throw new Error("JWT_SECRET not configured");
+    throw new Error('JWT_SECRET not configured');
   }
   return jwt.sign(payload, secret, {
-    expiresIn: "15m",
-    algorithm: "HS256",
+    expiresIn: '15m',
+    algorithm: 'HS256',
   });
 }
 
 function generateRefreshToken(payload: JWTPayload): string {
   const refreshSecret = process.env.JWT_REFRESH_SECRET;
   if (!refreshSecret) {
-    throw new Error("JWT_REFRESH_SECRET not configured");
+    throw new Error('JWT_REFRESH_SECRET not configured');
   }
   return jwt.sign(payload, refreshSecret, {
-    expiresIn: "7d",
-    algorithm: "HS256",
+    expiresIn: '7d',
+    algorithm: 'HS256',
   });
 }
 

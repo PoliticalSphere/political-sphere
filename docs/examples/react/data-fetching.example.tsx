@@ -11,7 +11,7 @@
  * @see docs/05-engineering-and-devops/languages/react.md
  */
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 // ============================================================================
 // BASIC DATA FETCHING HOOK
@@ -46,7 +46,7 @@ export function useData<T>(url: string): UseDataResult<T> {
       const json = await response.json();
       setData(json);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error("Unknown error"));
+      setError(err instanceof Error ? err : new Error('Unknown error'));
     } finally {
       setLoading(false);
     }
@@ -61,7 +61,7 @@ export function useData<T>(url: string): UseDataResult<T> {
 
 // Usage Example
 export function BillsList() {
-  const { data: bills, loading, error, refetch } = useData<Bill[]>("/api/bills");
+  const { data: bills, loading, error, refetch } = useData<Bill[]>('/api/bills');
 
   if (loading) {
     return (
@@ -89,7 +89,7 @@ export function BillsList() {
         Refresh
       </button>
       <ul>
-        {bills?.map((bill) => (
+        {bills?.map(bill => (
           <li key={bill.id}>
             <h3>{bill.title}</h3>
             <p>{bill.status}</p>
@@ -141,7 +141,7 @@ export function usePagination<T>(baseUrl: string, pageSize = 20): UsePaginationR
         setData(json.data);
         setTotalPages(json.meta.totalPages);
       } catch (err) {
-        setError(err instanceof Error ? err : new Error("Unknown error"));
+        setError(err instanceof Error ? err : new Error('Unknown error'));
       } finally {
         setLoading(false);
       }
@@ -158,9 +158,9 @@ export function usePagination<T>(baseUrl: string, pageSize = 20): UsePaginationR
     totalPages,
     hasNextPage: page < totalPages,
     hasPrevPage: page > 1,
-    nextPage: () => setPage((p) => Math.min(p + 1, totalPages)),
-    prevPage: () => setPage((p) => Math.max(p - 1, 1)),
-    goToPage: (newPage) => setPage(Math.min(Math.max(newPage, 1), totalPages)),
+    nextPage: () => setPage(p => Math.min(p + 1, totalPages)),
+    prevPage: () => setPage(p => Math.max(p - 1, 1)),
+    goToPage: newPage => setPage(Math.min(Math.max(newPage, 1), totalPages)),
   };
 }
 
@@ -176,7 +176,7 @@ export function PaginatedBillsList() {
     hasPrevPage,
     nextPage,
     prevPage,
-  } = usePagination<Bill>("/api/bills");
+  } = usePagination<Bill>('/api/bills');
 
   if (loading) return <LoadingSpinner />;
   if (error) return <ErrorDisplay error={error} />;
@@ -184,7 +184,7 @@ export function PaginatedBillsList() {
   return (
     <div>
       <ul>
-        {bills.map((bill) => (
+        {bills.map(bill => (
           <BillCard key={bill.id} bill={bill} />
         ))}
       </ul>
@@ -243,11 +243,11 @@ export function useInfiniteScroll<T>(baseUrl: string, pageSize = 20): UseInfinit
 
       const json = await response.json();
 
-      setData((prev) => [...prev, ...json.data]);
+      setData(prev => [...prev, ...json.data]);
       setHasMore(json.meta.hasNextPage);
-      setPage((p) => p + 1);
+      setPage(p => p + 1);
     } catch (err) {
-      setError(err instanceof Error ? err : new Error("Unknown error"));
+      setError(err instanceof Error ? err : new Error('Unknown error'));
     } finally {
       setLoading(false);
     }
@@ -256,12 +256,12 @@ export function useInfiniteScroll<T>(baseUrl: string, pageSize = 20): UseInfinit
   // Intersection Observer for automatic loading
   useEffect(() => {
     const observer = new IntersectionObserver(
-      (entries) => {
+      entries => {
         if (entries[0].isIntersecting && hasMore && !loading) {
           loadMore();
         }
       },
-      { threshold: 0.1 },
+      { threshold: 0.1 }
     );
 
     const sentinel = sentinelRef.current;
@@ -287,7 +287,7 @@ export function InfiniteBillsList() {
     error,
     hasMore,
     sentinelRef,
-  } = useInfiniteScroll<Bill>("/api/bills");
+  } = useInfiniteScroll<Bill>('/api/bills');
 
   return (
     <div>
@@ -296,7 +296,7 @@ export function InfiniteBillsList() {
       {error && <ErrorDisplay error={error} />}
 
       <ul>
-        {bills.map((bill) => (
+        {bills.map(bill => (
           <BillCard key={bill.id} bill={bill} />
         ))}
       </ul>
@@ -325,37 +325,37 @@ export function useRealTimeData<T>(url: string, initialData: T[] = []) {
 
     ws.onopen = () => {
       setConnected(true);
-      console.log("WebSocket connected");
+      console.log('WebSocket connected');
     };
 
-    ws.onmessage = (event) => {
+    ws.onmessage = event => {
       const message = JSON.parse(event.data);
 
       switch (message.type) {
-        case "INITIAL_DATA":
+        case 'INITIAL_DATA':
           setData(message.data);
           break;
-        case "ITEM_ADDED":
-          setData((prev) => [...prev, message.item]);
+        case 'ITEM_ADDED':
+          setData(prev => [...prev, message.item]);
           break;
-        case "ITEM_UPDATED":
-          setData((prev) =>
-            prev.map((item: any) => (item.id === message.item.id ? message.item : item)),
+        case 'ITEM_UPDATED':
+          setData(prev =>
+            prev.map((item: any) => (item.id === message.item.id ? message.item : item))
           );
           break;
-        case "ITEM_DELETED":
-          setData((prev) => prev.filter((item: any) => item.id !== message.itemId));
+        case 'ITEM_DELETED':
+          setData(prev => prev.filter((item: any) => item.id !== message.itemId));
           break;
       }
     };
 
     ws.onclose = () => {
       setConnected(false);
-      console.log("WebSocket disconnected");
+      console.log('WebSocket disconnected');
     };
 
-    ws.onerror = (error) => {
-      console.error("WebSocket error:", error);
+    ws.onerror = error => {
+      console.error('WebSocket error:', error);
     };
 
     return () => {
@@ -368,20 +368,20 @@ export function useRealTimeData<T>(url: string, initialData: T[] = []) {
 
 // Usage Example
 export function RealTimeVotes() {
-  const { data: votes, connected } = useRealTimeData<Vote>("ws://localhost:3000/votes");
+  const { data: votes, connected } = useRealTimeData<Vote>('ws://localhost:3000/votes');
 
   return (
     <div>
       <div className="status-indicator">
-        <span className={connected ? "connected" : "disconnected"}>
-          {connected ? "🟢 Live" : "🔴 Disconnected"}
+        <span className={connected ? 'connected' : 'disconnected'}>
+          {connected ? '🟢 Live' : '🔴 Disconnected'}
         </span>
       </div>
 
       <h1>Live Vote Count: {votes.length}</h1>
 
       <ul>
-        {votes.map((vote) => (
+        {votes.map(vote => (
           <li key={vote.id}>
             User {vote.userId} voted {vote.position}
           </li>
@@ -403,7 +403,7 @@ interface UseMutationOptions<T, V> {
 
 export function useMutation<T, V>(
   mutationFn: (variables: V) => Promise<T>,
-  options: UseMutationOptions<T, V> = {},
+  options: UseMutationOptions<T, V> = {}
 ) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -425,7 +425,7 @@ export function useMutation<T, V>(
 
       return data;
     } catch (err) {
-      const error = err instanceof Error ? err : new Error("Unknown error");
+      const error = err instanceof Error ? err : new Error('Unknown error');
       setError(error);
       options.onError?.(error);
 
@@ -444,10 +444,10 @@ export function VoteButton({ billId }: { billId: string }) {
   const [voteCount, setVoteCount] = useState(0);
 
   const { mutate: castVote, loading } = useMutation(
-    async (position: "for" | "against") => {
+    async (position: 'for' | 'against') => {
       const response = await fetch(`/api/bills/${billId}/vote`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ position }),
       });
       return response.json();
@@ -455,21 +455,21 @@ export function VoteButton({ billId }: { billId: string }) {
     {
       optimisticUpdate: () => {
         // Optimistically increment count
-        setVoteCount((prev) => prev + 1);
+        setVoteCount(prev => prev + 1);
         return {} as any;
       },
       onError: () => {
         // Rollback on error
-        setVoteCount((prev) => prev - 1);
+        setVoteCount(prev => prev - 1);
       },
-    },
+    }
   );
 
   return (
     <div>
       <p>Vote Count: {voteCount}</p>
-      <button onClick={() => castVote("for")} disabled={loading} aria-busy={loading}>
-        {loading ? "Voting..." : "Vote For"}
+      <button onClick={() => castVote('for')} disabled={loading} aria-busy={loading}>
+        {loading ? 'Voting...' : 'Vote For'}
       </button>
     </div>
   );
@@ -482,7 +482,7 @@ export function VoteButton({ billId }: { billId: string }) {
 interface Bill {
   id: string;
   title: string;
-  status: "draft" | "proposed" | "active_voting" | "passed" | "rejected";
+  status: 'draft' | 'proposed' | 'active_voting' | 'passed' | 'rejected';
   category: string;
 }
 
@@ -490,7 +490,7 @@ interface Vote {
   id: string;
   billId: string;
   userId: string;
-  position: "for" | "against" | "abstain";
+  position: 'for' | 'against' | 'abstain';
 }
 
 // Mock components

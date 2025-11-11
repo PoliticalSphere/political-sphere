@@ -47,10 +47,11 @@ class DatabaseSeeder {
       .sort();
 
     for (const file of files) {
+      let filePath; // Declare outside try block for catch block access
       try {
         // Validate filename before joining to prevent path traversal
         const sanitizedFile = validateFilename(file);
-        const filePath = safeJoin(seedersDir, sanitizedFile);
+        filePath = safeJoin(seedersDir, sanitizedFile);
         const seederModule = require(filePath);
 
         if (typeof seederModule === 'function') {
@@ -245,7 +246,9 @@ class DatabaseSeeder {
           .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
           .all();
         existingTables = new Set(rows.map(r => r.name));
-      } catch {}
+      } catch {
+        // Database query failed, existingTables remains empty Set
+      }
       const tablesToClear = tables.length > 0 ? tables : defaultTables;
 
       for (const table of tablesToClear) {

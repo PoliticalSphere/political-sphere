@@ -1,8 +1,8 @@
-import * as React from "react";
-import { afterAll, afterEach, beforeAll, beforeEach, expect, vi } from "vitest";
+import * as React from 'react';
+import { afterAll, afterEach, beforeAll, beforeEach, expect, vi } from 'vitest';
 // Use the canonical jest-dom matchers to provide rich DOM assertions
 // (replaces minimal custom expect.extend implementations).
-import "@testing-library/jest-dom";
+import '@testing-library/jest-dom';
 
 // Ensure React is available as a global for tests that rely on the
 // classic JSX transform (some components in the workspace don't import
@@ -38,7 +38,7 @@ type MatchMediaLike = {
 const gAny = globalThis as unknown as {
   matchMedia?: (query: string) => MatchMediaLike;
 };
-if (typeof gAny.matchMedia !== "function") {
+if (typeof gAny.matchMedia !== 'function') {
   gAny.matchMedia = (query: string) => ({
     matches: false,
     media: query,
@@ -54,17 +54,17 @@ if (typeof gAny.matchMedia !== "function") {
 // Ensure critical env is present before any module under test is imported
 // Set a strong default JWT secret for tests (32+ chars per security checks)
 process.env.JWT_SECRET =
-  process.env.JWT_SECRET || "test-secret-key-that-is-at-least-32-characters-long-for-security";
+  process.env.JWT_SECRET || 'test-secret-key-that-is-at-least-32-characters-long-for-security';
 // Also set a strong refresh token secret to satisfy security checks in auth.js
 process.env.JWT_REFRESH_SECRET =
-  process.env.JWT_REFRESH_SECRET || "test-refresh-secret-that-is-also-32-characters-minimum-length";
-process.env.NODE_ENV = process.env.NODE_ENV || "test";
+  process.env.JWT_REFRESH_SECRET || 'test-refresh-secret-that-is-also-32-characters-minimum-length';
+process.env.NODE_ENV = process.env.NODE_ENV || 'test';
 
 // Global test setup
 beforeAll(() => {
   // Setup global test environment (redundant but harmless)
-  process.env.NODE_ENV = process.env.NODE_ENV || "test";
-  process.env.FAST_AI = "1"; // Speed up tests
+  process.env.NODE_ENV = process.env.NODE_ENV || 'test';
+  process.env.FAST_AI = '1'; // Speed up tests
 });
 
 afterAll(() => {
@@ -93,8 +93,8 @@ afterAll(() => {
 
 // Provide CJS-friendly mock for @political-sphere/shared used by API route and server tests
 // We load the local CJS shim and augment it with security helpers required by server.js
-vi.mock("@political-sphere/shared", async () => {
-  const mod = await import("../libs/shared/cjs-shared.cjs");
+vi.mock('@political-sphere/shared', async () => {
+  const mod = await import('../libs/shared/cjs-shared.cjs');
   // When importing CJS with dynamic import, the exports may be under `default`
   const base = (mod as { default?: unknown }).default ?? (mod as unknown);
 
@@ -105,7 +105,7 @@ vi.mock("@political-sphere/shared", async () => {
 
   function checkRateLimit(
     key: string,
-    opts: { maxRequests?: number; windowMs?: number } = {},
+    opts: { maxRequests?: number; windowMs?: number } = {}
   ): boolean {
     if (!key) return false;
     const max = opts.maxRequests ?? DEFAULT_LIMIT;
@@ -134,37 +134,37 @@ vi.mock("@political-sphere/shared", async () => {
   }
 
   const SECURITY_HEADERS = {
-    "X-Content-Type-Options": "nosniff",
-    "X-Frame-Options": "DENY",
-    "Referrer-Policy": "no-referrer",
-    "X-XSS-Protection": "0",
-    "Permissions-Policy": "geolocation=()",
-    "Cross-Origin-Opener-Policy": "same-origin",
-    "Cross-Origin-Resource-Policy": "same-origin",
+    'X-Content-Type-Options': 'nosniff',
+    'X-Frame-Options': 'DENY',
+    'Referrer-Policy': 'no-referrer',
+    'X-XSS-Protection': '0',
+    'Permissions-Policy': 'geolocation=()',
+    'Cross-Origin-Opener-Policy': 'same-origin',
+    'Cross-Origin-Resource-Policy': 'same-origin',
     // Add security headers required by tests hitting /healthz
-    "Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
-    "Content-Security-Policy": "default-src 'self'",
+    'Strict-Transport-Security': 'max-age=31536000; includeSubDomains; preload',
+    'Content-Security-Policy': "default-src 'self'",
   } as Record<string, string>;
 
   function getCorsHeaders(
     origin?: string | null,
-    opts: { exposedHeaders?: string[] } = {},
+    opts: { exposedHeaders?: string[] } = {}
   ): Record<string, string> {
     const headers: Record<string, string> = {
-      Vary: "Origin",
-      "Access-Control-Allow-Methods": "GET,POST,PUT,PATCH,DELETE,OPTIONS",
-      "Access-Control-Allow-Headers": "Content-Type, Authorization",
-      "Access-Control-Max-Age": "600",
+      Vary: 'Origin',
+      'Access-Control-Allow-Methods': 'GET,POST,PUT,PATCH,DELETE,OPTIONS',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      'Access-Control-Max-Age': '600',
     };
-    if (origin) headers["Access-Control-Allow-Origin"] = origin;
+    if (origin) headers['Access-Control-Allow-Origin'] = origin;
     if (opts.exposedHeaders?.length) {
-      headers["Access-Control-Expose-Headers"] = opts.exposedHeaders.join(", ");
+      headers['Access-Control-Expose-Headers'] = opts.exposedHeaders.join(', ');
     }
     return headers;
   }
 
   function isIpAllowed(ip?: string | null, blocklist: string[] = []) {
-    if (!ip || typeof ip !== "string") return false;
+    if (!ip || typeof ip !== 'string') return false;
     if (blocklist.includes(ip)) return false;
     return true;
   }

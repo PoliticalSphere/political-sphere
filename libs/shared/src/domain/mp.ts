@@ -1,6 +1,6 @@
-import { z } from "zod";
+import { z } from 'zod';
 
-export const MPRoleSchema = z.enum(["MEMBER", "WHIP", "LEADER", "DEPUTY"]);
+export const MPRoleSchema = z.enum(['MEMBER', 'WHIP', 'LEADER', 'DEPUTY']);
 
 export const MPSchema = z.object({
   id: z.string().uuid(),

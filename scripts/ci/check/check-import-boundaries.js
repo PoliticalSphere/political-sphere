@@ -4,5 +4,5 @@
  * Ensures proper dependency direction and prevents circular dependencies
  */
 
-console.log("✅ Import boundary checks passed");
+console.log('✅ Import boundary checks passed');
 process.exit(0);

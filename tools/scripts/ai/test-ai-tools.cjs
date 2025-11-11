@@ -4,15 +4,15 @@
  * Verifies all integrated AI tools are working correctly
  */
 
-const ASTAnalyzer = require("./ast-analyzer.cjs");
+const ASTAnalyzer = require('./ast-analyzer.cjs');
 
-console.log("🧪 Testing AI Tools Integration...\n");
+console.log('🧪 Testing AI Tools Integration...\n');
 
 let passed = 0;
 let failed = 0;
 
 // Test 1: AST Analyzer - Parse Code
-console.log("Test 1: AST Analyzer - Parse JavaScript");
+console.log('Test 1: AST Analyzer - Parse JavaScript');
 try {
   const analyzer = new ASTAnalyzer();
   const code = `
@@ -25,11 +25,11 @@ try {
   `;
   const ast = analyzer.parse(code);
 
-  if (!ast.error && ast.type === "Program") {
-    console.log("  ✅ PASS: Successfully parsed JavaScript code\n");
+  if (!ast.error && ast.type === 'Program') {
+    console.log('  ✅ PASS: Successfully parsed JavaScript code\n');
     passed++;
   } else {
-    console.log("  ❌ FAIL: Failed to parse JavaScript code\n");
+    console.log('  ❌ FAIL: Failed to parse JavaScript code\n');
     failed++;
   }
 } catch (error) {
@@ -38,7 +38,7 @@ try {
 }
 
 // Test 2: AST Analyzer - Complexity Analysis
-console.log("Test 2: AST Analyzer - Complexity Analysis");
+console.log('Test 2: AST Analyzer - Complexity Analysis');
 try {
   const analyzer = new ASTAnalyzer();
   const code = `
@@ -62,11 +62,11 @@ try {
 
   if (complexity.cyclomatic > 1 && complexity.maxNesting >= 2) {
     console.log(
-      `  ✅ PASS: Complexity analysis working (cyclomatic: ${complexity.cyclomatic}, nesting: ${complexity.maxNesting})\n`,
+      `  ✅ PASS: Complexity analysis working (cyclomatic: ${complexity.cyclomatic}, nesting: ${complexity.maxNesting})\n`
     );
     passed++;
   } else {
-    console.log("  ❌ FAIL: Complexity analysis not detecting metrics\n");
+    console.log('  ❌ FAIL: Complexity analysis not detecting metrics\n');
     failed++;
   }
 } catch (error) {
@@ -75,7 +75,7 @@ try {
 }
 
 // Test 3: AST Analyzer - Pattern Detection
-console.log("Test 3: AST Analyzer - Pattern Detection");
+console.log('Test 3: AST Analyzer - Pattern Detection');
 try {
   const analyzer = new ASTAnalyzer();
   const code = `
@@ -91,7 +91,7 @@ try {
     console.log(`  ✅ PASS: Detected ${patterns.securityIssues.length} security issue(s)\n`);
     passed++;
   } else {
-    console.log("  ❌ FAIL: Failed to detect eval() security issue\n");
+    console.log('  ❌ FAIL: Failed to detect eval() security issue\n');
     failed++;
   }
 } catch (error) {
@@ -100,7 +100,7 @@ try {
 }
 
 // Test 4: AST Analyzer - Semantic Tokens
-console.log("Test 4: AST Analyzer - Semantic Tokens");
+console.log('Test 4: AST Analyzer - Semantic Tokens');
 try {
   const analyzer = new ASTAnalyzer();
   const code = `
@@ -119,7 +119,7 @@ try {
     console.log(`  ✅ PASS: Extracted ${tokens.length} semantic tokens\n`);
     passed++;
   } else {
-    console.log("  ❌ FAIL: Failed to extract semantic tokens\n");
+    console.log('  ❌ FAIL: Failed to extract semantic tokens\n');
     failed++;
   }
 } catch (error) {
@@ -128,27 +128,27 @@ try {
 }
 
 // Test 5: AST Analyzer - Full File Analysis
-console.log("Test 5: AST Analyzer - Full File Analysis");
+console.log('Test 5: AST Analyzer - Full File Analysis');
 try {
   const analyzer = new ASTAnalyzer();
-  const fs = require("fs");
-  const path = require("path");
-  const testFile = path.join(__dirname, "pattern-matcher.cjs");
+  const fs = require('fs');
+  const path = require('path');
+  const testFile = path.join(__dirname, 'pattern-matcher.cjs');
 
   if (fs.existsSync(testFile)) {
     const analysis = analyzer.analyzeFile(testFile);
 
     if (!analysis.error && analysis.complexity && analysis.tokens && analysis.patterns) {
       console.log(
-        `  ✅ PASS: Full analysis complete (complexity: ${analysis.complexity.cyclomatic}, tokens: ${analysis.tokens.length})\n`,
+        `  ✅ PASS: Full analysis complete (complexity: ${analysis.complexity.cyclomatic}, tokens: ${analysis.tokens.length})\n`
       );
       passed++;
     } else {
-      console.log("  ❌ FAIL: Full analysis incomplete\n");
+      console.log('  ❌ FAIL: Full analysis incomplete\n');
       failed++;
     }
   } else {
-    console.log("  ⏭️  SKIP: Test file not found\n");
+    console.log('  ⏭️  SKIP: Test file not found\n');
   }
 } catch (error) {
   console.log(`  ❌ FAIL: ${error.message}\n`);
@@ -156,7 +156,7 @@ try {
 }
 
 // Test 6: AST Analyzer - Report Generation
-console.log("Test 6: AST Analyzer - Report Generation");
+console.log('Test 6: AST Analyzer - Report Generation');
 try {
   const analyzer = new ASTAnalyzer();
   const code = `
@@ -178,7 +178,7 @@ try {
 
   const ast = analyzer.parse(code);
   const analysis = {
-    file: "test.js",
+    file: 'test.js',
     complexity: analyzer.analyzeComplexity(ast),
     tokens: analyzer.extractSemanticTokens(ast),
     patterns: analyzer.findPatterns(ast),
@@ -186,11 +186,11 @@ try {
 
   const report = analyzer.generateReport(analysis);
 
-  if (report && report.includes("AST Analysis Report") && report.includes("Complexity Metrics")) {
-    console.log("  ✅ PASS: Report generation successful\n");
+  if (report && report.includes('AST Analysis Report') && report.includes('Complexity Metrics')) {
+    console.log('  ✅ PASS: Report generation successful\n');
     passed++;
   } else {
-    console.log("  ❌ FAIL: Report generation incomplete\n");
+    console.log('  ❌ FAIL: Report generation incomplete\n');
     failed++;
   }
 } catch (error) {
@@ -199,11 +199,11 @@ try {
 }
 
 // Summary
-console.log("─".repeat(50));
+console.log('─'.repeat(50));
 console.log(`\n📊 Test Results: ${passed}/${passed + failed} passed\n`);
 
 if (failed === 0) {
-  console.log("✅ All tests passed! AI tools are working correctly.\n");
+  console.log('✅ All tests passed! AI tools are working correctly.\n');
   process.exit(0);
 } else {
   console.log(`❌ ${failed} test(s) failed. Please review the errors above.\n`);

@@ -8,19 +8,20 @@
  * Usage: npm run schemas:generate
  */
 
-import { compile } from "json-schema-to-typescript";
-import fs from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+import { compile } from 'json-schema-to-typescript';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const SCHEMA_DIR = path.join(__dirname, "..", "schemas", "json-schema");
-const OUTPUT_DIR = path.join(__dirname, "..", "libs", "shared", "types", "generated");
+const SCHEMA_DIR = path.join(__dirname, '..', 'schemas', 'json-schema');
+const OUTPUT_DIR = path.join(__dirname, '..', 'libs', 'shared', 'types', 'generated');
 
 async function generateTypes() {
-  console.log("📋 Generating TypeScript types from JSON Schemas...\n");
+  console.log('📋 Generating TypeScript types from JSON Schemas...\n');
 
   try {
     // Ensure output directory exists
@@ -28,17 +29,17 @@ async function generateTypes() {
 
     // Read all schema files
     const schemaFiles = await fs.readdir(SCHEMA_DIR);
-    const jsonSchemas = schemaFiles.filter((file) => file.endsWith(".schema.json"));
+    const jsonSchemas = schemaFiles.filter(file => file.endsWith('.schema.json'));
 
     console.log(`Found ${jsonSchemas.length} schema files:\n`);
 
     for (const schemaFile of jsonSchemas) {
       const schemaPath = path.join(SCHEMA_DIR, schemaFile);
-      const schemaContent = await fs.readFile(schemaPath, "utf-8");
+      const schemaContent = await fs.readFile(schemaPath, 'utf-8');
       const schema = JSON.parse(schemaContent);
 
       // Generate TypeScript types
-      const ts = await compile(schema, schema.title || "UnknownType", {
+      const ts = await compile(schema, schema.title || 'UnknownType', {
         bannerComment: `/* eslint-disable */
 /**
  * This file was automatically generated from ${schemaFile}.
@@ -52,7 +53,7 @@ async function generateTypes() {
       });
 
       // Write TypeScript file
-      const outputFile = schemaFile.replace(".schema.json", ".generated.ts");
+      const outputFile = schemaFile.replace('.schema.json', '.generated.ts');
       const outputPath = path.join(OUTPUT_DIR, outputFile);
       await fs.writeFile(outputPath, ts);
 
@@ -61,19 +62,19 @@ async function generateTypes() {
 
     // Generate index file
     const indexContent = `${jsonSchemas
-      .map((file) => {
-        const fileName = file.replace(".schema.json", ".generated");
+      .map(file => {
+        const fileName = file.replace('.schema.json', '.generated');
         return `export * from './${fileName}';`;
       })
-      .join("\n")}\n`;
+      .join('\n')}\n`;
 
-    await fs.writeFile(path.join(OUTPUT_DIR, "index.ts"), indexContent);
+    await fs.writeFile(path.join(OUTPUT_DIR, 'index.ts'), indexContent);
     console.log(`\n  ✅ index.ts (exports)\n`);
 
-    console.log("✨ Type generation complete!\n");
+    console.log('✨ Type generation complete!\n');
     console.log(`📁 Generated types location: ${OUTPUT_DIR}\n`);
   } catch (error) {
-    console.error("❌ Error generating types:", error);
+    console.error('❌ Error generating types:', error);
     process.exit(1);
   }
 }

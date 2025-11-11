@@ -1,9 +1,9 @@
 // Structured logging utility for Political Sphere
 // Implements best practices for production logging
 
-import { createWriteStream } from "node:fs";
-import { mkdir } from "node:fs/promises";
-import { dirname } from "node:path";
+import { createWriteStream } from 'node:fs';
+import { mkdir } from 'node:fs/promises';
+import { dirname } from 'node:path';
 
 // Log levels
 export const LOG_LEVELS = {
@@ -14,14 +14,14 @@ export const LOG_LEVELS = {
   FATAL: 4,
 };
 
-const LOG_LEVEL_NAMES = ["DEBUG", "INFO", "WARN", "ERROR", "FATAL"];
+const LOG_LEVEL_NAMES = ['DEBUG', 'INFO', 'WARN', 'ERROR', 'FATAL'];
 
 class Logger {
   constructor(options = {}) {
     // Allow level=0 (DEBUG). Use nullish coalescing so 0 is a valid level.
     this.level = options.level ?? LOG_LEVELS.INFO;
-    this.service = options.service || "political-sphere";
-    this.environment = options.environment || process.env.NODE_ENV || "development";
+    this.service = options.service || 'political-sphere';
+    this.environment = options.environment || process.env.NODE_ENV || 'development';
     this.console = options.console !== false;
     this.file = options.file;
     this.stream = null;
@@ -34,9 +34,9 @@ class Logger {
   async #initFileStream() {
     try {
       await mkdir(dirname(this.file), { recursive: true });
-      this.stream = createWriteStream(this.file, { flags: "a" });
+      this.stream = createWriteStream(this.file, { flags: 'a' });
     } catch (error) {
-      console.error("Failed to initialize log file:", error);
+      console.error('Failed to initialize log file:', error);
     }
   }
 
@@ -61,15 +61,15 @@ class Logger {
 
     // Console output (with colors in development)
     if (this.console) {
-      if (this.environment === "development") {
+      if (this.environment === 'development') {
         const colors = {
-          0: "\x1b[36m", // DEBUG - Cyan
-          1: "\x1b[32m", // INFO - Green
-          2: "\x1b[33m", // WARN - Yellow
-          3: "\x1b[31m", // ERROR - Red
-          4: "\x1b[35m", // FATAL - Magenta
+          0: '\x1b[36m', // DEBUG - Cyan
+          1: '\x1b[32m', // INFO - Green
+          2: '\x1b[33m', // WARN - Yellow
+          3: '\x1b[31m', // ERROR - Red
+          4: '\x1b[35m', // FATAL - Magenta
         };
-        const reset = "\x1b[0m";
+        const reset = '\x1b[0m';
         console.log(`${colors[level]}${formatted}${reset}`);
       } else {
         console.log(formatted);
@@ -78,7 +78,7 @@ class Logger {
 
     // File output
     if (this.stream) {
-      this.stream.write(formatted + "\n");
+      this.stream.write(formatted + '\n');
     }
   }
 
@@ -110,19 +110,19 @@ class Logger {
       statusCode: res.statusCode,
       duration: `${duration}ms`,
       ip:
-        req.headers["x-forwarded-for"]?.split(",")[0] ||
+        req.headers['x-forwarded-for']?.split(',')[0] ||
         req.socket?.remoteAddress ||
         req.connection?.remoteAddress ||
-        "unknown",
-      userAgent: req.headers["user-agent"],
+        'unknown',
+      userAgent: req.headers['user-agent'],
     };
 
     if (res.statusCode >= 500) {
-      this.error("HTTP request failed", meta);
+      this.error('HTTP request failed', meta);
     } else if (res.statusCode >= 400) {
-      this.warn("HTTP client error", meta);
+      this.warn('HTTP client error', meta);
     } else {
-      this.info("HTTP request", meta);
+      this.info('HTTP request', meta);
     }
   }
 
@@ -132,15 +132,15 @@ class Logger {
       event,
       ...details,
       ip:
-        req?.headers?.["x-forwarded-for"]?.split(",")[0] ||
+        req?.headers?.['x-forwarded-for']?.split(',')[0] ||
         req?.socket?.remoteAddress ||
         req?.connection?.remoteAddress ||
-        "unknown",
-      userAgent: req?.headers?.["user-agent"],
+        'unknown',
+      userAgent: req?.headers?.['user-agent'],
       timestamp: new Date().toISOString(),
     };
 
-    this.warn("SECURITY_EVENT", meta);
+    this.warn('SECURITY_EVENT', meta);
   }
 
   // Error logging with stack trace
@@ -152,7 +152,7 @@ class Logger {
       ...context,
     };
 
-    this.error("Application error", meta);
+    this.error('Application error', meta);
   }
 
   close() {

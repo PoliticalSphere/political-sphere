@@ -1,32 +1,32 @@
-import assert from "node:assert";
+import assert from 'node:assert';
 
-import express from "express";
+import express from 'express';
 
-import authRoutes from "../../src/auth/auth.routes.ts";
-import { closeDatabase, getDatabase } from "../../src/modules/stores/index.ts";
-import billsRouter from "../../src/routes/bills.js";
-import usersRouter from "../../src/routes/users.js";
-import { dispatchRequest } from "../utils/express-request.js";
+import authRoutes from '../../src/auth/auth.routes.ts';
+import { closeDatabase, getDatabase } from '../../src/modules/stores/index.ts';
+import billsRouter from '../../src/routes/bills.js';
+import usersRouter from '../../src/routes/users.js';
+import { dispatchRequest } from '../utils/express-request.js';
 
-describe("Bills Routes", () => {
+describe('Bills Routes', () => {
   let app;
   let authToken;
 
   beforeEach(async () => {
     getDatabase();
     app = express();
-    app.use("/api", usersRouter);
-    app.use("/api", billsRouter);
-    app.use("/auth", authRoutes);
+    app.use('/api', usersRouter);
+    app.use('/api', billsRouter);
+    app.use('/auth', authRoutes);
 
     // Create a test user and get auth token
     const timestamp = Date.now();
     const createResponse = await dispatchRequest(app, {
-      method: "POST",
-      url: "/auth/register",
+      method: 'POST',
+      url: '/auth/register',
       body: {
         username: `testuser${timestamp}`,
-        password: "password123",
+        password: 'password123',
         email: `test${timestamp}@example.com`,
       },
     });
@@ -40,8 +40,8 @@ describe("Bills Routes", () => {
 
   async function createUser(timestamp = Date.now()) {
     const response = await dispatchRequest(app, {
-      method: "POST",
-      url: "/api/users",
+      method: 'POST',
+      url: '/api/users',
       body: {
         username: `user${timestamp}`,
         email: `test-${timestamp}@example.com`,
@@ -51,18 +51,18 @@ describe("Bills Routes", () => {
     return response.body.data.id;
   }
 
-  describe("POST /api/bills", () => {
-    it("should create a new bill", async () => {
+  describe('POST /api/bills', () => {
+    it('should create a new bill', async () => {
       const timestamp = Date.now();
       const userId = await createUser(timestamp);
 
       const response = await dispatchRequest(app, {
-        method: "POST",
-        url: "/api/bills",
+        method: 'POST',
+        url: '/api/bills',
         headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
         body: {
           title: `Test Bill ${timestamp}`,
-          description: "A test bill description",
+          description: 'A test bill description',
           proposerId: userId,
         },
       });
@@ -70,21 +70,21 @@ describe("Bills Routes", () => {
       assert.strictEqual(response.status, 201);
       assert(response.body.id);
       assert.strictEqual(response.body.title, `Test Bill ${timestamp}`);
-      assert.strictEqual(response.body.description, "A test bill description");
+      assert.strictEqual(response.body.description, 'A test bill description');
       assert.strictEqual(response.body.proposerId, userId);
-      assert.strictEqual(response.body.status, "proposed");
+      assert.strictEqual(response.body.status, 'proposed');
       assert(response.body.createdAt);
       assert(response.body.updatedAt);
     });
 
-    it("should return 400 for non-existent proposer", async () => {
+    it('should return 400 for non-existent proposer', async () => {
       const response = await dispatchRequest(app, {
-        method: "POST",
-        url: "/api/bills",
+        method: 'POST',
+        url: '/api/bills',
         body: {
-          title: "Test Bill",
-          description: "A test bill description",
-          proposerId: "non-existent-id",
+          title: 'Test Bill',
+          description: 'A test bill description',
+          proposerId: 'non-existent-id',
         },
       });
 
@@ -93,24 +93,24 @@ describe("Bills Routes", () => {
     });
   });
 
-  describe("GET /api/bills/:id", () => {
-    it("should return bill by id", async () => {
+  describe('GET /api/bills/:id', () => {
+    it('should return bill by id', async () => {
       const timestamp = Date.now();
       const userId = await createUser(timestamp);
 
       const billResponse = await dispatchRequest(app, {
-        method: "POST",
-        url: "/api/bills",
+        method: 'POST',
+        url: '/api/bills',
         body: {
           title: `Test Bill ${timestamp}`,
-          description: "A test bill description",
+          description: 'A test bill description',
           proposerId: userId,
         },
       });
       assert.strictEqual(billResponse.status, 201);
 
       const getResponse = await dispatchRequest(app, {
-        method: "GET",
+        method: 'GET',
         url: `/api/bills/${billResponse.body.id}`,
       });
 
@@ -118,52 +118,52 @@ describe("Bills Routes", () => {
       assert.deepStrictEqual(getResponse.body, billResponse.body);
     });
 
-    it("should return 404 for non-existent bill", async () => {
+    it('should return 404 for non-existent bill', async () => {
       const response = await dispatchRequest(app, {
-        method: "GET",
-        url: "/api/bills/non-existent-id",
+        method: 'GET',
+        url: '/api/bills/non-existent-id',
       });
 
       assert.strictEqual(response.status, 404);
-      assert.strictEqual(response.body.error, "Bill not found");
+      assert.strictEqual(response.body.error, 'Bill not found');
     });
   });
 
-  describe("GET /api/bills", () => {
-    it("should return all bills", async () => {
+  describe('GET /api/bills', () => {
+    it('should return all bills', async () => {
       const userId = await createUser();
 
       const bill1Response = await dispatchRequest(app, {
-        method: "POST",
-        url: "/api/bills",
+        method: 'POST',
+        url: '/api/bills',
         body: {
-          title: "Bill 1",
-          description: "First bill",
+          title: 'Bill 1',
+          description: 'First bill',
           proposerId: userId,
         },
       });
       assert.strictEqual(bill1Response.status, 201);
 
       const bill2Response = await dispatchRequest(app, {
-        method: "POST",
-        url: "/api/bills",
+        method: 'POST',
+        url: '/api/bills',
         body: {
-          title: "Bill 2",
-          description: "Second bill",
+          title: 'Bill 2',
+          description: 'Second bill',
           proposerId: userId,
         },
       });
       assert.strictEqual(bill2Response.status, 201);
 
       const getResponse = await dispatchRequest(app, {
-        method: "GET",
-        url: "/api/bills",
+        method: 'GET',
+        url: '/api/bills',
       });
 
       assert.strictEqual(getResponse.status, 200);
       assert(Array.isArray(getResponse.body));
-      assert(getResponse.body.some((b) => b.id === bill1Response.body.id));
-      assert(getResponse.body.some((b) => b.id === bill2Response.body.id));
+      assert(getResponse.body.some(b => b.id === bill1Response.body.id));
+      assert(getResponse.body.some(b => b.id === bill2Response.body.id));
     });
   });
 });

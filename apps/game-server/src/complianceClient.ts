@@ -3,10 +3,10 @@
  * Handles communication with the compliance API
  */
 
-import type { AxiosInstance } from "axios";
-import axios from "axios";
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
 
-import { CircuitBreaker } from "./utils/circuit-breaker";
+import { CircuitBreaker } from './utils/circuit-breaker';
 
 interface ComplianceLogEntry {
   category: string;
@@ -21,7 +21,7 @@ class ComplianceClient {
   private readonly client: AxiosInstance;
   private readonly circuitBreaker: CircuitBreaker;
 
-  constructor(apiBaseUrl: string = "http://localhost:3000/api") {
+  constructor(apiBaseUrl: string = 'http://localhost:3000/api') {
     this.client = axios.create({
       baseURL: apiBaseUrl,
       timeout: 3000, // 3 second timeout for logging
@@ -41,17 +41,17 @@ class ComplianceClient {
       // Fire and forget with circuit breaker protection
       this.circuitBreaker
         .execute(async () => {
-          await this.client.post("/compliance/log", event);
+          await this.client.post('/compliance/log', event);
         })
         .catch((err: Error) => {
-          console.warn("Compliance logging failed (circuit breaker):", err.message);
+          console.warn('Compliance logging failed (circuit breaker):', err.message);
         });
 
       // Return a local event ID for immediate response
       return `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      console.warn("Compliance logging error:", errorMessage);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.warn('Compliance logging error:', errorMessage);
       return null;
     }
   }
@@ -65,15 +65,15 @@ class ComplianceClient {
   async logGameCreated(
     gameId: string,
     creatorId: string,
-    gameName: string,
+    gameName: string
   ): Promise<string | null> {
     return this.logEvent({
-      category: "game_action",
-      action: "game_created",
+      category: 'game_action',
+      action: 'game_created',
       userId: creatorId,
       resource: `game:${gameId}`,
       details: { gameName, gameId },
-      complianceFrameworks: ["DSA", "Online Safety Act"],
+      complianceFrameworks: ['DSA', 'Online Safety Act'],
     });
   }
 
@@ -86,15 +86,15 @@ class ComplianceClient {
   async logPlayerJoined(
     gameId: string,
     playerId: string,
-    displayName: string,
+    displayName: string
   ): Promise<string | null> {
     return this.logEvent({
-      category: "game_action",
-      action: "player_joined",
+      category: 'game_action',
+      action: 'player_joined',
       userId: playerId,
       resource: `game:${gameId}`,
       details: { displayName, gameId },
-      complianceFrameworks: ["DSA"],
+      complianceFrameworks: ['DSA'],
     });
   }
 
@@ -113,15 +113,15 @@ class ComplianceClient {
     proposerId: string,
     title: string,
     moderated: boolean = false,
-    flagged: boolean = false,
+    flagged: boolean = false
   ): Promise<string | null> {
     return this.logEvent({
-      category: "content_moderation",
-      action: "proposal_created",
+      category: 'content_moderation',
+      action: 'proposal_created',
       userId: proposerId,
       resource: `proposal:${proposalId}`,
       details: { gameId, title, moderated, flagged },
-      complianceFrameworks: ["DSA", "Online Safety Act"],
+      complianceFrameworks: ['DSA', 'Online Safety Act'],
     });
   }
 
@@ -136,15 +136,15 @@ class ComplianceClient {
     gameId: string,
     proposalId: string,
     voterId: string,
-    choice: string,
+    choice: string
   ): Promise<string | null> {
     return this.logEvent({
-      category: "game_action",
-      action: "vote_cast",
+      category: 'game_action',
+      action: 'vote_cast',
       userId: voterId,
       resource: `proposal:${proposalId}`,
       details: { gameId, choice },
-      complianceFrameworks: ["DSA"],
+      complianceFrameworks: ['DSA'],
     });
   }
 
@@ -159,15 +159,15 @@ class ComplianceClient {
     contentId: string,
     moderatorId: string,
     action: string,
-    reasons: string[] = [],
+    reasons: string[] = []
   ): Promise<string | null> {
     return this.logEvent({
-      category: "content_moderation",
-      action: "moderation_action",
+      category: 'content_moderation',
+      action: 'moderation_action',
       userId: moderatorId,
       resource: `content:${contentId}`,
       details: { moderationAction: action, reasons },
-      complianceFrameworks: ["DSA", "Online Safety Act"],
+      complianceFrameworks: ['DSA', 'Online Safety Act'],
     });
   }
 }

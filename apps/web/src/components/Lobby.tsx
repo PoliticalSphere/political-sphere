@@ -3,10 +3,10 @@
  * Shows available games and allows creating/joining
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import { apiClient } from "../utils/api-client";
-import "./Lobby.css";
+import { apiClient } from '../utils/api-client';
+import './Lobby.css';
 
 interface Game {
   id: string;
@@ -24,9 +24,9 @@ export function Lobby({ onJoinGame }: LobbyProps) {
   const [games, setGames] = useState<Game[]>([]);
   const [myGames, setMyGames] = useState<Game[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const [error, setError] = useState('');
   const [showCreate, setShowCreate] = useState(false);
-  const [gameName, setGameName] = useState("");
+  const [gameName, setGameName] = useState('');
 
   const loadGames = async () => {
     try {
@@ -37,9 +37,9 @@ export function Lobby({ onJoinGame }: LobbyProps) {
       ]);
       setGames(allGames.games);
       setMyGames(playerGames.games);
-      setError("");
+      setError('');
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load games");
+      setError(err instanceof Error ? err.message : 'Failed to load games');
     } finally {
       setLoading(false);
     }
@@ -54,12 +54,12 @@ export function Lobby({ onJoinGame }: LobbyProps) {
   const handleCreateGame = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const result = await apiClient.createGame(gameName || "New Game");
-      setGameName("");
+      const result = await apiClient.createGame(gameName || 'New Game');
+      setGameName('');
       setShowCreate(false);
       onJoinGame(result.game.id);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create game");
+      setError(err instanceof Error ? err.message : 'Failed to create game');
     }
   };
 
@@ -68,7 +68,7 @@ export function Lobby({ onJoinGame }: LobbyProps) {
       await apiClient.joinGame(gameId);
       onJoinGame(gameId);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to join game");
+      setError(err instanceof Error ? err.message : 'Failed to join game');
     }
   };
 
@@ -100,7 +100,7 @@ export function Lobby({ onJoinGame }: LobbyProps) {
           <div className="section-header">
             <h2>My Games</h2>
             <button onClick={() => setShowCreate(!showCreate)} className="btn-primary">
-              {showCreate ? "Cancel" : "Create Game"}
+              {showCreate ? 'Cancel' : 'Create Game'}
             </button>
           </div>
 
@@ -110,7 +110,7 @@ export function Lobby({ onJoinGame }: LobbyProps) {
                 type="text"
                 placeholder="Game name"
                 value={gameName}
-                onChange={(e) => setGameName(e.target.value)}
+                onChange={e => setGameName(e.target.value)}
                 className="form-input"
                 autoFocus
               />
@@ -124,7 +124,7 @@ export function Lobby({ onJoinGame }: LobbyProps) {
             <p className="empty-state">You haven't joined any games yet.</p>
           ) : (
             <div className="game-list">
-              {myGames.map((game) => (
+              {myGames.map(game => (
                 <div key={game.id} className="game-card my-game">
                   <h3>{game.name}</h3>
                   <p>
@@ -132,7 +132,7 @@ export function Lobby({ onJoinGame }: LobbyProps) {
                   </p>
                   <p className="game-status">Status: {game.status}</p>
                   <button onClick={() => onJoinGame(game.id)} className="btn-primary">
-                    {game.status === "waiting" ? "Enter Lobby" : "Resume Game"}
+                    {game.status === 'waiting' ? 'Enter Lobby' : 'Resume Game'}
                   </button>
                 </div>
               ))}
@@ -147,8 +147,8 @@ export function Lobby({ onJoinGame }: LobbyProps) {
           ) : (
             <div className="game-list">
               {games
-                .filter((game) => game.status === "waiting")
-                .map((game) => (
+                .filter(game => game.status === 'waiting')
+                .map(game => (
                   <div key={game.id} className="game-card">
                     <h3>{game.name}</h3>
                     <p>

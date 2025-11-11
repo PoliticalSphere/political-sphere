@@ -18,8 +18,8 @@
  *   const symbols = parser.extractSymbols(tree);
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 // Tree-sitter will be installed as dependency
 // This is a production-ready implementation
@@ -37,65 +37,65 @@ class MultiLanguageParser {
    */
   initializeRegistry() {
     // Map file extensions to tree-sitter languages
-    this.languageRegistry.set("js", {
-      name: "JavaScript",
-      package: "tree-sitter-javascript",
-      extensions: [".js", ".jsx", ".mjs", ".cjs"],
+    this.languageRegistry.set('js', {
+      name: 'JavaScript',
+      package: 'tree-sitter-javascript',
+      extensions: ['.js', '.jsx', '.mjs', '.cjs'],
     });
 
-    this.languageRegistry.set("ts", {
-      name: "TypeScript",
-      package: "tree-sitter-typescript",
-      extensions: [".ts", ".tsx"],
-      subLanguage: "typescript", // TypeScript package exports multiple languages
+    this.languageRegistry.set('ts', {
+      name: 'TypeScript',
+      package: 'tree-sitter-typescript',
+      extensions: ['.ts', '.tsx'],
+      subLanguage: 'typescript', // TypeScript package exports multiple languages
     });
 
-    this.languageRegistry.set("py", {
-      name: "Python",
-      package: "tree-sitter-python",
-      extensions: [".py", ".pyi"],
+    this.languageRegistry.set('py', {
+      name: 'Python',
+      package: 'tree-sitter-python',
+      extensions: ['.py', '.pyi'],
     });
 
-    this.languageRegistry.set("rs", {
-      name: "Rust",
-      package: "tree-sitter-rust",
-      extensions: [".rs"],
+    this.languageRegistry.set('rs', {
+      name: 'Rust',
+      package: 'tree-sitter-rust',
+      extensions: ['.rs'],
     });
 
-    this.languageRegistry.set("go", {
-      name: "Go",
-      package: "tree-sitter-go",
-      extensions: [".go"],
+    this.languageRegistry.set('go', {
+      name: 'Go',
+      package: 'tree-sitter-go',
+      extensions: ['.go'],
     });
 
-    this.languageRegistry.set("java", {
-      name: "Java",
-      package: "tree-sitter-java",
-      extensions: [".java"],
+    this.languageRegistry.set('java', {
+      name: 'Java',
+      package: 'tree-sitter-java',
+      extensions: ['.java'],
     });
 
-    this.languageRegistry.set("cpp", {
-      name: "C++",
-      package: "tree-sitter-cpp",
-      extensions: [".cpp", ".cc", ".cxx", ".hpp", ".h"],
+    this.languageRegistry.set('cpp', {
+      name: 'C++',
+      package: 'tree-sitter-cpp',
+      extensions: ['.cpp', '.cc', '.cxx', '.hpp', '.h'],
     });
 
-    this.languageRegistry.set("json", {
-      name: "JSON",
-      package: "tree-sitter-json",
-      extensions: [".json"],
+    this.languageRegistry.set('json', {
+      name: 'JSON',
+      package: 'tree-sitter-json',
+      extensions: ['.json'],
     });
 
-    this.languageRegistry.set("bash", {
-      name: "Bash",
-      package: "tree-sitter-bash",
-      extensions: [".sh", ".bash"],
+    this.languageRegistry.set('bash', {
+      name: 'Bash',
+      package: 'tree-sitter-bash',
+      extensions: ['.sh', '.bash'],
     });
 
-    this.languageRegistry.set("md", {
-      name: "Markdown",
-      package: "tree-sitter-markdown",
-      extensions: [".md", ".markdown"],
+    this.languageRegistry.set('md', {
+      name: 'Markdown',
+      package: 'tree-sitter-markdown',
+      extensions: ['.md', '.markdown'],
     });
   }
 
@@ -116,7 +116,7 @@ class MultiLanguageParser {
 
     try {
       // Dynamically require tree-sitter and language package
-      const Parser = require("tree-sitter");
+      const Parser = require('tree-sitter');
       let language;
 
       if (langInfo.subLanguage) {
@@ -132,10 +132,10 @@ class MultiLanguageParser {
       this.parsers.set(langKey, parser);
       return parser;
     } catch (error) {
-      if (error.code === "MODULE_NOT_FOUND") {
+      if (error.code === 'MODULE_NOT_FOUND') {
         throw new Error(
           `Language package not installed: ${langInfo.package}\n` +
-            `Install with: npm install ${langInfo.package}`,
+            `Install with: npm install ${langInfo.package}`
         );
       }
       throw error;
@@ -167,7 +167,7 @@ class MultiLanguageParser {
    */
   parse(code, langKey) {
     // Detect language from file path if needed
-    if (langKey.includes(".")) {
+    if (langKey.includes('.')) {
       langKey = this.detectLanguage(langKey);
     }
 
@@ -182,7 +182,7 @@ class MultiLanguageParser {
    * @returns {object} New tree
    */
   parseFile(filePath, oldTree = null) {
-    const code = fs.readFileSync(filePath, "utf8");
+    const code = fs.readFileSync(filePath, 'utf8');
     const langKey = this.detectLanguage(filePath);
     const parser = this.getParser(langKey);
 
@@ -200,19 +200,19 @@ class MultiLanguageParser {
    * @param {string} langKey - Language key
    * @returns {array} Array of symbol objects
    */
-  extractSymbols(tree, langKey = "js") {
+  extractSymbols(tree, langKey = 'js') {
     const symbols = [];
     const rootNode = tree.rootNode;
 
     // Language-specific node type mappings
     const nodeTypes = this.getNodeTypes(langKey);
 
-    const traverse = (node) => {
+    const traverse = node => {
       if (nodeTypes.function.includes(node.type)) {
-        const nameNode = node.childForFieldName("name");
+        const nameNode = node.childForFieldName('name');
         symbols.push({
-          type: "function",
-          name: nameNode ? nameNode.text : "<anonymous>",
+          type: 'function',
+          name: nameNode ? nameNode.text : '<anonymous>',
           startPosition: node.startPosition,
           endPosition: node.endPosition,
           startByte: node.startIndex,
@@ -221,10 +221,10 @@ class MultiLanguageParser {
       }
 
       if (nodeTypes.class.includes(node.type)) {
-        const nameNode = node.childForFieldName("name");
+        const nameNode = node.childForFieldName('name');
         symbols.push({
-          type: "class",
-          name: nameNode ? nameNode.text : "<anonymous>",
+          type: 'class',
+          name: nameNode ? nameNode.text : '<anonymous>',
           startPosition: node.startPosition,
           endPosition: node.endPosition,
           startByte: node.startIndex,
@@ -233,10 +233,10 @@ class MultiLanguageParser {
       }
 
       if (nodeTypes.method?.includes(node.type)) {
-        const nameNode = node.childForFieldName("name");
+        const nameNode = node.childForFieldName('name');
         symbols.push({
-          type: "method",
-          name: nameNode ? nameNode.text : "<anonymous>",
+          type: 'method',
+          name: nameNode ? nameNode.text : '<anonymous>',
           startPosition: node.startPosition,
           endPosition: node.endPosition,
           startByte: node.startIndex,
@@ -261,29 +261,29 @@ class MultiLanguageParser {
   getNodeTypes(langKey) {
     const mappings = {
       js: {
-        function: ["function_declaration", "arrow_function", "function"],
-        class: ["class_declaration", "class"],
-        method: ["method_definition"],
+        function: ['function_declaration', 'arrow_function', 'function'],
+        class: ['class_declaration', 'class'],
+        method: ['method_definition'],
       },
       ts: {
-        function: ["function_declaration", "arrow_function", "function"],
-        class: ["class_declaration", "class"],
-        method: ["method_definition", "method_signature"],
+        function: ['function_declaration', 'arrow_function', 'function'],
+        class: ['class_declaration', 'class'],
+        method: ['method_definition', 'method_signature'],
       },
       py: {
-        function: ["function_definition"],
-        class: ["class_definition"],
-        method: ["function_definition"], // In class context
+        function: ['function_definition'],
+        class: ['class_definition'],
+        method: ['function_definition'], // In class context
       },
       rs: {
-        function: ["function_item"],
-        class: ["struct_item", "enum_item"],
-        method: ["function_item"], // In impl context
+        function: ['function_item'],
+        class: ['struct_item', 'enum_item'],
+        method: ['function_item'], // In impl context
       },
       go: {
-        function: ["function_declaration", "method_declaration"],
-        class: ["type_declaration"], // Go structs
-        method: ["method_declaration"],
+        function: ['function_declaration', 'method_declaration'],
+        class: ['type_declaration'], // Go structs
+        method: ['method_declaration'],
       },
     };
 
@@ -296,29 +296,29 @@ class MultiLanguageParser {
    * @param {string} langKey - Language key
    * @returns {array} Array of import paths
    */
-  extractImports(tree, langKey = "js") {
+  extractImports(tree, langKey = 'js') {
     const imports = [];
     const rootNode = tree.rootNode;
 
     const importTypes = {
-      js: ["import_statement", "import"],
-      ts: ["import_statement", "import"],
-      py: ["import_statement", "import_from_statement"],
-      rs: ["use_declaration"],
-      go: ["import_declaration"],
+      js: ['import_statement', 'import'],
+      ts: ['import_statement', 'import'],
+      py: ['import_statement', 'import_from_statement'],
+      rs: ['use_declaration'],
+      go: ['import_declaration'],
     };
 
     const types = importTypes[langKey] || importTypes.js;
 
-    const traverse = (node) => {
+    const traverse = node => {
       if (types.includes(node.type)) {
         // Extract source path
         const sourceNode =
-          node.childForFieldName("source") || node.children.find((n) => n.type === "string");
+          node.childForFieldName('source') || node.children.find(n => n.type === 'string');
 
         if (sourceNode) {
           imports.push({
-            path: sourceNode.text.replace(/['"]/g, ""),
+            path: sourceNode.text.replace(/['"]/g, ''),
             startPosition: node.startPosition,
             raw: node.text,
           });
@@ -343,11 +343,11 @@ class MultiLanguageParser {
     const errors = [];
     const rootNode = tree.rootNode;
 
-    const traverse = (node) => {
+    const traverse = node => {
       if (node.hasError) {
-        if (node.type === "ERROR") {
+        if (node.type === 'ERROR') {
           errors.push({
-            type: "syntax_error",
+            type: 'syntax_error',
             startPosition: node.startPosition,
             endPosition: node.endPosition,
             text: node.text.substring(0, 50), // First 50 chars
@@ -383,7 +383,7 @@ class MultiLanguageParser {
    * @returns {boolean}
    */
   isSupported(langKey) {
-    if (langKey.includes(".")) {
+    if (langKey.includes('.')) {
       try {
         this.detectLanguage(langKey);
         return true;
@@ -402,18 +402,18 @@ if (require.main === module) {
 
   const parser = new MultiLanguageParser();
 
-  if (command === "list") {
-    console.log("📋 Supported Languages:\n");
+  if (command === 'list') {
+    console.log('📋 Supported Languages:\n');
     const langs = parser.getSupportedLanguages();
-    langs.forEach((lang) => {
+    langs.forEach(lang => {
       console.log(`  ${lang.name} (${lang.key})`);
-      console.log(`    Extensions: ${lang.extensions.join(", ")}`);
+      console.log(`    Extensions: ${lang.extensions.join(', ')}`);
       console.log(`    Package: ${lang.package}\n`);
     });
     process.exit(0);
   }
 
-  if (command === "parse" && args[1]) {
+  if (command === 'parse' && args[1]) {
     const filePath = args[1];
 
     if (!fs.existsSync(filePath)) {
@@ -429,7 +429,7 @@ if (require.main === module) {
       // Extract symbols
       const symbols = parser.extractSymbols(tree, langKey);
       console.log(`\n📦 Found ${symbols.length} symbols:\n`);
-      symbols.forEach((sym) => {
+      symbols.forEach(sym => {
         console.log(`  [${sym.type}] ${sym.name} (line ${sym.startPosition.row + 1})`);
       });
 
@@ -437,7 +437,7 @@ if (require.main === module) {
       const imports = parser.extractImports(tree, langKey);
       if (imports.length > 0) {
         console.log(`\n📥 Imports (${imports.length}):\n`);
-        imports.forEach((imp) => {
+        imports.forEach(imp => {
           console.log(`  ${imp.path}`);
         });
       }
@@ -446,11 +446,11 @@ if (require.main === module) {
       const errors = parser.findErrors(tree);
       if (errors.length > 0) {
         console.log(`\n⚠️  Syntax errors (${errors.length}):\n`);
-        errors.forEach((err) => {
+        errors.forEach(err => {
           console.log(`  Line ${err.startPosition.row + 1}: ${err.text}`);
         });
       } else {
-        console.log("\n✅ No syntax errors");
+        console.log('\n✅ No syntax errors');
       }
     } catch (error) {
       console.error(`❌ Error: ${error.message}`);

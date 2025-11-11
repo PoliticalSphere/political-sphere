@@ -1,6 +1,6 @@
-import { getDatabase } from "../modules/stores/index.js";
+import { type CreateVoteInput, CreateVoteSchema, type Vote } from '@political-sphere/shared';
 
-import { type CreateVoteInput, CreateVoteSchema, type Vote } from "@political-sphere/shared";
+import { getDatabase } from '../modules/stores/index.js';
 
 export class VoteService {
   // Lazy getter to avoid stale DB connections in tests
@@ -15,19 +15,19 @@ export class VoteService {
     // Verify bill exists
     const bill = await this.db.bills.getById(input.billId);
     if (!bill) {
-      throw new Error("Bill does not exist");
+      throw new Error('Bill does not exist');
     }
 
     // Verify user exists
     const user = await this.db.users.getById(input.userId);
     if (!user) {
-      throw new Error("User does not exist");
+      throw new Error('User does not exist');
     }
 
     // Check if user has already voted on this bill (await the async store method)
     const hasVoted = await this.db.votes.hasUserVotedOnBill(input.userId, input.billId);
     if (hasVoted) {
-      throw new Error("User has already voted on this bill");
+      throw new Error('User has already voted on this bill');
     }
 
     return this.db.votes.create(input);

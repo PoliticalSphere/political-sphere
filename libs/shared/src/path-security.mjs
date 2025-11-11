@@ -7,8 +7,8 @@
  * This is the ESM version of libs/shared/src/path-security.js
  */
 
-import path from "path";
-import { fileURLToPath } from "url";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 /**
  * Validates that a filename doesn't contain path traversal sequences
@@ -17,8 +17,8 @@ import { fileURLToPath } from "url";
  * @throws {Error} If filename contains invalid characters or traversal attempts
  */
 export function validateFilename(filename) {
-  if (!filename || typeof filename !== "string") {
-    throw new Error("Filename must be a non-empty string");
+  if (!filename || typeof filename !== 'string') {
+    throw new Error('Filename must be a non-empty string');
   }
 
   // Remove any path components - only allow the basename
@@ -26,18 +26,18 @@ export function validateFilename(filename) {
 
   // Check for path traversal attempts
   if (filename !== basename) {
-    throw new Error("Filename cannot contain path separators");
+    throw new Error('Filename cannot contain path separators');
   }
 
   // Block null bytes
-  if (basename.includes("\0")) {
-    throw new Error("Filename cannot contain null bytes");
+  if (basename.includes('\0')) {
+    throw new Error('Filename cannot contain null bytes');
   }
 
   // Validate filename characters (alphanumeric, dash, underscore, dot, space)
   // Allow spaces in filenames
   if (!/^[a-zA-Z0-9_. -]+$/.test(basename)) {
-    throw new Error("Filename contains invalid characters");
+    throw new Error('Filename contains invalid characters');
   }
 
   return basename;
@@ -51,31 +51,31 @@ export function validateFilename(filename) {
  * @throws {Error} If path contains traversal attempts
  */
 export function validateRelativePath(relativePath) {
-  if (!relativePath || typeof relativePath !== "string") {
-    throw new Error("Path must be a non-empty string");
+  if (!relativePath || typeof relativePath !== 'string') {
+    throw new Error('Path must be a non-empty string');
   }
 
   // Block null bytes
-  if (relativePath.includes("\0")) {
-    throw new Error("Path cannot contain null bytes");
+  if (relativePath.includes('\0')) {
+    throw new Error('Path cannot contain null bytes');
   }
 
   // Block absolute paths
   if (path.isAbsolute(relativePath)) {
-    throw new Error("Path must be relative, not absolute");
+    throw new Error('Path must be relative, not absolute');
   }
 
   // Block parent directory references - check before normalization
   const normalized = path.normalize(relativePath);
 
   // Block parent directory references in normalized path too
-  if (relativePath.includes("..") || normalized.includes("..")) {
-    throw new Error("Path cannot contain parent directory references (..)");
+  if (relativePath.includes('..') || normalized.includes('..')) {
+    throw new Error('Path cannot contain parent directory references (..)');
   }
 
   // Ensure normalization didn't introduce traversal
-  if (normalized.includes("..") || path.isAbsolute(normalized)) {
-    throw new Error("Path normalization resulted in traversal attempt");
+  if (normalized.includes('..') || path.isAbsolute(normalized)) {
+    throw new Error('Path normalization resulted in traversal attempt');
   }
 
   return normalized;
@@ -92,12 +92,12 @@ export function validateRelativePath(relativePath) {
  * @throws {Error} If path would escape the base directory
  */
 export function safeJoin(baseDir, userInput, options = {}) {
-  if (!baseDir || typeof baseDir !== "string") {
-    throw new Error("Base directory must be a non-empty string");
+  if (!baseDir || typeof baseDir !== 'string') {
+    throw new Error('Base directory must be a non-empty string');
   }
 
-  if (!userInput || typeof userInput !== "string") {
-    throw new Error("User input must be a non-empty string");
+  if (!userInput || typeof userInput !== 'string') {
+    throw new Error('User input must be a non-empty string');
   }
 
   // Sanitize based on whether subdirectories are allowed
@@ -114,7 +114,7 @@ export function safeJoin(baseDir, userInput, options = {}) {
 
   // Ensure the resolved path is within the base directory
   if (!resolved.startsWith(resolvedBase + path.sep) && resolved !== resolvedBase) {
-    throw new Error("Path traversal detected: resulting path is outside base directory");
+    throw new Error('Path traversal detected: resulting path is outside base directory');
   }
 
   return resolved;
@@ -129,20 +129,20 @@ export function safeJoin(baseDir, userInput, options = {}) {
  * @throws {Error} If path contains obvious traversal attempts
  */
 export function validateTrustedPath(trustedPath, baseDir = null) {
-  if (!trustedPath || typeof trustedPath !== "string") {
-    throw new Error("Path must be a non-empty string");
+  if (!trustedPath || typeof trustedPath !== 'string') {
+    throw new Error('Path must be a non-empty string');
   }
 
   // Even trusted paths shouldn't have null bytes
-  if (trustedPath.includes("\0")) {
-    throw new Error("Path cannot contain null bytes");
+  if (trustedPath.includes('\0')) {
+    throw new Error('Path cannot contain null bytes');
   }
 
   // Block obvious traversal attempts
   const pathParts = trustedPath.split(/[/\\]/);
   for (const part of pathParts) {
-    if (part === "..") {
-      throw new Error("Path cannot contain parent directory references");
+    if (part === '..') {
+      throw new Error('Path cannot contain parent directory references');
     }
   }
 
@@ -152,7 +152,7 @@ export function validateTrustedPath(trustedPath, baseDir = null) {
     const resolvedBase = path.resolve(baseDir);
 
     if (!resolved.startsWith(resolvedBase + path.sep) && resolved !== resolvedBase) {
-      throw new Error("Path resolves outside base directory");
+      throw new Error('Path resolves outside base directory');
     }
 
     return resolved;

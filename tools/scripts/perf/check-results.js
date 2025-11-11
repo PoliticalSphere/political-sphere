@@ -1,32 +1,32 @@
 #!/usr/bin/env node
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const ROOT = path.resolve(__dirname, "../..");
-const REPORT = path.join(ROOT, "artifacts", "autocannon.json");
-const SUMMARY = path.join(ROOT, "artifacts", "perf-summary.txt");
+const ROOT = path.resolve(__dirname, '../..');
+const REPORT = path.join(ROOT, 'artifacts', 'autocannon.json');
+const SUMMARY = path.join(ROOT, 'artifacts', 'perf-summary.txt');
 
 const MAX_P95_MS = Number(process.env.MAX_P95_MS || 500);
 const MIN_RPS = Number(process.env.MIN_RPS || 50);
 
 if (!fs.existsSync(REPORT)) {
-  console.error("Autocannon report not found at", REPORT);
+  console.error('Autocannon report not found at', REPORT);
   process.exit(3);
 }
 
-const raw = fs.readFileSync(REPORT, "utf8");
+const raw = fs.readFileSync(REPORT, 'utf8');
 let data;
 try {
   data = JSON.parse(raw);
 } catch (e) {
-  console.error("Invalid JSON");
+  console.error('Invalid JSON');
   process.exit(3);
 }
 
 // Try to extract p95 latency in ms
 let p95 = null;
 if (data && data.latency) {
-  p95 = data.latency.p95 || data.latency.p95ms || data.latency["p95"] || null;
+  p95 = data.latency.p95 || data.latency.p95ms || data.latency['p95'] || null;
 }
 
 // Try to extract requests/sec
@@ -36,7 +36,7 @@ if (data && data.requests) {
     data.requests.mean ||
     data.requests.average ||
     data.requests.averageRequests ||
-    data.requests["average"] ||
+    data.requests['average'] ||
     null;
 }
 // fallback: compute from total and duration
@@ -56,8 +56,8 @@ if (p95 !== null) p95 = Number(p95);
 if (rps !== null) rps = Number(rps);
 
 const lines = [];
-lines.push(`p95_ms: ${p95 === null ? "N/A" : p95}`);
-lines.push(`requests_per_sec: ${rps === null ? "N/A" : rps}`);
+lines.push(`p95_ms: ${p95 === null ? 'N/A' : p95}`);
+lines.push(`requests_per_sec: ${rps === null ? 'N/A' : rps}`);
 lines.push(`thresholds: max_p95_ms=${MAX_P95_MS}, min_rps=${MIN_RPS}`);
 
 let failed = false;
@@ -69,10 +69,10 @@ if (rps !== null && rps < MIN_RPS) {
   lines.push(`FAIL: rps ${rps} < ${MIN_RPS}`);
   failed = true;
 }
-if (p95 === null) lines.push("WARN: p95 not available from report");
-if (rps === null) lines.push("WARN: rps not available from report");
+if (p95 === null) lines.push('WARN: p95 not available from report');
+if (rps === null) lines.push('WARN: rps not available from report');
 
-fs.writeFileSync(SUMMARY, lines.join("\n"));
-console.log(lines.join("\n"));
+fs.writeFileSync(SUMMARY, lines.join('\n'));
+console.log(lines.join('\n'));
 
 process.exit(failed ? 2 : 0);

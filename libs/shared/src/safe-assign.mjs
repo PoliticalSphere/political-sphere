@@ -7,7 +7,7 @@
 
 export function pick(source = {}, allowed = []) {
   const out = {};
-  if (!source || typeof source !== "object") return out;
+  if (!source || typeof source !== 'object') return out;
   for (const key of allowed) {
     if (Object.hasOwn(source, key)) {
       out[key] = source[key];
@@ -17,7 +17,7 @@ export function pick(source = {}, allowed = []) {
 }
 
 export function safeAssign(target = {}, source = {}, allowed = []) {
-  if (!target || typeof target !== "object") return target;
+  if (!target || typeof target !== 'object') return target;
   const safe = pick(source, allowed);
   return Object.assign(target, safe);
 }

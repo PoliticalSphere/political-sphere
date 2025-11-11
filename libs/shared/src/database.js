@@ -3,17 +3,17 @@
  * Provides secure database operations with proper error handling
  */
 
-import path from "path";
+import path from 'path';
 
-import Database from "better-sqlite3";
+import Database from 'better-sqlite3';
 
-import { getLogger } from "./logger.js";
+import { getLogger } from './logger.js';
 
-const logger = getLogger({ service: "database" });
+const logger = getLogger({ service: 'database' });
 
 // Database configuration
 const DB_PATH =
-  process.env.SQLITE_DB_PATH || path.join(process.cwd(), "data", "political_sphere.db");
+  process.env.SQLITE_DB_PATH || path.join(process.cwd(), 'data', 'political_sphere.db');
 
 // Connection cache
 let dbInstance = null;
@@ -27,12 +27,12 @@ export function getDatabase() {
       dbInstance = new Database(DB_PATH);
 
       // Enable WAL mode for better concurrency
-      dbInstance.pragma("journal_mode = WAL");
-      dbInstance.pragma("foreign_keys = ON");
+      dbInstance.pragma('journal_mode = WAL');
+      dbInstance.pragma('foreign_keys = ON');
 
-      logger.info("Database connection established", { path: DB_PATH });
+      logger.info('Database connection established', { path: DB_PATH });
     } catch (error) {
-      logger.fatal("Failed to connect to database", { error: error.message, path: DB_PATH });
+      logger.fatal('Failed to connect to database', { error: error.message, path: DB_PATH });
       throw error;
     }
   }
@@ -47,7 +47,7 @@ export function closeDatabase() {
   if (dbInstance) {
     dbInstance.close();
     dbInstance = null;
-    logger.info("Database connection closed");
+    logger.info('Database connection closed');
   }
 }
 
@@ -61,8 +61,8 @@ export function executeQuery(query, params = []) {
     const stmt = db.prepare(query);
     return stmt.all(params);
   } catch (error) {
-    logger.error("Query execution failed", {
-      query: query.substring(0, 100) + (query.length > 100 ? "..." : ""),
+    logger.error('Query execution failed', {
+      query: query.substring(0, 100) + (query.length > 100 ? '...' : ''),
       error: error.message,
       params: JSON.stringify(params),
     });
@@ -80,8 +80,8 @@ export function executeQuerySingle(query, params = []) {
     const stmt = db.prepare(query);
     return stmt.get(params);
   } catch (error) {
-    logger.error("Single query execution failed", {
-      query: query.substring(0, 100) + (query.length > 100 ? "..." : ""),
+    logger.error('Single query execution failed', {
+      query: query.substring(0, 100) + (query.length > 100 ? '...' : ''),
       error: error.message,
       params: JSON.stringify(params),
     });
@@ -99,16 +99,16 @@ export function executeMutation(query, params = []) {
     const stmt = db.prepare(query);
     const result = stmt.run(params);
 
-    logger.debug("Mutation executed", {
-      query: query.substring(0, 50) + (query.length > 50 ? "..." : ""),
+    logger.debug('Mutation executed', {
+      query: query.substring(0, 50) + (query.length > 50 ? '...' : ''),
       changes: result.changes,
       lastInsertRowid: result.lastInsertRowid,
     });
 
     return result;
   } catch (error) {
-    logger.error("Mutation execution failed", {
-      query: query.substring(0, 100) + (query.length > 100 ? "..." : ""),
+    logger.error('Mutation execution failed', {
+      query: query.substring(0, 100) + (query.length > 100 ? '...' : ''),
       error: error.message,
       params: JSON.stringify(params),
     });
@@ -136,11 +136,11 @@ export function executeTransaction(queries) {
     });
 
     const results = transaction();
-    logger.debug("Transaction completed", { queryCount: queries.length });
+    logger.debug('Transaction completed', { queryCount: queries.length });
 
     return results;
   } catch (error) {
-    logger.error("Transaction failed", {
+    logger.error('Transaction failed', {
       error: error.message,
       queryCount: queries.length,
     });
@@ -302,14 +302,14 @@ export const auditQueries = {
 };
 
 // Graceful shutdown
-process.on("SIGINT", () => {
-  logger.info("Received SIGINT, closing database connection");
+process.on('SIGINT', () => {
+  logger.info('Received SIGINT, closing database connection');
   closeDatabase();
   process.exit(0);
 });
 
-process.on("SIGTERM", () => {
-  logger.info("Received SIGTERM, closing database connection");
+process.on('SIGTERM', () => {
+  logger.info('Received SIGTERM, closing database connection');
   closeDatabase();
   process.exit(0);
 });

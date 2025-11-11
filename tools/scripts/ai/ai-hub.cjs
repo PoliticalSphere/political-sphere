@@ -5,16 +5,16 @@
  * Lightning-fast responses with comprehensive knowledge
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const CodeAnalyzer = require("./code-analyzer.cjs");
-const ExpertKnowledge = require("./expert-knowledge.cjs");
-const PatternMatcher = require("./pattern-matcher.cjs");
+const CodeAnalyzer = require('./code-analyzer.cjs');
+const ExpertKnowledge = require('./expert-knowledge.cjs');
+const PatternMatcher = require('./pattern-matcher.cjs');
 
-const AI_DIR = path.join(__dirname, "../../../ai");
-const CONTEXT_DIR = path.join(__dirname, "../../../tools/ai/context-bundles");
-const CACHE_FILE = path.join(AI_DIR, "ai-cache/cache.json");
+const AI_DIR = path.join(__dirname, '../../../ai');
+const CONTEXT_DIR = path.join(__dirname, '../../../tools/ai/context-bundles');
+const CACHE_FILE = path.join(AI_DIR, 'ai-cache/cache.json');
 
 class AIHub {
   constructor() {
@@ -28,7 +28,7 @@ class AIHub {
 
   loadCache() {
     if (fs.existsSync(CACHE_FILE)) {
-      const data = JSON.parse(fs.readFileSync(CACHE_FILE, "utf8"));
+      const data = JSON.parse(fs.readFileSync(CACHE_FILE, 'utf8'));
       return new Map(data.entries || []);
     }
     return new Map();
@@ -38,10 +38,10 @@ class AIHub {
     const bundles = {};
     if (fs.existsSync(CONTEXT_DIR)) {
       const files = fs.readdirSync(CONTEXT_DIR);
-      files.forEach((file) => {
-        if (file.endsWith(".md")) {
-          const name = file.replace(".md", "");
-          bundles[name] = fs.readFileSync(path.join(CONTEXT_DIR, file), "utf8");
+      files.forEach(file => {
+        if (file.endsWith('.md')) {
+          const name = file.replace('.md', '');
+          bundles[name] = fs.readFileSync(path.join(CONTEXT_DIR, file), 'utf8');
         }
       });
     }
@@ -82,22 +82,22 @@ class AIHub {
     const q = question.toLowerCase();
 
     // Code analysis queries
-    if (q.includes("analyze") || q.includes("check") || q.includes("review")) {
+    if (q.includes('analyze') || q.includes('check') || q.includes('review')) {
       return this.handleCodeAnalysis(question, context);
     }
 
     // Pattern/solution lookups
-    if (q.includes("pattern") || q.includes("how to") || q.includes("best practice")) {
+    if (q.includes('pattern') || q.includes('how to') || q.includes('best practice')) {
       return this.handlePatternLookup(question, context);
     }
 
     // Error/problem solving
-    if (q.includes("error") || q.includes("fix") || q.includes("broken") || q.includes("failing")) {
+    if (q.includes('error') || q.includes('fix') || q.includes('broken') || q.includes('failing')) {
       return this.handleErrorSolving(question, context);
     }
 
     // Context queries
-    if (q.includes("recent") || q.includes("todo") || q.includes("what changed")) {
+    if (q.includes('recent') || q.includes('todo') || q.includes('what changed')) {
       return this.handleContextQuery(question, context);
     }
 
@@ -109,7 +109,7 @@ class AIHub {
     if (context.file) {
       const analysis = this.analyzer.analyzeFile(context.file);
       return {
-        type: "code-analysis",
+        type: 'code-analysis',
         question,
         analysis,
         recommendations: this.expert.search(question),
@@ -121,7 +121,7 @@ class AIHub {
         query: question,
       });
       return {
-        type: "quick-analysis",
+        type: 'quick-analysis',
         question,
         safe: quick.safe,
         issues: quick.issues,
@@ -130,10 +130,10 @@ class AIHub {
     }
 
     return {
-      type: "code-analysis",
+      type: 'code-analysis',
       question,
-      message: "Provide file path or code snippet for analysis",
-      help: "Use context.file or context.code",
+      message: 'Provide file path or code snippet for analysis',
+      help: 'Use context.file or context.code',
     };
   }
 
@@ -142,19 +142,19 @@ class AIHub {
 
     // Identify pattern type
     let category = null;
-    if (q.includes("error") || q.includes("exception")) category = "errorHandling";
-    else if (q.includes("test")) category = "testing";
-    else if (q.includes("security") || q.includes("auth")) category = "security";
-    else if (q.includes("performance") || q.includes("fast") || q.includes("slow"))
-      category = "performance";
-    else if (q.includes("architecture") || q.includes("structure")) category = "architecture";
+    if (q.includes('error') || q.includes('exception')) category = 'errorHandling';
+    else if (q.includes('test')) category = 'testing';
+    else if (q.includes('security') || q.includes('auth')) category = 'security';
+    else if (q.includes('performance') || q.includes('fast') || q.includes('slow'))
+      category = 'performance';
+    else if (q.includes('architecture') || q.includes('structure')) category = 'architecture';
 
     if (category) {
       const pattern = this.expert.getPattern(category);
-      const bestPractice = this.expert.getBestPractice(category.includes("test") ? "code" : "PRs");
+      const bestPractice = this.expert.getBestPractice(category.includes('test') ? 'code' : 'PRs');
 
       return {
-        type: "pattern-lookup",
+        type: 'pattern-lookup',
         question,
         category,
         pattern,
@@ -165,10 +165,10 @@ class AIHub {
 
     // General best practices
     return {
-      type: "pattern-lookup",
+      type: 'pattern-lookup',
       question,
       results: this.expert.search(question),
-      bestPractices: this.expert.getBestPractice("code"),
+      bestPractices: this.expert.getBestPractice('code'),
     };
   }
 
@@ -177,11 +177,11 @@ class AIHub {
 
     // Common error patterns
     const errorTypes = {
-      ENOENT: "ENOENT",
-      EADDRINUSE: "EADDRINUSE",
-      MODULE_NOT_FOUND: "MODULE_NOT_FOUND",
-      "test fail": "testFailure",
-      "build fail": "buildFailure",
+      ENOENT: 'ENOENT',
+      EADDRINUSE: 'EADDRINUSE',
+      MODULE_NOT_FOUND: 'MODULE_NOT_FOUND',
+      'test fail': 'testFailure',
+      'build fail': 'buildFailure',
     };
 
     let solution = null;
@@ -193,9 +193,9 @@ class AIHub {
     }
 
     if (solution) {
-      const quickFix = this.expert.getQuickFix("debugging", "logs");
+      const quickFix = this.expert.getQuickFix('debugging', 'logs');
       return {
-        type: "error-solution",
+        type: 'error-solution',
         question,
         solution,
         quickFix,
@@ -205,12 +205,12 @@ class AIHub {
 
     // Generic debugging help
     return {
-      type: "error-solution",
+      type: 'error-solution',
       question,
-      suggestions: this.expert.search("debugging"),
+      suggestions: this.expert.search('debugging'),
       quickFixes: [
-        this.expert.getQuickFix("debugging", "logs"),
-        this.expert.getQuickFix("debugging", "clean-restart"),
+        this.expert.getQuickFix('debugging', 'logs'),
+        this.expert.getQuickFix('debugging', 'clean-restart'),
       ],
     };
   }
@@ -219,21 +219,21 @@ class AIHub {
     const q = question.toLowerCase();
     const relevantBundles = [];
 
-    if (q.includes("recent") || q.includes("changed")) {
-      relevantBundles.push(this.contextBundles["recent-changes"]);
+    if (q.includes('recent') || q.includes('changed')) {
+      relevantBundles.push(this.contextBundles['recent-changes']);
     }
-    if (q.includes("todo") || q.includes("task")) {
-      relevantBundles.push(this.contextBundles["active-tasks"]);
+    if (q.includes('todo') || q.includes('task')) {
+      relevantBundles.push(this.contextBundles['active-tasks']);
     }
-    if (q.includes("structure") || q.includes("files")) {
-      relevantBundles.push(this.contextBundles["project-structure"]);
+    if (q.includes('structure') || q.includes('files')) {
+      relevantBundles.push(this.contextBundles['project-structure']);
     }
-    if (q.includes("error") || q.includes("log")) {
-      relevantBundles.push(this.contextBundles["error-patterns"]);
+    if (q.includes('error') || q.includes('log')) {
+      relevantBundles.push(this.contextBundles['error-patterns']);
     }
 
     return {
-      type: "context-query",
+      type: 'context-query',
       question,
       bundles: relevantBundles.filter(Boolean),
       projectInfo: this.expert.getProjectInfo(),
@@ -242,7 +242,7 @@ class AIHub {
 
   handleGeneralQuery(question, context) {
     return {
-      type: "general",
+      type: 'general',
       question,
       expertSearch: this.expert.search(question),
       projectInfo: this.expert.getProjectInfo(),
@@ -278,8 +278,8 @@ class AIHub {
       bundles: this.contextBundles,
       projectInfo: this.expert.getProjectInfo(),
       expertise: {
-        patterns: ["errorHandling", "testing", "security", "performance", "architecture"],
-        solutions: ["ENOENT", "EADDRINUSE", "MODULE_NOT_FOUND", "testFailure", "buildFailure"],
+        patterns: ['errorHandling', 'testing', 'security', 'performance', 'architecture'],
+        solutions: ['ENOENT', 'EADDRINUSE', 'MODULE_NOT_FOUND', 'testFailure', 'buildFailure'],
         quickFixes: this.expert.knowledge?.quickFixes || {},
       },
       stats: {
@@ -310,38 +310,38 @@ if (require.main === module) {
   const command = process.argv[2];
 
   switch (command) {
-    case "query": {
-      const question = process.argv.slice(3).join(" ");
-      hub.query(question).then((result) => {
+    case 'query': {
+      const question = process.argv.slice(3).join(' ');
+      hub.query(question).then(result => {
         console.log(JSON.stringify(result, null, 2));
       });
       break;
     }
-    case "analyze": {
+    case 'analyze': {
       const file = process.argv[3];
-      hub.query("analyze code", { file }).then((result) => {
+      hub.query('analyze code', { file }).then(result => {
         console.log(JSON.stringify(result, null, 2));
       });
       break;
     }
-    case "context": {
+    case 'context': {
       const ctx = hub.getFullContext();
-      console.log("Available Context Bundles:", Object.keys(ctx.bundles));
-      console.log("Expert Knowledge Areas:", ctx.expertise.patterns);
-      console.log("Stats:", ctx.stats);
+      console.log('Available Context Bundles:', Object.keys(ctx.bundles));
+      console.log('Expert Knowledge Areas:', ctx.expertise.patterns);
+      console.log('Stats:', ctx.stats);
       break;
     }
-    case "stats": {
+    case 'stats': {
       console.log(hub.getStats());
       break;
     }
     default:
-      console.log("AI Intelligence Hub");
-      console.log("Commands:");
-      console.log("  query <question>  - Ask anything");
-      console.log("  analyze <file>    - Analyze code file");
-      console.log("  context           - Show available context");
-      console.log("  stats             - Show statistics");
+      console.log('AI Intelligence Hub');
+      console.log('Commands:');
+      console.log('  query <question>  - Ask anything');
+      console.log('  analyze <file>    - Analyze code file');
+      console.log('  context           - Show available context');
+      console.log('  stats             - Show statistics');
   }
 }
 

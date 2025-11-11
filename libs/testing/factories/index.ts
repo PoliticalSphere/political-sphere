@@ -13,16 +13,16 @@ export {
   AdminUserFactory,
   ModeratorUserFactory,
   InactiveUserFactory,
-} from "./user.factory";
-export type { User } from "./user.factory";
+} from './user.factory';
+export type { User } from './user.factory';
 
 export {
   PartyFactory,
   MajorPartyFactory,
   MinorPartyFactory,
   InactivePartyFactory,
-} from "./party.factory";
-export type { Party } from "./party.factory";
+} from './party.factory';
+export type { Party } from './party.factory';
 
 export {
   BillFactory,
@@ -30,8 +30,8 @@ export {
   ActiveVotingBillFactory,
   PassedBillFactory,
   RejectedBillFactory,
-} from "./bill.factory";
-export type { Bill } from "./bill.factory";
+} from './bill.factory';
+export type { Bill } from './bill.factory';
 
 export {
   VoteFactory,
@@ -39,8 +39,8 @@ export {
   VoteAgainstFactory,
   AbstainVoteFactory,
   WeightedVoteFactory,
-} from "./vote.factory";
-export type { Vote } from "./vote.factory";
+} from './vote.factory';
+export type { Vote } from './vote.factory';
 
 /**
  * Usage Examples:

@@ -18,7 +18,7 @@ export default class ModerationService {
 
   // Basic heuristic scoring; in real systems this would call an AI/ML model
   async analyzeContent(content) {
-    const text = (content || "").toLowerCase();
+    const text = (content || '').toLowerCase();
     const empty = text.trim().length === 0;
 
     // Weighted keyword heuristics: strong indicators contribute more than mild ones
@@ -52,7 +52,7 @@ export default class ModerationService {
       explicit: 0.5,
     };
 
-    const scoreFor = (weightsMap) => {
+    const scoreFor = weightsMap => {
       if (empty) return 0;
       let score = 0;
       for (const [w, weight] of Object.entries(weightsMap)) {
@@ -83,7 +83,7 @@ export default class ModerationService {
       userId,
       approved,
       scores: analysis.scores,
-      reason: approved ? undefined : "Content exceeds moderation thresholds",
+      reason: approved ? undefined : 'Content exceeds moderation thresholds',
       timestamp: new Date().toISOString(),
     };
 
@@ -102,7 +102,7 @@ export default class ModerationService {
 
   async getModerationHistory(userId) {
     const getter = this.store?.getAll;
-    if (typeof getter !== "function") {
+    if (typeof getter !== 'function') {
       // Graceful fallback for tests where mock wasn't initialized yet
       return [];
     }
@@ -113,7 +113,7 @@ export default class ModerationService {
       return await getter.call(this.store);
     } catch (err) {
       // In test environment surface error for visibility
-      if (process.env.NODE_ENV === "test") {
+      if (process.env.NODE_ENV === 'test') {
         throw err;
       }
       return [];
@@ -121,12 +121,12 @@ export default class ModerationService {
   }
 
   async updateModerationRules(rules) {
-    const keys = ["violenceThreshold", "languageThreshold", "sexualThreshold"];
+    const keys = ['violenceThreshold', 'languageThreshold', 'sexualThreshold'];
     for (const k of keys) {
       if (k in rules) {
         const v = rules[k];
-        if (typeof v !== "number" || v < 0 || v > 1) {
-          throw new Error("Invalid threshold value");
+        if (typeof v !== 'number' || v < 0 || v > 1) {
+          throw new Error('Invalid threshold value');
         }
       }
     }
@@ -136,7 +136,7 @@ export default class ModerationService {
   async getModerationStats() {
     const items = (await this.getModerationHistory()) || [];
     const total = items.length;
-    const approved = items.filter((i) => i.approved).length;
+    const approved = items.filter(i => i.approved).length;
     const rejected = total - approved;
 
     const avg = { violence: 0, language: 0, sexual: 0 };
@@ -162,7 +162,7 @@ export default class ModerationService {
 
   // Static helper methods for pure score calculation (used by tests)
   static calculateViolenceScore(text) {
-    const t = (text || "").toLowerCase();
+    const t = (text || '').toLowerCase();
     const weights = {
       kill: 1.0,
       murder: 1.0,
@@ -180,7 +180,7 @@ export default class ModerationService {
   }
 
   static calculateLanguageScore(text) {
-    const t = (text || "").toLowerCase();
+    const t = (text || '').toLowerCase();
     const weights = {
       fuck: 0.9,
       shit: 0.8,
@@ -196,7 +196,7 @@ export default class ModerationService {
   }
 
   static calculateSexualContentScore(text) {
-    const t = (text || "").toLowerCase();
+    const t = (text || '').toLowerCase();
     const weights = {
       sex: 0.6,
       porn: 0.85,
@@ -212,12 +212,12 @@ export default class ModerationService {
 
   static checkCustomRules(text) {
     const violations = [];
-    const t = (text || "").toLowerCase();
-    if (t.includes("kill") || t.includes("bullying")) {
-      violations.push("Harmful content detected");
+    const t = (text || '').toLowerCase();
+    if (t.includes('kill') || t.includes('bullying')) {
+      violations.push('Harmful content detected');
     }
-    if (t.includes("@") && t.includes("user")) {
-      violations.push("User mention in flagged context");
+    if (t.includes('@') && t.includes('user')) {
+      violations.push('User mention in flagged context');
     }
     return violations;
   }
@@ -227,11 +227,11 @@ export default class ModerationService {
     const lScore = ModerationService.calculateLanguageScore(text);
     const sScore = ModerationService.calculateSexualContentScore(text);
 
-    if (vScore === 0 && lScore === 0 && sScore === 0) return "U"; // Universal
-    if (vScore < 0.3 && lScore < 0.3 && sScore < 0.3) return "PG"; // Parental Guidance
-    if (vScore < 0.6 && lScore < 0.6 && sScore < 0.6) return "12A"; // 12+
-    if (vScore < 0.8 && lScore < 0.8 && sScore < 0.8) return "15"; // 15+
-    return "18"; // 18+
+    if (vScore === 0 && lScore === 0 && sScore === 0) return 'U'; // Universal
+    if (vScore < 0.3 && lScore < 0.3 && sScore < 0.3) return 'PG'; // Parental Guidance
+    if (vScore < 0.6 && lScore < 0.6 && sScore < 0.6) return '12A'; // 12+
+    if (vScore < 0.8 && lScore < 0.8 && sScore < 0.8) return '15'; // 15+
+    return '18'; // 18+
   }
 
   static clearCache() {

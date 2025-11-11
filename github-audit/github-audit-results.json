@@ -1,12 +1,12 @@
 {
-  "timestamp": "2025-11-11T22:09:43Z",
+  "timestamp": "2025-11-11T22:40:45Z",
   "version": "1.4.0",
   "summary": {
     "critical": 0,
     "high": 4,
     "medium": 14,
     "low": 0,
-    "info": 57,
+    "info": 54,
     "pass": 142,
     "autoFixed": 0
   },
@@ -58,13 +58,6 @@
       "code": "PERF-002",
       "message": "Consider adding concurrency control",
       "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/release.yml",
-      "line": 0
-    },
-    {
-      "severity": "info",
-      "code": "PERF-001",
-      "message": "Workflow could benefit from dependency caching",
-      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/test-run-tests-action.yml",
       "line": 0
     },
     {
@@ -167,13 +160,6 @@
     },
     {
       "severity": "info",
-      "code": "PERF-001",
-      "message": "Workflow could benefit from dependency caching",
-      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/audit.yml",
-      "line": 0
-    },
-    {
-      "severity": "info",
       "code": "PERF-002",
       "message": "Consider adding concurrency control",
       "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/audit.yml",
@@ -212,13 +198,6 @@
       "code": "PERF-003",
       "message": "Job missing timeout-minutes configuration",
       "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/application-release.yml",
-      "line": 0
-    },
-    {
-      "severity": "info",
-      "code": "PERF-001",
-      "message": "Workflow could benefit from dependency caching",
-      "file": "/Users/morganlowman/GitHub/political-sphere/.github/workflows/security-scan.yml",
       "line": 0
     },
     {

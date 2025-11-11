@@ -5,12 +5,12 @@
  * NOTE: Political Sphere has ONE world/game that all players participate in.
  * This is not a multi-game platform - everyone is in the same political simulation.
  */
-import { test, expect } from "@playwright/test";
+import { test, expect } from '@playwright/test';
 
-import { GameBoardPage } from "../pages/GameBoardPage";
-import { LoginPage } from "../pages/LoginPage";
+import { GameBoardPage } from '../pages/GameBoardPage';
+import { LoginPage } from '../pages/LoginPage';
 
-test.describe("Single World Gameplay", () => {
+test.describe('Single World Gameplay', () => {
   let loginPage: LoginPage;
   let gamePage: GameBoardPage;
 
@@ -20,17 +20,17 @@ test.describe("Single World Gameplay", () => {
 
     // Login before each test
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
   });
 
-  test("should enter the game world after login", async ({ page }) => {
+  test('should enter the game world after login', async ({ page }) => {
     // After login, should be redirected to the game world
     await expect(page).toHaveURL(/\/game/);
     await expect(gamePage.proposalsList).toBeVisible();
   });
 
-  test("should display existing proposals in the world", async () => {
+  test('should display existing proposals in the world', async () => {
     await gamePage.waitForProposalsLoad();
     const proposals = await gamePage.getProposalTitles();
 
@@ -38,7 +38,7 @@ test.describe("Single World Gameplay", () => {
     expect(Array.isArray(proposals)).toBe(true);
   });
 
-  test("should handle multiple concurrent players", async ({ browser }) => {
+  test('should handle multiple concurrent players', async ({ browser }) => {
     // Player 2 joins the same world in new context
     const context2 = await browser.newContext();
     const page2 = await context2.newPage();
@@ -46,7 +46,7 @@ test.describe("Single World Gameplay", () => {
     const game2 = new GameBoardPage(page2);
 
     await login2.goto();
-    await login2.login("user2@example.com", "password123");
+    await login2.login('user2@example.com', 'password123');
     await login2.waitForSuccess();
 
     // Both players should be in the same game world

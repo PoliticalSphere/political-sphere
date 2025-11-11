@@ -1,12 +1,12 @@
-import type Database from "better-sqlite3";
+import type Database from 'better-sqlite3';
 
-import { CacheService } from "../../utils/cache.ts";
-import { initializeDatabase, runMigrations } from "../../utils/migrations/index.js";
+import { CacheService } from '../../utils/cache.ts';
+import { initializeDatabase, runMigrations } from '../../utils/migrations/index.js';
 
-import { BillStore } from "./bill-store.ts";
-import { PartyStore } from "./party-store.ts";
-import { UserStore } from "./user-store.ts";
-import { VoteStore } from "./vote-store.ts";
+import { BillStore } from './bill-store.ts';
+import { PartyStore } from './party-store.ts';
+import { UserStore } from './user-store.ts';
+import { VoteStore } from './vote-store.ts';
 
 interface DatabaseOptions {
   cache?: CacheService;
@@ -14,13 +14,13 @@ interface DatabaseOptions {
 }
 
 function shouldEnableCache(): boolean {
-  if (process.env.NODE_ENV === "test") {
+  if (process.env.NODE_ENV === 'test') {
     return false;
   }
-  if (process.env.API_ENABLE_CACHE === "true") {
+  if (process.env.API_ENABLE_CACHE === 'true') {
     return true;
   }
-  if (process.env.API_ENABLE_CACHE === "false") {
+  if (process.env.API_ENABLE_CACHE === 'false') {
     return false;
   }
   return Boolean(process.env.REDIS_URL);
@@ -42,7 +42,7 @@ export class DatabaseConnection {
     // where stores attempt queries before tables exist. For production we keep migrations async
     // (properly awaited during app bootstrap). For test environment we synchronously ensure the
     // minimal schema exists up-front to prevent 'no such table' errors.
-    if (process.env.NODE_ENV === "test") {
+    if (process.env.NODE_ENV === 'test') {
       this.ensureTestSchema();
     } else {
       // Fire and forget; production bootstrap should await this during server start.

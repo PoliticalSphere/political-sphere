@@ -1,9 +1,9 @@
-import { readFile, readdir } from "node:fs/promises";
-import { dirname, extname, relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFile, readdir } from 'node:fs/promises';
+import { dirname, extname, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
@@ -11,44 +11,44 @@ import {
   ListToolsRequestSchema,
   McpError,
   ReadResourceRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
-import Database from "better-sqlite3";
+} from '@modelcontextprotocol/sdk/types.js';
+import Database from 'better-sqlite3';
 
 const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(MODULE_DIR, "../../..");
+const REPO_ROOT = resolve(MODULE_DIR, '../../..');
 const MAX_ROWS = 100;
-const DATASET_CATALOG_PATH = resolve(REPO_ROOT, "data/datasets/catalog.json");
+const DATASET_CATALOG_PATH = resolve(REPO_ROOT, 'data/datasets/catalog.json');
 
-const DEFAULT_SCAN_DIRECTORIES = ["data", "apps/api", "apps/worker", "reports", "."]; // last is root for test DBs
+const DEFAULT_SCAN_DIRECTORIES = ['data', 'apps/api', 'apps/worker', 'reports', '.']; // last is root for test DBs
 
 function resolveSafeDbPath(dbPath) {
   const absolute = resolve(REPO_ROOT, dbPath);
   if (!absolute.startsWith(REPO_ROOT)) {
-    throw new McpError(ErrorCode.InvalidRequest, "dbPath escapes repository root");
+    throw new McpError(ErrorCode.InvalidRequest, 'dbPath escapes repository root');
   }
   return absolute;
 }
 
 function validateSelectQuery(query) {
   const trimmed = query.trim().toLowerCase();
-  if (!trimmed.startsWith("select")) {
-    throw new McpError(ErrorCode.InvalidRequest, "Only SELECT queries are allowed");
+  if (!trimmed.startsWith('select')) {
+    throw new McpError(ErrorCode.InvalidRequest, 'Only SELECT queries are allowed');
   }
-  const forbidden = ["update ", "insert ", "delete ", "alter ", "drop ", "pragma ", "attach "];
-  if (forbidden.some((keyword) => trimmed.includes(keyword))) {
-    throw new McpError(ErrorCode.InvalidRequest, "Query contains forbidden statements");
+  const forbidden = ['update ', 'insert ', 'delete ', 'alter ', 'drop ', 'pragma ', 'attach '];
+  if (forbidden.some(keyword => trimmed.includes(keyword))) {
+    throw new McpError(ErrorCode.InvalidRequest, 'Query contains forbidden statements');
   }
   return query;
 }
 
 async function loadDatasetCatalog() {
   try {
-    const contents = await readFile(DATASET_CATALOG_PATH, "utf8");
+    const contents = await readFile(DATASET_CATALOG_PATH, 'utf8');
     return JSON.parse(contents);
   } catch (error) {
     throw new McpError(
       ErrorCode.InternalError,
-      `Unable to read dataset catalog (${relative(REPO_ROOT, DATASET_CATALOG_PATH)}): ${error.message}`,
+      `Unable to read dataset catalog (${relative(REPO_ROOT, DATASET_CATALOG_PATH)}): ${error.message}`
     );
   }
 }
@@ -61,7 +61,7 @@ async function discoverDatabases() {
     try {
       const entries = await readdir(absoluteDir, { withFileTypes: true });
       for (const entry of entries) {
-        if (entry.isFile() && extname(entry.name) === ".db") {
+        if (entry.isFile() && extname(entry.name) === '.db') {
           const absolute = resolve(absoluteDir, entry.name);
           if (absolute.startsWith(REPO_ROOT)) {
             discovered.add(relative(REPO_ROOT, absolute));
@@ -81,7 +81,7 @@ function listTables(dbPath) {
   try {
     const rows = db
       .prepare(
-        "select name, type from sqlite_master where type in ('table','view') order by name asc",
+        "select name, type from sqlite_master where type in ('table','view') order by name asc"
       )
       .all();
     return rows;
@@ -94,7 +94,7 @@ function tableInfo(dbPath, table) {
   const db = new Database(dbPath, { readonly: true, fileMustExist: true });
   try {
     const pragma = db.prepare(`pragma table_info(${table})`).all();
-    return pragma.map((row) => ({
+    return pragma.map(row => ({
       cid: row.cid,
       name: row.name,
       type: row.type,
@@ -125,16 +125,16 @@ class SqliteServer extends Server {
   constructor() {
     super(
       {
-        name: "political-sphere-sqlite",
-        version: "1.0.0",
-        description: "Query SQLite datasets in a read-only manner",
+        name: 'political-sphere-sqlite',
+        version: '1.0.0',
+        description: 'Query SQLite datasets in a read-only manner',
       },
       {
         capabilities: {
           tools: {},
           resources: {},
         },
-      },
+      }
     );
 
     this.setRequestHandler(ListToolsRequestSchema, this.listTools.bind(this));
@@ -147,56 +147,56 @@ class SqliteServer extends Server {
     return {
       tools: [
         {
-          name: "sqlite_list_tables",
-          description: "List tables in a database file",
+          name: 'sqlite_list_tables',
+          description: 'List tables in a database file',
           inputSchema: {
-            type: "object",
+            type: 'object',
             properties: {
               dbPath: {
-                type: "string",
-                description: "Relative path to .db file",
+                type: 'string',
+                description: 'Relative path to .db file',
               },
             },
-            required: ["dbPath"],
+            required: ['dbPath'],
           },
         },
         {
-          name: "sqlite_table_info",
-          description: "Describe columns in a table",
+          name: 'sqlite_table_info',
+          description: 'Describe columns in a table',
           inputSchema: {
-            type: "object",
+            type: 'object',
             properties: {
-              dbPath: { type: "string" },
-              table: { type: "string" },
+              dbPath: { type: 'string' },
+              table: { type: 'string' },
             },
-            required: ["dbPath", "table"],
+            required: ['dbPath', 'table'],
           },
         },
         {
-          name: "sqlite_query",
-          description: "Run a read-only SELECT query (max 100 rows)",
+          name: 'sqlite_query',
+          description: 'Run a read-only SELECT query (max 100 rows)',
           inputSchema: {
-            type: "object",
+            type: 'object',
             properties: {
-              dbPath: { type: "string" },
-              query: { type: "string" },
+              dbPath: { type: 'string' },
+              query: { type: 'string' },
               params: {
-                type: "object",
-                description: "Named parameters mapping (optional)",
+                type: 'object',
+                description: 'Named parameters mapping (optional)',
               },
             },
-            required: ["dbPath", "query"],
+            required: ['dbPath', 'query'],
           },
         },
         {
-          name: "sqlite_dataset_metadata",
-          description: "Surface dataset catalog entries (owners, refresh policy, tables)",
+          name: 'sqlite_dataset_metadata',
+          description: 'Surface dataset catalog entries (owners, refresh policy, tables)',
           inputSchema: {
-            type: "object",
+            type: 'object',
             properties: {
               name: {
-                type: "string",
-                description: "Optional dataset name to filter by",
+                type: 'string',
+                description: 'Optional dataset name to filter by',
               },
             },
           },
@@ -211,41 +211,41 @@ class SqliteServer extends Server {
     const args = params.arguments ?? {} ?? {};
 
     switch (name) {
-      case "sqlite_list_tables": {
-        if (typeof args.dbPath !== "string") {
-          throw new McpError(ErrorCode.InvalidRequest, "dbPath is required");
+      case 'sqlite_list_tables': {
+        if (typeof args.dbPath !== 'string') {
+          throw new McpError(ErrorCode.InvalidRequest, 'dbPath is required');
         }
         const dbPath = resolveSafeDbPath(args.dbPath);
         const tables = listTables(dbPath);
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify({ dbPath: args.dbPath, tables }, null, 2),
             },
           ],
         };
       }
 
-      case "sqlite_table_info": {
-        if (typeof args.dbPath !== "string" || typeof args.table !== "string") {
-          throw new McpError(ErrorCode.InvalidRequest, "dbPath and table are required");
+      case 'sqlite_table_info': {
+        if (typeof args.dbPath !== 'string' || typeof args.table !== 'string') {
+          throw new McpError(ErrorCode.InvalidRequest, 'dbPath and table are required');
         }
         const dbPath = resolveSafeDbPath(args.dbPath);
         const info = tableInfo(dbPath, args.table);
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify({ table: args.table, columns: info }, null, 2),
             },
           ],
         };
       }
 
-      case "sqlite_query": {
-        if (typeof args.dbPath !== "string" || typeof args.query !== "string") {
-          throw new McpError(ErrorCode.InvalidRequest, "dbPath and query are required");
+      case 'sqlite_query': {
+        if (typeof args.dbPath !== 'string' || typeof args.query !== 'string') {
+          throw new McpError(ErrorCode.InvalidRequest, 'dbPath and query are required');
         }
         const statement = validateSelectQuery(args.query);
         const dbPath = resolveSafeDbPath(args.dbPath);
@@ -253,27 +253,27 @@ class SqliteServer extends Server {
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify({ rows, rowCount: rows.length }, null, 2),
             },
           ],
         };
       }
 
-      case "sqlite_dataset_metadata": {
+      case 'sqlite_dataset_metadata': {
         const catalog = await loadDatasetCatalog();
         const datasets = Array.isArray(catalog.datasets) ? catalog.datasets : [];
         const filtered =
-          typeof args.name === "string" && args.name.trim() !== ""
-            ? datasets.filter((dataset) => dataset.name === args.name.trim())
+          typeof args.name === 'string' && args.name.trim() !== ''
+            ? datasets.filter(dataset => dataset.name === args.name.trim())
             : datasets;
-        if (typeof args.name === "string" && filtered.length === 0) {
+        if (typeof args.name === 'string' && filtered.length === 0) {
           throw new McpError(ErrorCode.InvalidRequest, `Dataset ${args.name} not found`);
         }
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify(
                 {
                   updatedAt: catalog.updatedAt,
@@ -281,7 +281,7 @@ class SqliteServer extends Server {
                   datasets: filtered,
                 },
                 null,
-                2,
+                2
               ),
             },
           ],
@@ -298,22 +298,22 @@ class SqliteServer extends Server {
     return {
       resources: [
         {
-          uri: "sqlite://political-sphere/databases",
-          name: "Known SQLite databases",
-          description: "Auto-discovered database files within the repository",
-          mimeType: "application/json",
+          uri: 'sqlite://political-sphere/databases',
+          name: 'Known SQLite databases',
+          description: 'Auto-discovered database files within the repository',
+          mimeType: 'application/json',
         },
         {
-          uri: "sqlite://political-sphere/usage",
-          name: "Usage guidance",
-          description: "Hints for safe database queries",
-          mimeType: "text/plain",
+          uri: 'sqlite://political-sphere/usage',
+          name: 'Usage guidance',
+          description: 'Hints for safe database queries',
+          mimeType: 'text/plain',
         },
         {
-          uri: "sqlite://political-sphere/datasets",
-          name: "Dataset metadata",
-          description: "Owners, refresh cadence, and table notes for each dataset",
-          mimeType: "application/json",
+          uri: 'sqlite://political-sphere/datasets',
+          name: 'Dataset metadata',
+          description: 'Owners, refresh cadence, and table notes for each dataset',
+          mimeType: 'application/json',
         },
       ],
       databases,
@@ -322,36 +322,36 @@ class SqliteServer extends Server {
 
   async readResource(request) {
     const uri = request.params?.uri;
-    if (uri === "sqlite://political-sphere/databases") {
+    if (uri === 'sqlite://political-sphere/databases') {
       const databases = await discoverDatabases();
       return {
         contents: [
           {
             uri,
-            mimeType: "application/json",
+            mimeType: 'application/json',
             text: JSON.stringify({ databases }, null, 2),
           },
         ],
       };
     }
-    if (uri === "sqlite://political-sphere/usage") {
+    if (uri === 'sqlite://political-sphere/usage') {
       return {
         contents: [
           {
             uri,
-            mimeType: "text/plain",
+            mimeType: 'text/plain',
             text: `All queries are executed in read-only mode. Only SELECT statements are permitted and results are limited to ${MAX_ROWS} rows.`,
           },
         ],
       };
     }
-    if (uri === "sqlite://political-sphere/datasets") {
+    if (uri === 'sqlite://political-sphere/datasets') {
       const catalog = await loadDatasetCatalog();
       return {
         contents: [
           {
             uri,
-            mimeType: "application/json",
+            mimeType: 'application/json',
             text: JSON.stringify(catalog, null, 2),
           },
         ],
@@ -365,10 +365,10 @@ async function main() {
   const server = new SqliteServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("SQLite MCP server ready on STDIO");
+  console.error('SQLite MCP server ready on STDIO');
 }
 
-main().catch((error) => {
-  console.error("SQLite MCP server failed:", error);
+main().catch(error => {
+  console.error('SQLite MCP server failed:', error);
   process.exitCode = 1;
 });

@@ -1,14 +1,14 @@
 // Shell webpack config (Module Federation) example
-const { ModuleFederationPlugin } = require("webpack").container;
+const { ModuleFederationPlugin } = require('webpack').container;
 
 module.exports = {
   plugins: [
     new ModuleFederationPlugin({
-      name: "shell",
+      name: 'shell',
       remotes: {
-        remoteApp: "remoteApp@http://localhost:4201/remoteEntry.js",
+        remoteApp: 'remoteApp@http://localhost:4201/remoteEntry.js',
       },
-      shared: { react: { singleton: true }, "react-dom": { singleton: true } },
+      shared: { react: { singleton: true }, 'react-dom': { singleton: true } },
     }),
   ],
 };

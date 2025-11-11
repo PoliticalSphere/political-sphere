@@ -9,17 +9,17 @@
  * @requires @opentelemetry/auto-instrumentations-node
  */
 
-import { getNodeAutoInstrumentations } from "@opentelemetry/auto-instrumentations-node";
-import { OTLPMetricExporter } from "@opentelemetry/exporter-metrics-otlp-http";
-import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
-import { resourceFromAttributes } from "@opentelemetry/resources";
-import { PeriodicExportingMetricReader } from "@opentelemetry/sdk-metrics";
-import { NodeSDK } from "@opentelemetry/sdk-node";
+import { getNodeAutoInstrumentations } from '@opentelemetry/auto-instrumentations-node';
+import { OTLPMetricExporter } from '@opentelemetry/exporter-metrics-otlp-http';
+import { OTLPTraceExporter } from '@opentelemetry/exporter-trace-otlp-http';
+import { resourceFromAttributes } from '@opentelemetry/resources';
+import { PeriodicExportingMetricReader } from '@opentelemetry/sdk-metrics';
+import { NodeSDK } from '@opentelemetry/sdk-node';
 import {
   SEMRESATTRS_SERVICE_NAME,
   SEMRESATTRS_SERVICE_VERSION,
   SEMRESATTRS_DEPLOYMENT_ENVIRONMENT,
-} from "@opentelemetry/semantic-conventions";
+} from '@opentelemetry/semantic-conventions';
 
 /**
  * OpenTelemetry Configuration Options
@@ -52,12 +52,12 @@ export interface TelemetryConfig {
 export function initTelemetry(config: TelemetryConfig): NodeSDK {
   const {
     serviceName,
-    serviceVersion = "0.0.0",
-    environment = process.env["NODE_ENV"] || "development",
-    traceEndpoint = process.env["OTEL_EXPORTER_OTLP_TRACES_ENDPOINT"] ||
-      "http://localhost:4318/v1/traces",
-    metricsEndpoint = process.env["OTEL_EXPORTER_OTLP_METRICS_ENDPOINT"] ||
-      "http://localhost:4318/v1/metrics",
+    serviceVersion = '0.0.0',
+    environment = process.env['NODE_ENV'] || 'development',
+    traceEndpoint = process.env['OTEL_EXPORTER_OTLP_TRACES_ENDPOINT'] ||
+      'http://localhost:4318/v1/traces',
+    metricsEndpoint = process.env['OTEL_EXPORTER_OTLP_METRICS_ENDPOINT'] ||
+      'http://localhost:4318/v1/metrics',
     enableAutoInstrumentation = true,
   } = config;
 
@@ -87,38 +87,38 @@ export function initTelemetry(config: TelemetryConfig): NodeSDK {
   const instrumentations = enableAutoInstrumentation
     ? getNodeAutoInstrumentations({
         // Instrument HTTP requests
-        "@opentelemetry/instrumentation-http": {
+        '@opentelemetry/instrumentation-http': {
           enabled: true,
-          ignoreIncomingRequestHook: (request) => {
+          ignoreIncomingRequestHook: request => {
             // Don't trace health check endpoints to reduce noise
-            const url = request.url || "";
-            return url.includes("/healthz") || url.includes("/readyz");
+            const url = request.url || '';
+            return url.includes('/healthz') || url.includes('/readyz');
           },
         },
         // Instrument Express.js
-        "@opentelemetry/instrumentation-express": {
+        '@opentelemetry/instrumentation-express': {
           enabled: true,
         },
         // Instrument database queries
-        "@opentelemetry/instrumentation-pg": {
+        '@opentelemetry/instrumentation-pg': {
           enabled: true,
           enhancedDatabaseReporting: true,
         },
-        "@opentelemetry/instrumentation-mongodb": {
+        '@opentelemetry/instrumentation-mongodb': {
           enabled: true,
           enhancedDatabaseReporting: true,
         },
         // Instrument Redis
-        "@opentelemetry/instrumentation-redis": {
+        '@opentelemetry/instrumentation-redis': {
           enabled: true,
         },
         // Instrument DNS lookups
-        "@opentelemetry/instrumentation-dns": {
+        '@opentelemetry/instrumentation-dns': {
           enabled: true,
         },
         // Instrument file system operations (use carefully in production)
-        "@opentelemetry/instrumentation-fs": {
-          enabled: environment === "development",
+        '@opentelemetry/instrumentation-fs': {
+          enabled: environment === 'development',
         },
       })
     : [];
@@ -132,19 +132,19 @@ export function initTelemetry(config: TelemetryConfig): NodeSDK {
   });
 
   // Graceful shutdown on process termination
-  process.on("SIGTERM", async () => {
+  process.on('SIGTERM', async () => {
     try {
       await sdk.shutdown();
       // Use structured logger instead of console.log
-      const { getLogger } = await import("./logger.js");
-      const logger = getLogger({ service: "telemetry" });
-      logger.info("OpenTelemetry SDK shut down successfully");
+      const { getLogger } = await import('./logger.js');
+      const logger = getLogger({ service: 'telemetry' });
+      logger.info('OpenTelemetry SDK shut down successfully');
     } catch (error) {
       // Use structured logger instead of console.error
-      const { getLogger } = await import("./logger.js");
-      const logger = getLogger({ service: "telemetry" });
+      const { getLogger } = await import('./logger.js');
+      const logger = getLogger({ service: 'telemetry' });
       const errMsg = error instanceof Error ? error.message : String(error);
-      logger.error("Error shutting down OpenTelemetry SDK", { error: errMsg });
+      logger.error('Error shutting down OpenTelemetry SDK', { error: errMsg });
     }
   });
 
@@ -173,18 +173,18 @@ export async function startTelemetry(config: TelemetryConfig): Promise<void> {
   try {
     await sdk.start();
     // Use structured logger instead of console.log
-    const { getLogger } = await import("./logger.js");
+    const { getLogger } = await import('./logger.js');
     const logger = getLogger({ service: config.serviceName });
-    logger.info("OpenTelemetry initialized", {
+    logger.info('OpenTelemetry initialized', {
       serviceName: config.serviceName,
       environment: config.environment,
     });
   } catch (error) {
     // Use structured logger instead of console.error
-    const { getLogger } = await import("./logger.js");
+    const { getLogger } = await import('./logger.js');
     const logger = getLogger({ service: config.serviceName });
     const errMsg = error instanceof Error ? error.message : String(error);
-    logger.error("Failed to initialize OpenTelemetry", { error: errMsg });
+    logger.error('Failed to initialize OpenTelemetry', { error: errMsg });
     throw error;
   }
 }
@@ -205,4 +205,4 @@ export async function startTelemetry(config: TelemetryConfig): Promise<void> {
  * }
  * ```
  */
-export { trace, context, SpanStatusCode } from "@opentelemetry/api";
+export { trace, context, SpanStatusCode } from '@opentelemetry/api';

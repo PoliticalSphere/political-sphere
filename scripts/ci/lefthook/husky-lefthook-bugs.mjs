@@ -13,15 +13,15 @@
  * Last updated: 2025-10-31
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-import { parse as parseYaml } from "yaml";
+import { parse as parseYaml } from 'yaml';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ROOT_DIR = path.resolve(__dirname, "../..");
+const ROOT_DIR = path.resolve(__dirname, '../..');
 
 class BugDetector {
   constructor() {
@@ -32,9 +32,9 @@ class BugDetector {
 
   addBug(severity, title, description, file = null, line = null, suggestion = null) {
     const bug = { severity, title, description, file, line, suggestion };
-    if (severity === "error" || severity === "critical") {
+    if (severity === 'error' || severity === 'critical') {
       this.bugs.push(bug);
-    } else if (severity === "warning") {
+    } else if (severity === 'warning') {
       this.warnings.push(bug);
     } else {
       this.edgeCases.push(bug);
@@ -42,36 +42,36 @@ class BugDetector {
   }
 
   async analyzeLefthookConfig() {
-    const lefthookPath = path.join(ROOT_DIR, ".lefthook.yml");
+    const lefthookPath = path.join(ROOT_DIR, '.lefthook.yml');
 
     if (!fs.existsSync(lefthookPath)) {
-      this.addBug("error", "Missing Configuration", ".lefthook.yml file not found");
+      this.addBug('error', 'Missing Configuration', '.lefthook.yml file not found');
       return;
     }
 
     try {
-      const content = fs.readFileSync(lefthookPath, "utf8");
+      const content = fs.readFileSync(lefthookPath, 'utf8');
       const config = parseYaml(content);
 
       // Check for syntax errors
-      if (!config || typeof config !== "object") {
-        this.addBug("error", "Invalid YAML Structure", "Configuration is not a valid object");
+      if (!config || typeof config !== 'object') {
+        this.addBug('error', 'Invalid YAML Structure', 'Configuration is not a valid object');
         return;
       }
 
       // Check hook definitions
-      const hooks = ["pre-commit", "commit-msg", "pre-push"];
-      hooks.forEach((hook) => {
+      const hooks = ['pre-commit', 'commit-msg', 'pre-push'];
+      hooks.forEach(hook => {
         if (config[hook]) {
           const hookConfig = config[hook];
 
           // Check for missing commands
           if (!hookConfig.commands && !hookConfig.scripts) {
             this.addBug(
-              "error",
+              'error',
               `Empty Hook Definition`,
               `${hook} hook has no commands defined`,
-              lefthookPath,
+              lefthookPath
             );
           }
 
@@ -80,34 +80,34 @@ class BugDetector {
             Object.entries(hookConfig.commands).forEach(([name, cmd]) => {
               if (!cmd.run) {
                 this.addBug(
-                  "error",
-                  "Missing Run Command",
+                  'error',
+                  'Missing Run Command',
                   `Command '${name}' in ${hook} has no run property`,
-                  lefthookPath,
+                  lefthookPath
                 );
               }
 
               // Check for potential command failures
-              if (cmd.run && typeof cmd.run === "string") {
+              if (cmd.run && typeof cmd.run === 'string') {
                 const runCmd = cmd.run;
 
                 // Check for commands that might fail silently
-                if (runCmd.includes("&&") && !runCmd.includes("set -e")) {
+                if (runCmd.includes('&&') && !runCmd.includes('set -e')) {
                   this.addBug(
-                    "warning",
-                    "Potential Silent Failure",
+                    'warning',
+                    'Potential Silent Failure',
                     `Command chain may fail silently without proper error handling`,
-                    lefthookPath,
+                    lefthookPath
                   );
                 }
 
                 // Check for missing error checking
-                if (runCmd.includes("npm") && !runCmd.includes("||")) {
+                if (runCmd.includes('npm') && !runCmd.includes('||')) {
                   this.addBug(
-                    "warning",
-                    "Missing Error Handling",
+                    'warning',
+                    'Missing Error Handling',
                     `NPM command may fail without error checking`,
-                    lefthookPath,
+                    lefthookPath
                   );
                 }
               }
@@ -117,46 +117,46 @@ class BugDetector {
       });
 
       // Check for parallel execution issues
-      if (config["pre-commit"] && config["pre-commit"].parallel) {
-        const commands = config["pre-commit"].commands || {};
+      if (config['pre-commit'] && config['pre-commit'].parallel) {
+        const commands = config['pre-commit'].commands || {};
         const cmdNames = Object.keys(commands);
 
         // Check for commands that might conflict when running in parallel
-        const fileModifyingCommands = cmdNames.filter((name) => {
+        const fileModifyingCommands = cmdNames.filter(name => {
           const cmd = commands[name];
           return (
             cmd.run &&
-            (cmd.run.includes("prettier") ||
-              cmd.run.includes("eslint --fix") ||
-              cmd.run.includes("sed") ||
-              cmd.run.includes("awk"))
+            (cmd.run.includes('prettier') ||
+              cmd.run.includes('eslint --fix') ||
+              cmd.run.includes('sed') ||
+              cmd.run.includes('awk'))
           );
         });
 
         if (fileModifyingCommands.length > 1) {
           this.addBug(
-            "warning",
-            "Parallel File Modification Risk",
-            "Multiple commands modifying files in parallel may cause conflicts",
-            lefthookPath,
+            'warning',
+            'Parallel File Modification Risk',
+            'Multiple commands modifying files in parallel may cause conflicts',
+            lefthookPath
           );
         }
       }
     } catch (error) {
       this.addBug(
-        "error",
-        "YAML Parse Error",
+        'error',
+        'YAML Parse Error',
         `Failed to parse .lefthook.yml: ${error.message}`,
-        lefthookPath,
+        lefthookPath
       );
     }
   }
 
   async analyzeHuskyScripts() {
-    const huskyDir = path.join(ROOT_DIR, ".husky");
+    const huskyDir = path.join(ROOT_DIR, '.husky');
 
     if (!fs.existsSync(huskyDir)) {
-      this.addBug("error", "Missing Husky Directory", ".husky directory not found");
+      this.addBug('error', 'Missing Husky Directory', '.husky directory not found');
       return;
     }
 
@@ -168,8 +168,8 @@ class BugDetector {
 
       if (!stat.isFile()) continue;
 
-      const content = fs.readFileSync(hookPath, "utf8");
-      const lines = content.split("\n");
+      const content = fs.readFileSync(hookPath, 'utf8');
+      const lines = content.split('\n');
 
       // Check for syntax errors
       let braceCount = 0;
@@ -186,43 +186,43 @@ class BugDetector {
 
         // Check for unterminated strings
         const quoteCount = (line.match(/"/g) || []).length + (line.match(/'/g) || []).length;
-        if (quoteCount % 2 !== 0 && !line.includes("#")) {
+        if (quoteCount % 2 !== 0 && !line.includes('#')) {
           this.addBug(
-            "error",
-            "Unterminated String",
-            "String literal appears to be unterminated",
+            'error',
+            'Unterminated String',
+            'String literal appears to be unterminated',
             hookPath,
-            lineNum,
+            lineNum
           );
         }
 
         // Check for undefined variables
         if (
-          line.includes("$") &&
-          !line.includes("${") &&
-          !line.includes("$HOME") &&
-          !line.includes("$PWD")
+          line.includes('$') &&
+          !line.includes('${') &&
+          !line.includes('$HOME') &&
+          !line.includes('$PWD')
         ) {
           const varMatch = line.match(/\$([A-Za-z_][A-Za-z0-9_]*)/);
-          if (varMatch && !lines.some((l) => l.includes(`${varMatch[1]}=`))) {
+          if (varMatch && !lines.some(l => l.includes(`${varMatch[1]}=`))) {
             this.addBug(
-              "warning",
-              "Undefined Variable",
+              'warning',
+              'Undefined Variable',
               `Variable $${varMatch[1]} may not be defined`,
               hookPath,
-              lineNum,
+              lineNum
             );
           }
         }
 
         // Check for command not found errors
-        if (line.includes("call_lefthook") && !content.includes("function call_lefthook")) {
+        if (line.includes('call_lefthook') && !content.includes('function call_lefthook')) {
           this.addBug(
-            "error",
-            "Missing Function Definition",
-            "call_lefthook function is called but not defined",
+            'error',
+            'Missing Function Definition',
+            'call_lefthook function is called but not defined',
             hookPath,
-            lineNum,
+            lineNum
           );
         }
       });
@@ -230,40 +230,39 @@ class BugDetector {
       // Check for unbalanced brackets at end of file
       if (braceCount !== 0) {
         this.addBug(
-          "error",
-          "Unbalanced Braces",
+          'error',
+          'Unbalanced Braces',
           `File has unbalanced braces: ${braceCount}`,
-          hookPath,
+          hookPath
         );
       }
       if (parenCount !== 0) {
         this.addBug(
-          "error",
-          "Unbalanced Parentheses",
+          'error',
+          'Unbalanced Parentheses',
           `File has unbalanced parentheses: ${parenCount}`,
-          hookPath,
+          hookPath
         );
       }
       if (bracketCount !== 0) {
         this.addBug(
-          "error",
-          "Unbalanced Brackets",
+          'error',
+          'Unbalanced Brackets',
           `File has unbalanced brackets: ${bracketCount}`,
-          hookPath,
+          hookPath
         );
       }
 
       // Check for missing error handling
       const hasErrorHandling = lines.some(
-        (line) =>
-          line.includes("set -e") || line.includes("trap") || line.includes("if [ $? -ne 0 ]"),
+        line => line.includes('set -e') || line.includes('trap') || line.includes('if [ $? -ne 0 ]')
       );
       if (!hasErrorHandling && lines.length > 5) {
         this.addBug(
-          "warning",
-          "Missing Error Handling",
-          "Script lacks proper error handling mechanisms",
-          hookPath,
+          'warning',
+          'Missing Error Handling',
+          'Script lacks proper error handling mechanisms',
+          hookPath
         );
       }
     }
@@ -271,21 +270,21 @@ class BugDetector {
 
   async detectEdgeCases() {
     // Check for empty staged files scenarios
-    const lefthookPath = path.join(ROOT_DIR, ".lefthook.yml");
+    const lefthookPath = path.join(ROOT_DIR, '.lefthook.yml');
     if (fs.existsSync(lefthookPath)) {
-      const content = fs.readFileSync(lefthookPath, "utf8");
+      const content = fs.readFileSync(lefthookPath, 'utf8');
 
-      if (content.includes("staged_files") || content.includes("git diff")) {
+      if (content.includes('staged_files') || content.includes('git diff')) {
         // Check if commands handle empty file lists
         if (
           !content.includes('if [ -z "$staged_files" ]') &&
-          !content.includes("if [ ${#staged_files[@]} -eq 0 ]")
+          !content.includes('if [ ${#staged_files[@]} -eq 0 ]')
         ) {
           this.addBug(
-            "warning",
-            "Empty File List Handling",
-            "Commands using staged_files may fail when no files are staged",
-            lefthookPath,
+            'warning',
+            'Empty File List Handling',
+            'Commands using staged_files may fail when no files are staged',
+            lefthookPath
           );
         }
       }
@@ -293,33 +292,33 @@ class BugDetector {
 
     // Check for race conditions in parallel execution
     if (fs.existsSync(lefthookPath)) {
-      const content = fs.readFileSync(lefthookPath, "utf8");
-      if (content.includes("parallel: true")) {
+      const content = fs.readFileSync(lefthookPath, 'utf8');
+      if (content.includes('parallel: true')) {
         this.addBug(
-          "warning",
-          "Race Condition Risk",
-          "Parallel execution may cause race conditions with file modifications",
+          'warning',
+          'Race Condition Risk',
+          'Parallel execution may cause race conditions with file modifications',
           lefthookPath,
           null,
-          "Consider sequential execution for file-modifying commands",
+          'Consider sequential execution for file-modifying commands'
         );
       }
     }
 
     // Check for timeout issues
-    const huskyDir = path.join(ROOT_DIR, ".husky");
+    const huskyDir = path.join(ROOT_DIR, '.husky');
     if (fs.existsSync(huskyDir)) {
       const hookFiles = fs.readdirSync(huskyDir);
       for (const hookFile of hookFiles) {
         const hookPath = path.join(huskyDir, hookFile);
         if (fs.statSync(hookPath).isFile()) {
-          const content = fs.readFileSync(hookPath, "utf8");
-          if (content.includes("sleep") || content.includes("timeout")) {
+          const content = fs.readFileSync(hookPath, 'utf8');
+          if (content.includes('sleep') || content.includes('timeout')) {
             this.addBug(
-              "warning",
-              "Timeout Handling",
-              "Script contains timing-dependent operations that may cause issues",
-              hookPath,
+              'warning',
+              'Timeout Handling',
+              'Script contains timing-dependent operations that may cause issues',
+              hookPath
             );
           }
         }
@@ -327,15 +326,15 @@ class BugDetector {
     }
 
     // Check for platform-specific issues
-    const lefthookPath2 = path.join(ROOT_DIR, ".lefthook.yml");
+    const lefthookPath2 = path.join(ROOT_DIR, '.lefthook.yml');
     if (fs.existsSync(lefthookPath2)) {
-      const content = fs.readFileSync(lefthookPath2, "utf8");
-      if (content.includes("node_modules/.bin/")) {
+      const content = fs.readFileSync(lefthookPath2, 'utf8');
+      if (content.includes('node_modules/.bin/')) {
         this.addBug(
-          "warning",
-          "Platform-Specific Paths",
-          "Hardcoded node_modules paths may not work on all platforms",
-          lefthookPath2,
+          'warning',
+          'Platform-Specific Paths',
+          'Hardcoded node_modules paths may not work on all platforms',
+          lefthookPath2
         );
       }
     }
@@ -343,27 +342,27 @@ class BugDetector {
 
   async detectLogicErrors() {
     // Check for contradictory configurations
-    const lefthookPath = path.join(ROOT_DIR, ".lefthook.yml");
+    const lefthookPath = path.join(ROOT_DIR, '.lefthook.yml');
     if (fs.existsSync(lefthookPath)) {
-      const content = fs.readFileSync(lefthookPath, "utf8");
+      const content = fs.readFileSync(lefthookPath, 'utf8');
 
       // Check for both parallel and sequential configurations
-      if (content.includes("parallel: true") && content.includes("parallel: false")) {
+      if (content.includes('parallel: true') && content.includes('parallel: false')) {
         this.addBug(
-          "error",
-          "Conflicting Configuration",
-          "Configuration has both parallel and sequential settings",
-          lefthookPath,
+          'error',
+          'Conflicting Configuration',
+          'Configuration has both parallel and sequential settings',
+          lefthookPath
         );
       }
 
       // Check for duplicate command names
-      const lines = content.split("\n");
+      const lines = content.split('\n');
       const commandNames = [];
       let inCommands = false;
 
       lines.forEach((line, index) => {
-        if (line.includes("commands:")) {
+        if (line.includes('commands:')) {
           inCommands = true;
         } else if (inCommands && line.match(/^\s*[a-zA-Z_][a-zA-Z0-9_]*:/)) {
           const match = line.match(/^\s*([a-zA-Z_][a-zA-Z0-9_]*):/);
@@ -371,16 +370,16 @@ class BugDetector {
             const cmdName = match[1];
             if (commandNames.includes(cmdName)) {
               this.addBug(
-                "error",
-                "Duplicate Command Name",
+                'error',
+                'Duplicate Command Name',
                 `Command '${cmdName}' is defined multiple times`,
                 lefthookPath,
-                index + 1,
+                index + 1
               );
             }
             commandNames.push(cmdName);
           }
-        } else if (line.match(/^[a-zA-Z_]/) && !line.includes(":")) {
+        } else if (line.match(/^[a-zA-Z_]/) && !line.includes(':')) {
           inCommands = false;
         }
       });
@@ -388,7 +387,7 @@ class BugDetector {
   }
 
   async runBugDetection() {
-    console.log("🐛 Detecting bugs and edge cases in Husky & Lefthook configuration...\n");
+    console.log('🐛 Detecting bugs and edge cases in Husky & Lefthook configuration...\n');
 
     await this.analyzeLefthookConfig();
     await this.analyzeHuskyScripts();
@@ -399,20 +398,20 @@ class BugDetector {
   }
 
   generateBugReport() {
-    console.log("\n🐛 Bug Detection Report");
-    console.log("=".repeat(50));
+    console.log('\n🐛 Bug Detection Report');
+    console.log('='.repeat(50));
 
     if (this.bugs.length === 0 && this.warnings.length === 0 && this.edgeCases.length === 0) {
-      console.log("\n✅ No bugs or issues detected!");
+      console.log('\n✅ No bugs or issues detected!');
     } else {
       console.log(
-        `\n🚨 ERRORS: ${this.bugs.length} | WARNINGS: ${this.warnings.length} | EDGE CASES: ${this.edgeCases.length}\n`,
+        `\n🚨 ERRORS: ${this.bugs.length} | WARNINGS: ${this.warnings.length} | EDGE CASES: ${this.edgeCases.length}\n`
       );
 
       // Report errors first
       if (this.bugs.length > 0) {
-        console.log("❌ ERRORS:");
-        this.bugs.forEach((bug) => {
+        console.log('❌ ERRORS:');
+        this.bugs.forEach(bug => {
           console.log(`  • ${bug.title}: ${bug.description}`);
           if (bug.file) {
             const location = bug.line ? `${bug.file}:${bug.line}` : bug.file;
@@ -421,14 +420,14 @@ class BugDetector {
           if (bug.suggestion) {
             console.log(`    Suggestion: ${bug.suggestion}`);
           }
-          console.log("");
+          console.log('');
         });
       }
 
       // Report warnings
       if (this.warnings.length > 0) {
-        console.log("⚠️  WARNINGS:");
-        this.warnings.forEach((warning) => {
+        console.log('⚠️  WARNINGS:');
+        this.warnings.forEach(warning => {
           console.log(`  • ${warning.title}: ${warning.description}`);
           if (warning.file) {
             const location = warning.line ? `${warning.file}:${warning.line}` : warning.file;
@@ -437,14 +436,14 @@ class BugDetector {
           if (warning.suggestion) {
             console.log(`    Suggestion: ${warning.suggestion}`);
           }
-          console.log("");
+          console.log('');
         });
       }
 
       // Report edge cases
       if (this.edgeCases.length > 0) {
-        console.log("🔍 EDGE CASES:");
-        this.edgeCases.forEach((edgeCase) => {
+        console.log('🔍 EDGE CASES:');
+        this.edgeCases.forEach(edgeCase => {
           console.log(`  • ${edgeCase.title}: ${edgeCase.description}`);
           if (edgeCase.file) {
             const location = edgeCase.line ? `${edgeCase.file}:${edgeCase.line}` : edgeCase.file;
@@ -453,12 +452,12 @@ class BugDetector {
           if (edgeCase.suggestion) {
             console.log(`    Suggestion: ${edgeCase.suggestion}`);
           }
-          console.log("");
+          console.log('');
         });
       }
     }
 
-    const hasErrors = this.bugs.some((b) => b.severity === "error" || b.severity === "critical");
+    const hasErrors = this.bugs.some(b => b.severity === 'error' || b.severity === 'critical');
     return !hasErrors;
   }
 }
@@ -466,7 +465,7 @@ class BugDetector {
 // Run bug detection if called directly
 if (import.meta.url === `file://${process.argv[1]}`) {
   const detector = new BugDetector();
-  detector.runBugDetection().then((success) => {
+  detector.runBugDetection().then(success => {
     process.exit(success ? 0 : 1);
   });
 }

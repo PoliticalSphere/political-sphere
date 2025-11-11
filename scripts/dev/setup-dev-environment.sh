@@ -171,7 +171,7 @@ print_success "Workspace integrity verified!"
 # Step 6: Run initial linting
 print_step "Running linters..."
 
-npm run lint -- --fix || print_warning "Some linting issues found (can fix later)"
+npm run lint || print_warning "Some linting issues found (can fix later)"
 
 print_success "Linting complete!"
 

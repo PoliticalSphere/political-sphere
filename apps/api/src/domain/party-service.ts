@@ -1,6 +1,6 @@
-import { getDatabase } from "../modules/stores/index.js";
+import { type CreatePartyInput, CreatePartySchema, type Party } from '@political-sphere/shared';
 
-import { type CreatePartyInput, CreatePartySchema, type Party } from "@political-sphere/shared";
+import { getDatabase } from '../modules/stores/index.js';
 
 export class PartyService {
   // Lazy getter to avoid holding a stale DB connection across test lifecycle boundaries
@@ -15,7 +15,7 @@ export class PartyService {
     // Check if party name already exists
     const existingParty = await this.db.parties.getByName(input.name);
     if (existingParty) {
-      throw new Error("Party name already exists");
+      throw new Error('Party name already exists');
     }
 
     return this.db.parties.create(input);

@@ -5,7 +5,7 @@ export function summarizeNews(items) {
   const tags = {};
 
   for (const item of safeItems) {
-    const category = item?.category ?? "general";
+    const category = item?.category ?? 'general';
     categories[category] = (categories[category] ?? 0) + 1;
 
     if (Array.isArray(item?.tags)) {
@@ -18,7 +18,7 @@ export function summarizeNews(items) {
 
   const latest =
     [...safeItems]
-      .filter((item) => Boolean(item?.updatedAt))
+      .filter(item => Boolean(item?.updatedAt))
       .sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt))[0] ?? null;
 
   return {

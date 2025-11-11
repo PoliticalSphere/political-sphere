@@ -112,7 +112,7 @@ export const httpHelpers = {
       username: 'testuser',
       ...payload,
     };
-    
+
     const secret = process.env.JWT_SECRET || 'test-secret-key-at-least-32-characters-long';
     return jwt.sign(defaultPayload, secret, { expiresIn });
   },
@@ -158,9 +158,9 @@ export const mockHelpers = {
     return {
       id: `bill_${Date.now()}`,
       title: `Mock Bill ${Date.now()}`,
-      description: "A mock bill for testing",
+      description: 'A mock bill for testing',
       proposerId: `user_${Date.now()}`,
-      status: "proposed",
+      status: 'proposed',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       ...overrides,

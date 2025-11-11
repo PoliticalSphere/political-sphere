@@ -150,6 +150,15 @@ export default [
       'libs/**/dist/**',
       'assets/public/**',
       '**/*.min.js',
+      'docs/apps/.vitepress/cache/**',
     ],
+  },
+
+  // Disable no-console for scripts, tools, and docs
+  {
+    files: ['scripts/**/*.{js,mjs,ts}', 'tools/**/*.{js,mjs,cjs,ts}', 'docs/**/*.{js,mjs,ts}'],
+    rules: {
+      'no-console': 'off',
+    },
   },
 ];

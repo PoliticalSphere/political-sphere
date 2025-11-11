@@ -4,12 +4,12 @@
   Usage: node scripts/ai/context-preloader.js preload
 */
 
-import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from "fs";
-import { extname, join } from "path";
+import { existsSync, mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'fs';
+import { extname, join } from 'path';
 
 // Prefer repository-root `ai-cache/`, fall back to `ai/ai-cache/` if present or needed.
-const ROOT_CACHE_DIR = "ai-cache";
-const FALLBACK_CACHE_DIR = join("ai", "ai-cache");
+const ROOT_CACHE_DIR = 'ai-cache';
+const FALLBACK_CACHE_DIR = join('ai', 'ai-cache');
 
 let CACHE_DIR = ROOT_CACHE_DIR;
 
@@ -18,45 +18,45 @@ try {
   if (!existsSync(CACHE_DIR)) mkdirSync(CACHE_DIR, { recursive: true });
 } catch (err) {
   console.warn(
-    "Warning: failed to create root cache dir at",
+    'Warning: failed to create root cache dir at',
     CACHE_DIR,
-    "- falling back to ai/ai-cache:",
-    err?.message,
+    '- falling back to ai/ai-cache:',
+    err?.message
   );
   // Fall back to `ai/ai-cache` if root creation fails for any reason.
   if (!existsSync(FALLBACK_CACHE_DIR)) mkdirSync(FALLBACK_CACHE_DIR, { recursive: true });
   CACHE_DIR = FALLBACK_CACHE_DIR;
 }
 
-const CACHE_FILE = join(CACHE_DIR, "context-cache.json");
+const CACHE_FILE = join(CACHE_DIR, 'context-cache.json');
 const CONTEXTS = {
-  "api-routes": [
-    "apps/api/src/routes/",
-    "libs/shared/src/",
-    "docs/architecture/decisions/",
-    ".blackboxrules",
+  'api-routes': [
+    'apps/api/src/routes/',
+    'libs/shared/src/',
+    'docs/architecture/decisions/',
+    '.blackboxrules',
   ],
-  "frontend-components": [
-    "apps/frontend/src/components/",
-    "libs/shared/src/",
-    "docs/architecture/decisions/",
-    ".blackboxrules",
+  'frontend-components': [
+    'apps/frontend/src/components/',
+    'libs/shared/src/',
+    'docs/architecture/decisions/',
+    '.blackboxrules',
   ],
-  tests: ["tests/", "jest.config.cjs", "docs/", ".blackboxrules"],
+  tests: ['tests/', 'jest.config.cjs', 'docs/', '.blackboxrules'],
   config: [
-    "package.json",
-    "tsconfig.base.json",
-    "nx.json",
-    "docs/architecture/decisions/",
-    ".blackboxrules",
+    'package.json',
+    'tsconfig.base.json',
+    'nx.json',
+    'docs/architecture/decisions/',
+    '.blackboxrules',
   ],
-  docs: ["docs/", "README.md", ".blackboxrules"],
-  "rules-awareness": [
-    ".blackboxrules",
-    ".github/copilot-instructions/copilot-instructions.md",
-    "docs/architecture/decisions/",
+  docs: ['docs/', 'README.md', '.blackboxrules'],
+  'rules-awareness': [
+    '.blackboxrules',
+    '.github/copilot-instructions/copilot-instructions.md',
+    'docs/architecture/decisions/',
   ],
-  patterns: ["ai/patterns/", "ai-learning/patterns.json", "docs/TODO.md"],
+  patterns: ['ai/patterns/', 'ai-learning/patterns.json', 'docs/TODO.md'],
 };
 
 /**
@@ -96,18 +96,18 @@ async function preloadContext(contextName) {
     lastUpdated: new Date().toISOString(),
   };
 
-  const promises = paths.map(async (path) => {
+  const promises = paths.map(async path => {
     if (existsSync(path)) {
       if (statSync(path).isDirectory()) {
         const files = walkDir(path);
         for (const fullPath of files) {
           const ext = extname(fullPath);
-          if (ext === ".ts" || ext === ".js" || ext === ".json" || ext === ".md") {
+          if (ext === '.ts' || ext === '.js' || ext === '.json' || ext === '.md') {
             try {
-              const content = readFileSync(fullPath, "utf8");
+              const content = readFileSync(fullPath, 'utf8');
               // Validate content integrity
               if (content.length === 0) {
-                console.warn("Warning: Empty file", fullPath);
+                console.warn('Warning: Empty file', fullPath);
                 continue;
               }
               context.files[fullPath] = {
@@ -116,16 +116,16 @@ async function preloadContext(contextName) {
               };
             } catch (err) {
               // Security: Separate format string from variable to prevent log injection
-              console.error("Error reading file:", fullPath, err?.message);
+              console.error('Error reading file:', fullPath, err?.message);
               // Skip unreadable files but log the error
             }
           }
         }
       } else {
         try {
-          const content = readFileSync(path, "utf8");
+          const content = readFileSync(path, 'utf8');
           if (content.length === 0) {
-            console.warn("Warning: Empty file", path);
+            console.warn('Warning: Empty file', path);
             return;
           }
           context.files[path] = {
@@ -134,7 +134,7 @@ async function preloadContext(contextName) {
           };
         } catch (err) {
           // Security: Separate format string from variable to prevent log injection
-          console.error("Error reading file:", path, err?.message);
+          console.error('Error reading file:', path, err?.message);
           // Skip unreadable files but log the error
         }
       }
@@ -152,7 +152,7 @@ async function preloadContext(contextName) {
 async function preloadAll() {
   const cache = { contexts: {}, lastUpdated: new Date().toISOString() };
 
-  const promises = Object.keys(CONTEXTS).map(async (contextName) => {
+  const promises = Object.keys(CONTEXTS).map(async contextName => {
     console.log(`Preloading context: ${contextName}`);
     const context = await preloadContext(contextName);
     if (context) cache.contexts[contextName] = context;
@@ -170,7 +170,7 @@ function getContext(contextName) {
     process.exit(1);
   }
 
-  const cache = JSON.parse(readFileSync(CACHE_FILE, "utf8"));
+  const cache = JSON.parse(readFileSync(CACHE_FILE, 'utf8'));
   const context = cache.contexts[contextName];
   if (!context) {
     // Do not exit with error code for non-existent contexts — callers/tests expect graceful handling.
@@ -182,10 +182,10 @@ function getContext(contextName) {
 }
 
 const command = process.argv[2];
-if (command === "preload") {
+if (command === 'preload') {
   preloadAll().catch(console.error);
-} else if (command === "get") {
+} else if (command === 'get') {
   getContext(process.argv[3]);
 } else {
-  console.log("Usage: node scripts/ai/context-preloader.js preload|get <context>");
+  console.log('Usage: node scripts/ai/context-preloader.js preload|get <context>');
 }

@@ -6,14 +6,14 @@
  * Last updated: 2025-10-29
  */
 
-import fs from "fs";
-import path from "path";
-import { fileURLToPath } from "url";
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const METRICS_FILE = path.join(__dirname, "../../ai-metrics/ci-metrics.json");
+const METRICS_FILE = path.join(__dirname, '../../ai-metrics/ci-metrics.json');
 const METRICS_DIR = path.dirname(METRICS_FILE);
 
 // Ensure metrics directory exists
@@ -26,11 +26,11 @@ if (!fs.existsSync(METRICS_DIR)) {
  */
 function loadMetrics() {
   if (fs.existsSync(METRICS_FILE)) {
-    return JSON.parse(fs.readFileSync(METRICS_FILE, "utf8"));
+    return JSON.parse(fs.readFileSync(METRICS_FILE, 'utf8'));
   }
 
   return {
-    version: "1.0.0",
+    version: '1.0.0',
     last_updated: new Date().toISOString(),
     summary: {
       total_runs: 0,
@@ -81,13 +81,13 @@ function recordRun(workflowName, status, durationMinutes, details = {}) {
   workflow.total_runs++;
   workflow.last_run = new Date().toISOString();
 
-  if (status === "success") {
+  if (status === 'success') {
     workflow.successful_runs++;
     workflow.last_success = new Date().toISOString();
   } else {
     workflow.failed_runs++;
     workflow.last_failure = new Date().toISOString();
-    workflow.last_failure_reason = details.reason || "Unknown";
+    workflow.last_failure_reason = details.reason || 'Unknown';
   }
 
   // Update average duration
@@ -97,7 +97,7 @@ function recordRun(workflowName, status, durationMinutes, details = {}) {
 
   // Update overall summary
   metrics.summary.total_runs++;
-  if (status === "success") {
+  if (status === 'success') {
     metrics.summary.successful_runs++;
   } else {
     metrics.summary.failed_runs++;
@@ -112,12 +112,12 @@ function recordRun(workflowName, status, durationMinutes, details = {}) {
     metrics.summary.total_runs;
 
   // Update daily trends
-  const today = new Date().toISOString().split("T")[0];
+  const today = new Date().toISOString().split('T')[0];
   if (!metrics.trends.daily[today]) {
     metrics.trends.daily[today] = { runs: 0, successes: 0, failures: 0 };
   }
   metrics.trends.daily[today].runs++;
-  if (status === "success") {
+  if (status === 'success') {
     metrics.trends.daily[today].successes++;
   } else {
     metrics.trends.daily[today].failures++;
@@ -133,49 +133,49 @@ function recordRun(workflowName, status, durationMinutes, details = {}) {
 function generateHealthReport() {
   const metrics = loadMetrics();
 
-  console.log("\n📊 CI/CD Pipeline Health Report");
-  console.log("================================\n");
+  console.log('\n📊 CI/CD Pipeline Health Report');
+  console.log('================================\n');
 
-  console.log("📈 Overall Statistics:");
+  console.log('📈 Overall Statistics:');
   console.log(`   Total Runs: ${metrics.summary.total_runs}`);
   console.log(
-    `   Successful: ${metrics.summary.successful_runs} (${metrics.summary.success_rate_percent.toFixed(2)}%)`,
+    `   Successful: ${metrics.summary.successful_runs} (${metrics.summary.success_rate_percent.toFixed(2)}%)`
   );
   console.log(`   Failed: ${metrics.summary.failed_runs}`);
   console.log(`   Avg Duration: ${metrics.summary.average_duration_minutes.toFixed(2)} minutes`);
-  console.log("");
+  console.log('');
 
-  console.log("🔧 Workflow Breakdown:");
+  console.log('🔧 Workflow Breakdown:');
   Object.entries(metrics.workflows).forEach(([name, stats]) => {
     const successRate = (stats.successful_runs / stats.total_runs) * 100;
-    const healthEmoji = successRate >= 95 ? "✅" : successRate >= 80 ? "⚠️" : "❌";
+    const healthEmoji = successRate >= 95 ? '✅' : successRate >= 80 ? '⚠️' : '❌';
 
     console.log(`   ${healthEmoji} ${name}:`);
     console.log(`      Success Rate: ${successRate.toFixed(2)}%`);
     console.log(`      Avg Duration: ${stats.average_duration_minutes.toFixed(2)} min`);
     console.log(
-      `      Last Run: ${stats.last_run ? new Date(stats.last_run).toLocaleString() : "Never"}`,
+      `      Last Run: ${stats.last_run ? new Date(stats.last_run).toLocaleString() : 'Never'}`
     );
     if (stats.last_failure) {
       console.log(`      Last Failure: ${new Date(stats.last_failure).toLocaleString()}`);
-      console.log(`      Reason: ${stats.last_failure_reason || "Unknown"}`);
+      console.log(`      Reason: ${stats.last_failure_reason || 'Unknown'}`);
     }
-    console.log("");
+    console.log('');
   });
 
   // Identify issues
-  console.log("🚨 Action Items:");
+  console.log('🚨 Action Items:');
   const issues = [];
 
   if (metrics.summary.success_rate_percent < 90) {
     issues.push(
-      `Overall success rate (${metrics.summary.success_rate_percent.toFixed(2)}%) is below 90%`,
+      `Overall success rate (${metrics.summary.success_rate_percent.toFixed(2)}%) is below 90%`
     );
   }
 
   if (metrics.summary.average_duration_minutes > 30) {
     issues.push(
-      `Average CI duration (${metrics.summary.average_duration_minutes.toFixed(2)} min) exceeds 30 minutes`,
+      `Average CI duration (${metrics.summary.average_duration_minutes.toFixed(2)} min) exceeds 30 minutes`
     );
   }
 
@@ -186,16 +186,16 @@ function generateHealthReport() {
     }
     if (stats.average_duration_minutes > 20) {
       issues.push(
-        `${name} duration (${stats.average_duration_minutes.toFixed(2)} min) exceeds 20 minutes`,
+        `${name} duration (${stats.average_duration_minutes.toFixed(2)} min) exceeds 20 minutes`
       );
     }
   });
 
   if (issues.length === 0) {
-    console.log("   ✅ No critical issues detected!\n");
+    console.log('   ✅ No critical issues detected!\n');
   } else {
-    issues.forEach((issue) => console.log(`   ❌ ${issue}`));
-    console.log("");
+    issues.forEach(issue => console.log(`   ❌ ${issue}`));
+    console.log('');
   }
 
   return metrics;
@@ -205,15 +205,15 @@ function generateHealthReport() {
  * Reset metrics (for testing or new baseline)
  */
 function resetMetrics() {
-  const confirm = process.argv.includes("--confirm");
+  const confirm = process.argv.includes('--confirm');
   if (!confirm) {
-    console.log("⚠️  This will delete all CI metrics. Run with --confirm to proceed.");
+    console.log('⚠️  This will delete all CI metrics. Run with --confirm to proceed.');
     return;
   }
 
   if (fs.existsSync(METRICS_FILE)) {
     fs.unlinkSync(METRICS_FILE);
-    console.log("✅ Metrics reset successfully");
+    console.log('✅ Metrics reset successfully');
   }
 }
 
@@ -224,14 +224,14 @@ function main() {
   const command = process.argv[2];
 
   switch (command) {
-    case "record": {
+    case 'record': {
       const workflow = process.argv[3];
       const status = process.argv[4];
-      const duration = parseFloat(process.argv[5] || "0");
+      const duration = parseFloat(process.argv[5] || '0');
       const reason = process.argv[6];
 
       if (!workflow || !status) {
-        console.error("Usage: ci-metrics.js record <workflow> <status> [duration] [reason]");
+        console.error('Usage: ci-metrics.js record <workflow> <status> [duration] [reason]');
         process.exit(1);
       }
 
@@ -240,20 +240,20 @@ function main() {
       break;
     }
 
-    case "report":
+    case 'report':
       generateHealthReport();
       break;
 
-    case "reset":
+    case 'reset':
       resetMetrics();
       break;
 
     default:
-      console.log("CI Metrics Collector");
-      console.log("Usage:");
-      console.log("  node ci-metrics.js record <workflow> <status> [duration] [reason]");
-      console.log("  node ci-metrics.js report");
-      console.log("  node ci-metrics.js reset --confirm");
+      console.log('CI Metrics Collector');
+      console.log('Usage:');
+      console.log('  node ci-metrics.js record <workflow> <status> [duration] [reason]');
+      console.log('  node ci-metrics.js report');
+      console.log('  node ci-metrics.js reset --confirm');
       break;
   }
 }

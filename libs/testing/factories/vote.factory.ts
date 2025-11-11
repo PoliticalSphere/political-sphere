@@ -1,11 +1,11 @@
-import { faker } from "@faker-js/faker";
-import { Factory } from "fishery";
+import { faker } from '@faker-js/faker';
+import { Factory } from 'fishery';
 
 export interface Vote {
   id: string;
   billId: string;
   userId: string;
-  position: "for" | "against" | "abstain";
+  position: 'for' | 'against' | 'abstain';
   comment?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -16,7 +16,7 @@ export const VoteFactory = Factory.define<Vote>(({ sequence, params }) => ({
   id: params.id ?? `vote-${sequence}`,
   billId: params.billId ?? `bill-${faker.number.int({ min: 1, max: 100 })}`,
   userId: params.userId ?? `user-${faker.number.int({ min: 1, max: 1000 })}`,
-  position: params.position ?? faker.helpers.arrayElement(["for", "against", "abstain"]),
+  position: params.position ?? faker.helpers.arrayElement(['for', 'against', 'abstain']),
   comment: params.comment ?? (faker.datatype.boolean() ? faker.lorem.sentence() : null),
   createdAt: params.createdAt ?? faker.date.recent().toISOString(),
   updatedAt: params.updatedAt ?? faker.date.recent().toISOString(),
@@ -26,20 +26,20 @@ export const VoteFactory = Factory.define<Vote>(({ sequence, params }) => ({
 // Specialized factories
 export const VoteForFactory = Factory.define<Vote>(({ params }) => ({
   ...VoteFactory.build(),
-  position: "for",
+  position: 'for',
   comment: faker.lorem.sentence(),
   ...params,
 }));
 
 export const VoteAgainstFactory = Factory.define<Vote>(({ params }) => ({
   ...VoteFactory.build(),
-  position: "against",
+  position: 'against',
   comment: faker.lorem.sentence(),
   ...params,
 }));
 
 export const AbstainVoteFactory = VoteFactory.params({
-  position: "abstain",
+  position: 'abstain',
   comment: null,
 });
 

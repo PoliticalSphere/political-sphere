@@ -1,5 +1,5 @@
-import { faker } from "@faker-js/faker";
-import { Factory } from "fishery";
+import { faker } from '@faker-js/faker';
+import { Factory } from 'fishery';
 
 export interface Bill {
   id: string;
@@ -8,7 +8,7 @@ export interface Bill {
   content: string;
   proposerId: string;
   partyId?: string;
-  status: "draft" | "proposed" | "voting" | "passed" | "rejected" | "withdrawn";
+  status: 'draft' | 'proposed' | 'voting' | 'passed' | 'rejected' | 'withdrawn';
   category: string;
   tags?: string[];
   createdAt: string;
@@ -19,16 +19,16 @@ export interface Bill {
 }
 
 const BILL_CATEGORIES = [
-  "economy",
-  "healthcare",
-  "education",
-  "environment",
-  "defense",
-  "infrastructure",
-  "social-policy",
-  "taxation",
-  "justice",
-  "technology",
+  'economy',
+  'healthcare',
+  'education',
+  'environment',
+  'defense',
+  'infrastructure',
+  'social-policy',
+  'taxation',
+  'justice',
+  'technology',
 ] as const;
 
 export const BillFactory = Factory.define<Bill>(({ sequence, params }) => ({
@@ -40,11 +40,11 @@ export const BillFactory = Factory.define<Bill>(({ sequence, params }) => ({
   content: params.content ?? faker.lorem.paragraphs(3),
   proposerId: params.proposerId ?? `user-${sequence}`,
   partyId: params.partyId ?? `party-${faker.number.int({ min: 1, max: 10 })}`,
-  status: params.status ?? "proposed",
+  status: params.status ?? 'proposed',
   category: params.category ?? faker.helpers.arrayElement(BILL_CATEGORIES),
   tags:
     params.tags ??
-    faker.helpers.arrayElements(["reform", "budget", "emergency", "amendment", "regulation"], {
+    faker.helpers.arrayElements(['reform', 'budget', 'emergency', 'amendment', 'regulation'], {
       min: 1,
       max: 3,
     }),
@@ -57,12 +57,12 @@ export const BillFactory = Factory.define<Bill>(({ sequence, params }) => ({
 
 // Specialized factories
 export const DraftBillFactory = BillFactory.params({
-  status: "draft",
+  status: 'draft',
 });
 
 export const ActiveVotingBillFactory = Factory.define<Bill>(({ params }) => ({
   ...BillFactory.build(),
-  status: "voting",
+  status: 'voting',
   votingStartsAt: faker.date.past().toISOString(),
   votingEndsAt: faker.date.future().toISOString(),
   ...params,
@@ -70,7 +70,7 @@ export const ActiveVotingBillFactory = Factory.define<Bill>(({ params }) => ({
 
 export const PassedBillFactory = Factory.define<Bill>(({ params }) => ({
   ...BillFactory.build(),
-  status: "passed",
+  status: 'passed',
   votingStartsAt: faker.date.past({ years: 1 }).toISOString(),
   votingEndsAt: faker.date.recent({ days: 30 }).toISOString(),
   passedAt: faker.date.recent({ days: 30 }).toISOString(),
@@ -79,7 +79,7 @@ export const PassedBillFactory = Factory.define<Bill>(({ params }) => ({
 
 export const RejectedBillFactory = Factory.define<Bill>(({ params }) => ({
   ...BillFactory.build(),
-  status: "rejected",
+  status: 'rejected',
   votingStartsAt: faker.date.past({ years: 1 }).toISOString(),
   votingEndsAt: faker.date.recent({ days: 30 }).toISOString(),
   ...params,

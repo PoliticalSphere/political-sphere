@@ -8,38 +8,38 @@
  * Usage: npm run deps:graph
  */
 
-import { execSync } from "child_process";
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
+import { execSync } from 'child_process';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const OUTPUT_DIR = path.join(__dirname, "..", "docs", "architecture", "dependency-graphs");
+const OUTPUT_DIR = path.join(__dirname, '..', 'docs', 'architecture', 'dependency-graphs');
 
 /**
  * Generate project dependency graph using Nx
  */
 async function generateNxGraph() {
-  console.log("📊 Generating Nx Project Dependency Graph...\n");
+  console.log('📊 Generating Nx Project Dependency Graph...\n');
 
   try {
     // Generate graph in JSON format
-    const graphOutput = execSync("npx nx graph --file=graph.json", {
-      encoding: "utf-8",
-      cwd: path.join(__dirname, ".."),
+    const graphOutput = execSync('npx nx graph --file=graph.json', {
+      encoding: 'utf-8',
+      cwd: path.join(__dirname, '..'),
     });
 
-    console.log("✅ Nx graph generated\n");
+    console.log('✅ Nx graph generated\n');
 
     // Also generate visual graph
-    console.log("📸 Generating visual graph...\n");
-    console.log("Run `npx nx graph` to open interactive visualization\n");
+    console.log('📸 Generating visual graph...\n');
+    console.log('Run `npx nx graph` to open interactive visualization\n');
 
     return graphOutput;
   } catch (error) {
-    console.error("❌ Error generating Nx graph:", error.message);
+    console.error('❌ Error generating Nx graph:', error.message);
     return null;
   }
 }
@@ -48,7 +48,7 @@ async function generateNxGraph() {
  * Analyze project structure
  */
 async function analyzeProjectStructure() {
-  console.log("🔍 Analyzing Project Structure...\n");
+  console.log('🔍 Analyzing Project Structure...\n');
 
   const structure = {
     apps: [],
@@ -58,30 +58,30 @@ async function analyzeProjectStructure() {
 
   try {
     // Read apps directory
-    const appsPath = path.join(__dirname, "..", "apps");
+    const appsPath = path.join(__dirname, '..', 'apps');
     const appDirs = await fs.readdir(appsPath);
 
     for (const dir of appDirs) {
       const stat = await fs.stat(path.join(appsPath, dir));
-      if (stat.isDirectory() && !dir.startsWith(".")) {
+      if (stat.isDirectory() && !dir.startsWith('.')) {
         structure.apps.push(dir);
       }
     }
 
     // Read libs directory
-    const libsPath = path.join(__dirname, "..", "libs");
+    const libsPath = path.join(__dirname, '..', 'libs');
     const libCategories = await fs.readdir(libsPath);
 
     for (const category of libCategories) {
       const categoryPath = path.join(libsPath, category);
       const stat = await fs.stat(categoryPath);
 
-      if (stat.isDirectory() && !category.startsWith(".")) {
+      if (stat.isDirectory() && !category.startsWith('.')) {
         const libs = await fs.readdir(categoryPath);
 
         for (const lib of libs) {
           const libStat = await fs.stat(path.join(categoryPath, lib));
-          if (libStat.isDirectory() && !lib.startsWith(".")) {
+          if (libStat.isDirectory() && !lib.startsWith('.')) {
             structure.libs.push(`${category}/${lib}`);
           }
         }
@@ -96,7 +96,7 @@ async function analyzeProjectStructure() {
 
     return structure;
   } catch (error) {
-    console.error("❌ Error analyzing structure:", error.message);
+    console.error('❌ Error analyzing structure:', error.message);
     return structure;
   }
 }
@@ -105,13 +105,13 @@ async function analyzeProjectStructure() {
  * Generate dependency documentation
  */
 async function generateDependencyDocs(structure) {
-  console.log("📝 Generating Dependency Documentation...\n");
+  console.log('📝 Generating Dependency Documentation...\n');
 
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
 
   const doc = `# Project Dependency Graph
 
-**Last Updated:** ${new Date().toISOString().split("T")[0]}  
+**Last Updated:** ${new Date().toISOString().split('T')[0]}  
 **Total Projects:** ${structure.totalProjects}
 
 ## Overview
@@ -132,11 +132,11 @@ This will open a browser window with an interactive visualization of all project
 
 ### Applications (${structure.apps.length})
 
-${structure.apps.map((app) => `- \`apps/${app}\``).join("\n")}
+${structure.apps.map(app => `- \`apps/${app}\``).join('\n')}
 
 ### Libraries (${structure.libs.length})
 
-${structure.libs.map((lib) => `- \`libs/${lib}\``).join("\n")}
+${structure.libs.map(lib => `- \`libs/${lib}\``).join('\n')}
 
 ## Dependency Rules
 
@@ -243,7 +243,7 @@ Before major refactoring:
 - [Module Boundaries](../../00-foundation/organization.md)
 `;
 
-  const docPath = path.join(OUTPUT_DIR, "README.md");
+  const docPath = path.join(OUTPUT_DIR, 'README.md');
   await fs.writeFile(docPath, doc);
 
   console.log(`✅ Documentation generated: ${docPath}\n`);
@@ -253,7 +253,7 @@ Before major refactoring:
  * Main execution
  */
 async function main() {
-  console.log("🗺️  Dependency Graph Generator\n");
+  console.log('🗺️  Dependency Graph Generator\n');
 
   // Analyze structure
   const structure = await analyzeProjectStructure();
@@ -264,12 +264,12 @@ async function main() {
   // Generate Nx graph
   await generateNxGraph();
 
-  console.log("✨ Dependency graph generation complete!\n");
-  console.log("📖 View documentation: docs/architecture/dependency-graphs/README.md");
-  console.log("🌐 View interactive graph: npx nx graph\n");
+  console.log('✨ Dependency graph generation complete!\n');
+  console.log('📖 View documentation: docs/architecture/dependency-graphs/README.md');
+  console.log('🌐 View interactive graph: npx nx graph\n');
 }
 
-main().catch((error) => {
-  console.error("❌ Error:", error);
+main().catch(error => {
+  console.error('❌ Error:', error);
   process.exit(1);
 });

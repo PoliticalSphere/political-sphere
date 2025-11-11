@@ -23,11 +23,11 @@ export default class ComplianceService {
 
   async checkCompliance(policy, context) {
     // Minimal rules sufficient for tests
-    if (policy === "GDPR") {
-      if (context?.action === "unauthorized_data_access") {
+    if (policy === 'GDPR') {
+      if (context?.action === 'unauthorized_data_access') {
         return {
           compliant: false,
-          violations: ["Unauthorized data access violates GDPR Article 5"],
+          violations: ['Unauthorized data access violates GDPR Article 5'],
         };
       }
       return { compliant: true, violations: [] };

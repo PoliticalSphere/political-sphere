@@ -8,19 +8,19 @@
  * Usage: npm run seed:dev
  */
 
-import fs from "node:fs/promises";
-import path from "node:path";
-import { fileURLToPath } from "node:url";
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { BillFactory } from "../libs/testing/factories/bill.factory.js";
-import { PartyFactory } from "../libs/testing/factories/party.factory.js";
-import { UserFactory } from "../libs/testing/factories/user.factory.js";
-import { VoteFactory } from "../libs/testing/factories/vote.factory.js";
+import { BillFactory } from '../libs/testing/factories/bill.factory.js';
+import { PartyFactory } from '../libs/testing/factories/party.factory.js';
+import { UserFactory } from '../libs/testing/factories/user.factory.js';
+import { VoteFactory } from '../libs/testing/factories/vote.factory.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const OUTPUT_DIR = path.join(__dirname, "..", "data", "seeds", "development");
+const OUTPUT_DIR = path.join(__dirname, '..', 'data', 'seeds', 'development');
 
 /**
  * Seed Configuration
@@ -55,32 +55,32 @@ const SEED_CONFIG = {
  * Generate all seed data
  */
 async function generateSeeds() {
-  console.log("🌱 Generating seed data for development environment...\n");
+  console.log('🌱 Generating seed data for development environment...\n');
 
   await fs.mkdir(OUTPUT_DIR, { recursive: true });
 
   // Generate Users
-  console.log("👥 Generating users...");
+  console.log('👥 Generating users...');
   const users = await generateUsers();
-  await saveSeed("users", users);
+  await saveSeed('users', users);
   console.log(`   ✅ ${users.length} users created`);
 
   // Generate Parties
-  console.log("🏛️  Generating political parties...");
+  console.log('🏛️  Generating political parties...');
   const parties = await generateParties();
-  await saveSeed("parties", parties);
+  await saveSeed('parties', parties);
   console.log(`   ✅ ${parties.length} parties created`);
 
   // Generate Bills
-  console.log("📜 Generating legislative bills...");
+  console.log('📜 Generating legislative bills...');
   const bills = await generateBills(users);
-  await saveSeed("bills", bills);
+  await saveSeed('bills', bills);
   console.log(`   ✅ ${bills.length} bills created`);
 
   // Generate Votes
-  console.log("🗳️  Generating votes...");
+  console.log('🗳️  Generating votes...');
   const votes = await generateVotes(users, bills);
-  await saveSeed("votes", votes);
+  await saveSeed('votes', votes);
   console.log(`   ✅ ${votes.length} votes created`);
 
   // Generate summary
@@ -99,10 +99,10 @@ async function generateSeeds() {
     },
   };
 
-  await saveSeed("_summary", summary);
+  await saveSeed('_summary', summary);
 
-  console.log("\n✨ Seed data generation complete!\n");
-  console.log("📊 Summary:");
+  console.log('\n✨ Seed data generation complete!\n');
+  console.log('📊 Summary:');
   console.log(`   Users:   ${summary.counts.users}`);
   console.log(`   Parties: ${summary.counts.parties}`);
   console.log(`   Bills:   ${summary.counts.bills}`);
@@ -168,7 +168,7 @@ async function generateParties() {
  */
 async function generateBills(users) {
   const bills = [];
-  const activeUsers = users.filter((u) => u.isActive);
+  const activeUsers = users.filter(u => u.isActive);
 
   // Draft bills
   for (let i = 0; i < SEED_CONFIG.bills.draft; i++) {
@@ -182,8 +182,8 @@ async function generateBills(users) {
     bills.push(
       BillFactory.build({
         proposerId: proposer.id,
-        status: "proposed",
-      }),
+        status: 'proposed',
+      })
     );
   }
 
@@ -211,8 +211,8 @@ async function generateBills(users) {
     bills.push(
       BillFactory.build({
         proposerId: proposer.id,
-        status: "withdrawn",
-      }),
+        status: 'withdrawn',
+      })
     );
   }
 
@@ -224,17 +224,17 @@ async function generateBills(users) {
  */
 async function generateVotes(users, bills) {
   const votes = [];
-  const activeUsers = users.filter((u) => u.isActive);
+  const activeUsers = users.filter(u => u.isActive);
 
   // Only generate votes for bills that have voting
-  const votableBills = bills.filter((b) =>
-    ["active_voting", "passed", "rejected"].includes(b.status),
+  const votableBills = bills.filter(b =>
+    ['active_voting', 'passed', 'rejected'].includes(b.status)
   );
 
   for (const bill of votableBills) {
     const voteCount = Math.floor(
       Math.random() * (SEED_CONFIG.votesPerBill.max - SEED_CONFIG.votesPerBill.min) +
-        SEED_CONFIG.votesPerBill.min,
+        SEED_CONFIG.votesPerBill.min
     );
 
     // Randomly select users to vote
@@ -246,11 +246,11 @@ async function generateVotes(users, bills) {
       const rand = Math.random();
       let position;
       if (rand < 0.5) {
-        position = "for";
+        position = 'for';
       } else if (rand < 0.85) {
-        position = "against";
+        position = 'against';
       } else {
-        position = "abstain";
+        position = 'abstain';
       }
 
       const voteFactory = {
@@ -263,7 +263,7 @@ async function generateVotes(users, bills) {
         voteFactory({
           billId: bill.id,
           userId: voter.id,
-        }),
+        })
       );
     }
   }
@@ -284,11 +284,11 @@ async function saveSeed(name, data) {
  */
 function getUserBreakdown(users) {
   return {
-    admin: users.filter((u) => u.role === "admin").length,
-    moderator: users.filter((u) => u.role === "moderator").length,
-    user: users.filter((u) => u.role === "user").length,
-    active: users.filter((u) => u.isActive).length,
-    inactive: users.filter((u) => !u.isActive).length,
+    admin: users.filter(u => u.role === 'admin').length,
+    moderator: users.filter(u => u.role === 'moderator').length,
+    user: users.filter(u => u.role === 'user').length,
+    active: users.filter(u => u.isActive).length,
+    inactive: users.filter(u => !u.isActive).length,
   };
 }
 
@@ -297,10 +297,10 @@ function getUserBreakdown(users) {
  */
 function getPartyBreakdown(parties) {
   return {
-    active: parties.filter((p) => p.isActive).length,
-    inactive: parties.filter((p) => !p.isActive).length,
-    major: parties.filter((p) => p.memberCount >= 10000).length,
-    minor: parties.filter((p) => p.memberCount < 10000 && p.memberCount > 0).length,
+    active: parties.filter(p => p.isActive).length,
+    inactive: parties.filter(p => !p.isActive).length,
+    major: parties.filter(p => p.memberCount >= 10000).length,
+    minor: parties.filter(p => p.memberCount < 10000 && p.memberCount > 0).length,
   };
 }
 
@@ -309,14 +309,14 @@ function getPartyBreakdown(parties) {
  */
 function getBillBreakdown(bills) {
   const breakdown = {};
-  bills.forEach((bill) => {
+  bills.forEach(bill => {
     breakdown[bill.status] = (breakdown[bill.status] || 0) + 1;
   });
   return breakdown;
 }
 
 // Execute
-generateSeeds().catch((error) => {
-  console.error("❌ Error generating seeds:", error);
+generateSeeds().catch(error => {
+  console.error('❌ Error generating seeds:', error);
   process.exit(1);
 });

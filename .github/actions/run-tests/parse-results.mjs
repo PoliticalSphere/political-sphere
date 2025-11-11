@@ -9,16 +9,16 @@
  * License: See repository LICENSE file
  */
 
-import fs from "node:fs/promises";
-import path from "node:path";
+import fs from 'node:fs/promises';
+import path from 'node:path';
 
 // Constants
-const VERSION = "1.0.0";
+const VERSION = '1.0.0';
 const MAX_ANNOTATIONS = 50; // GitHub limit for annotations per run
 const MAX_SUMMARY_LENGTH = 65536; // GitHub step summary size limit (64KB)
 
 // Get environment variables
-const RESULT_PATH = process.env.RESULT_PATH || "./test-output/results/results.json";
+const RESULT_PATH = process.env.RESULT_PATH || './test-output/results/results.json';
 const GITHUB_STEP_SUMMARY = process.env.GITHUB_STEP_SUMMARY;
 
 /**
@@ -30,38 +30,38 @@ function log(level, message, context = {}) {
     timestamp,
     level,
     message,
-    script: "parse-results.mjs",
+    script: 'parse-results.mjs',
     version: VERSION,
     context,
   };
 
-  console.error(JSON.stringify(logEntry));
+  console.error(JSON.stringify(logEntry)); // eslint-disable-line no-console
 
   // Also output human-readable format
   const prefix =
     {
-      ERROR: "\x1b[31m[ERROR]\x1b[0m",
-      WARN: "\x1b[33m[WARN]\x1b[0m",
-      INFO: "\x1b[34m[INFO]\x1b[0m",
-      SUCCESS: "\x1b[32m[SUCCESS]\x1b[0m",
+      ERROR: '\x1b[31m[ERROR]\x1b[0m',
+      WARN: '\x1b[33m[WARN]\x1b[0m',
+      INFO: '\x1b[34m[INFO]\x1b[0m',
+      SUCCESS: '\x1b[32m[SUCCESS]\x1b[0m',
     }[level] || `[${level}]`;
 
-  console.error(`${prefix} ${message}`);
+  console.error(`${prefix} ${message}`); // eslint-disable-line no-console
 }
 
 /**
  * Create GitHub workflow annotation
  * Uses workflow commands: https://docs.github.com/en/actions/using-workflows/workflow-commands-for-github-actions
  */
-function createAnnotation(type, file, line, col, message, title = "") {
+function createAnnotation(type, file, line, col, message, title = '') {
   const params = [`file=${file}`];
 
   if (line) params.push(`line=${line}`);
   if (col) params.push(`col=${col}`);
   if (title) params.push(`title=${title}`);
 
-  const annotation = `::${type} ${params.join(",")}::${message}`;
-  console.log(annotation);
+  const annotation = `::${type} ${params.join(',')}::${message}`;
+  console.log(annotation); // eslint-disable-line no-console
 }
 
 /**
@@ -69,10 +69,10 @@ function createAnnotation(type, file, line, col, message, title = "") {
  */
 async function parseVitestResults(resultsPath) {
   try {
-    const content = await fs.readFile(resultsPath, "utf-8");
+    const content = await fs.readFile(resultsPath, 'utf-8');
     const results = JSON.parse(content);
 
-    log("INFO", `Parsed test results from ${resultsPath}`);
+    log('INFO', `Parsed test results from ${resultsPath}`);
 
     return {
       success: results.success || false,
@@ -86,7 +86,7 @@ async function parseVitestResults(resultsPath) {
       testDuration: results.testDuration || 0,
     };
   } catch (error) {
-    log("ERROR", `Failed to parse results file: ${error.message}`);
+    log('ERROR', `Failed to parse results file: ${error.message}`);
     throw error;
   }
 }
@@ -98,17 +98,17 @@ function extractFailedTests(testResults) {
   const failed = [];
 
   for (const suite of testResults) {
-    const suiteName = suite.name || "Unknown Suite";
+    const suiteName = suite.name || 'Unknown Suite';
     const assertionResults = suite.assertionResults || [];
 
     for (const test of assertionResults) {
-      if (test.status === "failed") {
+      if (test.status === 'failed') {
         const failureMessages = test.failureMessages || [];
         const failureDetails = test.failureDetails || [];
 
         failed.push({
           suiteName,
-          testName: test.title || test.fullName || "Unknown Test",
+          testName: test.title || test.fullName || 'Unknown Test',
           failureMessages,
           failureDetails,
           location: test.location || null,
@@ -125,13 +125,13 @@ function extractFailedTests(testResults) {
  * Create GitHub annotations for failed tests
  */
 function createFailureAnnotations(failedTests) {
-  log("INFO", `Creating annotations for ${failedTests.length} failed tests`);
+  log('INFO', `Creating annotations for ${failedTests.length} failed tests`);
 
   let annotationCount = 0;
 
   for (const test of failedTests) {
     if (annotationCount >= MAX_ANNOTATIONS) {
-      log("WARN", `Reached maximum annotation limit (${MAX_ANNOTATIONS})`);
+      log('WARN', `Reached maximum annotation limit (${MAX_ANNOTATIONS})`);
       break;
     }
 
@@ -141,14 +141,14 @@ function createFailureAnnotations(failedTests) {
     const column = test.location?.column || 1;
 
     // Create error annotation
-    const message = test.failureMessages.join("\n") || "Test failed";
+    const message = test.failureMessages.join('\n') || 'Test failed';
     const title = `${test.suiteName} > ${test.testName}`;
 
-    createAnnotation("error", file, line, column, message, title);
+    createAnnotation('error', file, line, column, message, title);
     annotationCount++;
   }
 
-  log("SUCCESS", `Created ${annotationCount} annotations`);
+  log('SUCCESS', `Created ${annotationCount} annotations`);
   return annotationCount;
 }
 
@@ -171,7 +171,7 @@ function generateMarkdownSummary(results, failedTests) {
   if (numFailedTests === 0) {
     summary += `### ✅ All Tests Passed\n\n`;
   } else {
-    summary += `### ❌ ${numFailedTests} Test${numFailedTests > 1 ? "s" : ""} Failed\n\n`;
+    summary += `### ❌ ${numFailedTests} Test${numFailedTests > 1 ? 's' : ''} Failed\n\n`;
   }
 
   // Statistics table
@@ -200,7 +200,7 @@ function generateMarkdownSummary(results, failedTests) {
 
       if (test.failureMessages.length > 0) {
         summary += `**Error:**\n\`\`\`\n`;
-        summary += test.failureMessages.join("\n").slice(0, 500); // Limit error message length
+        summary += test.failureMessages.join('\n').slice(0, 500); // Limit error message length
         summary += `\n\`\`\`\n\n`;
       }
 
@@ -218,7 +218,7 @@ function generateMarkdownSummary(results, failedTests) {
 
   // Truncate if exceeds GitHub limit
   if (summary.length > MAX_SUMMARY_LENGTH) {
-    log("WARN", `Summary exceeds ${MAX_SUMMARY_LENGTH} bytes, truncating`);
+    log('WARN', `Summary exceeds ${MAX_SUMMARY_LENGTH} bytes, truncating`);
     summary = `${summary.slice(0, MAX_SUMMARY_LENGTH - 100)}\n\n_...summary truncated due to size limit_\n`;
   }
 
@@ -230,15 +230,15 @@ function generateMarkdownSummary(results, failedTests) {
  */
 async function writeStepSummary(summary) {
   if (!GITHUB_STEP_SUMMARY) {
-    log("WARN", "GITHUB_STEP_SUMMARY not set, skipping summary output");
+    log('WARN', 'GITHUB_STEP_SUMMARY not set, skipping summary output');
     return;
   }
 
   try {
-    await fs.appendFile(GITHUB_STEP_SUMMARY, summary, "utf-8");
-    log("SUCCESS", "Step summary written successfully");
+    await fs.appendFile(GITHUB_STEP_SUMMARY, summary, 'utf-8');
+    log('SUCCESS', 'Step summary written successfully');
   } catch (error) {
-    log("ERROR", `Failed to write step summary: ${error.message}`);
+    log('ERROR', `Failed to write step summary: ${error.message}`);
   }
 }
 
@@ -246,10 +246,10 @@ async function writeStepSummary(summary) {
  * Parse coverage report if available
  */
 async function parseCoverageReport(coveragePath) {
-  const coverageSummaryPath = path.join(coveragePath, "coverage-summary.json");
+  const coverageSummaryPath = path.join(coveragePath, 'coverage-summary.json');
 
   try {
-    const content = await fs.readFile(coverageSummaryPath, "utf-8");
+    const content = await fs.readFile(coverageSummaryPath, 'utf-8');
     const coverage = JSON.parse(content);
 
     const totalCoverage = coverage.total || {};
@@ -261,7 +261,7 @@ async function parseCoverageReport(coveragePath) {
       branches: totalCoverage.branches?.pct || 0,
     };
   } catch (error) {
-    log("WARN", `Coverage report not available: ${error.message}`);
+    log('WARN', `Coverage report not available: ${error.message}`);
     return null;
   }
 }
@@ -270,7 +270,7 @@ async function parseCoverageReport(coveragePath) {
  * Generate coverage summary markdown
  */
 function generateCoverageSummary(coverage) {
-  if (!coverage) return "";
+  if (!coverage) return '';
 
   let summary = `### Coverage Report\n\n`;
   summary += `| Type | Coverage |\n`;
@@ -288,22 +288,22 @@ function generateCoverageSummary(coverage) {
  * Main execution
  */
 async function main() {
-  log("INFO", `Starting result parser v${VERSION}`);
-  log("INFO", `Result path: ${RESULT_PATH}`);
+  log('INFO', `Starting result parser v${VERSION}`);
+  log('INFO', `Result path: ${RESULT_PATH}`);
 
   try {
     // Parse test results
     const results = await parseVitestResults(RESULT_PATH);
 
     log(
-      "INFO",
-      `Total tests: ${results.numTotalTests}, Passed: ${results.numPassedTests}, Failed: ${results.numFailedTests}`,
+      'INFO',
+      `Total tests: ${results.numTotalTests}, Passed: ${results.numPassedTests}, Failed: ${results.numFailedTests}`
     );
 
     // Extract failed tests
     const failedTests = extractFailedTests(results.testResults);
 
-    log("INFO", `Extracted ${failedTests.length} failed test details`);
+    log('INFO', `Extracted ${failedTests.length} failed test details`);
 
     // Create GitHub annotations for failures
     if (failedTests.length > 0) {
@@ -314,7 +314,7 @@ async function main() {
     let summary = generateMarkdownSummary(results, failedTests);
 
     // Parse coverage if available
-    const coveragePath = process.env.COVERAGE_PATH || "./test-output/coverage";
+    const coveragePath = process.env.COVERAGE_PATH || './test-output/coverage';
     const coverage = await parseCoverageReport(coveragePath);
 
     if (coverage) {
@@ -326,20 +326,20 @@ async function main() {
 
     // Output success
     if (results.numFailedTests === 0) {
-      log("SUCCESS", "All tests passed");
+      log('SUCCESS', 'All tests passed');
       process.exit(0);
     } else {
-      log("ERROR", `${results.numFailedTests} tests failed`);
+      log('ERROR', `${results.numFailedTests} tests failed`);
       process.exit(1);
     }
   } catch (error) {
-    log("ERROR", `Parser failed: ${error.message}`, { stack: error.stack });
+    log('ERROR', `Parser failed: ${error.message}`, { stack: error.stack });
     process.exit(1);
   }
 }
 
 // Execute main
-main().catch((error) => {
-  log("ERROR", `Unhandled error: ${error.message}`, { stack: error.stack });
+main().catch(error => {
+  log('ERROR', `Unhandled error: ${error.message}`, { stack: error.stack });
   process.exit(1);
 });

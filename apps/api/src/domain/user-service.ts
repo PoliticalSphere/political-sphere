@@ -1,6 +1,6 @@
-import { getDatabase } from "../modules/stores/index.js";
+import { type CreateUserInput, CreateUserSchema, type User } from '@political-sphere/shared';
 
-import { type CreateUserInput, CreateUserSchema, type User } from "@political-sphere/shared";
+import { getDatabase } from '../modules/stores/index.js';
 
 export class UserService {
   // Use a lazy getter so the service always obtains the current database connection.
@@ -22,7 +22,7 @@ export class UserService {
     const existingUser = byUsername || byEmail;
     // existingUser check performed; details available via store/cache logs
     if (existingUser) {
-      throw new Error("Username or email already exists");
+      throw new Error('Username or email already exists');
     }
 
     return this.db.users.create(input);

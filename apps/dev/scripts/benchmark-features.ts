@@ -11,7 +11,7 @@
  * @module scripts/benchmark-features
  */
 
-import { performance } from "node:perf_hooks";
+import { performance } from 'node:perf_hooks';
 
 interface BenchmarkResult {
   name: string;
@@ -51,7 +51,7 @@ class BenchmarkRunner {
   async benchmark(
     name: string,
     fn: () => void | Promise<void>,
-    options: BenchmarkOptions = DEFAULT_OPTIONS,
+    options: BenchmarkOptions = DEFAULT_OPTIONS
   ): Promise<BenchmarkResult> {
     const opts = { ...DEFAULT_OPTIONS, ...options };
 
@@ -60,7 +60,7 @@ class BenchmarkRunner {
 
     // Warmup phase
     if (opts.warmup && opts.warmup > 0) {
-      console.log("   → Running warmup...");
+      console.log('   → Running warmup...');
       for (let i = 0; i < opts.warmup; i++) {
         if (opts.async) {
           await (fn as () => Promise<void>)();
@@ -71,7 +71,7 @@ class BenchmarkRunner {
     }
 
     // Benchmark phase
-    console.log("   → Running benchmark...");
+    console.log('   → Running benchmark...');
     const times: number[] = [];
     const startTotal = performance.now();
 
@@ -106,7 +106,7 @@ class BenchmarkRunner {
     name: string,
     times: number[],
     totalTime: number,
-    iterations: number,
+    iterations: number
   ): BenchmarkResult {
     const sum = times.reduce((a, b) => a + b, 0);
     const avg = sum / times.length;
@@ -114,7 +114,7 @@ class BenchmarkRunner {
     const max = Math.max(...times);
 
     // Calculate standard deviation
-    const squareDiffs = times.map((time) => (time - avg) ** 2);
+    const squareDiffs = times.map(time => (time - avg) ** 2);
     const avgSquareDiff = squareDiffs.reduce((a, b) => a + b, 0) / squareDiffs.length;
     const stdDev = Math.sqrt(avgSquareDiff);
 
@@ -150,17 +150,17 @@ class BenchmarkRunner {
    * Print summary of all benchmarks
    */
   printSummary(): void {
-    console.log("\n📊 Benchmark Summary");
-    console.log("═".repeat(80));
+    console.log('\n📊 Benchmark Summary');
+    console.log('═'.repeat(80));
 
     for (const result of this.results) {
-      const opsPerSec = result.throughput?.toFixed(0) || "N/A";
+      const opsPerSec = result.throughput?.toFixed(0) || 'N/A';
       console.log(
-        `${result.name.padEnd(40)} ${result.averageTime.toFixed(3)}ms (${opsPerSec} ops/sec)`,
+        `${result.name.padEnd(40)} ${result.averageTime.toFixed(3)}ms (${opsPerSec} ops/sec)`
       );
     }
 
-    console.log("═".repeat(80));
+    console.log('═'.repeat(80));
   }
 
   /**
@@ -185,14 +185,14 @@ class BenchmarkRunner {
  */
 function benchmarkStringConcat(runner: BenchmarkRunner): void {
   runner.benchmark(
-    "String concatenation",
+    'String concatenation',
     () => {
-      let str = "";
+      let str = '';
       for (let i = 0; i < 100; i++) {
-        str += "a";
+        str += 'a';
       }
     },
-    { iterations: 10000 },
+    { iterations: 10000 }
   );
 }
 
@@ -201,14 +201,14 @@ function benchmarkStringConcat(runner: BenchmarkRunner): void {
  */
 function benchmarkArrayOps(runner: BenchmarkRunner): void {
   runner.benchmark(
-    "Array push operations",
+    'Array push operations',
     () => {
       const arr: number[] = [];
       for (let i = 0; i < 100; i++) {
         arr.push(i);
       }
     },
-    { iterations: 10000 },
+    { iterations: 10000 }
   );
 }
 
@@ -217,18 +217,18 @@ function benchmarkArrayOps(runner: BenchmarkRunner): void {
  */
 function benchmarkObjectCreation(runner: BenchmarkRunner): void {
   runner.benchmark(
-    "Object creation",
+    'Object creation',
     () => {
       const obj = {
         id: 1,
-        name: "Test User",
-        email: "test@example.com",
+        name: 'Test User',
+        email: 'test@example.com',
         createdAt: new Date(),
       };
       // Access a property to prevent dead code elimination and better reflect real-world usage
       obj.id;
     },
-    { iterations: 10000 },
+    { iterations: 10000 }
   );
 }
 
@@ -237,11 +237,11 @@ function benchmarkObjectCreation(runner: BenchmarkRunner): void {
  */
 async function benchmarkAsyncOps(runner: BenchmarkRunner): Promise<void> {
   await runner.benchmark(
-    "Async Promise resolve",
+    'Async Promise resolve',
     async () => {
-      await Promise.resolve("done");
+      await Promise.resolve('done');
     },
-    { iterations: 1000, async: true },
+    { iterations: 1000, async: true }
   );
 }
 
@@ -258,21 +258,21 @@ function benchmarkJsonOps(runner: BenchmarkRunner): void {
   };
 
   runner.benchmark(
-    "JSON stringify",
+    'JSON stringify',
     () => {
       JSON.stringify(data);
     },
-    { iterations: 1000 },
+    { iterations: 1000 }
   );
 
   const jsonString = JSON.stringify(data);
 
   runner.benchmark(
-    "JSON parse",
+    'JSON parse',
     () => {
       JSON.parse(jsonString);
     },
-    { iterations: 1000 },
+    { iterations: 1000 }
   );
 }
 
@@ -280,7 +280,7 @@ function benchmarkJsonOps(runner: BenchmarkRunner): void {
  * Run all benchmarks
  */
 async function runAllBenchmarks(): Promise<void> {
-  console.log("🚀 Starting feature benchmarks...");
+  console.log('🚀 Starting feature benchmarks...');
 
   const runner = new BenchmarkRunner();
 
@@ -297,7 +297,7 @@ async function runAllBenchmarks(): Promise<void> {
   runner.printSummary();
 
   // Export results
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
   runner.exportResults(`benchmark-results-${timestamp}.json`);
 }
 
@@ -305,11 +305,11 @@ async function runAllBenchmarks(): Promise<void> {
 if (import.meta.url === `file://${process.argv[1]}`) {
   runAllBenchmarks()
     .then(() => {
-      console.log("\n✅ Benchmarks complete");
+      console.log('\n✅ Benchmarks complete');
       process.exit(0);
     })
-    .catch((error) => {
-      console.error("\n💥 Benchmark failed:", error);
+    .catch(error => {
+      console.error('\n💥 Benchmark failed:', error);
       process.exit(1);
     });
 }

@@ -1,6 +1,6 @@
 {
   "npmScope": "political",
-  "useDaemonProcess": true,
+  "useDaemonProcess": false,
   "useInferencePlugins": false,
   "daemonSettings": {
     "debounceDelay": 1000,
@@ -48,7 +48,10 @@
         "{workspaceRoot}/.eslintignore",
         "{workspaceRoot}/eslint.config.js"
       ],
-      "cache": true
+      "cache": true,
+      "options": {
+        "fix": true
+      }
     },
     "test": {
       "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],

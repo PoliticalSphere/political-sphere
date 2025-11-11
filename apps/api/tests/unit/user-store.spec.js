@@ -1,9 +1,9 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import UserStore from "../stores/user-store.js";
+import UserStore from '../stores/user-store.js';
 
 // Mock the database
-vi.mock("../../src/modules/stores/index.ts", () => ({
+vi.mock('../../src/modules/stores/index.ts', () => ({
   getDatabase: vi.fn(() => ({
     users: {
       create: vi.fn(),
@@ -17,142 +17,142 @@ vi.mock("../../src/modules/stores/index.ts", () => ({
   })),
 }));
 
-describe("UserStore", () => {
+describe('UserStore', () => {
   let store;
   let mockDb;
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const { getDatabase } = await import("../../src/modules/stores/index.ts");
+    const { getDatabase } = await import('../../src/modules/stores/index.ts');
     mockDb = getDatabase();
     store = new UserStore(mockDb.users);
   });
 
-  describe("create", () => {
-    it("should create a new user", async () => {
+  describe('create', () => {
+    it('should create a new user', async () => {
       const userData = {
-        username: "testuser",
-        email: "test@example.com",
-        passwordHash: "hashed-password",
+        username: 'testuser',
+        email: 'test@example.com',
+        passwordHash: 'hashed-password',
       };
 
       mockDb.users.create.mockResolvedValue({
-        id: "user-123",
+        id: 'user-123',
         ...userData,
-        createdAt: "2025-11-05T00:00:00Z",
+        createdAt: '2025-11-05T00:00:00Z',
       });
 
       const result = await store.create(userData);
 
-      expect(result).toHaveProperty("id", "user-123");
-      expect(result).toHaveProperty("username", "testuser");
-      expect(result).toHaveProperty("email", "test@example.com");
+      expect(result).toHaveProperty('id', 'user-123');
+      expect(result).toHaveProperty('username', 'testuser');
+      expect(result).toHaveProperty('email', 'test@example.com');
       expect(mockDb.users.create).toHaveBeenCalledWith(userData);
     });
 
-    it("should handle database errors", async () => {
-      mockDb.users.create.mockRejectedValue(new Error("Database error"));
+    it('should handle database errors', async () => {
+      mockDb.users.create.mockRejectedValue(new Error('Database error'));
 
-      await expect(store.create({})).rejects.toThrow("Database error");
+      await expect(store.create({})).rejects.toThrow('Database error');
     });
   });
 
-  describe("getById", () => {
-    it("should retrieve user by ID", async () => {
+  describe('getById', () => {
+    it('should retrieve user by ID', async () => {
       const mockUser = {
-        id: "user-123",
-        username: "testuser",
-        email: "test@example.com",
+        id: 'user-123',
+        username: 'testuser',
+        email: 'test@example.com',
       };
 
       mockDb.users.getById.mockResolvedValue(mockUser);
 
-      const result = await store.getById("user-123");
+      const result = await store.getById('user-123');
 
       expect(result).toEqual(mockUser);
-      expect(mockDb.users.getById).toHaveBeenCalledWith("user-123");
+      expect(mockDb.users.getById).toHaveBeenCalledWith('user-123');
     });
 
-    it("should return null for non-existent user", async () => {
+    it('should return null for non-existent user', async () => {
       mockDb.users.getById.mockResolvedValue(null);
 
-      const result = await store.getById("non-existent");
+      const result = await store.getById('non-existent');
 
       expect(result).toBeNull();
     });
   });
 
-  describe("getByUsername", () => {
-    it("should retrieve user by username", async () => {
+  describe('getByUsername', () => {
+    it('should retrieve user by username', async () => {
       const mockUser = {
-        id: "user-123",
-        username: "testuser",
-        email: "test@example.com",
+        id: 'user-123',
+        username: 'testuser',
+        email: 'test@example.com',
       };
 
       mockDb.users.getByUsername.mockResolvedValue(mockUser);
 
-      const result = await store.getByUsername("testuser");
+      const result = await store.getByUsername('testuser');
 
       expect(result).toEqual(mockUser);
-      expect(mockDb.users.getByUsername).toHaveBeenCalledWith("testuser");
+      expect(mockDb.users.getByUsername).toHaveBeenCalledWith('testuser');
     });
   });
 
-  describe("getByEmail", () => {
-    it("should retrieve user by email", async () => {
+  describe('getByEmail', () => {
+    it('should retrieve user by email', async () => {
       const mockUser = {
-        id: "user-123",
-        username: "testuser",
-        email: "test@example.com",
+        id: 'user-123',
+        username: 'testuser',
+        email: 'test@example.com',
       };
 
       mockDb.users.getByEmail.mockResolvedValue(mockUser);
 
-      const result = await store.getByEmail("test@example.com");
+      const result = await store.getByEmail('test@example.com');
 
       expect(result).toEqual(mockUser);
-      expect(mockDb.users.getByEmail).toHaveBeenCalledWith("test@example.com");
+      expect(mockDb.users.getByEmail).toHaveBeenCalledWith('test@example.com');
     });
   });
 
-  describe("update", () => {
-    it("should update user data", async () => {
+  describe('update', () => {
+    it('should update user data', async () => {
       const updateData = {
-        email: "newemail@example.com",
-        profile: { displayName: "New Name" },
+        email: 'newemail@example.com',
+        profile: { displayName: 'New Name' },
       };
 
       mockDb.users.update.mockResolvedValue({
-        id: "user-123",
-        username: "testuser",
-        email: "newemail@example.com",
-        profile: { displayName: "New Name" },
+        id: 'user-123',
+        username: 'testuser',
+        email: 'newemail@example.com',
+        profile: { displayName: 'New Name' },
       });
 
-      const result = await store.update("user-123", updateData);
+      const result = await store.update('user-123', updateData);
 
-      expect(result).toHaveProperty("email", "newemail@example.com");
-      expect(mockDb.users.update).toHaveBeenCalledWith("user-123", updateData);
+      expect(result).toHaveProperty('email', 'newemail@example.com');
+      expect(mockDb.users.update).toHaveBeenCalledWith('user-123', updateData);
     });
   });
 
-  describe("delete", () => {
-    it("should delete user", async () => {
+  describe('delete', () => {
+    it('should delete user', async () => {
       mockDb.users.delete.mockResolvedValue(true);
 
-      const result = await store.delete("user-123");
+      const result = await store.delete('user-123');
 
       expect(result).toBe(true);
-      expect(mockDb.users.delete).toHaveBeenCalledWith("user-123");
+      expect(mockDb.users.delete).toHaveBeenCalledWith('user-123');
     });
   });
 
-  describe("getAll", () => {
-    it("should retrieve all users", async () => {
+  describe('getAll', () => {
+    it('should retrieve all users', async () => {
       const mockUsers = [
-        { id: "user-1", username: "user1" },
-        { id: "user-2", username: "user2" },
+        { id: 'user-1', username: 'user1' },
+        { id: 'user-2', username: 'user2' },
       ];
 
       mockDb.users.getAll.mockResolvedValue(mockUsers);
@@ -163,8 +163,8 @@ describe("UserStore", () => {
       expect(mockDb.users.getAll).toHaveBeenCalled();
     });
 
-    it("should support filtering", async () => {
-      const mockUsers = [{ id: "user-1", username: "user1" }];
+    it('should support filtering', async () => {
+      const mockUsers = [{ id: 'user-1', username: 'user1' }];
       const filters = { active: true };
 
       mockDb.users.getAll.mockResolvedValue(mockUsers);
@@ -176,33 +176,33 @@ describe("UserStore", () => {
     });
   });
 
-  describe("validateUserData", () => {
-    it("should validate complete user data", () => {
+  describe('validateUserData', () => {
+    it('should validate complete user data', () => {
       const validData = {
-        username: "testuser",
-        email: "test@example.com",
-        passwordHash: "hashed-password",
+        username: 'testuser',
+        email: 'test@example.com',
+        passwordHash: 'hashed-password',
       };
 
       expect(() => store.validateUserData(validData)).not.toThrow();
     });
 
-    it("should reject invalid username", () => {
+    it('should reject invalid username', () => {
       const invalidData = {
-        username: "us", // too short
-        email: "test@example.com",
+        username: 'us', // too short
+        email: 'test@example.com',
       };
 
-      expect(() => store.validateUserData(invalidData)).toThrow("Invalid username");
+      expect(() => store.validateUserData(invalidData)).toThrow('Invalid username');
     });
 
-    it("should reject invalid email", () => {
+    it('should reject invalid email', () => {
       const invalidData = {
-        username: "testuser",
-        email: "invalid-email",
+        username: 'testuser',
+        email: 'invalid-email',
       };
 
-      expect(() => store.validateUserData(invalidData)).toThrow("Invalid email");
+      expect(() => store.validateUserData(invalidData)).toThrow('Invalid email');
     });
   });
 });

@@ -8,17 +8,18 @@
  * Usage: npm run openapi:sync
  */
 
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
-import yaml from "js-yaml";
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+import yaml from 'js-yaml';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const JSON_SCHEMA_DIR = path.join(__dirname, "..", "schemas", "json-schema");
-const OPENAPI_FILE = path.join(__dirname, "..", "apps", "api", "openapi", "api.yaml");
-const OPENAPI_SCHEMAS_DIR = path.join(__dirname, "..", "apps", "api", "openapi", "schemas");
+const JSON_SCHEMA_DIR = path.join(__dirname, '..', 'schemas', 'json-schema');
+const OPENAPI_FILE = path.join(__dirname, '..', 'apps', 'api', 'openapi', 'api.yaml');
+const OPENAPI_SCHEMAS_DIR = path.join(__dirname, '..', 'apps', 'api', 'openapi', 'schemas');
 
 /**
  * Convert JSON Schema to OpenAPI 3.1 compatible schema
@@ -43,25 +44,25 @@ function convertToOpenAPISchema(jsonSchema) {
  * Sync JSON Schemas to OpenAPI
  */
 async function syncSchemas() {
-  console.log("📋 Syncing JSON Schemas to OpenAPI specification...\n");
+  console.log('📋 Syncing JSON Schemas to OpenAPI specification...\n');
 
   try {
     // Read all JSON Schema files
     const schemaFiles = await fs.readdir(JSON_SCHEMA_DIR);
-    const jsonSchemas = schemaFiles.filter((f) => f.endsWith(".schema.json"));
+    const jsonSchemas = schemaFiles.filter(f => f.endsWith('.schema.json'));
 
     console.log(`Found ${jsonSchemas.length} JSON Schema files:\n`);
 
     for (const schemaFile of jsonSchemas) {
       const schemaPath = path.join(JSON_SCHEMA_DIR, schemaFile);
-      const schemaContent = await fs.readFile(schemaPath, "utf-8");
+      const schemaContent = await fs.readFile(schemaPath, 'utf-8');
       const jsonSchema = JSON.parse(schemaContent);
 
       // Convert to OpenAPI compatible schema
       const openApiSchema = convertToOpenAPISchema(jsonSchema);
 
       // Determine target directory
-      const entityName = schemaFile.replace(".schema.json", "");
+      const entityName = schemaFile.replace('.schema.json', '');
       const targetDir = path.join(OPENAPI_SCHEMAS_DIR, `${entityName}s`);
 
       await fs.mkdir(targetDir, { recursive: true });
@@ -79,9 +80,9 @@ async function syncSchemas() {
       console.log(`  ✅ ${schemaFile} → openapi/schemas/${entityName}s/${entityName}.yaml`);
     }
 
-    console.log("\n✨ Schema sync complete!\n");
+    console.log('\n✨ Schema sync complete!\n');
   } catch (error) {
-    console.error("❌ Error syncing schemas:", error);
+    console.error('❌ Error syncing schemas:', error);
     process.exit(1);
   }
 }
@@ -90,24 +91,24 @@ async function syncSchemas() {
  * Validate OpenAPI specification
  */
 async function validateOpenAPI() {
-  console.log("🔍 Validating OpenAPI specification...\n");
+  console.log('🔍 Validating OpenAPI specification...\n');
 
   try {
-    const content = await fs.readFile(OPENAPI_FILE, "utf-8");
+    const content = await fs.readFile(OPENAPI_FILE, 'utf-8');
     const spec = yaml.load(content);
 
     const issues = [];
 
     // Check for required fields
-    if (!spec.openapi) issues.push("Missing openapi version");
-    if (!spec.info) issues.push("Missing info section");
-    if (!spec.paths) issues.push("Missing paths section");
+    if (!spec.openapi) issues.push('Missing openapi version');
+    if (!spec.info) issues.push('Missing info section');
+    if (!spec.paths) issues.push('Missing paths section');
 
     // Check info completeness
     if (spec.info) {
-      if (!spec.info.title) issues.push("Missing info.title");
-      if (!spec.info.version) issues.push("Missing info.version");
-      if (!spec.info.description) issues.push("Missing info.description");
+      if (!spec.info.title) issues.push('Missing info.title');
+      if (!spec.info.version) issues.push('Missing info.version');
+      if (!spec.info.description) issues.push('Missing info.description');
     }
 
     // Check paths
@@ -121,7 +122,7 @@ async function validateOpenAPI() {
 
       for (const [path, pathItem] of Object.entries(spec.paths)) {
         for (const [method, operation] of Object.entries(pathItem)) {
-          if (["get", "post", "put", "patch", "delete"].includes(method)) {
+          if (['get', 'post', 'put', 'patch', 'delete'].includes(method)) {
             operationCount++;
 
             // Check for description
@@ -131,8 +132,8 @@ async function validateOpenAPI() {
             }
 
             // Check for request body schema (POST, PUT, PATCH)
-            if (["post", "put", "patch"].includes(method)) {
-              if (!operation.requestBody?.content?.["application/json"]?.schema) {
+            if (['post', 'put', 'patch'].includes(method)) {
+              if (!operation.requestBody?.content?.['application/json']?.schema) {
                 missingSchemas++;
                 issues.push(`${method.toUpperCase()} ${path} missing request body schema`);
               }
@@ -141,13 +142,13 @@ async function validateOpenAPI() {
             // Check for response schemas
             if (operation.responses) {
               for (const [statusCode, response] of Object.entries(operation.responses)) {
-                if (statusCode.startsWith("2")) {
-                  if (!response.content?.["application/json"]?.schema) {
+                if (statusCode.startsWith('2')) {
+                  if (!response.content?.['application/json']?.schema) {
                     // 204 No Content is allowed without schema
-                    if (statusCode !== "204") {
+                    if (statusCode !== '204') {
                       missingSchemas++;
                       issues.push(
-                        `${method.toUpperCase()} ${path} ${statusCode} response missing schema`,
+                        `${method.toUpperCase()} ${path} ${statusCode} response missing schema`
                       );
                     }
                   }
@@ -177,7 +178,7 @@ async function validateOpenAPI() {
 
     if (issues.length > 0) {
       console.log(`⚠️  Found ${issues.length} issues:\n`);
-      issues.slice(0, 10).forEach((issue) => {
+      issues.slice(0, 10).forEach(issue => {
         console.log(`   • ${issue}`);
       });
       if (issues.length > 10) {
@@ -185,11 +186,11 @@ async function validateOpenAPI() {
       }
       return false;
     } else {
-      console.log("✅ OpenAPI specification is valid!\n");
+      console.log('✅ OpenAPI specification is valid!\n');
       return true;
     }
   } catch (error) {
-    console.error("❌ Error validating OpenAPI:", error);
+    console.error('❌ Error validating OpenAPI:', error);
     process.exit(1);
   }
 }
@@ -198,10 +199,10 @@ async function validateOpenAPI() {
  * Generate statistics
  */
 async function generateStats() {
-  console.log("📊 OpenAPI Specification Statistics\n");
+  console.log('📊 OpenAPI Specification Statistics\n');
 
   try {
-    const content = await fs.readFile(OPENAPI_FILE, "utf-8");
+    const content = await fs.readFile(OPENAPI_FILE, 'utf-8');
     const spec = yaml.load(content);
 
     const stats = {
@@ -219,12 +220,12 @@ async function generateStats() {
 
       for (const pathItem of Object.values(spec.paths)) {
         for (const [method, operation] of Object.entries(pathItem)) {
-          if (["get", "post", "put", "patch", "delete"].includes(method)) {
+          if (['get', 'post', 'put', 'patch', 'delete'].includes(method)) {
             stats.operations++;
             stats.byMethod[method] = (stats.byMethod[method] || 0) + 1;
 
             if (operation.tags) {
-              operation.tags.forEach((tag) => {
+              operation.tags.forEach(tag => {
                 stats.byTag[tag] = (stats.byTag[tag] || 0) + 1;
               });
             }
@@ -243,14 +244,14 @@ async function generateStats() {
     console.log(`Total Operations: ${stats.operations}`);
     console.log(`Total Schemas: ${stats.schemas}\n`);
 
-    console.log("Operations by Method:");
+    console.log('Operations by Method:');
     Object.entries(stats.byMethod)
       .sort((a, b) => b[1] - a[1])
       .forEach(([method, count]) => {
         console.log(`  ${method.toUpperCase().padEnd(8)} ${count}`);
       });
 
-    console.log("\nOperations by Tag:");
+    console.log('\nOperations by Tag:');
     Object.entries(stats.byTag)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 10)
@@ -258,9 +259,9 @@ async function generateStats() {
         console.log(`  ${tag.padEnd(20)} ${count}`);
       });
 
-    console.log("\n");
+    console.log('\n');
   } catch (error) {
-    console.error("❌ Error generating stats:", error);
+    console.error('❌ Error generating stats:', error);
     process.exit(1);
   }
 }
@@ -269,13 +270,13 @@ async function generateStats() {
 const command = process.argv[2];
 
 switch (command) {
-  case "sync":
+  case 'sync':
     await syncSchemas();
     break;
-  case "validate":
+  case 'validate':
     await validateOpenAPI();
     break;
-  case "stats":
+  case 'stats':
     await generateStats();
     break;
   default:

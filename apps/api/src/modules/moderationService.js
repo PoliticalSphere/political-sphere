@@ -11,7 +11,7 @@ let PerspectiveAPI;
 try {
   const openaiModule = await import('openai');
   OpenAI = openaiModule.OpenAI;
-} catch (e) {
+} catch {
   // Provide a lightweight stub for tests when OpenAI package isn't installed
   OpenAI = class {
     constructor() {
@@ -30,7 +30,7 @@ try {
 try {
   const perspectiveModule = await import('perspective-api-client');
   PerspectiveAPI = perspectiveModule.PerspectiveAPI;
-} catch (e) {
+} catch {
   // Minimal stub for Perspective API used in tests
   PerspectiveAPI = class {
     constructor() {}
@@ -171,7 +171,7 @@ class ModerationService {
         result.reasons.push('OpenAI flagged content');
         result.category = 'flagged';
       }
-    } catch (error) {
+    } catch {
       // OpenAI API not available, continue with basic scoring
     }
 
@@ -199,7 +199,7 @@ class ModerationService {
         result.reasons.push(`High toxicity score: ${toxicityScore}`);
         result.category = 'toxic';
       }
-    } catch (error) {
+    } catch {
       // Perspective API not available, continue with basic scoring
     }
 
@@ -375,7 +375,7 @@ class ModerationService {
    * @returns {Promise<ReportResult>}
    */
   async handleReport(report) {
-    const { contentId, userId, reason, evidence } = report;
+    const { contentId, userId, reason, _evidence } = report;
 
     logger.info('Processing user report', { contentId, userId, reason });
 
@@ -495,7 +495,7 @@ class ModerationService {
     return highPriority.includes(reason) ? 'high' : 'medium';
   }
 
-  async storeReport(report) {
+  async storeReport(_report) {
     // Database insertion - pseudo-code
     // await db.reports.insert(report);
     return `report_${Date.now()}`;
@@ -519,7 +519,7 @@ class ModerationService {
    * @param {string} status
    * @returns {Promise<ModerationQueue>}
    */
-  async getModerationQueue(limit = 20, status = 'pending') {
+  async getModerationQueue(_limit = 20, _status = 'pending') {
     // Database query - pseudo-code
     // const queue = await db.moderationQueue.find({ status }).limit(limit);
     const queue = []; // Placeholder

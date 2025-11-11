@@ -7,7 +7,7 @@
  * @module pipelines/analytics-pipeline
  */
 
-import type { PipelineConfig, PipelineResult } from "../types/pipeline.js";
+import type { PipelineConfig, PipelineResult } from '../types/pipeline.js';
 
 export class AnalyticsPipeline {
   constructor(private readonly config: PipelineConfig) {}
@@ -23,8 +23,8 @@ export class AnalyticsPipeline {
     // 4. Apply statistical analysis
     // 5. Prepare for visualization
 
-    console.log("Analytics pipeline configuration:", this.config);
-    console.log("Processing data:", data);
+    console.log('Analytics pipeline configuration:', this.config);
+    console.log('Processing data:', data);
 
     return {
       success: true,

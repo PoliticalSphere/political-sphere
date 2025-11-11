@@ -1,41 +1,41 @@
-import { spawn } from "node:child_process";
-import { dirname, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { spawn } from 'node:child_process';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
   ListToolsRequestSchema,
   McpError,
-} from "@modelcontextprotocol/sdk/types.js";
+} from '@modelcontextprotocol/sdk/types.js';
 
 const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(MODULE_DIR, "../../../..");
+const REPO_ROOT = resolve(MODULE_DIR, '../../../..');
 const MAX_OUTPUT_LENGTH = 8000;
 const DEFAULT_TIMEOUT = 180_000;
 
 const TASKS = {
-  "lint:ci": {
-    description: "ESLint with zero warnings allowed",
-    command: "npm",
-    args: ["run", "lint:ci"],
+  'lint:ci': {
+    description: 'ESLint with zero warnings allowed',
+    command: 'npm',
+    args: ['run', 'lint:ci'],
   },
-  "test:fast": {
-    description: "Vitest quick run (changed scopes)",
-    command: "npm",
-    args: ["run", "test:fast"],
+  'test:fast': {
+    description: 'Vitest quick run (changed scopes)',
+    command: 'npm',
+    args: ['run', 'test:fast'],
   },
-  "test:ci": {
-    description: "Full vitest suite with coverage",
-    command: "npm",
-    args: ["run", "test:ci"],
+  'test:ci': {
+    description: 'Full vitest suite with coverage',
+    command: 'npm',
+    args: ['run', 'test:ci'],
   },
-  "type-check": {
-    description: "TypeScript project check (no emit)",
-    command: "npm",
-    args: ["run", "type-check"],
+  'type-check': {
+    description: 'TypeScript project check (no emit)',
+    command: 'npm',
+    args: ['run', 'type-check'],
   },
 };
 
@@ -43,12 +43,12 @@ function runCommand(command, args, { timeoutMs = DEFAULT_TIMEOUT, env } = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(command, args, {
       cwd: REPO_ROOT,
-      env: { ...process.env, FORCE_COLOR: "0", ...env },
-      stdio: ["ignore", "pipe", "pipe"],
+      env: { ...process.env, FORCE_COLOR: '0', ...env },
+      stdio: ['ignore', 'pipe', 'pipe'],
     });
 
-    let stdout = "";
-    let stderr = "";
+    let stdout = '';
+    let stderr = '';
     const startedAt = Date.now();
 
     function append(buffer, chunk) {
@@ -59,24 +59,24 @@ function runCommand(command, args, { timeoutMs = DEFAULT_TIMEOUT, env } = {}) {
       return buffer;
     }
 
-    child.stdout.on("data", (chunk) => {
+    child.stdout.on('data', chunk => {
       stdout = append(stdout, chunk);
     });
-    child.stderr.on("data", (chunk) => {
+    child.stderr.on('data', chunk => {
       stderr = append(stderr, chunk);
     });
 
     const timeout = setTimeout(() => {
-      child.kill("SIGKILL");
-      reject(new McpError(ErrorCode.InternalError, "Command timed out"));
+      child.kill('SIGKILL');
+      reject(new McpError(ErrorCode.InternalError, 'Command timed out'));
     }, timeoutMs);
 
-    child.on("error", (error) => {
+    child.on('error', error => {
       clearTimeout(timeout);
       reject(new McpError(ErrorCode.InternalError, `Failed to start command: ${error.message}`));
     });
 
-    child.on("close", (code) => {
+    child.on('close', code => {
       clearTimeout(timeout);
       resolve({
         code,
@@ -89,10 +89,10 @@ function runCommand(command, args, { timeoutMs = DEFAULT_TIMEOUT, env } = {}) {
 }
 
 function assertSafePattern(pattern) {
-  if (typeof pattern !== "string" || pattern.trim() === "") {
-    throw new McpError(ErrorCode.InvalidRequest, "pattern is required");
+  if (typeof pattern !== 'string' || pattern.trim() === '') {
+    throw new McpError(ErrorCode.InvalidRequest, 'pattern is required');
   }
-  if (pattern.startsWith("-")) {
+  if (pattern.startsWith('-')) {
     throw new McpError(ErrorCode.InvalidRequest, 'pattern may not start with "-"');
   }
   return pattern.trim();
@@ -102,13 +102,13 @@ class TestRunnerServer extends Server {
   constructor() {
     super(
       {
-        name: "political-sphere-test-runner",
-        version: "1.0.0",
-        description: "Run vetted test/lint workflows and share the output with assistants",
+        name: 'political-sphere-test-runner',
+        version: '1.0.0',
+        description: 'Run vetted test/lint workflows and share the output with assistants',
       },
       {
         capabilities: { tools: {} },
-      },
+      }
     );
 
     this.setRequestHandler(ListToolsRequestSchema, this.listTools.bind(this));
@@ -119,41 +119,41 @@ class TestRunnerServer extends Server {
     return {
       tools: [
         {
-          name: "tests_run_task",
-          description: "Execute one of the curated npm scripts (lint, test, type-check)",
+          name: 'tests_run_task',
+          description: 'Execute one of the curated npm scripts (lint, test, type-check)',
           inputSchema: {
-            type: "object",
-            required: ["task"],
+            type: 'object',
+            required: ['task'],
             properties: {
               task: {
-                type: "string",
+                type: 'string',
                 enum: Object.keys(TASKS),
               },
-              timeoutMs: { type: "integer", minimum: 1 },
+              timeoutMs: { type: 'integer', minimum: 1 },
             },
           },
         },
         {
-          name: "tests_run_vitest_pattern",
-          description: "Run vitest on a specific pattern (npx vitest --run <pattern>)",
+          name: 'tests_run_vitest_pattern',
+          description: 'Run vitest on a specific pattern (npx vitest --run <pattern>)',
           inputSchema: {
-            type: "object",
-            required: ["pattern"],
+            type: 'object',
+            required: ['pattern'],
             properties: {
-              pattern: { type: "string" },
+              pattern: { type: 'string' },
               changedOnly: {
-                type: "boolean",
-                description: "If true, prepends VITEST_CHANGED=1 for parity with test:fast",
+                type: 'boolean',
+                description: 'If true, prepends VITEST_CHANGED=1 for parity with test:fast',
               },
-              timeoutMs: { type: "integer", minimum: 1 },
+              timeoutMs: { type: 'integer', minimum: 1 },
             },
           },
         },
         {
-          name: "tests_list_tasks",
-          description: "List the pre-approved test/lint tasks exposed by this server",
+          name: 'tests_list_tasks',
+          description: 'List the pre-approved test/lint tasks exposed by this server',
           inputSchema: {
-            type: "object",
+            type: 'object',
             properties: {},
           },
         },
@@ -167,11 +167,11 @@ class TestRunnerServer extends Server {
     const args = params.arguments ?? {};
 
     switch (name) {
-      case "tests_run_task":
+      case 'tests_run_task':
         return this.handleRunTask(args);
-      case "tests_run_vitest_pattern":
+      case 'tests_run_vitest_pattern':
         return this.handleRunPattern(args);
-      case "tests_list_tasks":
+      case 'tests_list_tasks':
         return this.handleListTasks();
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool ${name}`);
@@ -183,7 +183,7 @@ class TestRunnerServer extends Server {
     if (!taskConfig) {
       throw new McpError(
         ErrorCode.InvalidRequest,
-        `Unsupported task "${args.task}". Use tests_list_tasks for options.`,
+        `Unsupported task "${args.task}". Use tests_list_tasks for options.`
       );
     }
     const result = await runCommand(taskConfig.command, taskConfig.args, {
@@ -192,7 +192,7 @@ class TestRunnerServer extends Server {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: JSON.stringify(
             {
               task: args.task,
@@ -202,7 +202,7 @@ class TestRunnerServer extends Server {
               stderr: result.stderr,
             },
             null,
-            2,
+            2
           ),
         },
       ],
@@ -211,8 +211,8 @@ class TestRunnerServer extends Server {
 
   async handleRunPattern(args) {
     const pattern = assertSafePattern(args.pattern);
-    const env = args.changedOnly ? { VITEST_CHANGED: "1" } : undefined;
-    const result = await runCommand("npx", ["vitest", "--run", pattern], {
+    const env = args.changedOnly ? { VITEST_CHANGED: '1' } : undefined;
+    const result = await runCommand('npx', ['vitest', '--run', pattern], {
       timeoutMs: args.timeoutMs ?? DEFAULT_TIMEOUT,
       env,
     });
@@ -220,7 +220,7 @@ class TestRunnerServer extends Server {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: JSON.stringify(
             {
               pattern,
@@ -230,7 +230,7 @@ class TestRunnerServer extends Server {
               stderr: result.stderr,
             },
             null,
-            2,
+            2
           ),
         },
       ],
@@ -241,15 +241,15 @@ class TestRunnerServer extends Server {
     return {
       content: [
         {
-          type: "text",
+          type: 'text',
           text: JSON.stringify(
             Object.entries(TASKS).map(([key, value]) => ({
               task: key,
               description: value.description,
-              command: `${value.command} ${value.args.join(" ")}`,
+              command: `${value.command} ${value.args.join(' ')}`,
             })),
             null,
-            2,
+            2
           ),
         },
       ],
@@ -260,4 +260,4 @@ class TestRunnerServer extends Server {
 const server = new TestRunnerServer();
 const transport = new StdioServerTransport();
 await server.connect(transport);
-console.error("Test runner MCP server ready on STDIO");
+console.error('Test runner MCP server ready on STDIO');

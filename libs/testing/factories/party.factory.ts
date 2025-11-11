@@ -1,5 +1,5 @@
-import { faker } from "@faker-js/faker";
-import { Factory } from "fishery";
+import { faker } from '@faker-js/faker';
+import { Factory } from 'fishery';
 
 export interface Party {
   id: string;
@@ -15,25 +15,25 @@ export interface Party {
 }
 
 const PARTY_IDEOLOGIES = [
-  "progressive",
-  "conservative",
-  "liberal",
-  "socialist",
-  "centrist",
-  "libertarian",
-  "green",
-  "nationalist",
+  'progressive',
+  'conservative',
+  'liberal',
+  'socialist',
+  'centrist',
+  'libertarian',
+  'green',
+  'nationalist',
 ] as const;
 
 const PARTY_COLORS = [
-  "#FF6B6B", // Red
-  "#4ECDC4", // Teal
-  "#45B7D1", // Blue
-  "#96CEB4", // Green
-  "#FFEAA7", // Yellow
-  "#DFE6E9", // Gray
-  "#A29BFE", // Purple
-  "#FD79A8", // Pink
+  '#FF6B6B', // Red
+  '#4ECDC4', // Teal
+  '#45B7D1', // Blue
+  '#96CEB4', // Green
+  '#FFEAA7', // Yellow
+  '#DFE6E9', // Gray
+  '#A29BFE', // Purple
+  '#FD79A8', // Pink
 ];
 
 export const PartyFactory = Factory.define<Party>(({ sequence, params }) => ({

@@ -35,7 +35,7 @@ vi.mock('../../src/logger.js', () => ({
 
 vi.mock('bcrypt', () => ({
   default: {
-    hash: vi.fn(async (password) => `hashed:${password}`),
+    hash: vi.fn(async password => `hashed:${password}`),
     compare: vi.fn(async (password, hash) => {
       if (hash === 'hashed-password' && password === 'password123') {
         return true;

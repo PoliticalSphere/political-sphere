@@ -4,20 +4,20 @@
   Usage: node scripts/ai/competence-monitor.js assess
 */
 
-import { existsSync, readFileSync, writeFileSync } from "fs";
-import { dirname, resolve } from "path";
-import { fileURLToPath } from "url";
+import { existsSync, readFileSync, writeFileSync } from 'fs';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 // Metrics live at <repo-root>/ai-metrics/stats.json (tests expect this path)
-const METRICS_FILE = resolve(__dirname, "../../../ai-metrics/stats.json");
-const PATTERNS_FILE = resolve(__dirname, "../../../ai/ai-learning/patterns.json");
+const METRICS_FILE = resolve(__dirname, '../../../ai-metrics/stats.json');
+const PATTERNS_FILE = resolve(__dirname, '../../../ai/ai-learning/patterns.json');
 
 function assessCompetence() {
   if (!existsSync(METRICS_FILE)) {
-    console.log("No metrics available. Creating initial metrics file.");
+    console.log('No metrics available. Creating initial metrics file.');
     const initialMetrics = {
       responseTimes: [],
       cacheHits: 0,
@@ -47,13 +47,13 @@ function assessCompetence() {
     writeFileSync(METRICS_FILE, JSON.stringify(initialMetrics, null, 2));
     return {
       score: 0.5,
-      recommendations: ["Collect more data for accurate assessment"],
+      recommendations: ['Collect more data for accurate assessment'],
     };
   }
 
-  const metrics = JSON.parse(readFileSync(METRICS_FILE, "utf8"));
+  const metrics = JSON.parse(readFileSync(METRICS_FILE, 'utf8'));
   const patterns = existsSync(PATTERNS_FILE)
-    ? JSON.parse(readFileSync(PATTERNS_FILE, "utf8"))
+    ? JSON.parse(readFileSync(PATTERNS_FILE, 'utf8'))
     : { patterns: [] };
 
   // Ensure arrays exist with defaults
@@ -98,37 +98,37 @@ function assessCompetence() {
   const recommendations = [];
 
   if (avgResponseTime > 2000)
-    recommendations.push("Optimize response times - consider caching or pre-computation");
-  if (cacheHitRate < 0.7) recommendations.push("Improve cache hit rate - review caching strategy");
+    recommendations.push('Optimize response times - consider caching or pre-computation');
+  if (cacheHitRate < 0.7) recommendations.push('Improve cache hit rate - review caching strategy');
   if (qualityPassRate < 0.9)
-    recommendations.push("Address quality gate failures - review common issues");
+    recommendations.push('Address quality gate failures - review common issues');
   if (avgSatisfaction < 0.7)
-    recommendations.push("Improve user satisfaction - gather feedback on suggestions");
+    recommendations.push('Improve user satisfaction - gather feedback on suggestions');
   if (avgThroughput < 5)
-    recommendations.push("Increase task throughput - optimize parallel processing");
+    recommendations.push('Increase task throughput - optimize parallel processing');
 
   if (patterns.patterns && patterns.patterns.length > 0) {
     const recentPatterns = patterns.patterns.slice(-10);
-    const successRate = recentPatterns.filter((p) => p.success).length / recentPatterns.length;
+    const successRate = recentPatterns.filter(p => p.success).length / recentPatterns.length;
     if (successRate < 0.8)
-      recommendations.push("Review recent patterns - identify areas for improvement");
+      recommendations.push('Review recent patterns - identify areas for improvement');
   }
 
   // Context-awareness specific recommendations (tests assert on these phrases).
   if (metrics.contextRecallAccuracy !== undefined && metrics.contextRecallAccuracy < 0.9) {
-    recommendations.push("Enhance context recall");
+    recommendations.push('Enhance context recall');
   }
   if (
     metrics.semanticUnderstandingScore !== undefined &&
     metrics.semanticUnderstandingScore < 0.85
   ) {
-    recommendations.push("Improve semantic understanding");
+    recommendations.push('Improve semantic understanding');
   }
   if (metrics.patternUsageCorrectness !== undefined && metrics.patternUsageCorrectness < 0.95) {
-    recommendations.push("Review pattern usage");
+    recommendations.push('Review pattern usage');
   }
   if (metrics.modelDriftResistance !== undefined && metrics.modelDriftResistance < 0.9) {
-    recommendations.push("Strengthen model drift resistance");
+    recommendations.push('Strengthen model drift resistance');
   }
 
   return { score: Math.round(score * 100) / 100, recommendations };
@@ -145,7 +145,7 @@ function main() {
   };
 
   console.log(`Competence Score: ${result.score}`);
-  console.log("Recommendations:");
+  console.log('Recommendations:');
   for (const rec of result.recommendations) {
     console.log(`- ${rec}`);
   }
@@ -162,7 +162,7 @@ function main() {
       console.log(`Metrics present at: ${METRICS_FILE}`);
     }
   } catch (err) {
-    console.error("Failed to write metrics file:", err?.message ?? err);
+    console.error('Failed to write metrics file:', err?.message ?? err);
   }
 }
 

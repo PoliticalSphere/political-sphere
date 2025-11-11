@@ -1,6 +1,6 @@
 # Central Audit System Report (v2.1.0)
 
-**Timestamp:** 2025-11-11T22:09:32Z  
+**Timestamp:** 2025-11-11T22:40:33Z  
 **Auto-Fix:** false  
 **Format:** full  
 **Production Ready:** false
@@ -14,7 +14,7 @@
 | Failed/Issues | 12 |
 | Critical | 6 |
 | High | 19 |
-| Medium | 59 |
+| Medium | 58 |
 | Low | 14 |
 
 ## Production Readiness
@@ -26,7 +26,7 @@
 
 | App | Critical | High | Medium | Low |
 |-----|----------|------|--------|-----|
-| api | 4 | 2 | 9 | 1 |
+| api | 4 | 2 | 8 | 1 |
 | feature-auth-remote | 0 | 2 | 7 | 2 |
 | feature-dashboard-remote | 0 | 2 | 7 | 2 |
 | game-server | 1 | 2 | 4 | 2 |

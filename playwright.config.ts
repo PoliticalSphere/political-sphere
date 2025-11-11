@@ -1,4 +1,4 @@
-import { defineConfig, devices } from "@playwright/test";
+import { defineConfig, devices } from '@playwright/test';
 
 /**
  * Playwright Configuration for Political Sphere E2E Testing
@@ -7,7 +7,7 @@ import { defineConfig, devices } from "@playwright/test";
  */
 export default defineConfig({
   // Test directory
-  testDir: "./apps/e2e/src",
+  testDir: './apps/e2e/src',
 
   // Maximum time one test can run
   timeout: 30 * 1000,
@@ -20,25 +20,25 @@ export default defineConfig({
 
   // Reporter configuration
   reporter: [
-    ["html", { outputFolder: "reports/e2e-html", open: "never" }],
-    ["json", { outputFile: "reports/e2e/results.json" }],
-    ["junit", { outputFile: "reports/e2e/junit.xml" }],
-    ["list"],
+    ['html', { outputFolder: 'reports/e2e-html', open: 'never' }],
+    ['json', { outputFile: 'reports/e2e/results.json' }],
+    ['junit', { outputFile: 'reports/e2e/junit.xml' }],
+    ['list'],
   ],
 
   // Shared settings for all projects
   use: {
     // Base URL for tests
-    baseURL: process.env.E2E_BASE_URL || "http://localhost:3000",
+    baseURL: process.env.E2E_BASE_URL || 'http://localhost:3000',
 
     // Collect trace on failure for debugging
-    trace: "on-first-retry",
+    trace: 'on-first-retry',
 
     // Screenshot on failure
-    screenshot: "only-on-failure",
+    screenshot: 'only-on-failure',
 
     // Video on failure
-    video: "retain-on-failure",
+    video: 'retain-on-failure',
 
     // Navigation timeout
     navigationTimeout: 10 * 1000,
@@ -57,25 +57,25 @@ export default defineConfig({
       threshold: 0.2,
 
       // Animations should be disabled for consistency
-      animations: "disabled" as const,
+      animations: 'disabled' as const,
     },
   },
 
   // Configure projects for major browsers
   projects: [
     {
-      name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      name: 'chromium',
+      use: { ...devices['Desktop Chrome'] },
     },
 
     {
-      name: "firefox",
-      use: { ...devices["Desktop Firefox"] },
+      name: 'firefox',
+      use: { ...devices['Desktop Firefox'] },
     },
 
     {
-      name: "webkit",
-      use: { ...devices["Desktop Safari"] },
+      name: 'webkit',
+      use: { ...devices['Desktop Safari'] },
     },
 
     // Mobile viewports (optional - uncomment to test)
@@ -92,7 +92,7 @@ export default defineConfig({
   // Web server configuration for local testing (only in non-CI environments)
   ...(!process.env.CI && {
     webServer: {
-      command: "npm run start:dev",
+      command: 'npm run start:dev',
       port: 3000,
       timeout: 120 * 1000,
       reuseExistingServer: true,

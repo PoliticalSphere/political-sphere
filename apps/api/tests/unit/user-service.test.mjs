@@ -46,7 +46,7 @@ describe('UserService Unit Tests', () => {
 
       // Try to create duplicate
       await expect(userService.createUser(userData)).rejects.toThrow(
-        /Username or email already exists/,
+        /Username or email already exists/
       );
     });
 
@@ -65,7 +65,7 @@ describe('UserService Unit Tests', () => {
 
       // Try to create with duplicate email
       await expect(userService.createUser(userData2)).rejects.toThrow(
-        /Username or email already exists/,
+        /Username or email already exists/
       );
     });
   });

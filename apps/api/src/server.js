@@ -1,5 +1,5 @@
-const { NewsService } = require("./news-service");
-const { JsonNewsStore } = require("./newsStore");
+const { NewsService } = require('./news-service');
+const { JsonNewsStore } = require('./newsStore');
 
 function createNewsServer(options = {}) {
   const newsService = new NewsService();

@@ -1,10 +1,9 @@
-import type Database from "better-sqlite3";
-import { v4 as uuidv4 } from "uuid";
+import type { CreatePartyInput, Party } from '@political-sphere/shared';
+import type Database from 'better-sqlite3';
+import { v4 as uuidv4 } from 'uuid';
 
-import { CACHE_TTL, type CacheService, cacheKeys } from "../../utils/cache.js";
-import { DatabaseError, retryWithBackoff } from "../../utils/error-handler.js";
-
-import type { CreatePartyInput, Party } from "@political-sphere/shared";
+import { CACHE_TTL, type CacheService, cacheKeys } from '../../utils/cache.js';
+import { DatabaseError, retryWithBackoff } from '../../utils/error-handler.js';
 
 interface PartyRow {
   id: string;
@@ -17,7 +16,7 @@ interface PartyRow {
 export class PartyStore {
   constructor(
     private db: Database.Database,
-    private cache?: CacheService,
+    private cache?: CacheService
   ) {}
 
   async create(input: CreatePartyInput): Promise<Party> {
@@ -43,7 +42,7 @@ export class PartyStore {
       await Promise.all([
         this.cache.del(cacheKeys.party(id)),
         this.cache.del(cacheKeys.partyByName(input.name)),
-        this.cache.invalidatePattern("parties:list:*"),
+        this.cache.invalidatePattern('parties:list:*'),
       ]);
     }
 
@@ -60,9 +59,10 @@ export class PartyStore {
     try {
       return await retryWithBackoff(async () => {
         const row = this.db
-          .prepare<[string], PartyRow>(
-            `SELECT id, name, description, color, created_at FROM parties WHERE id = ?`,
-          )
+          .prepare<
+            [string],
+            PartyRow
+          >(`SELECT id, name, description, color, created_at FROM parties WHERE id = ?`)
           .get(id);
         if (!row) return null;
 
@@ -95,9 +95,10 @@ export class PartyStore {
     try {
       return await retryWithBackoff(async () => {
         const row = this.db
-          .prepare<[string], PartyRow>(
-            `SELECT id, name, description, color, created_at FROM parties WHERE name = ?`,
-          )
+          .prepare<
+            [string],
+            PartyRow
+          >(`SELECT id, name, description, color, created_at FROM parties WHERE name = ?`)
           .get(name);
         if (!row) return null;
 
@@ -134,16 +135,16 @@ export class PartyStore {
 
         // Get total count
         const countStmt = this.db.prepare<[], { count: number }>(
-          `SELECT COUNT(*) as count FROM parties`,
+          `SELECT COUNT(*) as count FROM parties`
         );
         const total = countStmt.get()?.count ?? 0;
 
         // Get paginated results
         const stmt = this.db.prepare<[number, number], PartyRow>(
-          `SELECT id, name, description, color, created_at FROM parties ORDER BY created_at DESC LIMIT ? OFFSET ?`,
+          `SELECT id, name, description, color, created_at FROM parties ORDER BY created_at DESC LIMIT ? OFFSET ?`
         );
         const rows = stmt.all(limit, offset);
-        const parties = rows.map((row) => ({
+        const parties = rows.map(row => ({
           id: row.id,
           name: row.name,
           description: row.description ?? undefined,

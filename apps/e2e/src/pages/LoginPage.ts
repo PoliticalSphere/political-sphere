@@ -2,7 +2,7 @@
  * Login Page Object Model
  * Represents the login page and its interactions
  */
-import type { Page, Locator } from "@playwright/test";
+import type { Page, Locator } from '@playwright/test';
 
 export class LoginPage {
   readonly page: Page;
@@ -15,15 +15,15 @@ export class LoginPage {
     this.page = page;
     this.emailInput = page.getByLabel(/email/i);
     this.passwordInput = page.getByLabel(/password/i);
-    this.loginButton = page.getByRole("button", { name: /log in|sign in/i });
-    this.errorMessage = page.getByRole("alert");
+    this.loginButton = page.getByRole('button', { name: /log in|sign in/i });
+    this.errorMessage = page.getByRole('alert');
   }
 
   /**
    * Navigate to login page
    */
   async goto() {
-    await this.page.goto("/");
+    await this.page.goto('/');
   }
 
   /**
@@ -47,6 +47,6 @@ export class LoginPage {
    */
   async getErrorText(): Promise<string> {
     const text = await this.errorMessage.textContent();
-    return text || "";
+    return text || '';
   }
 }

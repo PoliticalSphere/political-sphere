@@ -14,13 +14,13 @@
  * - Total Blocking Time (TBT): < 300ms
  * - Cumulative Layout Shift (CLS): < 0.1
  */
-import { test, expect, type Page } from "@playwright/test";
+import { test, expect, type Page } from '@playwright/test';
 
-import { GameBoardPage } from "../pages/GameBoardPage";
-import { LoginPage } from "../pages/LoginPage";
+import { GameBoardPage } from '../pages/GameBoardPage';
+import { LoginPage } from '../pages/LoginPage';
 
 // Enable performance logging via DEBUG=1 environment variable
-const DEBUG = process.env.DEBUG === "1";
+const DEBUG = process.env.DEBUG === '1';
 
 /**
  * Web Vitals Performance Metrics
@@ -40,12 +40,12 @@ interface PerformanceMetrics {
  */
 async function measureWebVitals(page: Page): Promise<PerformanceMetrics> {
   return await page.evaluate(() => {
-    return new Promise<PerformanceMetrics>((resolve) => {
+    return new Promise<PerformanceMetrics>(resolve => {
       const metrics: Partial<PerformanceMetrics> = {};
 
       // Get navigation timing
       const navigation = performance.getEntriesByType(
-        "navigation",
+        'navigation'
       )[0] as PerformanceNavigationTiming;
       if (navigation) {
         metrics.loadTime = navigation.loadEventEnd - navigation.fetchStart;
@@ -53,14 +53,14 @@ async function measureWebVitals(page: Page): Promise<PerformanceMetrics> {
       }
 
       // FCP - First Contentful Paint
-      const paintEntries = performance.getEntriesByType("paint");
-      const fcpEntry = paintEntries.find((entry) => entry.name === "first-contentful-paint");
+      const paintEntries = performance.getEntriesByType('paint');
+      const fcpEntry = paintEntries.find(entry => entry.name === 'first-contentful-paint');
       if (fcpEntry) {
         metrics.fcp = fcpEntry.startTime;
       }
 
       // LCP - Largest Contentful Paint
-      const observer = new PerformanceObserver((list) => {
+      const observer = new PerformanceObserver(list => {
         const entries = list.getEntries();
         const lastEntry = entries[entries.length - 1] as PerformanceEntry & {
           renderTime?: number;
@@ -70,7 +70,7 @@ async function measureWebVitals(page: Page): Promise<PerformanceMetrics> {
       });
 
       try {
-        observer.observe({ type: "largest-contentful-paint", buffered: true });
+        observer.observe({ type: 'largest-contentful-paint', buffered: true });
       } catch {
         // LCP not supported
         metrics.lcp = 0;
@@ -78,7 +78,7 @@ async function measureWebVitals(page: Page): Promise<PerformanceMetrics> {
 
       // CLS - Cumulative Layout Shift
       let cls = 0;
-      const clsObserver = new PerformanceObserver((list) => {
+      const clsObserver = new PerformanceObserver(list => {
         for (const entry of list.getEntries()) {
           const layoutShift = entry as PerformanceEntry & { value?: number };
           if (layoutShift.value !== undefined) {
@@ -88,7 +88,7 @@ async function measureWebVitals(page: Page): Promise<PerformanceMetrics> {
       });
 
       try {
-        clsObserver.observe({ type: "layout-shift", buffered: true });
+        clsObserver.observe({ type: 'layout-shift', buffered: true });
       } catch {
         // CLS not supported
       }
@@ -113,12 +113,12 @@ async function measureWebVitals(page: Page): Promise<PerformanceMetrics> {
   });
 }
 
-test.describe("Page Load Performance", () => {
-  test("login page should meet performance budgets", async ({ page }) => {
+test.describe('Page Load Performance', () => {
+  test('login page should meet performance budgets', async ({ page }) => {
     const startTime = Date.now();
 
-    await page.goto("http://localhost:3000/login");
-    await page.waitForLoadState("networkidle");
+    await page.goto('http://localhost:3000/login');
+    await page.waitForLoadState('networkidle');
 
     const loadTime = Date.now() - startTime;
     const metrics = await measureWebVitals(page);
@@ -131,7 +131,7 @@ test.describe("Page Load Performance", () => {
 
     // Log metrics for monitoring
     if (DEBUG)
-      console.log("Login Page Performance:", {
+      console.log('Login Page Performance:', {
         loadTime,
         fcp: metrics.fcp,
         lcp: metrics.lcp,
@@ -139,13 +139,13 @@ test.describe("Page Load Performance", () => {
       });
   });
 
-  test("game board should load efficiently", async ({ page }) => {
+  test('game board should load efficiently', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     // Login first
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
 
     // Measure game board load
@@ -161,21 +161,21 @@ test.describe("Page Load Performance", () => {
     expect(metrics.cls).toBeLessThan(0.1);
 
     if (DEBUG)
-      console.log("Game Board Performance:", {
+      console.log('Game Board Performance:', {
         proposalsLoadTime: loadTime,
         lcp: metrics.lcp,
         cls: metrics.cls,
       });
   });
 
-  test("should cache static assets efficiently", async ({ page }) => {
+  test('should cache static assets efficiently', async ({ page }) => {
     // First load
-    await page.goto("http://localhost:3000/login");
-    await page.waitForLoadState("networkidle");
+    await page.goto('http://localhost:3000/login');
+    await page.waitForLoadState('networkidle');
 
     // Get resource timing for first load
     const _firstLoadResources = await page.evaluate(() => {
-      return performance.getEntriesByType("resource").map((entry: PerformanceEntry) => {
+      return performance.getEntriesByType('resource').map((entry: PerformanceEntry) => {
         const resourceTiming = entry as PerformanceResourceTiming;
         return {
           name: entry.name,
@@ -187,10 +187,10 @@ test.describe("Page Load Performance", () => {
 
     // Reload page (should use cache)
     await page.reload();
-    await page.waitForLoadState("networkidle");
+    await page.waitForLoadState('networkidle');
 
     const secondLoadResources = await page.evaluate(() => {
-      return performance.getEntriesByType("resource").map((entry: PerformanceEntry) => {
+      return performance.getEntriesByType('resource').map((entry: PerformanceEntry) => {
         const resourceTiming = entry as PerformanceResourceTiming;
         return {
           name: entry.name,
@@ -202,7 +202,7 @@ test.describe("Page Load Performance", () => {
 
     // Static assets should be cached (transferSize = 0 or much smaller)
     const cachedResources = secondLoadResources.filter(
-      (r) => r.transferSize === 0 || r.transferSize < 1000,
+      r => r.transferSize === 0 || r.transferSize < 1000
     );
 
     expect(cachedResources.length).toBeGreaterThan(0);
@@ -210,16 +210,16 @@ test.describe("Page Load Performance", () => {
       console.log(`Cached ${cachedResources.length}/${secondLoadResources.length} resources`);
   });
 
-  test("should handle slow network conditions gracefully", async ({ page, context }) => {
+  test('should handle slow network conditions gracefully', async ({ page, context }) => {
     // Simulate slow 3G connection
-    await context.route("**/*", async (route) => {
-      await new Promise((resolve) => setTimeout(resolve, 100)); // 100ms delay
+    await context.route('**/*', async route => {
+      await new Promise(resolve => setTimeout(resolve, 100)); // 100ms delay
       await route.continue();
     });
 
     const startTime = Date.now();
-    await page.goto("http://localhost:3000/login");
-    await page.waitForLoadState("domcontentloaded");
+    await page.goto('http://localhost:3000/login');
+    await page.waitForLoadState('domcontentloaded');
     const loadTime = Date.now() - startTime;
 
     // Page should still be interactive on slow network
@@ -232,7 +232,7 @@ test.describe("Page Load Performance", () => {
   });
 });
 
-test.describe("API Response Performance", () => {
+test.describe('API Response Performance', () => {
   let loginPage: LoginPage;
   let gamePage: GameBoardPage;
 
@@ -241,15 +241,15 @@ test.describe("API Response Performance", () => {
     gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
   });
 
-  test("proposals API should respond quickly", async ({ page }) => {
+  test('proposals API should respond quickly', async ({ page }) => {
     // Measure API response time
     const [response] = await Promise.all([
       page.waitForResponse(
-        (resp) => resp.url().includes("/api/v1/proposals") && resp.status() === 200,
+        resp => resp.url().includes('/api/v1/proposals') && resp.status() === 200
       ),
       gamePage.waitForProposalsLoad(),
     ]);
@@ -260,18 +260,18 @@ test.describe("API Response Performance", () => {
     // API should respond within 500ms
     expect(responseTime).toBeLessThan(500);
 
-    if (DEBUG) console.log("Proposals API Response Time:", responseTime, "ms");
+    if (DEBUG) console.log('Proposals API Response Time:', responseTime, 'ms');
   });
 
-  test("voting API should be fast", async ({ page }) => {
+  test('voting API should be fast', async ({ page }) => {
     const title = `Performance Vote ${Date.now()}`;
-    await gamePage.createProposal(title, "Performance test");
+    await gamePage.createProposal(title, 'Performance test');
 
     // Measure vote API response
     const startTime = Date.now();
     const [response] = await Promise.all([
-      page.waitForResponse((resp) => resp.url().includes("/api/v1/votes") && resp.status() === 201),
-      gamePage.voteOnProposal(title, "aye"),
+      page.waitForResponse(resp => resp.url().includes('/api/v1/votes') && resp.status() === 201),
+      gamePage.voteOnProposal(title, 'aye'),
     ]);
 
     const voteTime = Date.now() - startTime;
@@ -282,19 +282,19 @@ test.describe("API Response Performance", () => {
     expect(apiTime).toBeLessThan(300);
     expect(voteTime).toBeLessThan(1000); // Total operation < 1s
 
-    if (DEBUG) console.log("Vote API Performance:", { apiTime, totalTime: voteTime });
+    if (DEBUG) console.log('Vote API Performance:', { apiTime, totalTime: voteTime });
   });
 
-  test("authentication should be performant", async ({ page }) => {
+  test('authentication should be performant', async ({ page }) => {
     const login = new LoginPage(page);
     await login.goto();
 
     const startTime = Date.now();
     const [response] = await Promise.all([
       page.waitForResponse(
-        (resp) => resp.url().includes("/api/v1/auth/login") && resp.status() === 200,
+        resp => resp.url().includes('/api/v1/auth/login') && resp.status() === 200
       ),
-      login.login("test@example.com", "password123"),
+      login.login('test@example.com', 'password123'),
     ]);
 
     const authTime = Date.now() - startTime;
@@ -305,12 +305,12 @@ test.describe("API Response Performance", () => {
     expect(apiTime).toBeLessThan(500);
     expect(authTime).toBeLessThan(1500);
 
-    if (DEBUG) console.log("Auth Performance:", { apiTime, totalTime: authTime });
+    if (DEBUG) console.log('Auth Performance:', { apiTime, totalTime: authTime });
   });
 });
 
-test.describe("Concurrent User Performance", () => {
-  test("should handle 5 concurrent users voting", async ({ browser }) => {
+test.describe('Concurrent User Performance', () => {
+  test('should handle 5 concurrent users voting', async ({ browser }) => {
     const contexts = [];
     const title = `Concurrent Test ${Date.now()}`;
 
@@ -321,9 +321,9 @@ test.describe("Concurrent User Performance", () => {
     const mainGame = new GameBoardPage(mainPage);
 
     await mainLogin.goto();
-    await mainLogin.login("test@example.com", "password123");
+    await mainLogin.login('test@example.com', 'password123');
     await mainLogin.waitForSuccess();
-    await mainGame.createProposal(title, "Concurrent voting test");
+    await mainGame.createProposal(title, 'Concurrent voting test');
 
     // Create 5 concurrent users
     for (let i = 0; i < 5; i++) {
@@ -333,7 +333,7 @@ test.describe("Concurrent User Performance", () => {
       const game = new GameBoardPage(page);
 
       await login.goto();
-      await login.login(`user${i}@example.com`, "password123");
+      await login.login(`user${i}@example.com`, 'password123');
       await login.waitForSuccess();
       await game.waitForProposalsLoad();
 
@@ -342,7 +342,7 @@ test.describe("Concurrent User Performance", () => {
 
     // All users vote simultaneously
     const startTime = Date.now();
-    await Promise.all(contexts.map(({ game }) => game.voteOnProposal(title, "aye")));
+    await Promise.all(contexts.map(({ game }) => game.voteOnProposal(title, 'aye')));
     const votingTime = Date.now() - startTime;
 
     // Concurrent voting should complete quickly
@@ -353,7 +353,7 @@ test.describe("Concurrent User Performance", () => {
     expect(finalVotes.aye).toBe(5);
 
     if (DEBUG)
-      console.log("Concurrent Voting Performance:", {
+      console.log('Concurrent Voting Performance:', {
         users: 5,
         totalTime: votingTime,
         avgPerUser: votingTime / 5,
@@ -366,7 +366,7 @@ test.describe("Concurrent User Performance", () => {
     }
   });
 
-  test("should handle 10 concurrent logins", async ({ browser }) => {
+  test('should handle 10 concurrent logins', async ({ browser }) => {
     const contexts = [];
 
     const startTime = Date.now();
@@ -380,7 +380,7 @@ test.describe("Concurrent User Performance", () => {
         const login = new LoginPage(page);
 
         await login.goto();
-        await login.login(`user${i}@example.com`, "password123");
+        await login.login(`user${i}@example.com`, 'password123');
         await login.waitForSuccess();
 
         contexts.push(context);
@@ -396,7 +396,7 @@ test.describe("Concurrent User Performance", () => {
     expect(totalTime).toBeLessThan(5000); // < 5s for 10 logins
 
     if (DEBUG)
-      console.log("Concurrent Login Performance:", {
+      console.log('Concurrent Login Performance:', {
         users: 10,
         totalTime,
         avgPerUser: totalTime / 10,
@@ -409,8 +409,8 @@ test.describe("Concurrent User Performance", () => {
   });
 });
 
-test.describe("Resource Usage", () => {
-  test("should not leak memory on repeated navigation", async ({ page }) => {
+test.describe('Resource Usage', () => {
+  test('should not leak memory on repeated navigation', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
@@ -423,12 +423,12 @@ test.describe("Resource Usage", () => {
     // Navigate repeatedly
     for (let i = 0; i < 5; i++) {
       await loginPage.goto();
-      await loginPage.login("test@example.com", "password123");
+      await loginPage.login('test@example.com', 'password123');
       await loginPage.waitForSuccess();
       await gamePage.waitForProposalsLoad();
 
       // Navigate back to login
-      await page.goto("http://localhost:3000/login");
+      await page.goto('http://localhost:3000/login');
     }
 
     // Final memory snapshot
@@ -445,7 +445,7 @@ test.describe("Resource Usage", () => {
       expect(increasePercent).toBeLessThan(50);
 
       if (DEBUG)
-        console.log("Memory Usage:", {
+        console.log('Memory Usage:', {
           initial: `${(initialMemory / 1024 / 1024).toFixed(2)} MB`,
           final: `${(finalMemory / 1024 / 1024).toFixed(2)} MB`,
           increase: `${increasePercent.toFixed(2)}%`,
@@ -453,12 +453,12 @@ test.describe("Resource Usage", () => {
     }
   });
 
-  test("should handle large proposals list efficiently", async ({ page }) => {
+  test('should handle large proposals list efficiently', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const gamePage = new GameBoardPage(page);
 
     await loginPage.goto();
-    await loginPage.login("test@example.com", "password123");
+    await loginPage.login('test@example.com', 'password123');
     await loginPage.waitForSuccess();
 
     // Create many proposals (if not already existing)
@@ -472,7 +472,7 @@ test.describe("Resource Usage", () => {
     expect(renderTime).toBeLessThan(2000);
 
     if (DEBUG)
-      console.log("Large List Performance:", {
+      console.log('Large List Performance:', {
         count: proposals.length,
         renderTime,
         avgPerItem: proposals.length > 0 ? renderTime / proposals.length : 0,
@@ -480,8 +480,8 @@ test.describe("Resource Usage", () => {
   });
 });
 
-test.describe("Performance Regression Detection", () => {
-  test("should track baseline performance metrics", async ({ page }) => {
+test.describe('Performance Regression Detection', () => {
+  test('should track baseline performance metrics', async ({ page }) => {
     const loginPage = new LoginPage(page);
 
     // Measure multiple runs to get average
@@ -489,7 +489,7 @@ test.describe("Performance Regression Detection", () => {
     for (let i = 0; i < 3; i++) {
       const startTime = Date.now();
       await loginPage.goto();
-      await page.waitForLoadState("networkidle");
+      await page.waitForLoadState('networkidle');
       const loadTime = Date.now() - startTime;
 
       const metrics = await measureWebVitals(page);
@@ -505,7 +505,7 @@ test.describe("Performance Regression Detection", () => {
     };
 
     // Store baseline (would typically save to file/database)
-    if (DEBUG) console.log("Performance Baseline:", avg);
+    if (DEBUG) console.log('Performance Baseline:', avg);
 
     // Assert against known baseline
     expect(avg.loadTime).toBeLessThan(3000);

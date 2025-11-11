@@ -6,13 +6,13 @@
  * in test environments without depending on external services.
  */
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname, join } from "node:path";
-import { fileURLToPath } from "node:url";
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const OUTPUT_DIR = join(__dirname, "../../../reports/ai/model-validation");
+const OUTPUT_DIR = join(__dirname, '../../../reports/ai/model-validation');
 
 class AIModelValidationPipeline {
   constructor() {
@@ -27,25 +27,25 @@ class AIModelValidationPipeline {
 
   async run() {
     const [command, ...rest] = process.argv.slice(2);
-    if (!command || command === "--help" || command === "-h") {
+    if (!command || command === '--help' || command === '-h') {
       this.showHelp();
       return;
     }
 
     switch (command) {
-      case "validate":
+      case 'validate':
         await this.validateModel(rest[0]);
         break;
-      case "test":
+      case 'test':
         await this.runSpecificTest(rest[0], rest[1]);
         break;
-      case "report":
+      case 'report':
         this.printReport(rest[0]);
         break;
-      case "monitor":
+      case 'monitor':
         await this.startMonitoring(rest[0]);
         break;
-      case "deploy":
+      case 'deploy':
         await this.validateForDeployment(rest[0]);
         break;
       default:
@@ -54,7 +54,7 @@ class AIModelValidationPipeline {
     }
   }
 
-  async validateModel(modelName = "default-model") {
+  async validateModel(modelName = 'default-model') {
     const summary = {
       model: modelName,
       timestamp: new Date().toISOString(),
@@ -78,9 +78,9 @@ class AIModelValidationPipeline {
     }
   }
 
-  async runSpecificTest(modelName = "default-model", testName) {
+  async runSpecificTest(modelName = 'default-model', testName) {
     if (!testName || !this.tests[testName]) {
-      console.error(`Specify a valid test (${Object.keys(this.tests).join(", ")}).`);
+      console.error(`Specify a valid test (${Object.keys(this.tests).join(', ')}).`);
       process.exitCode = 1;
       return;
     }
@@ -92,7 +92,7 @@ class AIModelValidationPipeline {
     }
   }
 
-  printReport(modelName = "default-model") {
+  printReport(modelName = 'default-model') {
     const reportPath = this.getReportPath(modelName);
     if (!existsSync(reportPath)) {
       console.error(`No report found for model "${modelName}".`);
@@ -100,21 +100,21 @@ class AIModelValidationPipeline {
       return;
     }
 
-    const data = JSON.parse(readFileSync(reportPath, "utf-8"));
+    const data = JSON.parse(readFileSync(reportPath, 'utf-8'));
     console.log(JSON.stringify(data, null, 2));
   }
 
-  async startMonitoring(modelName = "default-model") {
+  async startMonitoring(modelName = 'default-model') {
     const baseline = await this.runPerformanceTests(modelName);
     console.log(
-      `📈 Monitoring ${modelName}: accuracy ${(baseline.metrics.accuracy * 100).toFixed(1)}%`,
+      `📈 Monitoring ${modelName}: accuracy ${(baseline.metrics.accuracy * 100).toFixed(1)}%`
     );
   }
 
-  async validateForDeployment(modelName = "default-model") {
+  async validateForDeployment(modelName = 'default-model') {
     console.log(`🔐 Running pre-deployment checks for ${modelName}`);
     await this.validateModel(modelName);
-    console.log("✅ Deployment gate passed.");
+    console.log('✅ Deployment gate passed.');
   }
 
   async runFunctionalTests(modelName) {
@@ -145,7 +145,7 @@ class AIModelValidationPipeline {
     return {
       passed: score >= 0.8,
       score,
-      findings: score < 0.85 ? ["Rotate API keys", "Review model inputs"] : [],
+      findings: score < 0.85 ? ['Rotate API keys', 'Review model inputs'] : [],
     };
   }
 
@@ -171,11 +171,11 @@ class AIModelValidationPipeline {
     console.log(`\nModel: ${summary.model}`);
     for (const [name, result] of Object.entries(summary.tests)) {
       console.log(
-        ` • ${name.padEnd(12)} ${result.passed ? "PASS" : "FAIL"} (score ${result.score.toFixed(2)})`,
+        ` • ${name.padEnd(12)} ${result.passed ? 'PASS' : 'FAIL'} (score ${result.score.toFixed(2)})`
       );
     }
     console.log(
-      `Overall: ${summary.overall.passed ? "PASS" : "FAIL"} (score ${summary.overall.score.toFixed(2)})`,
+      `Overall: ${summary.overall.passed ? 'PASS' : 'FAIL'} (score ${summary.overall.score.toFixed(2)})`
     );
   }
 
@@ -191,7 +191,7 @@ class AIModelValidationPipeline {
   }
 
   hashString(value) {
-    return value.split("").reduce((acc, char) => acc + char.charCodeAt(0), 0);
+    return value.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0);
   }
 
   showHelp() {

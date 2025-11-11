@@ -9,11 +9,11 @@
  * @source VS Code (microsoft/vscode) - Code intelligence and semantic tokens
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const acorn = require("acorn");
-const walk = require("acorn-walk");
+const acorn = require('acorn');
+const walk = require('acorn-walk');
 
 class ASTAnalyzer {
   constructor() {
@@ -27,27 +27,27 @@ class ASTAnalyzer {
 
     // Semantic token types from VS Code
     this.tokenTypes = {
-      NAMESPACE: "namespace",
-      CLASS: "class",
-      ENUM: "enum",
-      INTERFACE: "interface",
-      STRUCT: "struct",
-      TYPE_PARAMETER: "typeParameter",
-      PARAMETER: "parameter",
-      VARIABLE: "variable",
-      PROPERTY: "property",
-      ENUM_MEMBER: "enumMember",
-      EVENT: "event",
-      FUNCTION: "function",
-      METHOD: "method",
-      MACRO: "macro",
-      KEYWORD: "keyword",
-      MODIFIER: "modifier",
-      COMMENT: "comment",
-      STRING: "string",
-      NUMBER: "number",
-      REGEXP: "regexp",
-      OPERATOR: "operator",
+      NAMESPACE: 'namespace',
+      CLASS: 'class',
+      ENUM: 'enum',
+      INTERFACE: 'interface',
+      STRUCT: 'struct',
+      TYPE_PARAMETER: 'typeParameter',
+      PARAMETER: 'parameter',
+      VARIABLE: 'variable',
+      PROPERTY: 'property',
+      ENUM_MEMBER: 'enumMember',
+      EVENT: 'event',
+      FUNCTION: 'function',
+      METHOD: 'method',
+      MACRO: 'macro',
+      KEYWORD: 'keyword',
+      MODIFIER: 'modifier',
+      COMMENT: 'comment',
+      STRING: 'string',
+      NUMBER: 'number',
+      REGEXP: 'regexp',
+      OPERATOR: 'operator',
     };
   }
 
@@ -58,8 +58,8 @@ class ASTAnalyzer {
   parse(code, options = {}) {
     try {
       return acorn.parse(code, {
-        ecmaVersion: "latest",
-        sourceType: "module",
+        ecmaVersion: 'latest',
+        sourceType: 'module',
         locations: true,
         ranges: true,
         ...options,
@@ -140,7 +140,7 @@ class ASTAnalyzer {
         },
 
         LogicalExpression(node, state, c) {
-          if (node.operator === "&&" || node.operator === "||") {
+          if (node.operator === '&&' || node.operator === '||') {
             metrics.cyclomatic++;
           }
           metrics.halstead.operators++;
@@ -161,7 +161,7 @@ class ASTAnalyzer {
           metrics.halstead.operands++;
           metrics.halstead.distinctOperands.add(node.name);
         },
-      },
+      }
     );
 
     // Calculate derived Halstead metrics
@@ -189,8 +189,8 @@ class ASTAnalyzer {
       ClassDeclaration(node) {
         tokens.push({
           range: node.range,
-          type: "class",
-          modifiers: ["declaration"],
+          type: 'class',
+          modifiers: ['declaration'],
           name: node.id?.name,
         });
       },
@@ -198,19 +198,19 @@ class ASTAnalyzer {
       FunctionDeclaration(node) {
         tokens.push({
           range: node.range,
-          type: "function",
-          modifiers: ["declaration"],
+          type: 'function',
+          modifiers: ['declaration'],
           name: node.id?.name,
         });
       },
 
       VariableDeclaration(node) {
-        node.declarations.forEach((decl) => {
-          if (decl.id?.type === "Identifier") {
+        node.declarations.forEach(decl => {
+          if (decl.id?.type === 'Identifier') {
             tokens.push({
               range: decl.id.range,
-              type: "variable",
-              modifiers: [node.kind === "const" ? "readonly" : "declaration"],
+              type: 'variable',
+              modifiers: [node.kind === 'const' ? 'readonly' : 'declaration'],
               name: decl.id.name,
             });
           }
@@ -218,10 +218,10 @@ class ASTAnalyzer {
       },
 
       MemberExpression(node) {
-        if (node.property?.type === "Identifier") {
+        if (node.property?.type === 'Identifier') {
           tokens.push({
             range: node.property.range,
-            type: "property",
+            type: 'property',
             modifiers: [],
             name: node.property.name,
           });
@@ -249,14 +249,14 @@ class ASTAnalyzer {
       CallExpression(node) {
         let depth = 0;
         let current = node;
-        while (current.parent && current.parent.type === "CallExpression") {
+        while (current.parent && current.parent.type === 'CallExpression') {
           depth++;
           current = current.parent;
         }
         if (depth > 3) {
           patterns.antiPatterns.push({
-            type: "callback-hell",
-            severity: "warning",
+            type: 'callback-hell',
+            severity: 'warning',
             range: node.range,
             message: `Deeply nested callbacks (depth: ${depth}). Consider using async/await.`,
           });
@@ -265,24 +265,24 @@ class ASTAnalyzer {
 
       // Security: eval usage
       Identifier(node) {
-        if (node.name === "eval") {
+        if (node.name === 'eval') {
           patterns.securityIssues.push({
-            type: "dangerous-eval",
-            severity: "critical",
+            type: 'dangerous-eval',
+            severity: 'critical',
             range: node.range,
-            message: "Use of eval() is dangerous and should be avoided",
+            message: 'Use of eval() is dangerous and should be avoided',
           });
         }
       },
 
       // Performance: Array.forEach vs for loop
       MemberExpression(node) {
-        if (node.property?.name === "forEach" && node.object?.type === "Identifier") {
+        if (node.property?.name === 'forEach' && node.object?.type === 'Identifier') {
           patterns.performanceIssues.push({
-            type: "foreach-performance",
-            severity: "info",
+            type: 'foreach-performance',
+            severity: 'info',
             range: node.range,
-            message: "Consider using for...of for better performance in hot paths",
+            message: 'Consider using for...of for better performance in hot paths',
           });
         }
       },
@@ -296,7 +296,7 @@ class ASTAnalyzer {
    * Complete analysis pipeline
    */
   analyzeFile(filePath) {
-    const code = fs.readFileSync(filePath, "utf8");
+    const code = fs.readFileSync(filePath, 'utf8');
     const ast = this.parse(code);
 
     if (ast.error) {
@@ -326,7 +326,7 @@ class ASTAnalyzer {
     report.push(`\n📊 AST Analysis Report: ${path.basename(analysis.file)}\n`);
 
     // Complexity metrics
-    report.push("Complexity Metrics:");
+    report.push('Complexity Metrics:');
     report.push(`  Cyclomatic: ${analysis.complexity.cyclomatic}`);
     report.push(`  Cognitive: ${analysis.complexity.cognitive}`);
     report.push(`  Max Nesting: ${analysis.complexity.maxNesting}`);
@@ -336,7 +336,7 @@ class ASTAnalyzer {
     // Semantic tokens
     report.push(`Semantic Tokens: ${analysis.tokens.length}`);
     const tokenCounts = {};
-    analysis.tokens.forEach((t) => {
+    analysis.tokens.forEach(t => {
       tokenCounts[t.type] = (tokenCounts[t.type] || 0) + 1;
     });
     Object.entries(tokenCounts).forEach(([type, count]) => {
@@ -354,30 +354,30 @@ class ASTAnalyzer {
       report.push(`\n⚠️  Issues Found: ${totalIssues}`);
 
       if (patterns.securityIssues.length > 0) {
-        report.push("\nSecurity Issues:");
-        patterns.securityIssues.forEach((issue) => {
+        report.push('\nSecurity Issues:');
+        patterns.securityIssues.forEach(issue => {
           report.push(`  [${issue.severity}] ${issue.message}`);
         });
       }
 
       if (patterns.antiPatterns.length > 0) {
-        report.push("\nAnti-patterns:");
-        patterns.antiPatterns.forEach((issue) => {
+        report.push('\nAnti-patterns:');
+        patterns.antiPatterns.forEach(issue => {
           report.push(`  [${issue.severity}] ${issue.message}`);
         });
       }
 
       if (patterns.performanceIssues.length > 0) {
-        report.push("\nPerformance Issues:");
-        patterns.performanceIssues.forEach((issue) => {
+        report.push('\nPerformance Issues:');
+        patterns.performanceIssues.forEach(issue => {
           report.push(`  [${issue.severity}] ${issue.message}`);
         });
       }
     } else {
-      report.push("\n✅ No issues found");
+      report.push('\n✅ No issues found');
     }
 
-    return report.join("\n");
+    return report.join('\n');
   }
 }
 
@@ -387,7 +387,7 @@ if (require.main === module) {
   const filePath = process.argv[2];
 
   if (!filePath) {
-    console.error("Usage: node ast-analyzer.cjs <file-path>");
+    console.error('Usage: node ast-analyzer.cjs <file-path>');
     process.exit(1);
   }
 

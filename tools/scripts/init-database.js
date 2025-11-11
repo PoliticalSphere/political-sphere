@@ -5,33 +5,33 @@
  * Initializes SQLite database with proper schema and security settings
  */
 
-import fs from "fs";
-import path from "path";
+import fs from 'fs';
+import path from 'path';
 
-import Database from "better-sqlite3";
+import Database from 'better-sqlite3';
 
 // Simple console logger for database initialization
 // Security: Use structured logging to prevent format string injection
 const logger = {
   info: (message, meta = {}) =>
-    console.log("[INFO]", message, Object.keys(meta).length ? JSON.stringify(meta) : ""),
+    console.log('[INFO]', message, Object.keys(meta).length ? JSON.stringify(meta) : ''),
   warn: (message, meta = {}) =>
-    console.warn("[WARN]", message, Object.keys(meta).length ? JSON.stringify(meta) : ""),
+    console.warn('[WARN]', message, Object.keys(meta).length ? JSON.stringify(meta) : ''),
   error: (message, meta = {}) =>
-    console.error("[ERROR]", message, Object.keys(meta).length ? JSON.stringify(meta) : ""),
+    console.error('[ERROR]', message, Object.keys(meta).length ? JSON.stringify(meta) : ''),
   fatal: (message, meta = {}) =>
-    console.error("[FATAL]", message, Object.keys(meta).length ? JSON.stringify(meta) : ""),
+    console.error('[FATAL]', message, Object.keys(meta).length ? JSON.stringify(meta) : ''),
 };
 
 // Database configuration
 const DB_PATH =
-  process.env.SQLITE_DB_PATH || path.join(process.cwd(), "data", "political_sphere.db");
+  process.env.SQLITE_DB_PATH || path.join(process.cwd(), 'data', 'political_sphere.db');
 const DB_DIR = path.dirname(DB_PATH);
 
 // Ensure data directory exists
 if (!fs.existsSync(DB_DIR)) {
   fs.mkdirSync(DB_DIR, { recursive: true });
-  logger.info("Created data directory", { path: DB_DIR });
+  logger.info('Created data directory', { path: DB_DIR });
 }
 
 let db;
@@ -41,12 +41,12 @@ try {
   db = new Database(DB_PATH);
 
   // Enable WAL mode for better concurrency
-  db.pragma("journal_mode = WAL");
+  db.pragma('journal_mode = WAL');
 
   // Enable foreign keys
-  db.pragma("foreign_keys = ON");
+  db.pragma('foreign_keys = ON');
 
-  logger.info("Database connection established", { path: DB_PATH });
+  logger.info('Database connection established', { path: DB_PATH });
 
   // Create users table
   const createUsersTable = `
@@ -141,19 +141,19 @@ try {
 
   // Execute table creation
   db.exec(createUsersTable);
-  logger.info("Created users table");
+  logger.info('Created users table');
 
   db.exec(createPasswordHistoryTable);
-  logger.info("Created password_history table");
+  logger.info('Created password_history table');
 
   db.exec(createSessionsTable);
-  logger.info("Created sessions table");
+  logger.info('Created sessions table');
 
   db.exec(createRateLimitTable);
-  logger.info("Created rate_limits table");
+  logger.info('Created rate_limits table');
 
   db.exec(createAuditLogTable);
-  logger.info("Created audit_log table");
+  logger.info('Created audit_log table');
 
   // Create indexes for performance
   const createIndexes = `
@@ -170,7 +170,7 @@ try {
   `;
 
   db.exec(createIndexes);
-  logger.info("Created database indexes");
+  logger.info('Created database indexes');
 
   // Create triggers for updated_at
   const createTriggers = `
@@ -193,24 +193,24 @@ try {
   `;
 
   db.exec(createTriggers);
-  logger.info("Created database triggers");
+  logger.info('Created database triggers');
 
   // Insert default admin user if no users exist
-  const userCount = db.prepare("SELECT COUNT(*) as count FROM users").get();
+  const userCount = db.prepare('SELECT COUNT(*) as count FROM users').get();
   if (userCount.count === 0) {
-    const adminId = "admin-" + Date.now();
-    const adminEmail = process.env.ADMIN_EMAIL || "admin@political-sphere.local";
+    const adminId = 'admin-' + Date.now();
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@political-sphere.local';
     const adminPasswordHashEnv = process.env.ADMIN_PASSWORD_HASH;
     const adminPasswordPlainEnv = process.env.ADMIN_PASSWORD;
 
     // Validate bcrypt hash format if provided
-    const isValidBcrypt = (hash) =>
-      typeof hash === "string" && /^\$2[aby]?\$[0-9]{2}\$[./A-Za-z0-9]{53}$/.test(hash);
+    const isValidBcrypt = hash =>
+      typeof hash === 'string' && /^\$2[aby]?\$[0-9]{2}\$[./A-Za-z0-9]{53}$/.test(hash);
 
     let resolvedPasswordHash;
     if (adminPasswordHashEnv) {
       if (!isValidBcrypt(adminPasswordHashEnv)) {
-        logger.error("ADMIN_PASSWORD_HASH provided but does not look like a valid bcrypt hash.");
+        logger.error('ADMIN_PASSWORD_HASH provided but does not look like a valid bcrypt hash.');
       } else {
         resolvedPasswordHash = adminPasswordHashEnv;
       }
@@ -218,17 +218,17 @@ try {
       // For security, avoid committing hashing libs; only hash if bcryptjs is available at runtime
       try {
         // Dynamically import bcryptjs if available; otherwise instruct to set ADMIN_PASSWORD_HASH
-        const bcrypt = await import("bcryptjs");
+        const bcrypt = await import('bcryptjs');
         const rounds = Number(process.env.BCRYPT_ROUNDS || 12);
         resolvedPasswordHash = bcrypt.hashSync(adminPasswordPlainEnv, rounds);
       } catch (_e) {
         logger.warn(
-          "ADMIN_PASSWORD provided but bcryptjs is not installed. Please set ADMIN_PASSWORD_HASH with a precomputed bcrypt hash or add bcryptjs as a dependency for runtime hashing.",
+          'ADMIN_PASSWORD provided but bcryptjs is not installed. Please set ADMIN_PASSWORD_HASH with a precomputed bcrypt hash or add bcryptjs as a dependency for runtime hashing.'
         );
       }
     } else {
       logger.warn(
-        "No ADMIN_PASSWORD_HASH or ADMIN_PASSWORD provided; skipping default admin creation to avoid committing credentials. Set ADMIN_PASSWORD_HASH to create an initial admin user.",
+        'No ADMIN_PASSWORD_HASH or ADMIN_PASSWORD provided; skipping default admin creation to avoid committing credentials. Set ADMIN_PASSWORD_HASH to create an initial admin user.'
       );
     }
 
@@ -239,18 +239,18 @@ try {
 
     if (resolvedPasswordHash) {
       insertAdmin.run(adminId, adminEmail, resolvedPasswordHash);
-      logger.info("Created default admin user", {
+      logger.info('Created default admin user', {
         email: adminEmail,
         id: adminId,
       });
     } else {
-      logger.info("Default admin user not created due to missing valid password hash.");
+      logger.info('Default admin user not created due to missing valid password hash.');
     }
   }
 
-  logger.info("Database initialization completed successfully");
+  logger.info('Database initialization completed successfully');
 } catch (error) {
-  logger.fatal("Database initialization failed", {
+  logger.fatal('Database initialization failed', {
     error: error.message,
     stack: error.stack,
   });
@@ -258,7 +258,7 @@ try {
 } finally {
   if (db) {
     db.close();
-    logger.info("Database connection closed");
+    logger.info('Database connection closed');
   }
 }
 

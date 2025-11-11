@@ -32,15 +32,15 @@ function simulateEconomy(economy, enactedPolicies) {
 
   // Policy effects (simple examples)
   for (const policy of enactedPolicies) {
-    if (policy.title.toLowerCase().includes("tax")) {
+    if (policy.title.toLowerCase().includes('tax')) {
       treasury += 5000;
       inflationRate += 0.005;
     }
-    if (policy.title.toLowerCase().includes("welfare")) {
+    if (policy.title.toLowerCase().includes('welfare')) {
       treasury -= 2000;
       unemploymentRate -= 0.01;
     }
-    if (policy.title.toLowerCase().includes("austerity")) {
+    if (policy.title.toLowerCase().includes('austerity')) {
       treasury += 3000;
       unemploymentRate += 0.005;
     }
@@ -72,7 +72,7 @@ function advanceGameState(game, actions = [], seed = 1) {
   const state = JSON.parse(JSON.stringify(game));
 
   // Track proposals that existed before this advance call
-  const preExistingProposalIds = new Set((game.proposals || []).map((p) => p.id));
+  const preExistingProposalIds = new Set((game.proposals || []).map(p => p.id));
 
   // Safety: ensure arrays exist
   state.proposals = state.proposals || [];
@@ -84,51 +84,51 @@ function advanceGameState(game, actions = [], seed = 1) {
   for (const action of actions) {
     counter += 1;
     switch (action.type) {
-      case "propose": {
+      case 'propose': {
         const payload = action.payload || {};
-        const id = deterministicId("proposal", rng);
+        const id = deterministicId('proposal', rng);
         const proposal = {
           id,
-          title: payload.title || "Untitled",
-          description: payload.description || "",
-          proposerId: payload.proposerId || action.playerId || "unknown",
+          title: payload.title || 'Untitled',
+          description: payload.description || '',
+          proposerId: payload.proposerId || action.playerId || 'unknown',
           createdAt: new Date(1000 * counter + Math.floor(rng() * 1000)).toISOString(),
-          status: "proposed",
+          status: 'proposed',
           debateId: null,
         };
         state.proposals.push(proposal);
         break;
       }
-      case "start_debate": {
+      case 'start_debate': {
         const payload = action.payload || {};
-        const proposal = state.proposals.find((p) => p.id === payload.proposalId);
-        if (!proposal || proposal.status !== "proposed") break;
+        const proposal = state.proposals.find(p => p.id === payload.proposalId);
+        if (!proposal || proposal.status !== 'proposed') break;
 
-        const debateId = deterministicId("debate", rng);
+        const debateId = deterministicId('debate', rng);
         const debate = {
           id: debateId,
           proposalId: payload.proposalId,
-          speakingOrder: payload.speakingOrder || state.players.map((p) => p.id), // Simple round-robin
+          speakingOrder: payload.speakingOrder || state.players.map(p => p.id), // Simple round-robin
           currentSpeakerIndex: 0,
           timeLimit: 300000, // 5 minutes per speaker
           startedAt: new Date(1000 * counter + Math.floor(rng() * 1000)).toISOString(),
-          status: "active",
+          status: 'active',
         };
         state.debates.push(debate);
-        proposal.status = "debate";
+        proposal.status = 'debate';
         proposal.debateId = debateId;
         break;
       }
-      case "speak": {
+      case 'speak': {
         const payload = action.payload || {};
-        const debate = state.debates.find((d) => d.id === payload.debateId);
-        if (!debate || debate.status !== "active") break;
+        const debate = state.debates.find(d => d.id === payload.debateId);
+        if (!debate || debate.status !== 'active') break;
 
         const speech = {
-          id: deterministicId("speech", rng),
+          id: deterministicId('speech', rng),
           debateId: payload.debateId,
           speakerId: payload.speakerId,
-          content: payload.content || "",
+          content: payload.content || '',
           timestamp: new Date(1000 * counter + Math.floor(rng() * 1000)).toISOString(),
         };
         state.speeches.push(speech);
@@ -136,11 +136,11 @@ function advanceGameState(game, actions = [], seed = 1) {
         // Advance speaker
         debate.currentSpeakerIndex = (debate.currentSpeakerIndex + 1) % debate.speakingOrder.length;
         if (debate.currentSpeakerIndex === 0) {
-          debate.status = "completed";
+          debate.status = 'completed';
         }
         break;
       }
-      case "vote": {
+      case 'vote': {
         const payload = action.payload || {};
         const playerId = payload.playerId || action.playerId;
         if (!payload.proposalId || !playerId || !payload.choice) {
@@ -155,18 +155,18 @@ function advanceGameState(game, actions = [], seed = 1) {
         state.votes.push(vote);
         break;
       }
-      case "advance_turn": {
+      case 'advance_turn': {
         // Move proposals from debate to voting if debate completed
         for (const proposal of state.proposals) {
-          if (proposal.status === "debate") {
-            const debate = state.debates.find((d) => d.id === proposal.debateId);
-            if (debate && debate.status === "completed") {
-              proposal.status = "voting";
+          if (proposal.status === 'debate') {
+            const debate = state.debates.find(d => d.id === proposal.debateId);
+            if (debate && debate.status === 'completed') {
+              proposal.status = 'voting';
             }
           }
         }
         // Increment turn
-        state.turn = state.turn || { turnNumber: 0, phase: "lobby" };
+        state.turn = state.turn || { turnNumber: 0, phase: 'lobby' };
         state.turn.turnNumber += 1;
         break;
       }
@@ -179,21 +179,21 @@ function advanceGameState(game, actions = [], seed = 1) {
   // Resolve voting proposals
   const enactedPolicies = [];
   for (const proposal of state.proposals) {
-    if (proposal.status !== "voting") continue;
+    if (proposal.status !== 'voting') continue;
     if (!preExistingProposalIds.has(proposal.id)) continue;
 
     const votesFor = state.votes.filter(
-      (v) => v.proposalId === proposal.id && v.choice === "for",
+      v => v.proposalId === proposal.id && v.choice === 'for'
     ).length;
     const votesAgainst = state.votes.filter(
-      (v) => v.proposalId === proposal.id && v.choice === "against",
+      v => v.proposalId === proposal.id && v.choice === 'against'
     ).length;
 
     if (votesFor > votesAgainst) {
-      proposal.status = "enacted";
+      proposal.status = 'enacted';
       enactedPolicies.push(proposal);
     } else {
-      proposal.status = "rejected";
+      proposal.status = 'rejected';
     }
   }
 

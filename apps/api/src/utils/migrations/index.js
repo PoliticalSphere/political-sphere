@@ -5,18 +5,18 @@
  * @see docs/architecture/decisions/adr-0001-database-migrations.md
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const Database = require("better-sqlite3");
+const Database = require('better-sqlite3');
 
-const { DB_PATH, DEFAULT_DB_PATH } = require("../config");
+const { DB_PATH, DEFAULT_DB_PATH } = require('../config');
 
 const {
   MigrationError,
   MigrationRollbackError,
   MigrationValidationError,
-} = require("./migration-error");
+} = require('./migration-error');
 
 /**
  * Initialize the database connection
@@ -27,19 +27,19 @@ function initializeDatabase(dbPath) {
   const finalPath = dbPath || DB_PATH || DEFAULT_DB_PATH;
 
   const db = new Database(finalPath, {
-    verbose: process.env.NODE_ENV === "development" ? console.log : undefined,
+    verbose: process.env.NODE_ENV === 'development' ? console.log : undefined,
   });
 
   // Enable WAL mode for better concurrency when supported
   try {
-    db.pragma("journal_mode = WAL");
+    db.pragma('journal_mode = WAL');
   } catch (e) {
     // Some environments (e.g., in-memory or restricted FS) may not support WAL
     // Proceed without failing; tests and dev can run with default journal mode
   }
   // Enforce foreign keys
   try {
-    db.pragma("foreign_keys = ON");
+    db.pragma('foreign_keys = ON');
   } catch {
     // Ignore errors in environments that don't support this pragma
   }
@@ -55,7 +55,7 @@ async function loadMigrations() {
   const migrationsDir = __dirname;
   const files = fs
     .readdirSync(migrationsDir)
-    .filter((file) => file.endsWith(".js") && file !== "index.js" && file !== "migration-error.js")
+    .filter(file => file.endsWith('.js') && file !== 'index.js' && file !== 'migration-error.js')
     .sort(); // Ensure migrations run in order
 
   const migrations = [];
@@ -64,8 +64,8 @@ async function loadMigrations() {
     const migration = require(filePath);
     if (
       migration.name &&
-      typeof migration.up === "function" &&
-      typeof migration.down === "function"
+      typeof migration.up === 'function' &&
+      typeof migration.down === 'function'
     ) {
       migrations.push({
         name: migration.name,
@@ -88,12 +88,12 @@ function validateSchema(db) {
     const tables = db
       .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
       .all();
-    const expectedTables = ["users", "parties", "bills", "votes", "_migrations"];
-    const existingTables = tables.map((t) => t.name);
+    const expectedTables = ['users', 'parties', 'bills', 'votes', '_migrations'];
+    const existingTables = tables.map(t => t.name);
 
     for (const table of expectedTables) {
       if (!existingTables.includes(table)) {
-        throw new MigrationValidationError(`Missing table: ${table}`, "schema_validation");
+        throw new MigrationValidationError(`Missing table: ${table}`, 'schema_validation');
       }
     }
 
@@ -105,15 +105,15 @@ function validateSchema(db) {
     //     "schema_validation",
     //   );
     // }
-    console.log("Schema validation passed (FK check skipped for now)");
+    console.log('Schema validation passed (FK check skipped for now)');
   } catch (error) {
     if (error instanceof MigrationValidationError) {
       throw error;
     }
     throw new MigrationValidationError(
       `Schema validation failed: ${error.message}`,
-      "schema_validation",
-      error,
+      'schema_validation',
+      error
     );
   }
 }
@@ -128,13 +128,13 @@ async function rollbackMigration(db, migration) {
   try {
     console.log(`Rolling back migration: ${migration.name}`);
     await migration.down(db);
-    db.prepare("DELETE FROM _migrations WHERE name = ?").run(migration.name);
+    db.prepare('DELETE FROM _migrations WHERE name = ?').run(migration.name);
     console.log(`Successfully rolled back migration: ${migration.name}`);
   } catch (error) {
     throw new MigrationRollbackError(
       `Rollback failed for ${migration.name}: ${error.message}`,
       migration.name,
-      error,
+      error
     );
   }
 }
@@ -161,9 +161,9 @@ async function runMigrations(db, rollbackOnError = true) {
   // Apply migrations
   for (const migration of migrations) {
     console.log(`Checking migration: ${migration.name}`);
-    console.log("DB open before prepare:", db.open);
-    const existing = db.prepare("SELECT name FROM _migrations WHERE name = ?").get(migration.name);
-    console.log("Prepare succeeded for existing check");
+    console.log('DB open before prepare:', db.open);
+    const existing = db.prepare('SELECT name FROM _migrations WHERE name = ?').get(migration.name);
+    console.log('Prepare succeeded for existing check');
 
     if (!existing) {
       try {
@@ -171,7 +171,7 @@ async function runMigrations(db, rollbackOnError = true) {
         const startTime = Date.now();
         migration.up(db);
         const duration = Date.now() - startTime;
-        db.prepare("INSERT INTO _migrations (name) VALUES (?)").run(migration.name);
+        db.prepare('INSERT INTO _migrations (name) VALUES (?)').run(migration.name);
         appliedMigrations.push(migration);
         console.log(`Migration ${migration.name} applied successfully in ${duration}ms`);
       } catch (error) {
@@ -189,7 +189,7 @@ async function runMigrations(db, rollbackOnError = true) {
         throw new MigrationError(
           `Migration ${migration.name} failed: ${error.message}`,
           migration.name,
-          error,
+          error
         );
       }
     } else {
@@ -199,7 +199,7 @@ async function runMigrations(db, rollbackOnError = true) {
 
   // Temporarily skip validation due to connection state issue
   // validateSchema(db);
-  console.log("All migrations applied (validation skipped for now)");
+  console.log('All migrations applied (validation skipped for now)');
 }
 
 /**
@@ -208,11 +208,11 @@ async function runMigrations(db, rollbackOnError = true) {
  * @throws {MigrationRollbackError} If rollback fails
  */
 async function rollbackAllMigrations(db) {
-  const appliedMigrations = db.prepare("SELECT name FROM _migrations ORDER BY id DESC").all();
+  const appliedMigrations = db.prepare('SELECT name FROM _migrations ORDER BY id DESC').all();
   const migrations = await loadMigrations();
 
   for (const row of appliedMigrations) {
-    const migration = migrations.find((m) => m.name === row.name);
+    const migration = migrations.find(m => m.name === row.name);
     if (migration) {
       await rollbackMigration(db, migration);
     } else {
@@ -220,7 +220,7 @@ async function rollbackAllMigrations(db) {
     }
   }
 
-  console.log("All migrations rolled back successfully");
+  console.log('All migrations rolled back successfully');
 }
 
 module.exports = {

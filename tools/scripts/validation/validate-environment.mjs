@@ -37,7 +37,7 @@ const warnings = [];
 const secretFindings = [];
 
 // Configuration
-const MODE = process.argv.find((arg) => arg.startsWith('--mode='))?.split('=')[1] || 'warn';
+const MODE = process.argv.find(arg => arg.startsWith('--mode='))?.split('=')[1] || 'warn';
 // Optional: limit scan to specific files passed via CLI after a --files marker
 // Example: node validate-environment.mjs --mode=scan --files file1.ts file2.json
 const FILES_FLAG_INDEX = process.argv.indexOf('--files');
@@ -46,7 +46,7 @@ const VALID_MODES = ['strict', 'warn', 'scan'];
 
 if (!VALID_MODES.includes(MODE)) {
   console.error(
-    `${colors.red}Invalid mode: ${MODE}. Must be one of: ${VALID_MODES.join(', ')}${colors.reset}`,
+    `${colors.red}Invalid mode: ${MODE}. Must be one of: ${VALID_MODES.join(', ')}${colors.reset}`
   );
   process.exit(1);
 }
@@ -80,7 +80,7 @@ function logInfo(message) {
 function logSecretFinding(file, line, pattern) {
   secretFindings.push({ file, line, pattern });
   console.warn(
-    `${colors.yellow}🔐 Potential secret in ${file}:${line} (pattern: ${pattern})${colors.reset}`,
+    `${colors.yellow}🔐 Potential secret in ${file}:${line} (pattern: ${pattern})${colors.reset}`
   );
 }
 
@@ -131,7 +131,7 @@ function validateJWTSecrets() {
       logSuccess('JWT secrets appear to be cryptographically random');
     } else {
       logWarning(
-        "JWT secrets should be generated with: node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\"",
+        "JWT secrets should be generated with: node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\""
       );
     }
   }
@@ -281,13 +281,13 @@ const SAFE_PATTERNS = [
   /\bexample\s*:/i,
   /\bexamples\s*:/i,
   /\bvalue\s*:/i,
-  /\bpassword\s*:\s*['\"][^'\"]+['\"]/i,
+  /\bpassword\s*:\s*['"][^'"]+['"]/i,
   /\bsignature\s*:/i,
   /\bpublicKey\s*:/i,
 ];
 
 function isSafeContext(line) {
-  return SAFE_PATTERNS.some((pattern) => pattern.test(line));
+  return SAFE_PATTERNS.some(pattern => pattern.test(line));
 }
 
 function scanFileForSecrets(filePath) {
@@ -317,7 +317,7 @@ function scanFileForSecrets(filePath) {
 
 function scanDirectory(
   dir,
-  extensions = ['.js', '.ts', '.tsx', '.json', '.yml', '.yaml', '.env', '.sh'],
+  extensions = ['.js', '.ts', '.tsx', '.json', '.yml', '.yaml', '.env', '.sh']
 ) {
   const SKIP_DIRS = ['node_modules', '.git', '.nx', 'dist', 'build', 'coverage', '.vitest'];
   const SKIP_FILES = new Set(['package-lock.json', 'pnpm-lock.yaml', 'yarn.lock']);
@@ -384,7 +384,7 @@ function performSecretScan() {
   } else {
     logWarning(`Found ${secretFindings.length} potential secret(s) - review findings above`);
     logInfo(
-      'If these are false positives, ensure they use template variables or are in test fixtures',
+      'If these are false positives, ensure they use template variables or are in test fixtures'
     );
   }
 }
@@ -398,14 +398,14 @@ function checkEnvLocalFiles() {
     '.env.production.local',
     '.env.test.local',
   ];
-  const foundFiles = envFiles.filter((f) => existsSync(f));
+  const foundFiles = envFiles.filter(f => existsSync(f));
 
   if (foundFiles.length === 0) {
     logSuccess('No .env.local files found (using environment variables only)');
     return;
   }
 
-  foundFiles.forEach((file) => {
+  foundFiles.forEach(file => {
     logInfo(`Checking ${file}...`);
 
     // Verify it's gitignored
@@ -453,7 +453,7 @@ function printSummary() {
 
   if (secretFindings.length > 0) {
     console.warn(
-      `${colors.yellow}🔐 ${secretFindings.length} potential secret(s) detected${colors.reset}`,
+      `${colors.yellow}🔐 ${secretFindings.length} potential secret(s) detected${colors.reset}`
     );
     console.log();
   }

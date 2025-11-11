@@ -7,7 +7,7 @@
  * @module pipelines/game-state-sync
  */
 
-import type { PipelineConfig, PipelineResult } from "../types/pipeline.js";
+import type { PipelineConfig, PipelineResult } from '../types/pipeline.js';
 
 export class GameStateSyncPipeline {
   constructor(private readonly config: PipelineConfig) {}
@@ -23,8 +23,8 @@ export class GameStateSyncPipeline {
     // 4. Broadcast to connected clients
     // 5. Persist to database
 
-    console.log("Game state sync configuration:", this.config);
-    console.log("Syncing state:", data);
+    console.log('Game state sync configuration:', this.config);
+    console.log('Syncing state:', data);
 
     return {
       success: true,
@@ -38,7 +38,7 @@ export class GameStateSyncPipeline {
    */
   async resolveConflict(local: unknown, remote: unknown): Promise<unknown> {
     // TODO: Implement CRDT/OT conflict resolution
-    console.log("Resolving conflict between:", local, remote);
+    console.log('Resolving conflict between:', local, remote);
     return remote; // Temporary: last-write-wins
   }
 }

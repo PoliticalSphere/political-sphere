@@ -1,9 +1,9 @@
 /**
  * Test-specific database utilities
- * 
+ *
  * Provides a clean abstraction for tests to interact with the database
  * without directly importing from internal store modules.
- * 
+ *
  * This module is designed specifically for testing and should not be used
  * in production code.
  */

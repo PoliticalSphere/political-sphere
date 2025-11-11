@@ -1,16 +1,16 @@
-const fs = require("fs").promises;
-const path = require("path");
+const fs = require('fs').promises;
+const path = require('path');
 
 class JsonNewsStore {
-  constructor(dataDir = path.join(__dirname, "../../data")) {
+  constructor(dataDir = path.join(__dirname, '../../data')) {
     this.dataDir = dataDir;
-    this.newsFile = path.join(dataDir, "news.json");
+    this.newsFile = path.join(dataDir, 'news.json');
   }
 
   async read() {
     try {
       await fs.access(this.newsFile);
-      const content = await fs.readFile(this.newsFile, "utf8");
+      const content = await fs.readFile(this.newsFile, 'utf8');
       return JSON.parse(content);
     } catch (error) {
       // If file doesn't exist, return empty structure
@@ -30,7 +30,7 @@ class JsonNewsStore {
 
   async getById(id) {
     const news = await this.getAll();
-    return news.find((item) => item.id === id) || null;
+    return news.find(item => item.id === id) || null;
   }
 
   async create(newsItem) {
@@ -51,7 +51,7 @@ class JsonNewsStore {
 
   async update(id, updates) {
     const data = await this.read();
-    const index = data.news.findIndex((item) => item.id === id);
+    const index = data.news.findIndex(item => item.id === id);
 
     if (index === -1) {
       return null;
@@ -69,7 +69,7 @@ class JsonNewsStore {
 
   async delete(id) {
     const data = await this.read();
-    const index = data.news.findIndex((item) => item.id === id);
+    const index = data.news.findIndex(item => item.id === id);
 
     if (index === -1) {
       return false;

@@ -3,18 +3,18 @@
  * Handles routing between Login, Lobby, and Game screens
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
 
-import GameBoard from "./components/GameBoard";
-import { Lobby } from "./components/Lobby";
-import { Login } from "./components/Login";
-import { apiClient } from "./utils/api-client";
-import "./App.css";
+import GameBoard from './components/GameBoard';
+import { Lobby } from './components/Lobby';
+import { Login } from './components/Login';
+import { apiClient } from './utils/api-client';
+import './App.css';
 
-type Screen = "login" | "lobby" | "game";
+type Screen = 'login' | 'lobby' | 'game';
 
 export function App() {
-  const [screen, setScreen] = useState<Screen>("login");
+  const [screen, setScreen] = useState<Screen>('login');
   const [currentGameId, setCurrentGameId] = useState<string | null>(null);
   const [game, setGame] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -22,13 +22,13 @@ export function App() {
   // Check if user is already logged in
   useEffect(() => {
     if (apiClient.isAuthenticated()) {
-      setScreen("lobby");
+      setScreen('lobby');
     }
     setLoading(false);
   }, []);
 
   const handleLogin = () => {
-    setScreen("lobby");
+    setScreen('lobby');
   };
 
   const handleJoinGame = async (gameId: string) => {
@@ -36,32 +36,32 @@ export function App() {
       const result = await apiClient.getGame(gameId);
       setGame(result.game);
       setCurrentGameId(gameId);
-      setScreen("game");
+      setScreen('game');
     } catch (error) {
-      console.error("Failed to load game:", error);
-      alert("Failed to load game");
+      console.error('Failed to load game:', error);
+      alert('Failed to load game');
     }
   };
 
   const handleLeaveGame = () => {
     setCurrentGameId(null);
     setGame(null);
-    setScreen("lobby");
+    setScreen('lobby');
   };
 
   const handleProposalSubmit = async (proposal: any) => {
     if (!currentGameId) return;
 
     try {
-      const result = await apiClient.sendAction(currentGameId, "propose", {
+      const result = await apiClient.sendAction(currentGameId, 'propose', {
         title: proposal.title,
         description: proposal.description,
-        proposerId: "current", // Will be set by backend
+        proposerId: 'current', // Will be set by backend
       });
       setGame(result.game);
     } catch (error) {
-      console.error("Failed to submit proposal:", error);
-      alert("Failed to submit proposal");
+      console.error('Failed to submit proposal:', error);
+      alert('Failed to submit proposal');
     }
   };
 
@@ -72,8 +72,8 @@ export function App() {
       const result = await apiClient.sendAction(currentGameId, action.type, action.payload);
       setGame(result.game);
     } catch (error) {
-      console.error("Failed to vote:", error);
-      alert("Failed to vote");
+      console.error('Failed to vote:', error);
+      alert('Failed to vote');
     }
   };
 
@@ -86,15 +86,15 @@ export function App() {
     );
   }
 
-  if (screen === "login") {
+  if (screen === 'login') {
     return <Login onLogin={handleLogin} />;
   }
 
-  if (screen === "lobby") {
+  if (screen === 'lobby') {
     return <Lobby onJoinGame={handleJoinGame} />;
   }
 
-  if (screen === "game" && game) {
+  if (screen === 'game' && game) {
     return (
       <div className="app-game">
         <header className="game-header">

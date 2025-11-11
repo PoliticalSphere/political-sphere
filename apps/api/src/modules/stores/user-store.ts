@@ -1,10 +1,9 @@
-import type Database from "better-sqlite3";
-import { v4 as uuidv4 } from "uuid";
+import type { CreateUserInput, User } from '@political-sphere/shared';
+import type Database from 'better-sqlite3';
+import { v4 as uuidv4 } from 'uuid';
 
 // eslint-disable-next-line no-restricted-imports
-import { CACHE_TTL, type CacheService, cacheKeys } from "../../utils/cache.js";
-
-import type { CreateUserInput, User } from "@political-sphere/shared";
+import { CACHE_TTL, type CacheService, cacheKeys } from '../../utils/cache.js';
 
 interface UserRow {
   id: string;
@@ -19,7 +18,7 @@ interface UserRow {
 export class UserStore {
   constructor(
     private db: Database.Database,
-    private cache?: CacheService,
+    private cache?: CacheService
   ) {}
 
   async create(input: CreateUserInput): Promise<User> {
@@ -28,7 +27,7 @@ export class UserStore {
 
     // Handle optional passwordHash and role fields
     const passwordHash = input.passwordHash;
-    const role = input.role || "VIEWER";
+    const role = input.role || 'VIEWER';
 
     const stmt = this.db.prepare(`
       INSERT INTO users (id, username, email, password_hash, role, created_at, updated_at)
@@ -42,7 +41,7 @@ export class UserStore {
       passwordHash || null,
       role,
       now.toISOString(),
-      now.toISOString(),
+      now.toISOString()
     );
 
     const user: User = {
@@ -58,8 +57,8 @@ export class UserStore {
         this.cache.set(cacheKeys.user(id), user, CACHE_TTL.USER),
         this.cache.set(cacheKeys.userByUsername(input.username), user, CACHE_TTL.USER),
         this.cache.set(cacheKeys.userByEmail(input.email), user, CACHE_TTL.USER),
-        this.cache.invalidatePattern("user:*:bills"),
-        this.cache.invalidatePattern("user:*:votes"),
+        this.cache.invalidatePattern('user:*:bills'),
+        this.cache.invalidatePattern('user:*:votes'),
       ]);
     }
 
@@ -74,9 +73,10 @@ export class UserStore {
     }
 
     const row = this.db
-      .prepare<[string], UserRow>(
-        `SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?`,
-      )
+      .prepare<
+        [string],
+        UserRow
+      >(`SELECT id, username, email, created_at, updated_at FROM users WHERE id = ?`)
       .get(id);
     if (!row) return null;
 
@@ -104,9 +104,10 @@ export class UserStore {
     }
 
     const row = this.db
-      .prepare<[string], UserRow>(
-        `SELECT id, username, email, created_at, updated_at FROM users WHERE username = ?`,
-      )
+      .prepare<
+        [string],
+        UserRow
+      >(`SELECT id, username, email, created_at, updated_at FROM users WHERE username = ?`)
       .get(username);
     if (!row) return null;
 
@@ -134,9 +135,10 @@ export class UserStore {
     }
 
     const row = this.db
-      .prepare<[string], UserRow>(
-        `SELECT id, username, email, created_at, updated_at FROM users WHERE email = ?`,
-      )
+      .prepare<
+        [string],
+        UserRow
+      >(`SELECT id, username, email, created_at, updated_at FROM users WHERE email = ?`)
       .get(email);
     if (!row) return null;
 
@@ -160,11 +162,12 @@ export class UserStore {
    */
   async getAll(): Promise<User[]> {
     const rows = this.db
-      .prepare<[], UserRow>(
-        `SELECT id, username, email, created_at, updated_at FROM users ORDER BY created_at DESC`,
-      )
+      .prepare<
+        [],
+        UserRow
+      >(`SELECT id, username, email, created_at, updated_at FROM users ORDER BY created_at DESC`)
       .all();
-    return rows.map((r) => ({
+    return rows.map(r => ({
       id: r.id,
       username: r.username,
       email: r.email,
@@ -178,7 +181,7 @@ export class UserStore {
    */
   async update(
     id: string,
-    updates: Partial<Pick<User, "username" | "email">>,
+    updates: Partial<Pick<User, 'username' | 'email'>>
   ): Promise<User | null> {
     const current = await this.getById(id);
     if (!current) return null;
@@ -217,9 +220,10 @@ export class UserStore {
     role: string;
   } | null> {
     const row = this.db
-      .prepare<[string, string], UserRow & { password_hash: string; role: string }>(
-        `SELECT id, username, email, password_hash, role, created_at, updated_at FROM users WHERE username = ? OR email = ?`,
-      )
+      .prepare<
+        [string, string],
+        UserRow & { password_hash: string; role: string }
+      >(`SELECT id, username, email, password_hash, role, created_at, updated_at FROM users WHERE username = ? OR email = ?`)
       .get(usernameOrEmail, usernameOrEmail);
 
     if (!row || !row.password_hash) return null;

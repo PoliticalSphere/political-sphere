@@ -17,6 +17,12 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
   - Refined `detect-secrets` hook to exclude pattern definitions and the validator itself
   - Eliminates thousands of false positives from entropy scanning across the workspace (e.g., package-lock.json)
   - Keeps `gitleaks` as the primary staged secret gate; full workspace scans still available in CI via strict mode
+- Developer ergonomics: `npm run lint` and all Nx lint targets now auto-run ESLint fixes before the strict check (2025-11-11)
+  - Root script chains `lint:fix` and `lint:ci`, removing the need to pass `-- --fix`
+  - Dev setup scripts now call `npm run lint` directly
+  - tools/config workspace gained matching `lint:fix`/`lint:ci` scripts for consistency
+  - Nx `lint` target default enables `--fix` so per-project lint commands (CLI, CI, Nx affected) repair files automatically
+  - Web/worker lint commands explicitly include `--fix` for their run-command executors
 
 ### Fixed
 - Dependencies: Aligned `zod` to `^3.25.6` and added npm overrides to resolve peer dependency conflicts with `@langchain/*` and `zod-to-json-schema` (2025-11-11)

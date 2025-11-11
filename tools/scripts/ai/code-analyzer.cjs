@@ -5,14 +5,14 @@
  * for comprehensive AI-powered code analysis
  */
 
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
-const ExpertKnowledge = require("./expert-knowledge.cjs");
-const PatternMatcher = require("./pattern-matcher.cjs");
+const ExpertKnowledge = require('./expert-knowledge.cjs');
+const PatternMatcher = require('./pattern-matcher.cjs');
 
-const AI_DIR = path.join(__dirname, "../../../ai");
-const SEMANTIC_INDEX = path.join(AI_DIR, "ai-index/codebase-index.json");
+const AI_DIR = path.join(__dirname, '../../../ai');
+const SEMANTIC_INDEX = path.join(AI_DIR, 'ai-index/codebase-index.json');
 
 class CodeAnalyzer {
   constructor() {
@@ -23,7 +23,7 @@ class CodeAnalyzer {
 
   loadSemanticIndex() {
     if (fs.existsSync(SEMANTIC_INDEX)) {
-      return JSON.parse(fs.readFileSync(SEMANTIC_INDEX, "utf8"));
+      return JSON.parse(fs.readFileSync(SEMANTIC_INDEX, 'utf8'));
     }
     return { files: {}, symbols: {}, dependencies: {} };
   }
@@ -33,10 +33,10 @@ class CodeAnalyzer {
    */
   analyzeFile(filePath) {
     if (!fs.existsSync(filePath)) {
-      return { error: "File not found" };
+      return { error: 'File not found' };
     }
 
-    const code = fs.readFileSync(filePath, "utf8");
+    const code = fs.readFileSync(filePath, 'utf8');
     const relativePath = path.relative(process.cwd(), filePath);
 
     // 1. Pattern analysis (instant)
@@ -74,7 +74,7 @@ class CodeAnalyzer {
       functions: fileInfo.functions || [],
       classes: fileInfo.classes || [],
       dependencies: fileInfo.dependencies || [],
-      complexity: fileInfo.complexity || "unknown",
+      complexity: fileInfo.complexity || 'unknown',
     };
   }
 
@@ -82,13 +82,13 @@ class CodeAnalyzer {
     const recommendations = [];
 
     // Security recommendations
-    const securityIssues = patternResults.issues.filter((i) => i.category === "security");
+    const securityIssues = patternResults.issues.filter(i => i.category === 'security');
     if (securityIssues.length > 0) {
-      const securityPattern = this.expertKnowledge.getPattern("security");
+      const securityPattern = this.expertKnowledge.getPattern('security');
       if (securityPattern) {
         recommendations.push({
-          type: "security",
-          priority: "high",
+          type: 'security',
+          priority: 'high',
           pattern: securityPattern,
           issues: securityIssues,
         });
@@ -96,13 +96,13 @@ class CodeAnalyzer {
     }
 
     // Performance recommendations
-    const perfIssues = patternResults.issues.filter((i) => i.category === "performance");
+    const perfIssues = patternResults.issues.filter(i => i.category === 'performance');
     if (perfIssues.length > 0) {
-      const perfPattern = this.expertKnowledge.getPattern("performance");
+      const perfPattern = this.expertKnowledge.getPattern('performance');
       if (perfPattern) {
         recommendations.push({
-          type: "performance",
-          priority: "medium",
+          type: 'performance',
+          priority: 'medium',
           pattern: perfPattern,
           issues: perfIssues,
         });
@@ -110,13 +110,13 @@ class CodeAnalyzer {
     }
 
     // Testing recommendations
-    if (!code.includes("describe(") && !code.includes("test(") && !code.includes("it(")) {
-      const testingPattern = this.expertKnowledge.getPattern("testing");
+    if (!code.includes('describe(') && !code.includes('test(') && !code.includes('it(')) {
+      const testingPattern = this.expertKnowledge.getPattern('testing');
       if (testingPattern) {
         recommendations.push({
-          type: "testing",
-          priority: "medium",
-          message: "No tests found - consider adding test coverage",
+          type: 'testing',
+          priority: 'medium',
+          message: 'No tests found - consider adding test coverage',
           pattern: testingPattern,
         });
       }
@@ -129,12 +129,12 @@ class CodeAnalyzer {
     const fixes = [];
 
     // Map issues to quick fixes
-    patternResults.issues.forEach((issue) => {
-      if (issue.message.includes("console.log")) {
-        fixes.push(this.expertKnowledge.getQuickFix("debugging", "remove-logs"));
+    patternResults.issues.forEach(issue => {
+      if (issue.message.includes('console.log')) {
+        fixes.push(this.expertKnowledge.getQuickFix('debugging', 'remove-logs'));
       }
-      if (issue.message.includes("Sequential awaits")) {
-        fixes.push(this.expertKnowledge.getQuickFix("performance", "parallel-async"));
+      if (issue.message.includes('Sequential awaits')) {
+        fixes.push(this.expertKnowledge.getQuickFix('performance', 'parallel-async'));
       }
     });
 
@@ -144,41 +144,41 @@ class CodeAnalyzer {
   generateSummary(patternResults, semanticInfo) {
     const grade =
       patternResults.score >= 90
-        ? "A"
+        ? 'A'
         : patternResults.score >= 80
-          ? "B"
+          ? 'B'
           : patternResults.score >= 70
-            ? "C"
+            ? 'C'
             : patternResults.score >= 60
-              ? "D"
-              : "F";
+              ? 'D'
+              : 'F';
 
     return {
       grade,
       score: patternResults.score,
-      criticalIssues: patternResults.issues.filter((i) => i.severity === "critical").length,
+      criticalIssues: patternResults.issues.filter(i => i.severity === 'critical').length,
       totalIssues: patternResults.issues.length,
       exports: semanticInfo.exports?.length || 0,
       imports: semanticInfo.imports?.length || 0,
-      recommendation: grade >= "C" ? "Good code quality" : "Needs improvement",
+      recommendation: grade >= 'C' ? 'Good code quality' : 'Needs improvement',
     };
   }
 
   /**
    * Analyze entire directory
    */
-  analyzeDirectory(dirPath, extensions = [".ts", ".tsx", ".js", ".jsx"]) {
+  analyzeDirectory(dirPath, extensions = ['.ts', '.tsx', '.js', '.jsx']) {
     const results = [];
 
-    const walk = (dir) => {
+    const walk = dir => {
       const files = fs.readdirSync(dir);
-      files.forEach((file) => {
+      files.forEach(file => {
         const fullPath = path.join(dir, file);
         const stat = fs.statSync(fullPath);
 
-        if (stat.isDirectory() && !file.startsWith(".") && file !== "node_modules") {
+        if (stat.isDirectory() && !file.startsWith('.') && file !== 'node_modules') {
           walk(fullPath);
-        } else if (stat.isFile() && extensions.some((ext) => file.endsWith(ext))) {
+        } else if (stat.isFile() && extensions.some(ext => file.endsWith(ext))) {
           const analysis = this.analyzeFile(fullPath);
           if (!analysis.error) {
             results.push(analysis);
@@ -202,11 +202,11 @@ class CodeAnalyzer {
       recommendations: [],
     };
 
-    results.forEach((result) => {
+    results.forEach(result => {
       aggregate.averageScore += result.analysis.score;
       aggregate.totalIssues += result.analysis.issues.length;
       aggregate.criticalIssues += result.analysis.issues.filter(
-        (i) => i.severity === "critical",
+        i => i.severity === 'critical'
       ).length;
       aggregate.fileScores.push({
         file: result.file,
@@ -215,7 +215,7 @@ class CodeAnalyzer {
       });
 
       // Collect issue types
-      result.analysis.issues.forEach((issue) => {
+      result.analysis.issues.forEach(issue => {
         const key = issue.message;
         aggregate.topIssues[key] = (aggregate.topIssues[key] || 0) + 1;
       });
@@ -243,42 +243,42 @@ class CodeAnalyzer {
     // Critical security checks (regex, instant)
     if (/password\s*=\s*['"][^'"]+['"]/.test(code)) {
       issues.push({
-        type: "security",
-        severity: "critical",
-        message: "Hardcoded password",
+        type: 'security',
+        severity: 'critical',
+        message: 'Hardcoded password',
       });
     }
     if (/api[_-]?key\s*=\s*['"][^'"]+['"]/.test(code)) {
       issues.push({
-        type: "security",
-        severity: "critical",
-        message: "Hardcoded API key",
+        type: 'security',
+        severity: 'critical',
+        message: 'Hardcoded API key',
       });
     }
 
     // Common mistakes
     if (/var\s+/.test(code)) {
       issues.push({
-        type: "quality",
-        severity: "low",
-        message: "Use const/let",
+        type: 'quality',
+        severity: 'low',
+        message: 'Use const/let',
       });
     }
 
     // Missing error handling
     if (/await\s+/.test(code) && !/try\s*{/.test(code)) {
       issues.push({
-        type: "reliability",
-        severity: "medium",
-        message: "Add error handling for async",
+        type: 'reliability',
+        severity: 'medium',
+        message: 'Add error handling for async',
       });
     }
 
     return {
-      safe: issues.filter((i) => i.severity === "critical").length === 0,
+      safe: issues.filter(i => i.severity === 'critical').length === 0,
       issues,
       suggestions:
-        this.expertKnowledge.search(context.query || "best practices")?.slice(0, 3) || [],
+        this.expertKnowledge.search(context.query || 'best practices')?.slice(0, 3) || [],
     };
   }
 }
@@ -289,53 +289,53 @@ if (require.main === module) {
   const command = process.argv[2];
 
   switch (command) {
-    case "file": {
+    case 'file': {
       const file = process.argv[3];
       if (!file) {
-        console.log("Usage: code-analyzer.cjs file <path>");
+        console.log('Usage: code-analyzer.cjs file <path>');
         process.exit(1);
       }
       const result = analyzer.analyzeFile(file);
       console.log(JSON.stringify(result, null, 2));
       break;
     }
-    case "dir": {
-      const dir = process.argv[3] || ".";
-      console.log("Analyzing directory:", dir);
+    case 'dir': {
+      const dir = process.argv[3] || '.';
+      console.log('Analyzing directory:', dir);
       const result = analyzer.analyzeDirectory(dir);
-      console.log("\n=== Aggregate Analysis ===");
-      console.log("Total Files:", result.totalFiles);
-      console.log("Average Score:", result.averageScore, "/100");
-      console.log("Total Issues:", result.totalIssues);
-      console.log("Critical Issues:", result.criticalIssues);
+      console.log('\n=== Aggregate Analysis ===');
+      console.log('Total Files:', result.totalFiles);
+      console.log('Average Score:', result.averageScore, '/100');
+      console.log('Total Issues:', result.totalIssues);
+      console.log('Critical Issues:', result.criticalIssues);
       if (result.topIssues.length > 0) {
-        console.log("\nTop Issues:");
-        result.topIssues.forEach((i) => console.log(`  ${i.message} (${i.count}x)`));
+        console.log('\nTop Issues:');
+        result.topIssues.forEach(i => console.log(`  ${i.message} (${i.count}x)`));
       }
       if (result.fileScores.length > 0) {
-        console.log("\nLowest Scoring Files:");
+        console.log('\nLowest Scoring Files:');
         result.fileScores
           .slice(0, 5)
-          .forEach((f) => console.log(`  ${f.file}: ${f.score}/100 (${f.issues} issues)`));
+          .forEach(f => console.log(`  ${f.file}: ${f.score}/100 (${f.issues} issues)`));
       }
       break;
     }
-    case "quick": {
-      const code = fs.readFileSync(process.argv[3], "utf8");
+    case 'quick': {
+      const code = fs.readFileSync(process.argv[3], 'utf8');
       const result = analyzer.quickAnalysis(code);
-      console.log("Safe:", result.safe ? "✅" : "❌");
+      console.log('Safe:', result.safe ? '✅' : '❌');
       if (result.issues.length > 0) {
-        console.log("Issues:");
-        result.issues.forEach((i) => console.log(`  [${i.severity}] ${i.message}`));
+        console.log('Issues:');
+        result.issues.forEach(i => console.log(`  [${i.severity}] ${i.message}`));
       }
       break;
     }
     default:
-      console.log("Intelligent Code Analyzer");
-      console.log("Commands:");
-      console.log("  file <path>  - Analyze single file");
-      console.log("  dir [path]   - Analyze directory");
-      console.log("  quick <file> - Quick safety check");
+      console.log('Intelligent Code Analyzer');
+      console.log('Commands:');
+      console.log('  file <path>  - Analyze single file');
+      console.log('  dir [path]   - Analyze directory');
+      console.log('  quick <file> - Quick safety check');
   }
 }
 

@@ -1,13 +1,13 @@
-import request from "supertest";
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
+import request from 'supertest';
+import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 
-import { createApp } from "../src/app.ts";
+import { createApp } from '../src/app.ts';
 
-let server: import("http").Server;
+let server: import('http').Server;
 let agent: request.SuperTest<request.Test>;
 
 beforeAll(async () => {
-  server = await new Promise((resolve) => {
+  server = await new Promise(resolve => {
     const s = createApp().listen(0, () => resolve(s));
   });
   agent = request(server);
@@ -19,43 +19,43 @@ afterAll(() => {
 
 async function register(username: string, password: string) {
   const res = await agent
-    .post("/auth/register")
+    .post('/auth/register')
     .send({ username, password, email: `${username}@example.com` })
-    .set("Content-Type", "application/json");
+    .set('Content-Type', 'application/json');
   expect([200, 201]).toContain(res.status);
   return res.body.tokens.accessToken as string;
 }
 
-describe("Proposal & Voting flow", () => {
-  it("allows a proposal and a vote to be processed", async () => {
+describe('Proposal & Voting flow', () => {
+  it('allows a proposal and a vote to be processed', async () => {
     const userA = `userA-${Date.now()}`;
     const userB = `userB-${Date.now()}`;
-    const pass = "pass12345";
+    const pass = 'pass12345';
 
     const tokenA = await register(userA, pass);
     const tokenB = await register(userB, pass);
 
     // User A creates game
     const gameRes = await agent
-      .post("/game/create")
-      .set("Authorization", `Bearer ${tokenA}`)
-      .send({ name: "Voting Test" });
+      .post('/game/create')
+      .set('Authorization', `Bearer ${tokenA}`)
+      .send({ name: 'Voting Test' });
     expect([200, 201]).toContain(gameRes.status);
     const gameId = gameRes.body.game.id as string;
 
     // User B joins game
     const joinRes = await agent
       .post(`/game/${gameId}/join`)
-      .set("Authorization", `Bearer ${tokenB}`);
+      .set('Authorization', `Bearer ${tokenB}`);
     expect(joinRes.status).toBe(200);
 
     // User A proposes
     const proposeRes = await agent
       .post(`/game/${gameId}/action`)
-      .set("Authorization", `Bearer ${tokenA}`)
+      .set('Authorization', `Bearer ${tokenA}`)
       .send({
-        type: "propose",
-        payload: { title: "Tax Reform", description: "Adjust brackets" },
+        type: 'propose',
+        payload: { title: 'Tax Reform', description: 'Adjust brackets' },
       });
     expect(proposeRes.status).toBe(200);
     type Proposal = {
@@ -71,10 +71,10 @@ describe("Proposal & Voting flow", () => {
     // User B votes FOR
     const voteRes = await agent
       .post(`/game/${gameId}/action`)
-      .set("Authorization", `Bearer ${tokenB}`)
+      .set('Authorization', `Bearer ${tokenB}`)
       .send({
-        type: "vote",
-        payload: { proposalId, choice: "for", playerId: "ignored" },
+        type: 'vote',
+        payload: { proposalId, choice: 'for', playerId: 'ignored' },
       });
     expect(voteRes.status).toBe(200);
     type Vote = { playerId: string; proposalId: string; choice: string };

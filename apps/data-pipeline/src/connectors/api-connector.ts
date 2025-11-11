@@ -37,10 +37,10 @@ export class ApiConnector {
    */
   async get<T = unknown>(
     endpoint: string,
-    params?: Record<string, string>,
+    params?: Record<string, string>
   ): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint, params);
-    return this.request<T>("GET", url);
+    return this.request<T>('GET', url);
   }
 
   /**
@@ -48,7 +48,7 @@ export class ApiConnector {
    */
   async post<T = unknown>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint);
-    return this.request<T>("POST", url, body);
+    return this.request<T>('POST', url, body);
   }
 
   /**
@@ -56,7 +56,7 @@ export class ApiConnector {
    */
   async put<T = unknown>(endpoint: string, body?: unknown): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint);
-    return this.request<T>("PUT", url, body);
+    return this.request<T>('PUT', url, body);
   }
 
   /**
@@ -64,7 +64,7 @@ export class ApiConnector {
    */
   async delete<T = unknown>(endpoint: string): Promise<ApiResponse<T>> {
     const url = this.buildUrl(endpoint);
-    return this.request<T>("DELETE", url);
+    return this.request<T>('DELETE', url);
   }
 
   /**
@@ -74,13 +74,13 @@ export class ApiConnector {
     method: string,
     url: string,
     body?: unknown,
-    retryCount = 0,
+    retryCount = 0
   ): Promise<ApiResponse<T>> {
     try {
       const headers = this.buildHeaders();
 
       // TODO: Implement actual HTTP request (use fetch or axios)
-      console.log("API Request:", { method, url, headers, body });
+      console.log('API Request:', { method, url, headers, body });
 
       // Mock response for now
       return {
@@ -118,12 +118,12 @@ export class ApiConnector {
    */
   private buildHeaders(): Record<string, string> {
     const headers: Record<string, string> = {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...this.config.headers,
     };
 
     if (this.config.apiKey) {
-      headers["Authorization"] = `Bearer ${this.config.apiKey}`;
+      headers['Authorization'] = `Bearer ${this.config.apiKey}`;
     }
 
     return headers;
@@ -133,7 +133,7 @@ export class ApiConnector {
    * Delay helper for retries
    */
   private delay(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
+    return new Promise(resolve => setTimeout(resolve, ms));
   }
 
   /**
@@ -141,7 +141,7 @@ export class ApiConnector {
    */
   async healthCheck(): Promise<boolean> {
     try {
-      const response = await this.get("/health");
+      const response = await this.get('/health');
       return response.status === 200;
     } catch {
       return false;

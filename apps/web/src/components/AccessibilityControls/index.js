@@ -4,10 +4,10 @@
  * Implements WCAG 2.2 AA compliance
  */
 
-import React from "react";
+import React from 'react';
 
-import { useAccessibility } from "../../hooks/useAccessibility";
-import "./AccessibilityControls.css";
+import { useAccessibility } from '../../hooks/useAccessibility';
+import './AccessibilityControls.css';
 
 const AccessibilityControls = ({ isOpen, onClose }) => {
   const {
@@ -26,38 +26,38 @@ const AccessibilityControls = ({ isOpen, onClose }) => {
   // Announce when controls open
   React.useEffect(() => {
     if (isOpen) {
-      announce("Accessibility controls opened. Use Tab to navigate options.", "assertive");
+      announce('Accessibility controls opened. Use Tab to navigate options.', 'assertive');
     }
   }, [isOpen, announce]);
 
   const handleHighContrastToggle = () => {
     setHighContrast(!highContrast);
-    announce(`${highContrast ? "High contrast disabled" : "High contrast enabled"}`, "polite");
+    announce(`${highContrast ? 'High contrast disabled' : 'High contrast enabled'}`, 'polite');
   };
 
   const handleLargeTextToggle = () => {
     setLargeText(!largeText);
-    announce(`${largeText ? "Large text disabled" : "Large text enabled"}`, "polite");
+    announce(`${largeText ? 'Large text disabled' : 'Large text enabled'}`, 'polite');
   };
 
   const handleReducedMotionToggle = () => {
     setReducedMotion(!reducedMotion);
-    announce(`${reducedMotion ? "Motion enabled" : "Reduced motion enabled"}`, "polite");
+    announce(`${reducedMotion ? 'Motion enabled' : 'Reduced motion enabled'}`, 'polite');
   };
 
   const handleIncreaseFontSize = () => {
     increaseFontSize();
-    announce("Font size increased", "polite");
+    announce('Font size increased', 'polite');
   };
 
   const handleDecreaseFontSize = () => {
     decreaseFontSize();
-    announce("Font size decreased", "polite");
+    announce('Font size decreased', 'polite');
   };
 
   const handleResetFontSize = () => {
     resetFontSize();
-    announce("Font size reset to default", "polite");
+    announce('Font size reset to default', 'polite');
   };
 
   if (!isOpen) return null;

@@ -5,11 +5,11 @@
  * Based on ESLint's proven pattern matching approach
  */
 
-const fs = require("node:fs");
-const path = require("node:path");
+const fs = require('node:fs');
+const path = require('node:path');
 
-const PATTERNS_DIR = path.join(__dirname, "../../../ai/patterns");
-const COMPILED_PATTERNS = path.join(PATTERNS_DIR, "compiled-patterns.json");
+const PATTERNS_DIR = path.join(__dirname, '../../../ai/patterns');
+const COMPILED_PATTERNS = path.join(PATTERNS_DIR, 'compiled-patterns.json');
 
 class PatternMatcher {
   constructor() {
@@ -26,7 +26,7 @@ class PatternMatcher {
       out[category] = [];
       categoryPatterns.forEach(({ pattern, flags, severity, message }) => {
         try {
-          if (typeof pattern !== "string" || pattern.length === 0 || pattern.length > 2000) {
+          if (typeof pattern !== 'string' || pattern.length === 0 || pattern.length > 2000) {
             // skip suspiciously large or non-string patterns
             return;
           }
@@ -35,7 +35,7 @@ class PatternMatcher {
           // Reference: CWE-1333 Inefficient Regular Expression Complexity
           if (this._isReDoSVulnerable(pattern)) {
             console.warn(
-              `Skipping potentially ReDoS-vulnerable pattern for category=${category}: ${pattern}`,
+              `Skipping potentially ReDoS-vulnerable pattern for category=${category}: ${pattern}`
             );
             return;
           }
@@ -52,12 +52,12 @@ class PatternMatcher {
           // Additional safety: Test regex compilation time
           // If it takes too long, it might be vulnerable to ReDoS
           const testStart = Date.now();
-          regex.test("test"); // Quick test to ensure it works
+          regex.test('test'); // Quick test to ensure it works
           const testDuration = Date.now() - testStart;
 
           if (testDuration > 100) {
             console.warn(
-              `Skipping slow regex (${testDuration}ms) for category=${category}: ${pattern}`,
+              `Skipping slow regex (${testDuration}ms) for category=${category}: ${pattern}`
             );
             return;
           }
@@ -75,18 +75,16 @@ class PatternMatcher {
   _sanitizeFlags(flags) {
     // Security: Whitelist of safe regex flags
     // Reference: MDN RegExp flags documentation
-    const allowedFlags = new Set(["g", "i", "m", "s", "u", "y"]);
+    const allowedFlags = new Set(['g', 'i', 'm', 's', 'u', 'y']);
 
-    if (!flags || typeof flags !== "string") {
-      return "u"; // Default to unicode-aware
+    if (!flags || typeof flags !== 'string') {
+      return 'u'; // Default to unicode-aware
     }
 
     // Filter to only allowed flags, remove duplicates
-    const sanitized = [...new Set(flags.split(""))]
-      .filter((flag) => allowedFlags.has(flag))
-      .join("");
+    const sanitized = [...new Set(flags.split(''))].filter(flag => allowedFlags.has(flag)).join('');
 
-    return sanitized || "u"; // Fallback to unicode flag
+    return sanitized || 'u'; // Fallback to unicode flag
   }
 
   _isReDoSVulnerable(pattern) {
@@ -106,7 +104,7 @@ class PatternMatcher {
       /\([^)]*\{\d+,\}\)\s*(\*|\+)/, // unbounded range then quantifier
     ];
 
-    if (nestedQuantifiers.some((re) => re.test(pattern))) {
+    if (nestedQuantifiers.some(re => re.test(pattern))) {
       return true;
     }
 
@@ -116,7 +114,7 @@ class PatternMatcher {
       // This is a simplified check; full overlap detection is complex
       // Consider using 'recheck' library for production
       const alternatives = pattern.match(/\(([^)]+)\)/);
-      if (alternatives && alternatives[1].includes("|")) {
+      if (alternatives && alternatives[1].includes('|')) {
         return true; // Potentially dangerous
       }
     }
@@ -127,7 +125,7 @@ class PatternMatcher {
       /\.\+.*\.\+/, // multiple .+ similar issue
     ];
 
-    if (backtrackingPatterns.some((re) => re.test(pattern))) {
+    if (backtrackingPatterns.some(re => re.test(pattern))) {
       return true;
     }
 
@@ -136,7 +134,7 @@ class PatternMatcher {
 
   loadPatterns() {
     if (fs.existsSync(COMPILED_PATTERNS)) {
-      return JSON.parse(fs.readFileSync(COMPILED_PATTERNS, "utf8"));
+      return JSON.parse(fs.readFileSync(COMPILED_PATTERNS, 'utf8'));
     }
     return this.compilePatterns();
   }
@@ -148,62 +146,62 @@ class PatternMatcher {
     return {
       security: [
         {
-          pattern: "password\\s*=\\s*['\"][^'\"]+['\"]",
-          flags: "gi",
-          severity: "critical",
-          message: "Hardcoded password",
+          pattern: 'password\\s*=\\s*[\'"][^\'"]+[\'"]',
+          flags: 'gi',
+          severity: 'critical',
+          message: 'Hardcoded password',
         },
         {
-          pattern: "api[_-]?key\\s*=\\s*['\"][^'\"]+['\"]",
-          flags: "gi",
-          severity: "critical",
-          message: "Hardcoded API key",
+          pattern: 'api[_-]?key\\s*=\\s*[\'"][^\'"]+[\'"]',
+          flags: 'gi',
+          severity: 'critical',
+          message: 'Hardcoded API key',
         },
         {
-          pattern: "secret\\s*=\\s*['\"][^'\"]+['\"]",
-          flags: "gi",
-          severity: "critical",
-          message: "Hardcoded secret",
+          pattern: 'secret\\s*=\\s*[\'"][^\'"]+[\'"]',
+          flags: 'gi',
+          severity: 'critical',
+          message: 'Hardcoded secret',
         },
         {
-          pattern: "eval\\s*\\(",
-          flags: "gi",
-          severity: "critical",
-          message: "eval() usage",
+          pattern: 'eval\\s*\\(',
+          flags: 'gi',
+          severity: 'critical',
+          message: 'eval() usage',
         },
         {
-          pattern: "\\.innerHTML\\s*=",
-          flags: "gi",
-          severity: "high",
-          message: "innerHTML (XSS risk)",
+          pattern: '\\.innerHTML\\s*=',
+          flags: 'gi',
+          severity: 'high',
+          message: 'innerHTML (XSS risk)',
         },
       ],
       quality: [
         {
-          pattern: "console\\.log\\(",
-          flags: "gi",
-          severity: "low",
-          message: "console.log found",
+          pattern: 'console\\.log\\(',
+          flags: 'gi',
+          severity: 'low',
+          message: 'console.log found',
         },
         {
-          pattern: "debugger",
-          flags: "gi",
-          severity: "medium",
-          message: "debugger statement",
+          pattern: 'debugger',
+          flags: 'gi',
+          severity: 'medium',
+          message: 'debugger statement',
         },
         {
-          pattern: "var\\s+",
-          flags: "g",
-          severity: "low",
-          message: "Use let/const instead of var",
+          pattern: 'var\\s+',
+          flags: 'g',
+          severity: 'low',
+          message: 'Use let/const instead of var',
         },
       ],
       performance: [
         {
-          pattern: "for\\s*\\(.*\\.length",
-          flags: "gi",
-          severity: "low",
-          message: "Cache .length in loop",
+          pattern: 'for\\s*\\(.*\\.length',
+          flags: 'gi',
+          severity: 'low',
+          message: 'Cache .length in loop',
         },
       ],
     };
@@ -217,7 +215,7 @@ class PatternMatcher {
   }
 
   scanFile(filePath) {
-    const content = fs.readFileSync(filePath, "utf8");
+    const content = fs.readFileSync(filePath, 'utf8');
     const issues = [];
 
     // Use pre-compiled regex objects for matching
@@ -252,12 +250,12 @@ class PatternMatcher {
 
   scanDirectory(dirPath, options = {}) {
     const {
-      extensions = [".js", ".jsx", ".ts", ".tsx", ".cjs", ".mjs"],
-      exclude = ["node_modules", "dist", "build"],
+      extensions = ['.js', '.jsx', '.ts', '.tsx', '.cjs', '.mjs'],
+      exclude = ['node_modules', 'dist', 'build'],
     } = options;
     const results = { files: 0, issues: [] };
 
-    const scanDir = (dir) => {
+    const scanDir = dir => {
       const entries = fs.readdirSync(dir, { withFileTypes: true });
 
       for (const entry of entries) {
@@ -267,7 +265,7 @@ class PatternMatcher {
 
         if (entry.isDirectory()) {
           scanDir(fullPath);
-        } else if (extensions.some((ext) => entry.name.endsWith(ext))) {
+        } else if (extensions.some(ext => entry.name.endsWith(ext))) {
           results.files++;
           results.issues.push(...this.scanFile(fullPath));
         }
@@ -285,11 +283,11 @@ if (require.main === module) {
   const args = process.argv.slice(2);
   const command = args[0];
 
-  if (command === "init") {
-    console.log("Compiling patterns...");
+  if (command === 'init') {
+    console.log('Compiling patterns...');
     const patterns = matcher.savePatterns();
     console.log(`✓ Saved ${Object.keys(patterns).length} pattern categories`);
-  } else if (command === "scan" && args[1]) {
+  } else if (command === 'scan' && args[1]) {
     const target = path.resolve(args[1]);
     const stat = fs.statSync(target);
 
@@ -298,7 +296,7 @@ if (require.main === module) {
       console.log(`\nScanned ${results.files} files, found ${results.issues.length} issues:`);
 
       const bySeverity = {};
-      results.issues.forEach((issue) => {
+      results.issues.forEach(issue => {
         bySeverity[issue.severity] = (bySeverity[issue.severity] || 0) + 1;
       });
 

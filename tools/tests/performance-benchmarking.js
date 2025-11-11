@@ -5,7 +5,7 @@
  * Automated performance testing with regression detection
  */
 
-import fs from "fs/promises";
+import fs from 'fs/promises';
 
 class PerformanceBenchmarking {
   constructor() {
@@ -16,53 +16,53 @@ class PerformanceBenchmarking {
   }
 
   async initialize() {
-    console.log("⚡ Initializing Performance Benchmarking Framework...");
+    console.log('⚡ Initializing Performance Benchmarking Framework...');
 
     // Load existing benchmarks and baselines
     try {
-      const benchmarksData = await fs.readFile("ai-learning/performance-benchmarks.json", "utf8");
+      const benchmarksData = await fs.readFile('ai-learning/performance-benchmarks.json', 'utf8');
       this.benchmarks = JSON.parse(benchmarksData);
     } catch (error) {
-      console.log("📊 No existing benchmarks found, starting fresh...");
+      console.log('📊 No existing benchmarks found, starting fresh...');
       this.benchmarks = {};
     }
 
     try {
-      const baselinesData = await fs.readFile("ai-learning/performance-baselines.json", "utf8");
+      const baselinesData = await fs.readFile('ai-learning/performance-baselines.json', 'utf8');
       this.baselines = JSON.parse(baselinesData);
     } catch (error) {
-      console.log("📈 No baselines found, starting fresh...");
+      console.log('📈 No baselines found, starting fresh...');
       this.baselines = {};
     }
   }
 
   createAPISpeedBenchmark() {
     return {
-      name: "api-response-speed",
-      description: "Measure API endpoint response times under various loads",
-      category: "api",
+      name: 'api-response-speed',
+      description: 'Measure API endpoint response times under various loads',
+      category: 'api',
       scenarios: [
         {
-          name: "light-load",
+          name: 'light-load',
           concurrentUsers: 10,
           duration: 60, // seconds
           rampUp: 10,
         },
         {
-          name: "medium-load",
+          name: 'medium-load',
           concurrentUsers: 50,
           duration: 120,
           rampUp: 30,
         },
         {
-          name: "heavy-load",
+          name: 'heavy-load',
           concurrentUsers: 200,
           duration: 180,
           rampUp: 60,
         },
       ],
-      endpoints: ["/api/users", "/api/posts", "/api/search", "/api/analytics"],
-      metrics: ["responseTime", "throughput", "errorRate", "cpuUsage", "memoryUsage"],
+      endpoints: ['/api/users', '/api/posts', '/api/search', '/api/analytics'],
+      metrics: ['responseTime', 'throughput', 'errorRate', 'cpuUsage', 'memoryUsage'],
       thresholds: {
         responseTime: { p95: 500, p99: 1000 }, // ms
         errorRate: { max: 0.01 }, // 1%
@@ -73,37 +73,37 @@ class PerformanceBenchmarking {
 
   createDatabasePerformanceBenchmark() {
     return {
-      name: "database-query-performance",
-      description: "Benchmark database query performance and optimization",
-      category: "database",
+      name: 'database-query-performance',
+      description: 'Benchmark database query performance and optimization',
+      category: 'database',
       scenarios: [
         {
-          name: "read-heavy",
+          name: 'read-heavy',
           readQueries: 1000,
           writeQueries: 100,
           duration: 120,
         },
         {
-          name: "write-heavy",
+          name: 'write-heavy',
           readQueries: 100,
           writeQueries: 1000,
           duration: 120,
         },
         {
-          name: "mixed-workload",
+          name: 'mixed-workload',
           readQueries: 500,
           writeQueries: 500,
           duration: 120,
         },
       ],
       queryTypes: [
-        "simple-select",
-        "complex-join",
-        "aggregation",
-        "full-text-search",
-        "bulk-insert",
+        'simple-select',
+        'complex-join',
+        'aggregation',
+        'full-text-search',
+        'bulk-insert',
       ],
-      metrics: ["queryTime", "connectionPoolUsage", "lockWaitTime", "indexHitRate", "cacheHitRate"],
+      metrics: ['queryTime', 'connectionPoolUsage', 'lockWaitTime', 'indexHitRate', 'cacheHitRate'],
       thresholds: {
         queryTime: { p95: 100, p99: 500 }, // ms
         indexHitRate: { min: 0.9 }, // 90%
@@ -114,31 +114,31 @@ class PerformanceBenchmarking {
 
   createFrontendRenderingBenchmark() {
     return {
-      name: "frontend-rendering-performance",
-      description: "Measure frontend rendering and interaction performance",
-      category: "frontend",
+      name: 'frontend-rendering-performance',
+      description: 'Measure frontend rendering and interaction performance',
+      category: 'frontend',
       scenarios: [
         {
-          name: "initial-load",
-          actions: ["navigate-to-home", "scroll-content", "load-dynamic-content"],
+          name: 'initial-load',
+          actions: ['navigate-to-home', 'scroll-content', 'load-dynamic-content'],
         },
         {
-          name: "user-interactions",
-          actions: ["click-buttons", "fill-forms", "navigate-pages", "search-content"],
+          name: 'user-interactions',
+          actions: ['click-buttons', 'fill-forms', 'navigate-pages', 'search-content'],
         },
         {
-          name: "heavy-content",
-          actions: ["load-large-dataset", "render-complex-charts", "handle-real-time-updates"],
+          name: 'heavy-content',
+          actions: ['load-large-dataset', 'render-complex-charts', 'handle-real-time-updates'],
         },
       ],
       metrics: [
-        "firstContentfulPaint",
-        "largestContentfulPaint",
-        "firstInputDelay",
-        "cumulativeLayoutShift",
-        "interactionToNextPaint",
-        "bundleSize",
-        "runtimeMemoryUsage",
+        'firstContentfulPaint',
+        'largestContentfulPaint',
+        'firstInputDelay',
+        'cumulativeLayoutShift',
+        'interactionToNextPaint',
+        'bundleSize',
+        'runtimeMemoryUsage',
       ],
       thresholds: {
         firstContentfulPaint: { max: 1500 }, // ms
@@ -152,29 +152,29 @@ class PerformanceBenchmarking {
 
   createMemoryLeakBenchmark() {
     return {
-      name: "memory-leak-detection",
-      description: "Detect memory leaks and excessive memory usage",
-      category: "memory",
+      name: 'memory-leak-detection',
+      description: 'Detect memory leaks and excessive memory usage',
+      category: 'memory',
       scenarios: [
         {
-          name: "steady-state",
+          name: 'steady-state',
           duration: 300, // 5 minutes
           checkInterval: 30,
         },
         {
-          name: "stress-test",
+          name: 'stress-test',
           duration: 600, // 10 minutes
-          loadPattern: "increasing",
+          loadPattern: 'increasing',
           checkInterval: 60,
         },
       ],
       metrics: [
-        "heapUsed",
-        "heapTotal",
-        "externalMemory",
-        "gcCollections",
-        "gcPauseTime",
-        "memoryGrowthRate",
+        'heapUsed',
+        'heapTotal',
+        'externalMemory',
+        'gcCollections',
+        'gcPauseTime',
+        'memoryGrowthRate',
       ],
       thresholds: {
         memoryGrowthRate: { max: 0.01 }, // 1% per minute
@@ -185,7 +185,7 @@ class PerformanceBenchmarking {
   }
 
   async establishBaselines() {
-    console.log("📊 Establishing performance baselines...");
+    console.log('📊 Establishing performance baselines...');
 
     // Run initial benchmarks to establish baselines
     const benchmarks = {
@@ -206,7 +206,7 @@ class PerformanceBenchmarking {
       };
     }
 
-    console.log("✅ Baselines established");
+    console.log('✅ Baselines established');
     return this.baselines;
   }
 
@@ -237,7 +237,7 @@ class PerformanceBenchmarking {
     const metrics = {};
 
     // Initialize metrics collection
-    benchmark.metrics.forEach((metric) => {
+    benchmark.metrics.forEach(metric => {
       metrics[metric] = [];
     });
 
@@ -248,18 +248,18 @@ class PerformanceBenchmarking {
 
     for (let i = 0; i < iterations; i++) {
       // Collect metrics for each benchmark type
-      if (benchmark.category === "api") {
+      if (benchmark.category === 'api') {
         await this.collectAPIMetrics(metrics, scenario);
-      } else if (benchmark.category === "database") {
+      } else if (benchmark.category === 'database') {
         await this.collectDatabaseMetrics(metrics, scenario);
-      } else if (benchmark.category === "frontend") {
+      } else if (benchmark.category === 'frontend') {
         await this.collectFrontendMetrics(metrics, scenario);
-      } else if (benchmark.category === "memory") {
+      } else if (benchmark.category === 'memory') {
         await this.collectMemoryMetrics(metrics, scenario);
       }
 
       // Wait for next iteration
-      await new Promise((resolve) => setTimeout(resolve, interval));
+      await new Promise(resolve => setTimeout(resolve, interval));
     }
 
     const endTime = Date.now();
@@ -321,7 +321,7 @@ class PerformanceBenchmarking {
   processMetrics(rawMetrics) {
     const processed = {};
 
-    Object.keys(rawMetrics).forEach((metric) => {
+    Object.keys(rawMetrics).forEach(metric => {
       const values = rawMetrics[metric];
       if (values.length > 0) {
         const sorted = [...values].sort((a, b) => a - b);
@@ -334,7 +334,7 @@ class PerformanceBenchmarking {
           p95: sorted[Math.floor(sorted.length * 0.95)],
           p99: sorted[Math.floor(sorted.length * 0.99)],
           std: Math.sqrt(
-            values.reduce((a, b) => a + (b - processed[metric]?.mean || 0) ** 2, 0) / values.length,
+            values.reduce((a, b) => a + (b - processed[metric]?.mean || 0) ** 2, 0) / values.length
           ),
         };
       }
@@ -351,7 +351,7 @@ class PerformanceBenchmarking {
     };
 
     // Check thresholds
-    Object.keys(thresholds).forEach((metric) => {
+    Object.keys(thresholds).forEach(metric => {
       const processed = metrics[metric];
       const threshold = thresholds[metric];
 
@@ -388,8 +388,8 @@ class PerformanceBenchmarking {
   calculateAggregateMetrics(scenarios, metricNames) {
     const aggregate = {};
 
-    metricNames.forEach((metric) => {
-      const values = scenarios.map((s) => s.metrics[metric]?.p95).filter((v) => v !== undefined);
+    metricNames.forEach(metric => {
+      const values = scenarios.map(s => s.metrics[metric]?.p95).filter(v => v !== undefined);
 
       if (values.length > 0) {
         aggregate[metric] = {
@@ -405,11 +405,11 @@ class PerformanceBenchmarking {
   }
 
   async detectRegressions(currentResults) {
-    console.log("🔍 Detecting performance regressions...");
+    console.log('🔍 Detecting performance regressions...');
 
     this.regressions = [];
 
-    Object.keys(currentResults).forEach((benchmarkName) => {
+    Object.keys(currentResults).forEach(benchmarkName => {
       const current = currentResults[benchmarkName];
       const baseline = this.baselines[benchmarkName];
 
@@ -429,8 +429,8 @@ class PerformanceBenchmarking {
       benchmark: benchmarkName,
       timestamp: new Date().toISOString(),
       violations: [],
-      severity: "low",
-      impact: "minor",
+      severity: 'low',
+      impact: 'minor',
     };
 
     // Compare each scenario
@@ -438,7 +438,7 @@ class PerformanceBenchmarking {
       const baselineScenario = baseline.results.scenarios[index];
 
       if (baselineScenario) {
-        Object.keys(scenario.metrics).forEach((metric) => {
+        Object.keys(scenario.metrics).forEach(metric => {
           const currentMetric = scenario.metrics[metric];
           const baselineMetric = baselineScenario.metrics[metric];
 
@@ -453,18 +453,18 @@ class PerformanceBenchmarking {
                 baseline: baselineMetric.p95,
                 current: currentMetric.p95,
                 degradation: degradation * 100,
-                severity: degradation > 0.5 ? "critical" : degradation > 0.25 ? "high" : "medium",
+                severity: degradation > 0.5 ? 'critical' : degradation > 0.25 ? 'high' : 'medium',
               });
 
               // Update overall severity
-              if (degradation > 0.5 && regression.severity !== "critical") {
-                regression.severity = "critical";
-                regression.impact = "major";
-              } else if (degradation > 0.25 && regression.severity === "low") {
-                regression.severity = "high";
-                regression.impact = "moderate";
-              } else if (regression.severity === "low") {
-                regression.severity = "medium";
+              if (degradation > 0.5 && regression.severity !== 'critical') {
+                regression.severity = 'critical';
+                regression.impact = 'major';
+              } else if (degradation > 0.25 && regression.severity === 'low') {
+                regression.severity = 'high';
+                regression.impact = 'moderate';
+              } else if (regression.severity === 'low') {
+                regression.severity = 'medium';
               }
             }
           }
@@ -476,7 +476,7 @@ class PerformanceBenchmarking {
   }
 
   async generateReport() {
-    console.log("📋 Generating performance benchmarking report...");
+    console.log('📋 Generating performance benchmarking report...');
 
     const report = {
       timestamp: new Date().toISOString(),
@@ -484,7 +484,7 @@ class PerformanceBenchmarking {
         benchmarksRun: Object.keys(this.benchmarks).length,
         regressionsDetected: this.regressions.length,
         overallScore: this.calculateOverallScore(),
-        status: this.regressions.length > 0 ? "regressions-found" : "stable",
+        status: this.regressions.length > 0 ? 'regressions-found' : 'stable',
       },
       benchmarks: this.benchmarks,
       baselines: this.baselines,
@@ -492,8 +492,8 @@ class PerformanceBenchmarking {
       recommendations: this.generateRecommendations(),
     };
 
-    await fs.mkdir("ai-learning", { recursive: true });
-    await fs.writeFile("ai-learning/performance-report.json", JSON.stringify(report, null, 2));
+    await fs.mkdir('ai-learning', { recursive: true });
+    await fs.writeFile('ai-learning/performance-report.json', JSON.stringify(report, null, 2));
 
     return report;
   }
@@ -504,8 +504,8 @@ class PerformanceBenchmarking {
     let totalScore = 0;
     let benchmarkCount = 0;
 
-    Object.values(this.baselines).forEach((baseline) => {
-      baseline.results.scenarios.forEach((scenario) => {
+    Object.values(this.baselines).forEach(baseline => {
+      baseline.results.scenarios.forEach(scenario => {
         totalScore += scenario.summary.score;
         benchmarkCount++;
       });
@@ -517,31 +517,31 @@ class PerformanceBenchmarking {
   generateRecommendations() {
     const recommendations = [];
 
-    this.regressions.forEach((regression) => {
-      regression.violations.forEach((violation) => {
-        if (violation.metric === "responseTime") {
+    this.regressions.forEach(regression => {
+      regression.violations.forEach(violation => {
+        if (violation.metric === 'responseTime') {
           recommendations.push({
-            priority: "high",
-            category: "performance",
+            priority: 'high',
+            category: 'performance',
             action:
-              "Optimize API response times - consider caching, database indexing, or code profiling",
+              'Optimize API response times - consider caching, database indexing, or code profiling',
             benchmark: regression.benchmark,
             impact: `${violation.degradation.toFixed(1)}% degradation in ${violation.scenario}`,
           });
-        } else if (violation.metric === "errorRate") {
+        } else if (violation.metric === 'errorRate') {
           recommendations.push({
-            priority: "critical",
-            category: "reliability",
-            action: "Investigate and fix error rate increase - check logs and error handling",
+            priority: 'critical',
+            category: 'reliability',
+            action: 'Investigate and fix error rate increase - check logs and error handling',
             benchmark: regression.benchmark,
             impact: `${violation.degradation.toFixed(1)}% increase in errors`,
           });
-        } else if (violation.metric === "memoryUsage") {
+        } else if (violation.metric === 'memoryUsage') {
           recommendations.push({
-            priority: "medium",
-            category: "efficiency",
+            priority: 'medium',
+            category: 'efficiency',
             action:
-              "Review memory usage patterns - check for memory leaks or inefficient data structures",
+              'Review memory usage patterns - check for memory leaks or inefficient data structures',
             benchmark: regression.benchmark,
             impact: `${violation.degradation.toFixed(1)}% memory usage increase`,
           });
@@ -563,16 +563,16 @@ class PerformanceBenchmarking {
       lastUpdated: new Date().toISOString(),
     };
 
-    await fs.mkdir("ai-learning", { recursive: true });
+    await fs.mkdir('ai-learning', { recursive: true });
     await fs.writeFile(
-      "ai-learning/performance-benchmarks.json",
-      JSON.stringify(this.benchmarks, null, 2),
+      'ai-learning/performance-benchmarks.json',
+      JSON.stringify(this.benchmarks, null, 2)
     );
     await fs.writeFile(
-      "ai-learning/performance-baselines.json",
-      JSON.stringify(this.baselines, null, 2),
+      'ai-learning/performance-baselines.json',
+      JSON.stringify(this.baselines, null, 2)
     );
-    await fs.writeFile("ai-learning/performance-state.json", JSON.stringify(state, null, 2));
+    await fs.writeFile('ai-learning/performance-state.json', JSON.stringify(state, null, 2));
   }
 
   async runBenchmarkingSuite() {
@@ -606,13 +606,13 @@ class PerformanceBenchmarking {
       const report = await this.generateReport();
       await this.saveState();
 
-      console.log("✅ Performance benchmarking completed");
+      console.log('✅ Performance benchmarking completed');
       console.log(`📊 Overall score: ${report.summary.overallScore.toFixed(1)}%`);
       console.log(`🔍 Regressions detected: ${report.summary.regressionsDetected}`);
 
       return report;
     } catch (error) {
-      console.error("❌ Performance benchmarking failed:", error);
+      console.error('❌ Performance benchmarking failed:', error);
       throw error;
     }
   }
@@ -624,14 +624,14 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   benchmarking
     .runBenchmarkingSuite()
-    .then((report) => {
-      console.log("\n📋 Performance Benchmarking Summary:");
+    .then(report => {
+      console.log('\n📋 Performance Benchmarking Summary:');
       console.log(`Overall Score: ${report.summary.overallScore.toFixed(1)}%`);
       console.log(`Status: ${report.summary.status.toUpperCase()}`);
       console.log(`Regressions: ${report.summary.regressionsDetected}`);
 
       if (report.recommendations.length > 0) {
-        console.log("\n💡 Key Recommendations:");
+        console.log('\n💡 Key Recommendations:');
         report.recommendations.slice(0, 5).forEach((rec, index) => {
           console.log(`${index + 1}. ${rec.action} (${rec.priority})`);
         });
@@ -639,8 +639,8 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
       process.exit(0);
     })
-    .catch((error) => {
-      console.error("Failed to run performance benchmarking:", error);
+    .catch(error => {
+      console.error('Failed to run performance benchmarking:', error);
       process.exit(1);
     });
 }

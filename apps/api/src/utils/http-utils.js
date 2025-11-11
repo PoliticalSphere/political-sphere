@@ -42,7 +42,7 @@ async function readJsonBody(req, options = {}) {
 
   try {
     return JSON.parse(Buffer.concat(chunks).toString('utf8'));
-  } catch (error) {
+  } catch {
     const parseError = new Error('Invalid JSON payload');
     parseError.code = 'INVALID_JSON';
     throw parseError;

@@ -1,15 +1,15 @@
 #!/usr/bin/env node
-const { spawnSync } = require("node:child_process");
+const { spawnSync } = require('node:child_process');
 
 const argv = process.argv.slice(2);
 let app = null;
 for (const a of argv) {
-  if (a.startsWith("--app=")) app = a.split("=")[1];
-  else if (!a.startsWith("--") && !app) app = a;
+  if (a.startsWith('--app=')) app = a.split('=')[1];
+  else if (!a.startsWith('--') && !app) app = a;
 }
 
 if (!app) {
-  console.error("Usage: npm run test:per-app -- <app>    OR    npm run test:per-app --app=api");
+  console.error('Usage: npm run test:per-app -- <app>    OR    npm run test:per-app --app=api');
   process.exit(2);
 }
 
@@ -25,8 +25,8 @@ if (!/^[a-zA-Z0-9_-]+$/.test(app)) {
 }
 
 // Use shell: false for security - pass arguments as array
-const res = spawnSync("npx", ["vitest", "--run"], {
-  stdio: "inherit",
+const res = spawnSync('npx', ['vitest', '--run'], {
+  stdio: 'inherit',
   shell: false,
   env: { ...process.env, VITEST_APP: app },
 });

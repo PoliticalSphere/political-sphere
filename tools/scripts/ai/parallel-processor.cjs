@@ -16,10 +16,10 @@
  * @source Node.js worker_threads
  */
 
-const fs = require("fs");
-const os = require("os");
-const path = require("path");
-const { Worker } = require("worker_threads");
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const { Worker } = require('worker_threads');
 
 class ParallelProcessor {
   constructor(options = {}) {
@@ -66,11 +66,11 @@ class ParallelProcessor {
           workerData: { batch, workerId: index },
         });
 
-        worker.on("message", (result) => {
-          if (result.type === "progress") {
+        worker.on('message', result => {
+          if (result.type === 'progress') {
             this.completed++;
             process.stdout.write(`\r⚡ Processing: ${this.completed}/${this.total} files`);
-          } else if (result.type === "complete") {
+          } else if (result.type === 'complete') {
             this.results.push(...result.results);
             completedWorkers++;
 
@@ -88,8 +88,8 @@ class ParallelProcessor {
           }
         });
 
-        worker.on("error", reject);
-        worker.on("exit", (code) => {
+        worker.on('error', reject);
+        worker.on('exit', code => {
           if (code !== 0) {
             reject(new Error(`Worker stopped with exit code ${code}`));
           }
@@ -134,26 +134,26 @@ parentPort.postMessage({ type: 'complete', results, workerId });
 
 // CLI interface
 if (require.main === module) {
-  const glob = require("glob");
+  const glob = require('glob');
 
-  console.log("🚀 Parallel Code Processor\n");
+  console.log('🚀 Parallel Code Processor\n');
   console.log(`   CPUs available: ${os.cpus().length}`);
   console.log(`   Workers: ${Math.max(1, os.cpus().length - 1)}\n`);
 
   // Create temporary worker script
-  const workerScriptPath = path.join(__dirname, ".parallel-worker-temp.cjs");
+  const workerScriptPath = path.join(__dirname, '.parallel-worker-temp.cjs');
   fs.writeFileSync(workerScriptPath, workerTemplate);
 
   // Find all JS/TS files
-  const files = glob.sync("**/*.{js,ts,jsx,tsx,cjs,mjs}", {
-    ignore: ["node_modules/**", "dist/**", "build/**", "coverage/**"],
+  const files = glob.sync('**/*.{js,ts,jsx,tsx,cjs,mjs}', {
+    ignore: ['node_modules/**', 'dist/**', 'build/**', 'coverage/**'],
     absolute: true,
   });
 
   console.log(`📁 Found ${files.length} files to process\n`);
 
   if (files.length === 0) {
-    console.log("No files found. Exiting.");
+    console.log('No files found. Exiting.');
     process.exit(0);
   }
 
@@ -161,15 +161,15 @@ if (require.main === module) {
 
   processor
     .processFiles(files.slice(0, 50), workerScriptPath) // Limit for demo
-    .then((results) => {
-      console.log("\n📊 Results:");
+    .then(results => {
+      console.log('\n📊 Results:');
       console.log(processor.getStats());
 
       // Clean up
       fs.unlinkSync(workerScriptPath);
     })
-    .catch((error) => {
-      console.error("❌ Error:", error.message);
+    .catch(error => {
+      console.error('❌ Error:', error.message);
       if (fs.existsSync(workerScriptPath)) {
         fs.unlinkSync(workerScriptPath);
       }

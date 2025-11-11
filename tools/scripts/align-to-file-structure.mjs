@@ -14,67 +14,67 @@
  * @date 2025-11-10
  */
 
-import { execSync } from "child_process";
-import fs from "fs/promises";
-import path from "path";
-import { fileURLToPath } from "url";
+import { execSync } from 'child_process';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const ROOT_DIR = path.resolve(__dirname, "../..");
+const ROOT_DIR = path.resolve(__dirname, '../..');
 
 // Complete restructuring plan based on file-structure.md
 const RESTRUCTURING_PLAN = {
   libs: {
     // libs/shared/ reorganization
-    "libs/shared/utils": {
+    'libs/shared/utils': {
       create: true,
-      move: ["libs/shared/src"], // Move existing src to utils/src
+      move: ['libs/shared/src'], // Move existing src to utils/src
     },
-    "libs/shared/types": {
+    'libs/shared/types': {
       exists: true, // Already exists
     },
-    "libs/shared/constants": {
+    'libs/shared/constants': {
       create: true,
     },
-    "libs/shared/config": {
+    'libs/shared/config': {
       create: true,
     },
 
     // libs/platform/ reorganization
-    "libs/platform/auth": {
+    'libs/platform/auth': {
       create: true,
     },
-    "libs/platform/api-client": {
+    'libs/platform/api-client': {
       create: true,
     },
-    "libs/platform/state": {
+    'libs/platform/state': {
       create: true,
     },
-    "libs/platform/routing": {
+    'libs/platform/routing': {
       create: true,
     },
 
     // libs/ui/ reorganization
-    "libs/ui/components": {
+    'libs/ui/components': {
       create: true,
     },
-    "libs/ui/design-system": {
+    'libs/ui/design-system': {
       create: true,
     },
-    "libs/ui/accessibility": {
+    'libs/ui/accessibility': {
       create: true,
     },
 
     // libs/game-engine/ reorganization
-    "libs/game-engine/core": {
+    'libs/game-engine/core': {
       create: true,
-      move: ["libs/game-engine/src"], // Move existing src to core/src
+      move: ['libs/game-engine/src'], // Move existing src to core/src
     },
-    "libs/game-engine/simulation": {
+    'libs/game-engine/simulation': {
       create: true,
     },
-    "libs/game-engine/events": {
+    'libs/game-engine/events': {
       create: true,
     },
   },
@@ -87,8 +87,8 @@ class StructureAligner {
     this.errors = [];
   }
 
-  log(message, level = "info") {
-    const prefix = level === "error" ? "[ERROR]" : level === "warn" ? "[WARN]" : "[INFO]";
+  log(message, level = 'info') {
+    const prefix = level === 'error' ? '[ERROR]' : level === 'warn' ? '[WARN]' : '[INFO]';
     console.log(`${prefix} ${message}`);
     this.operations.push({ level, message });
   }
@@ -106,7 +106,7 @@ class StructureAligner {
     const fullPath = path.join(ROOT_DIR, dirPath);
 
     if (await this.pathExists(dirPath)) {
-      this.log(`Directory already exists: ${dirPath}`, "warn");
+      this.log(`Directory already exists: ${dirPath}`, 'warn');
       return false;
     }
 
@@ -119,25 +119,25 @@ class StructureAligner {
 
     try {
       await fs.mkdir(fullPath, { recursive: true });
-      await fs.mkdir(path.join(fullPath, "src"), { recursive: true });
+      await fs.mkdir(path.join(fullPath, 'src'), { recursive: true });
 
       // Create placeholder files
       await fs.writeFile(
-        path.join(fullPath, "README.md"),
+        path.join(fullPath, 'README.md'),
         `# ${path.basename(dirPath)}\n\nTODO: Add documentation\n`,
-        "utf-8",
+        'utf-8'
       );
 
       await fs.writeFile(
-        path.join(fullPath, "src/index.ts"),
+        path.join(fullPath, 'src/index.ts'),
         `// ${path.basename(dirPath)} entry point\nexport {};\n`,
-        "utf-8",
+        'utf-8'
       );
 
       this.log(`  ✓ Created ${dirPath} with placeholder files`);
       return true;
     } catch (error) {
-      this.log(`  ✗ Failed to create ${dirPath}: ${error.message}`, "error");
+      this.log(`  ✗ Failed to create ${dirPath}: ${error.message}`, 'error');
       this.errors.push(error);
       return false;
     }
@@ -145,12 +145,12 @@ class StructureAligner {
 
   async moveDirectory(source, target, description) {
     if (!(await this.pathExists(source))) {
-      this.log(`Source doesn't exist: ${source}`, "warn");
+      this.log(`Source doesn't exist: ${source}`, 'warn');
       return false;
     }
 
     if (await this.pathExists(target)) {
-      this.log(`Target already exists: ${target}`, "warn");
+      this.log(`Target already exists: ${target}`, 'warn');
       return false;
     }
 
@@ -167,40 +167,40 @@ class StructureAligner {
 
       execSync(`git mv "${source}" "${target}"`, {
         cwd: ROOT_DIR,
-        stdio: "pipe",
+        stdio: 'pipe',
       });
       this.log(`  ✓ Moved ${source} to ${target}`);
       return true;
     } catch (error) {
-      this.log(`  ✗ Failed to move ${source}: ${error.message}`, "error");
+      this.log(`  ✗ Failed to move ${source}: ${error.message}`, 'error');
       this.errors.push(error);
       return false;
     }
   }
 
   async restructureLibs() {
-    this.log("\n=== Restructuring libs/ ===\n");
+    this.log('\n=== Restructuring libs/ ===\n');
 
     // Create libs/shared/ subdirectories
-    await this.createDirectory("libs/shared/utils", "Utility functions");
-    await this.createDirectory("libs/shared/constants", "Application constants");
-    await this.createDirectory("libs/shared/config", "Configuration management");
+    await this.createDirectory('libs/shared/utils', 'Utility functions');
+    await this.createDirectory('libs/shared/constants', 'Application constants');
+    await this.createDirectory('libs/shared/config', 'Configuration management');
 
     // Create libs/platform/ subdirectories
-    await this.createDirectory("libs/platform/auth", "Authentication services");
-    await this.createDirectory("libs/platform/api-client", "API client library");
-    await this.createDirectory("libs/platform/state", "State management");
-    await this.createDirectory("libs/platform/routing", "Routing utilities");
+    await this.createDirectory('libs/platform/auth', 'Authentication services');
+    await this.createDirectory('libs/platform/api-client', 'API client library');
+    await this.createDirectory('libs/platform/state', 'State management');
+    await this.createDirectory('libs/platform/routing', 'Routing utilities');
 
     // Create libs/ui/ subdirectories
-    await this.createDirectory("libs/ui/components", "Reusable React components");
-    await this.createDirectory("libs/ui/design-system", "Design tokens & patterns");
-    await this.createDirectory("libs/ui/accessibility", "Accessibility utilities");
+    await this.createDirectory('libs/ui/components', 'Reusable React components');
+    await this.createDirectory('libs/ui/design-system', 'Design tokens & patterns');
+    await this.createDirectory('libs/ui/accessibility', 'Accessibility utilities');
 
     // Create libs/game-engine/ subdirectories
-    await this.createDirectory("libs/game-engine/core", "Core game logic");
-    await this.createDirectory("libs/game-engine/simulation", "Simulation algorithms");
-    await this.createDirectory("libs/game-engine/events", "Event system");
+    await this.createDirectory('libs/game-engine/core', 'Core game logic');
+    await this.createDirectory('libs/game-engine/simulation', 'Simulation algorithms');
+    await this.createDirectory('libs/game-engine/events', 'Event system');
   }
 
   async generateReport() {
@@ -215,7 +215,7 @@ class StructureAligner {
       },
     };
 
-    const reportPath = path.join(ROOT_DIR, "reports/structure-alignment.json");
+    const reportPath = path.join(ROOT_DIR, 'reports/structure-alignment.json');
     await fs.mkdir(path.dirname(reportPath), { recursive: true });
     await fs.writeFile(reportPath, JSON.stringify(report, null, 2));
 
@@ -225,31 +225,31 @@ class StructureAligner {
 
   async run() {
     try {
-      this.log("=".repeat(80));
-      this.log("REPOSITORY STRUCTURE ALIGNMENT");
-      this.log("Target: file-structure.md v2.4.0");
-      this.log("Mode: " + (this.dryRun ? "DRY RUN" : "EXECUTE"));
-      this.log("=".repeat(80));
+      this.log('='.repeat(80));
+      this.log('REPOSITORY STRUCTURE ALIGNMENT');
+      this.log('Target: file-structure.md v2.4.0');
+      this.log('Mode: ' + (this.dryRun ? 'DRY RUN' : 'EXECUTE'));
+      this.log('='.repeat(80));
 
       await this.restructureLibs();
       await this.generateReport();
 
       if (this.errors.length > 0) {
-        this.log(`\n⚠ Completed with ${this.errors.length} errors`, "warn");
+        this.log(`\n⚠ Completed with ${this.errors.length} errors`, 'warn');
       } else if (this.dryRun) {
-        this.log("\n✓ Dry run completed. Run with --execute to apply changes.");
+        this.log('\n✓ Dry run completed. Run with --execute to apply changes.');
       } else {
-        this.log("\n✓ Structure alignment completed!");
-        this.log("\nNext steps:");
-        this.log("  1. Review changes: git status");
-        this.log("  2. Update imports in affected files");
-        this.log("  3. Run tests: npm test");
+        this.log('\n✓ Structure alignment completed!');
+        this.log('\nNext steps:');
+        this.log('  1. Review changes: git status');
+        this.log('  2. Update imports in affected files');
+        this.log('  3. Run tests: npm test');
         this.log(
-          '  4. Commit: git add . && git commit -m "refactor: align structure to file-structure.md v2.4.0"',
+          '  4. Commit: git add . && git commit -m "refactor: align structure to file-structure.md v2.4.0"'
         );
       }
     } catch (error) {
-      this.log(`\n✗ Fatal error: ${error.message}`, "error");
+      this.log(`\n✗ Fatal error: ${error.message}`, 'error');
       throw error;
     }
   }
@@ -258,8 +258,8 @@ class StructureAligner {
 // CLI
 async function main() {
   const args = process.argv.slice(2);
-  const dryRun = args.includes("--dry-run");
-  const execute = args.includes("--execute");
+  const dryRun = args.includes('--dry-run');
+  const execute = args.includes('--execute');
 
   if (!dryRun && !execute) {
     console.log(`
@@ -284,7 +284,7 @@ Example:
     await aligner.run();
     process.exit(0);
   } catch (error) {
-    console.error("\n✗ Fatal error:", error.message);
+    console.error('\n✗ Fatal error:', error.message);
     process.exit(1);
   }
 }

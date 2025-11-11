@@ -1,4 +1,4 @@
-const path = require("path");
+const path = require('path');
 
 /**
  * Secure Path Utilities
@@ -14,8 +14,8 @@ const path = require("path");
  * @throws {Error} If filename contains invalid characters or traversal attempts
  */
 function validateFilename(filename) {
-  if (!filename || typeof filename !== "string") {
-    throw new Error("Filename must be a non-empty string");
+  if (!filename || typeof filename !== 'string') {
+    throw new Error('Filename must be a non-empty string');
   }
 
   // Remove any path components - only allow the basename
@@ -23,12 +23,12 @@ function validateFilename(filename) {
 
   // Check for path traversal attempts
   if (filename !== basename) {
-    throw new Error("Filename cannot contain path separators");
+    throw new Error('Filename cannot contain path separators');
   }
 
   // Block null bytes
-  if (basename.includes("\0")) {
-    throw new Error("Filename cannot contain null bytes");
+  if (basename.includes('\0')) {
+    throw new Error('Filename cannot contain null bytes');
   }
 
   // Block hidden files that start with dot (optional, can be customized)
@@ -39,7 +39,7 @@ function validateFilename(filename) {
 
   // Validate filename characters (alphanumeric, dash, underscore, dot)
   if (!/^[a-zA-Z0-9_.-]+$/.test(basename)) {
-    throw new Error("Filename contains invalid characters");
+    throw new Error('Filename contains invalid characters');
   }
 
   return basename;
@@ -54,12 +54,12 @@ function validateFilename(filename) {
  * @throws {Error} If path would escape the base directory
  */
 function safeJoin(baseDir, userInput) {
-  if (!baseDir || typeof baseDir !== "string") {
-    throw new Error("Base directory must be a non-empty string");
+  if (!baseDir || typeof baseDir !== 'string') {
+    throw new Error('Base directory must be a non-empty string');
   }
 
-  if (!userInput || typeof userInput !== "string") {
-    throw new Error("User input must be a non-empty string");
+  if (!userInput || typeof userInput !== 'string') {
+    throw new Error('User input must be a non-empty string');
   }
 
   // Sanitize the user input to just the basename
@@ -74,7 +74,7 @@ function safeJoin(baseDir, userInput) {
 
   // Ensure the resolved path is within the base directory
   if (!resolved.startsWith(resolvedBase + path.sep) && resolved !== resolvedBase) {
-    throw new Error("Path traversal detected: resulting path is outside base directory");
+    throw new Error('Path traversal detected: resulting path is outside base directory');
   }
 
   return resolved;
@@ -87,18 +87,18 @@ function safeJoin(baseDir, userInput) {
  * @throws {Error} If table name is invalid
  */
 function validateTableName(tableName) {
-  if (!tableName || typeof tableName !== "string") {
-    throw new Error("Table name must be a non-empty string");
+  if (!tableName || typeof tableName !== 'string') {
+    throw new Error('Table name must be a non-empty string');
   }
 
   // Table names should only contain alphanumeric characters and underscores
   if (!/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(tableName)) {
-    throw new Error("Table name contains invalid characters");
+    throw new Error('Table name contains invalid characters');
   }
 
   // Limit length to prevent abuse
   if (tableName.length > 64) {
-    throw new Error("Table name is too long (max 64 characters)");
+    throw new Error('Table name is too long (max 64 characters)');
   }
 
   return tableName;
@@ -112,25 +112,25 @@ function validateTableName(tableName) {
  * @throws {Error} If directory name is invalid
  */
 function validateDirectoryName(dirName) {
-  if (!dirName || typeof dirName !== "string") {
-    throw new Error("Directory name must be a non-empty string");
+  if (!dirName || typeof dirName !== 'string') {
+    throw new Error('Directory name must be a non-empty string');
   }
 
   // Remove any path components
   const basename = path.basename(dirName);
 
   if (dirName !== basename) {
-    throw new Error("Directory name cannot contain path separators");
+    throw new Error('Directory name cannot contain path separators');
   }
 
   // Block null bytes
-  if (basename.includes("\0")) {
-    throw new Error("Directory name cannot contain null bytes");
+  if (basename.includes('\0')) {
+    throw new Error('Directory name cannot contain null bytes');
   }
 
   // Validate directory name characters
   if (!/^[a-zA-Z0-9_.-]+$/.test(basename)) {
-    throw new Error("Directory name contains invalid characters");
+    throw new Error('Directory name contains invalid characters');
   }
 
   return basename;

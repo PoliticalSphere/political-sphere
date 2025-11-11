@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="GitHub Actions Audit" tests="219" failures="4" time="0">
-  <testsuite name="Security Checks" tests="75" failures="4" time="0">
+<testsuites name="GitHub Actions Audit" tests="216" failures="4" time="0">
+  <testsuite name="Security Checks" tests="72" failures="4" time="0">
     <testcase name="ACTIONLINT-001" classname="GitHub.Actions.Audit" time="0">
       
       <system-out>actionlint found workflow issues</system-out>
@@ -35,11 +35,6 @@
       
       <system-out>Consider adding concurrency control</system-out>
       <system-err>File: /Users/morganlowman/GitHub/political-sphere/.github/workflows/release.yml, Line: 0</system-err>
-    </testcase>
-    <testcase name="PERF-001" classname="GitHub.Actions.Audit" time="0">
-      
-      <system-out>Workflow could benefit from dependency caching</system-out>
-      <system-err>File: /Users/morganlowman/GitHub/political-sphere/.github/workflows/test-run-tests-action.yml, Line: 0</system-err>
     </testcase>
     <testcase name="PERF-002" classname="GitHub.Actions.Audit" time="0">
       
@@ -111,11 +106,6 @@
       <system-out>Consider adding concurrency control</system-out>
       <system-err>File: /Users/morganlowman/GitHub/political-sphere/.github/workflows/lighthouse.yml, Line: 0</system-err>
     </testcase>
-    <testcase name="PERF-001" classname="GitHub.Actions.Audit" time="0">
-      
-      <system-out>Workflow could benefit from dependency caching</system-out>
-      <system-err>File: /Users/morganlowman/GitHub/political-sphere/.github/workflows/audit.yml, Line: 0</system-err>
-    </testcase>
     <testcase name="PERF-002" classname="GitHub.Actions.Audit" time="0">
       
       <system-out>Consider adding concurrency control</system-out>
@@ -145,11 +135,6 @@
       
       <system-out>Job missing timeout-minutes configuration</system-out>
       <system-err>File: /Users/morganlowman/GitHub/political-sphere/.github/workflows/application-release.yml, Line: 0</system-err>
-    </testcase>
-    <testcase name="PERF-001" classname="GitHub.Actions.Audit" time="0">
-      
-      <system-out>Workflow could benefit from dependency caching</system-out>
-      <system-err>File: /Users/morganlowman/GitHub/political-sphere/.github/workflows/security-scan.yml, Line: 0</system-err>
     </testcase>
     <testcase name="PERF-002" classname="GitHub.Actions.Audit" time="0">
       

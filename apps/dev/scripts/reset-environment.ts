@@ -10,11 +10,11 @@
  * @module scripts/reset-environment
  */
 
-import { execSync } from "node:child_process";
-import { existsSync, rmSync } from "node:fs";
-import { join } from "node:path";
+import { execSync } from 'node:child_process';
+import { existsSync, rmSync } from 'node:fs';
+import { join } from 'node:path';
 
-import { DatabaseConnector } from "../../data-pipeline/src/connectors/database-connector";
+import { DatabaseConnector } from '../../data-pipeline/src/connectors/database-connector';
 
 interface ResetOptions {
   database?: boolean;
@@ -39,12 +39,12 @@ const DEFAULT_OPTIONS: ResetOptions = {
  * Reset the development environment
  */
 async function resetEnvironment(options: ResetOptions = DEFAULT_OPTIONS): Promise<void> {
-  console.log("🔄 Resetting development environment...");
-  console.log("Options:", options);
+  console.log('🔄 Resetting development environment...');
+  console.log('Options:', options);
 
   // Safety check - require confirmation in production-like environments
-  if (!options.confirm && process.env.NODE_ENV === "production") {
-    throw new Error("Cannot reset production environment without explicit confirmation");
+  if (!options.confirm && process.env.NODE_ENV === 'production') {
+    throw new Error('Cannot reset production environment without explicit confirmation');
   }
 
   const warnings: string[] = [];
@@ -70,16 +70,16 @@ async function resetEnvironment(options: ResetOptions = DEFAULT_OPTIONS): Promis
       await seedDatabase();
     }
 
-    console.log("✅ Environment reset completed successfully");
+    console.log('✅ Environment reset completed successfully');
 
     if (warnings.length > 0) {
-      console.log("\n⚠️  Warnings:");
+      console.log('\n⚠️  Warnings:');
       for (const warning of warnings) {
         console.log(`  - ${warning}`);
       }
     }
   } catch (error) {
-    console.error("❌ Error resetting environment:", error);
+    console.error('❌ Error resetting environment:', error);
     throw error;
   }
 }
@@ -88,20 +88,20 @@ async function resetEnvironment(options: ResetOptions = DEFAULT_OPTIONS): Promis
  * Reset the database
  */
 async function resetDatabase(): Promise<void> {
-  console.log("  → Resetting database...");
+  console.log('  → Resetting database...');
 
   const dbConfig = {
-    host: process.env.DB_HOST || "localhost",
-    port: Number.parseInt(process.env.DB_PORT || "5432", 10),
-    database: process.env.DB_NAME || "political_sphere_dev",
-    user: process.env.DB_USER || "postgres",
-    password: process.env.DB_PASSWORD || "",
+    host: process.env.DB_HOST || 'localhost',
+    port: Number.parseInt(process.env.DB_PORT || '5432', 10),
+    database: process.env.DB_NAME || 'political_sphere_dev',
+    user: process.env.DB_USER || 'postgres',
+    password: process.env.DB_PASSWORD || '',
   };
 
   // Connect to default 'postgres' database to drop/create target database
   const adminDb = new DatabaseConnector({
     ...dbConfig,
-    database: "postgres",
+    database: 'postgres',
   });
 
   try {
@@ -113,7 +113,7 @@ async function resetDatabase(): Promise<void> {
        FROM pg_stat_activity
        WHERE pg_stat_activity.datname = $1
          AND pid <> pg_backend_pid()`,
-      [dbConfig.database],
+      [dbConfig.database]
     );
 
     // Drop database if exists
@@ -127,15 +127,15 @@ async function resetDatabase(): Promise<void> {
     await adminDb.disconnect();
 
     // Run migrations
-    console.log("  → Running migrations...");
+    console.log('  → Running migrations...');
     try {
-      execSync("npm run migrate:dev", {
-        stdio: "inherit",
+      execSync('npm run migrate:dev', {
+        stdio: 'inherit',
         cwd: process.cwd(),
       });
-      console.log("  ✓ Migrations completed");
+      console.log('  ✓ Migrations completed');
     } catch (error) {
-      console.warn("  ⚠️  Migration failed or not configured:", error);
+      console.warn('  ⚠️  Migration failed or not configured:', error);
     }
   } catch (error) {
     await adminDb.disconnect();
@@ -147,15 +147,15 @@ async function resetDatabase(): Promise<void> {
  * Clear cache directories
  */
 function clearCache(warnings: string[]): void {
-  console.log("  → Clearing cache...");
+  console.log('  → Clearing cache...');
 
   const cacheDirs = [
-    ".nx/cache",
-    "node_modules/.cache",
-    "node_modules/.vite",
-    ".vitest",
-    "ai-cache",
-    "ai/ai-cache",
+    '.nx/cache',
+    'node_modules/.cache',
+    'node_modules/.vite',
+    '.vitest',
+    'ai-cache',
+    'ai/ai-cache',
   ];
 
   let clearedCount = 0;
@@ -179,10 +179,10 @@ function clearCache(warnings: string[]): void {
  * Clear log files
  */
 function clearLogs(warnings: string[]): void {
-  console.log("  → Clearing logs...");
+  console.log('  → Clearing logs...');
 
-  const logDirs = ["logs", "coverage"];
-  const logFiles = ["npm-debug.log", "yarn-debug.log", "pnpm-debug.log", "vitest-output.log"];
+  const logDirs = ['logs', 'coverage'];
+  const logFiles = ['npm-debug.log', 'yarn-debug.log', 'pnpm-debug.log', 'vitest-output.log'];
 
   let clearedCount = 0;
 
@@ -219,16 +219,16 @@ function clearLogs(warnings: string[]): void {
  * Seed database with fresh data
  */
 async function seedDatabase(): Promise<void> {
-  console.log("  → Seeding database...");
+  console.log('  → Seeding database...');
 
   try {
-    execSync("npm run seed:dev", {
-      stdio: "inherit",
+    execSync('npm run seed:dev', {
+      stdio: 'inherit',
       cwd: process.cwd(),
     });
-    console.log("  ✓ Database seeded");
+    console.log('  ✓ Database seeded');
   } catch (error) {
-    console.warn("  ⚠️  Seeding failed or not configured:", error);
+    console.warn('  ⚠️  Seeding failed or not configured:', error);
   }
 }
 
@@ -240,11 +240,11 @@ function parseArgs(): ResetOptions {
   const options: ResetOptions = { ...DEFAULT_OPTIONS };
 
   for (const arg of args) {
-    if (arg === "--no-database") options.database = false;
-    if (arg === "--no-cache") options.cache = false;
-    if (arg === "--no-logs") options.logs = false;
-    if (arg === "--seed") options.seed = true;
-    if (arg === "--confirm") options.confirm = true;
+    if (arg === '--no-database') options.database = false;
+    if (arg === '--no-cache') options.cache = false;
+    if (arg === '--no-logs') options.logs = false;
+    if (arg === '--seed') options.seed = true;
+    if (arg === '--confirm') options.confirm = true;
   }
 
   return options;
@@ -256,19 +256,19 @@ if (import.meta.url === `file://${process.argv[1]}`) {
 
   // Require confirmation for destructive operations
   if (!options.confirm) {
-    console.log("⚠️  This will reset your development environment.");
-    console.log("   Run with --confirm to proceed.");
+    console.log('⚠️  This will reset your development environment.');
+    console.log('   Run with --confirm to proceed.');
     process.exit(1);
   }
 
   resetEnvironment(options)
     .then(() => {
-      console.log("\n✅ Environment reset complete");
-      console.log("You may need to restart development servers.");
+      console.log('\n✅ Environment reset complete');
+      console.log('You may need to restart development servers.');
       process.exit(0);
     })
-    .catch((error) => {
-      console.error("\n💥 Reset failed:", error);
+    .catch(error => {
+      console.error('\n💥 Reset failed:', error);
       process.exit(1);
     });
 }

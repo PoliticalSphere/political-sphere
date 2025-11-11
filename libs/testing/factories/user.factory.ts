@@ -1,5 +1,5 @@
-import { faker } from "@faker-js/faker";
-import { Factory } from "fishery";
+import { faker } from '@faker-js/faker';
+import { Factory } from 'fishery';
 
 export interface User {
   id: string;
@@ -8,7 +8,7 @@ export interface User {
   passwordHash?: string;
   createdAt: string;
   updatedAt: string;
-  role?: "user" | "admin" | "moderator";
+  role?: 'user' | 'admin' | 'moderator';
   isActive?: boolean;
   lastLoginAt?: string | null;
 }
@@ -20,7 +20,7 @@ export const UserFactory = Factory.define<User>(({ sequence, params }) => ({
   passwordHash: params.passwordHash ?? faker.string.alphanumeric(60),
   createdAt: params.createdAt ?? faker.date.past().toISOString(),
   updatedAt: params.updatedAt ?? faker.date.recent().toISOString(),
-  role: params.role ?? "user",
+  role: params.role ?? 'user',
   isActive: params.isActive ?? true,
   lastLoginAt: params.lastLoginAt ?? faker.date.recent().toISOString(),
 }));
@@ -28,14 +28,14 @@ export const UserFactory = Factory.define<User>(({ sequence, params }) => ({
 // Specialized factories
 export const AdminUserFactory = Factory.define<User>(({ params }) => ({
   ...UserFactory.build(),
-  role: "admin",
+  role: 'admin',
   username: `admin_${faker.internet.username().toLowerCase()}`,
   ...params,
 }));
 
 export const ModeratorUserFactory = Factory.define<User>(({ params }) => ({
   ...UserFactory.build(),
-  role: "moderator",
+  role: 'moderator',
   username: `mod_${faker.internet.username().toLowerCase()}`,
   ...params,
 }));

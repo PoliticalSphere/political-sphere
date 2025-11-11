@@ -1,19 +1,19 @@
-import { dirname, relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { dirname, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
   ListToolsRequestSchema,
   McpError,
-} from "@modelcontextprotocol/sdk/types.js";
-import ts from "typescript";
+} from '@modelcontextprotocol/sdk/types.js';
+import ts from 'typescript';
 
 const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(MODULE_DIR, "../../../..");
-const TSCONFIG_PATH = resolve(REPO_ROOT, "tsconfig.json");
+const REPO_ROOT = resolve(MODULE_DIR, '../../../..');
+const TSCONFIG_PATH = resolve(REPO_ROOT, 'tsconfig.json');
 const MAX_REFERENCE_RESULTS = 40;
 
 let parsedConfigCache = null;
@@ -24,7 +24,7 @@ function loadTsConfig() {
   }
 
   if (!ts.sys.fileExists(TSCONFIG_PATH)) {
-    throw new McpError(ErrorCode.InvalidRequest, "tsconfig.json not found at repo root");
+    throw new McpError(ErrorCode.InvalidRequest, 'tsconfig.json not found at repo root');
   }
 
   const configFile = ts.readConfigFile(TSCONFIG_PATH, ts.sys.readFile);
@@ -32,10 +32,10 @@ function loadTsConfig() {
     throw new McpError(
       ErrorCode.InternalError,
       `Unable to read tsconfig.json: ${ts.formatDiagnosticsWithColorAndContext([configFile.error], {
-        getCanonicalFileName: (fileName) => fileName,
+        getCanonicalFileName: fileName => fileName,
         getCurrentDirectory: () => REPO_ROOT,
         getNewLine: () => ts.sys.newLine,
-      })}`,
+      })}`
     );
   }
 
@@ -44,7 +44,7 @@ function loadTsConfig() {
     ts.sys,
     REPO_ROOT,
     undefined,
-    TSCONFIG_PATH,
+    TSCONFIG_PATH
   );
 
   parsedConfigCache = parsed;
@@ -52,13 +52,13 @@ function loadTsConfig() {
 }
 
 function ensureRepoFilePath(inputPath) {
-  if (typeof inputPath !== "string" || inputPath.trim() === "") {
-    throw new McpError(ErrorCode.InvalidRequest, "filePath is required");
+  if (typeof inputPath !== 'string' || inputPath.trim() === '') {
+    throw new McpError(ErrorCode.InvalidRequest, 'filePath is required');
   }
 
   const absolute = resolve(REPO_ROOT, inputPath);
   if (!absolute.startsWith(REPO_ROOT)) {
-    throw new McpError(ErrorCode.InvalidRequest, "filePath must stay within the repository");
+    throw new McpError(ErrorCode.InvalidRequest, 'filePath must stay within the repository');
   }
   if (!ts.sys.fileExists(absolute)) {
     throw new McpError(ErrorCode.InvalidRequest, `File not found: ${inputPath}`);
@@ -74,23 +74,23 @@ function createLanguageArtifacts(targetFile) {
   }
 
   const scriptFileNames = Array.from(fileSet);
-  const fileVersions = new Map(scriptFileNames.map((file) => [file, 0]));
+  const fileVersions = new Map(scriptFileNames.map(file => [file, 0]));
 
   const host = {
     getCompilationSettings: () => parsed.options,
     getScriptFileNames: () => scriptFileNames,
-    getScriptVersion: (fileName) => String(fileVersions.get(fileName) ?? 0),
-    getScriptSnapshot: (fileName) => {
+    getScriptVersion: fileName => String(fileVersions.get(fileName) ?? 0),
+    getScriptSnapshot: fileName => {
       if (!ts.sys.fileExists(fileName)) {
         return undefined;
       }
-      const contents = ts.sys.readFile(fileName, "utf8");
+      const contents = ts.sys.readFile(fileName, 'utf8');
       const current = fileVersions.get(fileName) ?? 0;
       fileVersions.set(fileName, current + 1);
       return contents !== undefined ? ts.ScriptSnapshot.fromString(contents) : undefined;
     },
     getCurrentDirectory: () => REPO_ROOT,
-    getDefaultLibFileName: (options) => ts.getDefaultLibFilePath(options),
+    getDefaultLibFileName: options => ts.getDefaultLibFilePath(options),
     fileExists: ts.sys.fileExists,
     readFile: ts.sys.readFile,
     readDirectory: ts.sys.readDirectory,
@@ -103,7 +103,7 @@ function createLanguageArtifacts(targetFile) {
   const program = languageService.getProgram();
   if (!program) {
     languageService.dispose();
-    throw new McpError(ErrorCode.InternalError, "Failed to initialize TypeScript program");
+    throw new McpError(ErrorCode.InternalError, 'Failed to initialize TypeScript program');
   }
 
   return { languageService, program };
@@ -114,7 +114,7 @@ function getSourceFile(program, fileName) {
   if (!sf) {
     throw new McpError(
       ErrorCode.InvalidRequest,
-      `Unable to load ${relative(REPO_ROOT, fileName)} into the TypeScript program`,
+      `Unable to load ${relative(REPO_ROOT, fileName)} into the TypeScript program`
     );
   }
   return sf;
@@ -125,11 +125,11 @@ function ensurePositionArgs(args) {
   const column = Number(args.column);
 
   if (!Number.isInteger(line) || line < 1) {
-    throw new McpError(ErrorCode.InvalidRequest, "line must be a positive integer (1-based)");
+    throw new McpError(ErrorCode.InvalidRequest, 'line must be a positive integer (1-based)');
   }
 
   if (!Number.isInteger(column) || column < 1) {
-    throw new McpError(ErrorCode.InvalidRequest, "column must be a positive integer (1-based)");
+    throw new McpError(ErrorCode.InvalidRequest, 'column must be a positive integer (1-based)');
   }
 
   return { line, column };
@@ -152,29 +152,29 @@ function formatSpan(program, fileName, textSpan) {
 }
 
 function extractSnippet(fileName, startLineZero, endLineZero) {
-  const contents = ts.sys.readFile(fileName, "utf8");
+  const contents = ts.sys.readFile(fileName, 'utf8');
   if (!contents) {
-    return "";
+    return '';
   }
   const lines = contents.split(/\r?\n/);
   const from = Math.max(startLineZero - 1, 0);
   const to = Math.min(endLineZero + 2, lines.length);
-  return lines.slice(from, to).join("\n").trim();
+  return lines.slice(from, to).join('\n').trim();
 }
 
 class CodeIntelServer extends Server {
   constructor() {
     super(
       {
-        name: "political-sphere-code-intel",
-        version: "1.0.0",
-        description: "Code intelligence helpers backed by the local TypeScript language service",
+        name: 'political-sphere-code-intel',
+        version: '1.0.0',
+        description: 'Code intelligence helpers backed by the local TypeScript language service',
       },
       {
         capabilities: {
           tools: {},
         },
-      },
+      }
     );
 
     this.setRequestHandler(ListToolsRequestSchema, this.listTools.bind(this));
@@ -185,41 +185,41 @@ class CodeIntelServer extends Server {
     return {
       tools: [
         {
-          name: "codeintel_definition",
-          description: "Find the definition for a symbol at a particular line/column inside a file",
+          name: 'codeintel_definition',
+          description: 'Find the definition for a symbol at a particular line/column inside a file',
           inputSchema: {
-            type: "object",
-            required: ["filePath", "line", "column"],
+            type: 'object',
+            required: ['filePath', 'line', 'column'],
             properties: {
-              filePath: { type: "string" },
-              line: { type: "integer", minimum: 1 },
-              column: { type: "integer", minimum: 1 },
+              filePath: { type: 'string' },
+              line: { type: 'integer', minimum: 1 },
+              column: { type: 'integer', minimum: 1 },
             },
           },
         },
         {
-          name: "codeintel_references",
-          description: "List references for a symbol at the given location (max 40)",
+          name: 'codeintel_references',
+          description: 'List references for a symbol at the given location (max 40)',
           inputSchema: {
-            type: "object",
-            required: ["filePath", "line", "column"],
+            type: 'object',
+            required: ['filePath', 'line', 'column'],
             properties: {
-              filePath: { type: "string" },
-              line: { type: "integer", minimum: 1 },
-              column: { type: "integer", minimum: 1 },
+              filePath: { type: 'string' },
+              line: { type: 'integer', minimum: 1 },
+              column: { type: 'integer', minimum: 1 },
             },
           },
         },
         {
-          name: "codeintel_quickinfo",
-          description: "Show type information and doc comments for the symbol at a location",
+          name: 'codeintel_quickinfo',
+          description: 'Show type information and doc comments for the symbol at a location',
           inputSchema: {
-            type: "object",
-            required: ["filePath", "line", "column"],
+            type: 'object',
+            required: ['filePath', 'line', 'column'],
             properties: {
-              filePath: { type: "string" },
-              line: { type: "integer", minimum: 1 },
-              column: { type: "integer", minimum: 1 },
+              filePath: { type: 'string' },
+              line: { type: 'integer', minimum: 1 },
+              column: { type: 'integer', minimum: 1 },
             },
           },
         },
@@ -233,11 +233,11 @@ class CodeIntelServer extends Server {
     const args = params.arguments ?? {};
 
     switch (name) {
-      case "codeintel_definition":
+      case 'codeintel_definition':
         return this.handleDefinition(args);
-      case "codeintel_references":
+      case 'codeintel_references':
         return this.handleReferences(args);
-      case "codeintel_quickinfo":
+      case 'codeintel_quickinfo':
         return this.handleQuickInfo(args);
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
@@ -252,12 +252,12 @@ class CodeIntelServer extends Server {
       const sf = getSourceFile(program, filePath);
       const position = toTextPosition(sf, line, column);
       const definitions = languageService.getDefinitionAtPosition(filePath, position) ?? [];
-      const formatted = definitions.map((def) => ({
+      const formatted = definitions.map(def => ({
         ...formatSpan(program, def.fileName, def.textSpan),
         kind: def.kind,
       }));
       return {
-        content: [{ type: "text", text: JSON.stringify({ definitions: formatted }, null, 2) }],
+        content: [{ type: 'text', text: JSON.stringify({ definitions: formatted }, null, 2) }],
       };
     } finally {
       languageService.dispose();
@@ -273,14 +273,14 @@ class CodeIntelServer extends Server {
       const position = toTextPosition(sf, line, column);
       const refs = languageService.getReferencesAtPosition(filePath, position) ?? [];
       const sliced = refs.slice(0, MAX_REFERENCE_RESULTS);
-      const formatted = sliced.map((ref) => ({
+      const formatted = sliced.map(ref => ({
         ...formatSpan(program, ref.fileName, ref.textSpan),
         isDefinition: Boolean(ref.isDefinition),
       }));
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: JSON.stringify(
               {
                 total: refs.length,
@@ -288,7 +288,7 @@ class CodeIntelServer extends Server {
                 references: formatted,
               },
               null,
-              2,
+              2
             ),
           },
         ],
@@ -309,16 +309,16 @@ class CodeIntelServer extends Server {
       if (!quickInfo) {
         throw new McpError(
           ErrorCode.InvalidRequest,
-          "Unable to retrieve symbol information for the supplied position",
+          'Unable to retrieve symbol information for the supplied position'
         );
       }
 
-      const display = (quickInfo.displayParts ?? []).map((part) => part.text).join("");
-      const documentation = (quickInfo.documentation ?? []).map((part) => part.text).join("\n");
+      const display = (quickInfo.displayParts ?? []).map(part => part.text).join('');
+      const documentation = (quickInfo.documentation ?? []).map(part => part.text).join('\n');
       return {
         content: [
           {
-            type: "text",
+            type: 'text',
             text: JSON.stringify(
               {
                 signature: display.trim(),
@@ -327,7 +327,7 @@ class CodeIntelServer extends Server {
                 range: formatSpan(program, filePath, quickInfo.textSpan),
               },
               null,
-              2,
+              2
             ),
           },
         ],
@@ -341,4 +341,4 @@ class CodeIntelServer extends Server {
 const server = new CodeIntelServer();
 const transport = new StdioServerTransport();
 await server.connect(transport);
-console.error("Code Intel MCP server ready on STDIO");
+console.error('Code Intel MCP server ready on STDIO');

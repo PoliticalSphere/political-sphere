@@ -10,7 +10,7 @@
  * Standards: WCAG 2.2 AA (UX-01 to UX-05)
  */
 
-import { useState, type FormEvent } from "react";
+import { useState, type FormEvent } from 'react';
 
 // ============================================================================
 // TYPES
@@ -19,7 +19,7 @@ import { useState, type FormEvent } from "react";
 type BillProposal = {
   title: string;
   description: string;
-  category: "environment" | "healthcare" | "education" | "economy" | "justice";
+  category: 'environment' | 'healthcare' | 'education' | 'economy' | 'justice';
 };
 
 interface FormErrors {
@@ -35,9 +35,9 @@ interface FormErrors {
 
 export function BillProposalForm() {
   const [formData, setFormData] = useState<BillProposal>({
-    title: "",
-    description: "",
-    category: "environment",
+    title: '',
+    description: '',
+    category: 'environment',
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -56,41 +56,41 @@ export function BillProposalForm() {
       const validated = BillProposalSchema.parse(formData);
 
       // Submit to API
-      const response = await fetch("/api/bills", {
-        method: "POST",
+      const response = await fetch('/api/bills', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
         body: JSON.stringify(validated),
       });
 
       if (!response.ok) {
         const error = await response.json();
-        setErrors({ form: error.message || "Failed to submit bill" });
+        setErrors({ form: error.message || 'Failed to submit bill' });
         return;
       }
 
       // Success
       setSubmitSuccess(true);
-      setFormData({ title: "", description: "", category: "environment" });
+      setFormData({ title: '', description: '', category: 'environment' });
 
       // Announce success to screen readers
-      const announcement = document.getElementById("form-status");
+      const announcement = document.getElementById('form-status');
       if (announcement) {
-        announcement.textContent = "Bill proposal submitted successfully";
+        announcement.textContent = 'Bill proposal submitted successfully';
       }
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Convert Zod errors to form errors
         const fieldErrors: FormErrors = {};
-        error.errors.forEach((err) => {
+        error.errors.forEach(err => {
           const field = err.path[0] as keyof FormErrors;
           fieldErrors[field] = err.message;
         });
         setErrors(fieldErrors);
       } else {
-        setErrors({ form: "An unexpected error occurred" });
+        setErrors({ form: 'An unexpected error occurred' });
       }
     } finally {
       setIsSubmitting(false);
@@ -134,10 +134,10 @@ export function BillProposalForm() {
           id="bill-title"
           type="text"
           value={formData.title}
-          onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+          onChange={e => setFormData({ ...formData, title: e.target.value })}
           aria-required="true"
           aria-invalid={!!errors.title}
-          aria-describedby={errors.title ? "title-error title-hint" : "title-hint"}
+          aria-describedby={errors.title ? 'title-error title-hint' : 'title-hint'}
           disabled={isSubmitting}
           autoComplete="off"
         />
@@ -166,12 +166,12 @@ export function BillProposalForm() {
         <textarea
           id="bill-description"
           value={formData.description}
-          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+          onChange={e => setFormData({ ...formData, description: e.target.value })}
           rows={10}
           aria-required="true"
           aria-invalid={!!errors.description}
           aria-describedby={
-            errors.description ? "description-error description-hint" : "description-hint"
+            errors.description ? 'description-error description-hint' : 'description-hint'
           }
           disabled={isSubmitting}
         />
@@ -201,15 +201,15 @@ export function BillProposalForm() {
         <select
           id="bill-category"
           value={formData.category}
-          onChange={(e) =>
+          onChange={e =>
             setFormData({
               ...formData,
-              category: e.target.value as BillProposal["category"],
+              category: e.target.value as BillProposal['category'],
             })
           }
           aria-required="true"
           aria-invalid={!!errors.category}
-          aria-describedby={errors.category ? "category-error" : undefined}
+          aria-describedby={errors.category ? 'category-error' : undefined}
           disabled={isSubmitting}
         >
           <option value="environment">Environment</option>
@@ -237,16 +237,16 @@ export function BillProposalForm() {
           aria-busy={isSubmitting}
           className="btn btn-primary"
         >
-          {isSubmitting ? "Submitting..." : "Submit Proposal"}
+          {isSubmitting ? 'Submitting...' : 'Submit Proposal'}
         </button>
 
         <button
           type="button"
           onClick={() => {
             setFormData({
-              title: "",
-              description: "",
-              category: "environment",
+              title: '',
+              description: '',
+              category: 'environment',
             });
             setErrors({});
             setSubmitSuccess(false);

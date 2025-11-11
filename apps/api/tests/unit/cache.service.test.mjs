@@ -1,4 +1,4 @@
-import { CacheService } from "../../src/utils/cache.ts";
+import { CacheService } from '../../src/utils/cache.ts';
 
 class FakePipeline {
   #commands = [];
@@ -13,7 +13,7 @@ class FakePipeline {
   }
 
   async exec() {
-    const results = this.#commands.map((command) => {
+    const results = this.#commands.map(command => {
       try {
         command();
         return [null, 1];
@@ -37,12 +37,12 @@ class FakeRedis {
 
   async set(key, value) {
     this.store.set(key, value);
-    return "OK";
+    return 'OK';
   }
 
   async setex(key, _ttlSeconds, value) {
     this.store.set(key, value);
-    return "OK";
+    return 'OK';
   }
 
   async del(...keys) {
@@ -57,15 +57,15 @@ class FakeRedis {
 
   async scan(cursor, ...args) {
     this.scanCalls += 1;
-    let pattern = "*";
+    let pattern = '*';
     let count = 10;
 
     for (let i = 0; i < args.length; i += 2) {
       const option = args[i];
       const value = args[i + 1];
-      if (option === "MATCH" && typeof value === "string") {
+      if (option === 'MATCH' && typeof value === 'string') {
         pattern = value;
-      } else if (option === "COUNT" && typeof value === "number") {
+      } else if (option === 'COUNT' && typeof value === 'number') {
         count = value;
       }
     }
@@ -84,7 +84,7 @@ class FakeRedis {
       index += 1;
     }
 
-    const nextCursor = index >= keys.length ? "0" : String(index);
+    const nextCursor = index >= keys.length ? '0' : String(index);
     return [nextCursor, matches];
   }
 
@@ -94,22 +94,22 @@ class FakeRedis {
 
   async quit() {
     this.closed = true;
-    return "OK";
+    return 'OK';
   }
 }
 
 function globToRegExp(pattern) {
   // Validate pattern to prevent malicious input
-  if (typeof pattern !== "string" || pattern.length > 1000) {
-    throw new Error("Invalid glob pattern");
+  if (typeof pattern !== 'string' || pattern.length > 1000) {
+    throw new Error('Invalid glob pattern');
   }
   // Escape special regex chars, but preserve glob wildcards (* and ?)
-  const escaped = pattern.replace(/([.+^=!:${}()|[\]\\/])/g, "\\$1");
-  const regex = `^${escaped.replace(/\*/g, ".*").replace(/\?/g, ".")}$`;
+  const escaped = pattern.replace(/([.+^=!:${}()|[\]\\/])/g, '\\$1');
+  const regex = `^${escaped.replace(/\*/g, '.*').replace(/\?/g, '.')}$`;
   return new RegExp(regex);
 }
 
-describe("CacheService", () => {
+describe('CacheService', () => {
   let fakeRedis;
   let cache;
 
@@ -118,38 +118,38 @@ describe("CacheService", () => {
     cache = new CacheService(fakeRedis);
   });
 
-  test("stores and retrieves structured data", async () => {
-    await cache.set("user:123", { id: 123, role: "admin" });
-    const stored = await cache.get("user:123");
-    expect(stored).toEqual({ id: 123, role: "admin" });
+  test('stores and retrieves structured data', async () => {
+    await cache.set('user:123', { id: 123, role: 'admin' });
+    const stored = await cache.get('user:123');
+    expect(stored).toEqual({ id: 123, role: 'admin' });
   });
 
-  test("removes key when TTL is zero or negative", async () => {
-    await cache.set("session:1", { token: "abc" });
-    expect(fakeRedis.store.has("session:1")).toBe(true);
+  test('removes key when TTL is zero or negative', async () => {
+    await cache.set('session:1', { token: 'abc' });
+    expect(fakeRedis.store.has('session:1')).toBe(true);
 
-    await cache.set("session:1", { token: "abc" }, 0);
-    expect(fakeRedis.store.has("session:1")).toBe(false);
+    await cache.set('session:1', { token: 'abc' }, 0);
+    expect(fakeRedis.store.has('session:1')).toBe(false);
 
-    await cache.set("session:2", { token: "def" });
-    await cache.set("session:2", { token: "def" }, -30);
-    expect(fakeRedis.store.has("session:2")).toBe(false);
+    await cache.set('session:2', { token: 'def' });
+    await cache.set('session:2', { token: 'def' }, -30);
+    expect(fakeRedis.store.has('session:2')).toBe(false);
   });
 
-  test("invalidates keys using SCAN iteration", async () => {
-    await cache.set("bill:1", { id: 1 });
-    await cache.set("bill:2", { id: 2 });
-    await cache.set("user:1", { id: 1 });
+  test('invalidates keys using SCAN iteration', async () => {
+    await cache.set('bill:1', { id: 1 });
+    await cache.set('bill:2', { id: 2 });
+    await cache.set('user:1', { id: 1 });
 
-    await cache.invalidatePattern("bill:*");
+    await cache.invalidatePattern('bill:*');
 
-    expect(fakeRedis.store.has("bill:1")).toBe(false);
-    expect(fakeRedis.store.has("bill:2")).toBe(false);
-    expect(fakeRedis.store.has("user:1")).toBe(true);
+    expect(fakeRedis.store.has('bill:1')).toBe(false);
+    expect(fakeRedis.store.has('bill:2')).toBe(false);
+    expect(fakeRedis.store.has('user:1')).toBe(true);
     expect(fakeRedis.scanCalls).toBeGreaterThan(0);
   });
 
-  test("does not close injected redis client", async () => {
+  test('does not close injected redis client', async () => {
     await cache.close();
     expect(fakeRedis.closed).toBe(false);
   });

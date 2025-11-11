@@ -3,37 +3,37 @@
  * Handles user authentication
  */
 
-import { useState } from "react";
+import { useState } from 'react';
 
-import { apiClient } from "../utils/api-client";
-import "./Login.css";
+import { apiClient } from '../utils/api-client';
+import './Login.css';
 
 interface LoginProps {
   onLogin: () => void;
 }
 
 export function Login({ onLogin }: LoginProps) {
-  const [mode, setMode] = useState<"login" | "register">("login");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+  const [mode, setMode] = useState<'login' | 'register'>('login');
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     try {
-      if (mode === "register") {
+      if (mode === 'register') {
         await apiClient.register(username, password, email || undefined);
       } else {
         await apiClient.login(username, password);
       }
       onLogin();
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Authentication failed");
+      setError(err instanceof Error ? err.message : 'Authentication failed');
     } finally {
       setLoading(false);
     }
@@ -43,7 +43,7 @@ export function Login({ onLogin }: LoginProps) {
     <div className="login-container">
       <div className="login-card">
         <h1>Political Sphere</h1>
-        <h2>{mode === "login" ? "Login" : "Register"}</h2>
+        <h2>{mode === 'login' ? 'Login' : 'Register'}</h2>
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
@@ -52,22 +52,22 @@ export function Login({ onLogin }: LoginProps) {
               id="username"
               type="text"
               value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={e => setUsername(e.target.value)}
               required
               minLength={3}
               autoComplete="username"
-              aria-describedby={error ? "login-error" : undefined}
+              aria-describedby={error ? 'login-error' : undefined}
             />
           </div>
 
-          {mode === "register" && (
+          {mode === 'register' && (
             <div className="form-group">
               <label htmlFor="email">Email (optional)</label>
               <input
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                onChange={e => setEmail(e.target.value)}
                 autoComplete="email"
               />
             </div>
@@ -79,11 +79,11 @@ export function Login({ onLogin }: LoginProps) {
               id="password"
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={e => setPassword(e.target.value)}
               required
               minLength={8}
-              autoComplete={mode === "register" ? "new-password" : "current-password"}
-              aria-describedby={error ? "login-error" : undefined}
+              autoComplete={mode === 'register' ? 'new-password' : 'current-password'}
+              aria-describedby={error ? 'login-error' : undefined}
             />
           </div>
 
@@ -94,19 +94,19 @@ export function Login({ onLogin }: LoginProps) {
           )}
 
           <button type="submit" disabled={loading} className="btn-primary">
-            {loading ? "Please wait..." : mode === "login" ? "Login" : "Register"}
+            {loading ? 'Please wait...' : mode === 'login' ? 'Login' : 'Register'}
           </button>
         </form>
 
         <button
           type="button"
           onClick={() => {
-            setMode(mode === "login" ? "register" : "login");
-            setError("");
+            setMode(mode === 'login' ? 'register' : 'login');
+            setError('');
           }}
           className="btn-link"
         >
-          {mode === "login" ? "Need an account? Register" : "Have an account? Login"}
+          {mode === 'login' ? 'Need an account? Register' : 'Have an account? Login'}
         </button>
       </div>
     </div>

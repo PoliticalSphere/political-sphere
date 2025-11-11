@@ -3,10 +3,10 @@
  * Handles communication with the age verification API
  */
 
-import type { AxiosInstance } from "axios";
-import axios from "axios";
+import type { AxiosInstance } from 'axios';
+import axios from 'axios';
 
-import { CircuitBreaker } from "./utils/circuit-breaker";
+import { CircuitBreaker } from './utils/circuit-breaker';
 
 interface VerificationStatus {
   verified: boolean;
@@ -36,7 +36,7 @@ class AgeVerificationClient {
   private readonly circuitBreaker: CircuitBreaker;
   private tokenCache?: Map<string, TokenCache>;
 
-  constructor(apiBaseUrl: string = "http://localhost:3000/api") {
+  constructor(apiBaseUrl: string = 'http://localhost:3000/api') {
     this.client = axios.create({
       baseURL: apiBaseUrl,
       timeout: 5000, // 5 second timeout
@@ -54,16 +54,16 @@ class AgeVerificationClient {
   async getVerificationStatus(userId: string): Promise<VerificationStatus> {
     try {
       const result = await this.circuitBreaker.execute(async () => {
-        const response = await this.client.get("/age/status", {
-          headers: { "X-User-ID": userId }, // Pass user ID in header for anonymous checks
+        const response = await this.client.get('/age/status', {
+          headers: { 'X-User-ID': userId }, // Pass user ID in header for anonymous checks
         });
         return response.data.data as VerificationStatus;
       });
 
       return result;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      console.error("Age verification status check failed:", errorMessage);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Age verification status check failed:', errorMessage);
       // Fail safe - assume unverified
       return { verified: false, age: null };
     }
@@ -77,27 +77,27 @@ class AgeVerificationClient {
    */
   async checkContentAccess(
     userId: string,
-    contentRating: string = "PG",
+    contentRating: string = 'PG'
   ): Promise<ContentAccessResult> {
     try {
       const result = await this.circuitBreaker.execute(async () => {
         const token = await this.getAuthToken(userId);
         const response = await this.client.post(
-          "/age/check-access",
+          '/age/check-access',
           {
             contentRating,
           },
           {
             headers: { Authorization: `Bearer ${token}` }, // Assume auth token available
-          },
+          }
         );
         return response.data.data as ContentAccessResult;
       });
 
       return result;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      console.error("Content access check failed:", errorMessage);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Content access check failed:', errorMessage);
       // Fail safe - deny access
       return { canAccess: false, userAge: null, contentRating };
     }
@@ -111,15 +111,15 @@ class AgeVerificationClient {
   async getAgeRestrictions(userId: string): Promise<AgeRestrictions> {
     try {
       const token = await this.getAuthToken(userId);
-      const response = await this.client.get("/age/restrictions", {
+      const response = await this.client.get('/age/restrictions', {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       return response.data.data as AgeRestrictions;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      console.error("Age restrictions check error:", errorMessage);
-      return { verified: false, restrictions: { contentRating: "U" } };
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Age restrictions check error:', errorMessage);
+      return { verified: false, restrictions: { contentRating: 'U' } };
     }
   }
 
@@ -151,10 +151,10 @@ class AgeVerificationClient {
       const serviceToken = await this.authenticateService();
       return serviceToken;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      console.error("Token retrieval failed:", errorMessage);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Token retrieval failed:', errorMessage);
       // Return a fallback token or throw error
-      throw new Error("Unable to retrieve authentication token");
+      throw new Error('Unable to retrieve authentication token');
     }
   }
 
@@ -166,8 +166,8 @@ class AgeVerificationClient {
     try {
       // Service account authentication
       // In production, this would use proper service credentials
-      const response = await this.client.post("/auth/service-login", {
-        serviceId: process.env.GAME_SERVER_SERVICE_ID || "game-server",
+      const response = await this.client.post('/auth/service-login', {
+        serviceId: process.env.GAME_SERVER_SERVICE_ID || 'game-server',
         secret: process.env.GAME_SERVER_SECRET,
       });
 
@@ -177,17 +177,17 @@ class AgeVerificationClient {
       if (!this.tokenCache) {
         this.tokenCache = new Map();
       }
-      this.tokenCache.set("service", {
+      this.tokenCache.set('service', {
         token,
         expires: Date.now() + 15 * 60 * 1000, // 15 minutes
       });
 
       return token;
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Unknown error";
-      console.error("Service authentication failed:", errorMessage);
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      console.error('Service authentication failed:', errorMessage);
       // Fallback to environment token if available
-      return process.env.GAME_SERVER_API_TOKEN || "fallback-service-token";
+      return process.env.GAME_SERVER_API_TOKEN || 'fallback-service-token';
     }
   }
 }

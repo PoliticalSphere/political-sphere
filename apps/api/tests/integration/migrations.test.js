@@ -5,32 +5,32 @@
  * @see docs/architecture/decisions/adr-0001-database-migrations.md
  */
 
-import assert from "node:assert";
-import fs from "node:fs";
-import path from "node:path";
+import assert from 'node:assert';
+import fs from 'node:fs';
+import path from 'node:path';
 
-import { describe, it, beforeEach, afterEach } from "vitest";
+import { describe, it, beforeEach, afterEach } from 'vitest';
 
-import { DEFAULT_DB_PATH } from "../../src/utils/config.js";
+import { DEFAULT_DB_PATH } from '../../src/utils/config.js';
 import {
   initializeDatabase,
   runMigrations,
   rollbackAllMigrations,
-} from "../../src/utils/migrations/index.js";
+} from '../../src/utils/migrations/index.js';
 import {
   MigrationError,
   MigrationRollbackError,
   MigrationValidationError,
-} from "../../src/utils/migrations/migration-error.js";
+} from '../../src/utils/migrations/migration-error.js';
 
 // Test database path - make it unique per test run
 const getTestDbPath = () =>
   path.join(
-    path.dirname(DEFAULT_DB_PATH || "data"),
-    `test-political-sphere-${Date.now()}-${Math.random()}.db`,
+    path.dirname(DEFAULT_DB_PATH || 'data'),
+    `test-political-sphere-${Date.now()}-${Math.random()}.db`
   );
 
-describe("Database Migrations", () => {
+describe('Database Migrations', () => {
   let db;
   let testDbPath;
 
@@ -53,61 +53,61 @@ describe("Database Migrations", () => {
     }
   });
 
-  describe("initializeDatabase", () => {
-    it("should initialize database with WAL mode", () => {
-      const pragma = db.prepare("PRAGMA journal_mode").get();
-      assert.strictEqual(pragma.journal_mode, "wal");
+  describe('initializeDatabase', () => {
+    it('should initialize database with WAL mode', () => {
+      const pragma = db.prepare('PRAGMA journal_mode').get();
+      assert.strictEqual(pragma.journal_mode, 'wal');
     });
 
-    it("should return a database connection", () => {
+    it('should return a database connection', () => {
       assert(db);
-      assert(typeof db.exec === "function");
+      assert(typeof db.exec === 'function');
     });
   });
 
-  describe("runMigrations", () => {
-    it("should apply migrations successfully", async () => {
+  describe('runMigrations', () => {
+    it('should apply migrations successfully', async () => {
       await runMigrations(db);
 
       // Check that tables were created
       const tables = db
         .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
         .all();
-      const tableNames = tables.map((t) => t.name);
-      assert(tableNames.includes("users"));
-      assert(tableNames.includes("parties"));
-      assert(tableNames.includes("bills"));
-      assert(tableNames.includes("votes"));
-      assert(tableNames.includes("_migrations"));
+      const tableNames = tables.map(t => t.name);
+      assert(tableNames.includes('users'));
+      assert(tableNames.includes('parties'));
+      assert(tableNames.includes('bills'));
+      assert(tableNames.includes('votes'));
+      assert(tableNames.includes('_migrations'));
     });
 
-    it("should track applied migrations", async () => {
+    it('should track applied migrations', async () => {
       await runMigrations(db);
 
-      const migrations = db.prepare("SELECT name FROM _migrations").all();
+      const migrations = db.prepare('SELECT name FROM _migrations').all();
       assert(migrations.length > 0);
-      assert(migrations.some((m) => m.name === "001_initial_schema"));
+      assert(migrations.some(m => m.name === '001_initial_schema'));
     });
 
-    it("should skip already applied migrations", async () => {
+    it('should skip already applied migrations', async () => {
       await runMigrations(db);
-      const firstCount = db.prepare("SELECT COUNT(*) as count FROM _migrations").get().count;
+      const firstCount = db.prepare('SELECT COUNT(*) as count FROM _migrations').get().count;
 
       await runMigrations(db);
-      const secondCount = db.prepare("SELECT COUNT(*) as count FROM _migrations").get().count;
+      const secondCount = db.prepare('SELECT COUNT(*) as count FROM _migrations').get().count;
 
       assert.strictEqual(firstCount, secondCount);
     });
 
-    it("should validate schema after migrations", async () => {
+    it('should validate schema after migrations', async () => {
       await runMigrations(db);
 
       // Check foreign key constraints
-      const fkCheck = db.prepare("PRAGMA foreign_key_check").all();
-      assert.strictEqual(fkCheck.length, 0, "Foreign key violations found");
+      const fkCheck = db.prepare('PRAGMA foreign_key_check').all();
+      assert.strictEqual(fkCheck.length, 0, 'Foreign key violations found');
     });
 
-    it("should rollback on migration failure when rollbackOnError is true", async () => {
+    it('should rollback on migration failure when rollbackOnError is true', async () => {
       // This test would require a failing migration, which is complex to set up
       // For now, we test the successful case
       await runMigrations(db);
@@ -115,8 +115,8 @@ describe("Database Migrations", () => {
     });
   });
 
-  describe("rollbackAllMigrations", () => {
-    it("should rollback all applied migrations", async () => {
+  describe('rollbackAllMigrations', () => {
+    it('should rollback all applied migrations', async () => {
       await runMigrations(db);
 
       // Verify tables exist
@@ -132,43 +132,43 @@ describe("Database Migrations", () => {
         .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
         .all();
       assert.strictEqual(tables.length, 1); // Only _migrations table should remain
-      assert.strictEqual(tables[0].name, "_migrations");
+      assert.strictEqual(tables[0].name, '_migrations');
     });
 
-    it("should clear migration tracking table", async () => {
+    it('should clear migration tracking table', async () => {
       await runMigrations(db);
 
-      const migrationsBefore = db.prepare("SELECT COUNT(*) as count FROM _migrations").get().count;
+      const migrationsBefore = db.prepare('SELECT COUNT(*) as count FROM _migrations').get().count;
       assert(migrationsBefore > 0);
 
       await rollbackAllMigrations(db);
 
-      const migrationsAfter = db.prepare("SELECT COUNT(*) as count FROM _migrations").get().count;
+      const migrationsAfter = db.prepare('SELECT COUNT(*) as count FROM _migrations').get().count;
       assert.strictEqual(migrationsAfter, 0);
     });
   });
 
-  describe("MigrationError classes", () => {
-    it("should create MigrationError with correct properties", () => {
-      const error = new MigrationError("Test error", "test_migration");
-      assert.strictEqual(error.name, "MigrationError");
-      assert.strictEqual(error.message, "Test error");
-      assert.strictEqual(error.migrationName, "test_migration");
+  describe('MigrationError classes', () => {
+    it('should create MigrationError with correct properties', () => {
+      const error = new MigrationError('Test error', 'test_migration');
+      assert.strictEqual(error.name, 'MigrationError');
+      assert.strictEqual(error.message, 'Test error');
+      assert.strictEqual(error.migrationName, 'test_migration');
     });
 
-    it("should create MigrationRollbackError", () => {
-      const error = new MigrationRollbackError("Rollback failed", "test_migration");
-      assert.strictEqual(error.name, "MigrationRollbackError");
+    it('should create MigrationRollbackError', () => {
+      const error = new MigrationRollbackError('Rollback failed', 'test_migration');
+      assert.strictEqual(error.name, 'MigrationRollbackError');
     });
 
-    it("should create MigrationValidationError", () => {
-      const error = new MigrationValidationError("Validation failed", "test_migration");
-      assert.strictEqual(error.name, "MigrationValidationError");
+    it('should create MigrationValidationError', () => {
+      const error = new MigrationValidationError('Validation failed', 'test_migration');
+      assert.strictEqual(error.name, 'MigrationValidationError');
     });
   });
 
-  describe("Performance", () => {
-    it("should complete migrations within reasonable time", async () => {
+  describe('Performance', () => {
+    it('should complete migrations within reasonable time', async () => {
       const startTime = Date.now();
       await runMigrations(db);
       const duration = Date.now() - startTime;

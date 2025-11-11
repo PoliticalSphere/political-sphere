@@ -26,13 +26,13 @@ class AgeVerificationService {
     // Simple content rating check
     const age = status.age;
     switch (contentRating) {
-      case "G":
-      case "PG":
+      case 'G':
+      case 'PG':
         return true;
-      case "PG-13":
+      case 'PG-13':
         return age >= 13;
-      case "R":
-      case "18":
+      case 'R':
+      case '18':
         return age >= 18;
       default:
         return false;

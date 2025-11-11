@@ -20,7 +20,7 @@
     "lint": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "eslint apps/frontend/src --ext .js"
+        "command": "eslint apps/frontend/src --ext .js --fix"
       }
     }
   }

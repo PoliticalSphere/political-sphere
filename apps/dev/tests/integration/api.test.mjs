@@ -1,18 +1,18 @@
-import https from "https";
-import { spawn, spawnSync } from "node:child_process";
-import { setTimeout as delay } from "node:timers/promises";
+import https from 'https';
+import { spawn, spawnSync } from 'node:child_process';
+import { setTimeout as delay } from 'node:timers/promises';
 
-import { afterAll, beforeAll, expect, test } from "vitest";
+import { afterAll, beforeAll, expect, test } from 'vitest';
 
 // Polyfill fetch for Node.js versions that don't have it
 const fetch =
   global.fetch ||
   ((url, options) => {
     return new Promise((resolve, reject) => {
-      const req = https.request(url, options, (res) => {
-        let data = "";
-        res.on("data", (chunk) => (data += chunk));
-        res.on("end", () => {
+      const req = https.request(url, options, res => {
+        let data = '';
+        res.on('data', chunk => (data += chunk));
+        res.on('end', () => {
           try {
             const json = JSON.parse(data);
             resolve({
@@ -29,7 +29,7 @@ const fetch =
           }
         });
       });
-      req.on("error", reject);
+      req.on('error', reject);
       if (options.body) {
         req.write(options.body);
       }
@@ -39,19 +39,19 @@ const fetch =
 
 const dockerAvailable = (() => {
   try {
-    const result = spawnSync("docker", ["info"], { stdio: "ignore" });
+    const result = spawnSync('docker', ['info'], { stdio: 'ignore' });
     return result.status === 0;
   } catch {
     return false;
   }
 })();
 
-const runIntegration = process.env.RUN_API_INTEGRATION === "true";
+const runIntegration = process.env.RUN_API_INTEGRATION === 'true';
 
 if (!runIntegration) {
-  test.skip("API integration tests skipped. Set RUN_API_INTEGRATION=true to enable.", () => {});
+  test.skip('API integration tests skipped. Set RUN_API_INTEGRATION=true to enable.', () => {});
 } else if (!dockerAvailable) {
-  test.skip("API integration tests skipped because Docker is not available.", () => {});
+  test.skip('API integration tests skipped because Docker is not available.', () => {});
 } else {
   let apiProcess;
 
@@ -71,39 +71,39 @@ if (!runIntegration) {
   };
 
   beforeAll(async () => {
-    apiProcess = spawn("npm", ["run", "dev:api"], {
+    apiProcess = spawn('npm', ['run', 'dev:api'], {
       cwd: process.cwd(),
-      stdio: "inherit",
+      stdio: 'inherit',
     });
 
-    const ready = await waitForServer("http://localhost:4000/health");
+    const ready = await waitForServer('http://localhost:4000/health');
     if (!ready) {
-      apiProcess.kill("SIGTERM");
-      throw new Error("API dev server did not become ready in time.");
+      apiProcess.kill('SIGTERM');
+      throw new Error('API dev server did not become ready in time.');
     }
   });
 
   afterAll(() => {
     if (apiProcess) {
-      apiProcess.kill("SIGTERM");
+      apiProcess.kill('SIGTERM');
     }
   });
 
-  test("should respond to health check", async () => {
-    const response = await fetch("http://localhost:4000/health");
+  test('should respond to health check', async () => {
+    const response = await fetch('http://localhost:4000/health');
     expect(response.status).toBe(200);
     const data = await response.json();
-    expect(data.status).toBe("ok");
+    expect(data.status).toBe('ok');
   });
 
-  test("should handle user authentication", async () => {
+  test('should handle user authentication', async () => {
     // Test login endpoint with seeded user
-    const response = await fetch("http://localhost:4000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const response = await fetch('http://localhost:4000/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: "demo@politicalsphere.com",
-        password: "demo123",
+        email: 'demo@politicalsphere.com',
+        password: 'demo123',
       }),
     });
     expect(response.status).toBe(200);
@@ -111,20 +111,20 @@ if (!runIntegration) {
     expect(data.token).toBeTruthy();
   });
 
-  test("should access protected endpoints with token", async () => {
+  test('should access protected endpoints with token', async () => {
     // First login
-    const loginResponse = await fetch("http://localhost:4000/auth/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const loginResponse = await fetch('http://localhost:4000/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: "demo@politicalsphere.com",
-        password: "demo123",
+        email: 'demo@politicalsphere.com',
+        password: 'demo123',
       }),
     });
     const { token } = await loginResponse.json();
 
     // Then access protected endpoint
-    const protectedResponse = await fetch("http://localhost:4000/api/protected", {
+    const protectedResponse = await fetch('http://localhost:4000/api/protected', {
       headers: { Authorization: `Bearer ${token}` },
     });
 

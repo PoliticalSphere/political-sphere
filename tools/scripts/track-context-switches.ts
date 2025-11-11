@@ -4,9 +4,9 @@
   Usage: tsx scripts/track-context-switches.ts
 */
 
-import { readFileSync, writeFileSync, existsSync } from "fs";
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 
-const LOG_FILE = "ai-metrics/context-switches.json";
+const LOG_FILE = 'ai-metrics/context-switches.json';
 
 interface ContextSwitch {
   timestamp: string;
@@ -17,7 +17,7 @@ interface ContextSwitch {
 
 function logContextSwitch(from: string, to: string, reason?: string): void {
   const switches: ContextSwitch[] = existsSync(LOG_FILE)
-    ? JSON.parse(readFileSync(LOG_FILE, "utf8"))
+    ? JSON.parse(readFileSync(LOG_FILE, 'utf8'))
     : [];
 
   const entry: ContextSwitch = {
@@ -41,18 +41,18 @@ function logContextSwitch(from: string, to: string, reason?: string): void {
 
 function analyzeSwitches(): void {
   if (!existsSync(LOG_FILE)) {
-    console.log("No context switch data available.");
+    console.log('No context switch data available.');
     return;
   }
 
-  const switches: ContextSwitch[] = JSON.parse(readFileSync(LOG_FILE, "utf8"));
+  const switches: ContextSwitch[] = JSON.parse(readFileSync(LOG_FILE, 'utf8'));
   const contextCounts: Record<string, number> = {};
 
   for (const sw of switches) {
     contextCounts[sw.to] = (contextCounts[sw.to] || 0) + 1;
   }
 
-  console.log("Context switch analysis:");
+  console.log('Context switch analysis:');
   Object.entries(contextCounts)
     .sort(([, a], [, b]) => b - a)
     .forEach(([context, count]) => {
@@ -62,13 +62,13 @@ function analyzeSwitches(): void {
 
 // CLI interface
 const command = process.argv[2];
-if (command === "log") {
-  const from = process.argv[3] || "unknown";
-  const to = process.argv[4] || "unknown";
+if (command === 'log') {
+  const from = process.argv[3] || 'unknown';
+  const to = process.argv[4] || 'unknown';
   const reason = process.argv[5];
   logContextSwitch(from, to, reason);
-} else if (command === "analyze") {
+} else if (command === 'analyze') {
   analyzeSwitches();
 } else {
-  console.log("Usage: tsx scripts/track-context-switches.ts log <from> <to> [reason] | analyze");
+  console.log('Usage: tsx scripts/track-context-switches.ts log <from> <to> [reason] | analyze');
 }

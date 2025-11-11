@@ -1,9 +1,9 @@
-import { readFile, readdir, stat } from "node:fs/promises";
-import { dirname, relative, resolve } from "node:path";
-import { fileURLToPath } from "node:url";
+import { readFile, readdir, stat } from 'node:fs/promises';
+import { dirname, relative, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-import { Server } from "@modelcontextprotocol/sdk/server/index.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
 import {
   CallToolRequestSchema,
   ErrorCode,
@@ -11,17 +11,17 @@ import {
   ListToolsRequestSchema,
   McpError,
   ReadResourceRequestSchema,
-} from "@modelcontextprotocol/sdk/types.js";
+} from '@modelcontextprotocol/sdk/types.js';
 
 const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(MODULE_DIR, "../../../..");
+const REPO_ROOT = resolve(MODULE_DIR, '../../../..');
 
-const DEFAULT_DOC_FOLDERS = ["docs", "apps", "libs", "ai"];
+const DEFAULT_DOC_FOLDERS = ['docs', 'apps', 'libs', 'ai'];
 
 async function listDocuments(folder, limit = 50) {
   const absolute = resolve(REPO_ROOT, folder);
   if (!absolute.startsWith(REPO_ROOT)) {
-    throw new McpError(ErrorCode.InvalidRequest, "Folder escapes repository root");
+    throw new McpError(ErrorCode.InvalidRequest, 'Folder escapes repository root');
   }
   const entries = await readdir(absolute, { withFileTypes: true });
   const results = [];
@@ -45,18 +45,18 @@ async function listDocuments(folder, limit = 50) {
 async function previewDocument(path, options = {}) {
   const absolute = resolve(REPO_ROOT, path);
   if (!absolute.startsWith(REPO_ROOT)) {
-    throw new McpError(ErrorCode.InvalidRequest, "Path escapes repository root");
+    throw new McpError(ErrorCode.InvalidRequest, 'Path escapes repository root');
   }
-  const content = await readFile(absolute, "utf8");
+  const content = await readFile(absolute, 'utf8');
   const lines = content.split(/\r?\n/);
   const previewLines = Math.min(options.lines ?? 40, 120);
-  return lines.slice(0, previewLines).join("\n");
+  return lines.slice(0, previewLines).join('\n');
 }
 
 async function searchDocuments(keyword, folders = DEFAULT_DOC_FOLDERS, limit = 10) {
   const normalized = keyword.trim().toLowerCase();
   if (!normalized) {
-    throw new McpError(ErrorCode.InvalidRequest, "keyword is required");
+    throw new McpError(ErrorCode.InvalidRequest, 'keyword is required');
   }
   const matches = [];
 
@@ -68,7 +68,7 @@ async function searchDocuments(keyword, folders = DEFAULT_DOC_FOLDERS, limit = 1
         if (!entry.isFile()) continue;
         if (!entry.name.match(/\.(md|mdx|txt|json)$/i)) continue;
         const entryPath = resolve(absolute, entry.name);
-        const content = await readFile(entryPath, "utf8");
+        const content = await readFile(entryPath, 'utf8');
         const lower = content.toLowerCase();
         const index = lower.indexOf(normalized);
         if (index !== -1) {
@@ -92,15 +92,15 @@ async function searchDocuments(keyword, folders = DEFAULT_DOC_FOLDERS, limit = 1
 }
 
 async function extractGovernanceTasks() {
-  const todoPath = resolve(REPO_ROOT, "docs/TODO.md");
+  const todoPath = resolve(REPO_ROOT, 'docs/TODO.md');
   try {
-    const content = await readFile(todoPath, "utf8");
+    const content = await readFile(todoPath, 'utf8');
     const lines = content.split(/\r?\n/);
     const tasks = [];
     for (const line of lines) {
       const match = line.match(/-\s+\[\s?([ xX])\s?\]\s+(.*)/);
       if (match) {
-        tasks.push({ done: match[1] !== " ", description: match[2].trim() });
+        tasks.push({ done: match[1] !== ' ', description: match[2].trim() });
       }
     }
     return tasks;
@@ -113,16 +113,16 @@ class PoliticalSphereServer extends Server {
   constructor() {
     super(
       {
-        name: "political-sphere",
-        version: "1.0.0",
-        description: "Domain-specific context and insights for Political Sphere",
+        name: 'political-sphere',
+        version: '1.0.0',
+        description: 'Domain-specific context and insights for Political Sphere',
       },
       {
         capabilities: {
           tools: {},
           resources: {},
         },
-      },
+      }
     );
 
     this.setRequestHandler(ListToolsRequestSchema, this.listTools.bind(this));
@@ -135,59 +135,59 @@ class PoliticalSphereServer extends Server {
     return {
       tools: [
         {
-          name: "ps_list_documents",
-          description: "List key documentation files within the repository",
+          name: 'ps_list_documents',
+          description: 'List key documentation files within the repository',
           inputSchema: {
-            type: "object",
+            type: 'object',
             properties: {
               folder: {
-                type: "string",
-                description: "Relative folder (default docs)",
+                type: 'string',
+                description: 'Relative folder (default docs)',
               },
               limit: {
-                type: "number",
-                description: "Maximum files to return (default 25)",
+                type: 'number',
+                description: 'Maximum files to return (default 25)',
               },
             },
           },
         },
         {
-          name: "ps_preview_document",
-          description: "Preview the first lines of a document",
+          name: 'ps_preview_document',
+          description: 'Preview the first lines of a document',
           inputSchema: {
-            type: "object",
+            type: 'object',
             properties: {
-              path: { type: "string" },
+              path: { type: 'string' },
               lines: {
-                type: "number",
-                description: "Number of lines to include",
+                type: 'number',
+                description: 'Number of lines to include',
               },
             },
-            required: ["path"],
+            required: ['path'],
           },
         },
         {
-          name: "ps_search_topics",
-          description: "Search domain documentation for a keyword",
+          name: 'ps_search_topics',
+          description: 'Search domain documentation for a keyword',
           inputSchema: {
-            type: "object",
+            type: 'object',
             properties: {
-              keyword: { type: "string" },
+              keyword: { type: 'string' },
               folders: {
-                type: "array",
-                items: { type: "string" },
-                description: "Folders to search (default docs, apps, libs, ai)",
+                type: 'array',
+                items: { type: 'string' },
+                description: 'Folders to search (default docs, apps, libs, ai)',
               },
-              limit: { type: "number" },
+              limit: { type: 'number' },
             },
-            required: ["keyword"],
+            required: ['keyword'],
           },
         },
         {
-          name: "ps_governance_tasks",
-          description: "Extract governance TODO items from docs/TODO.md",
+          name: 'ps_governance_tasks',
+          description: 'Extract governance TODO items from docs/TODO.md',
           inputSchema: {
-            type: "object",
+            type: 'object',
             properties: {},
           },
         },
@@ -201,60 +201,60 @@ class PoliticalSphereServer extends Server {
     const args = params.arguments ?? {} ?? {};
 
     switch (name) {
-      case "ps_list_documents": {
+      case 'ps_list_documents': {
         const folder =
-          typeof args.folder === "string" && args.folder.length > 0 ? args.folder : "docs";
+          typeof args.folder === 'string' && args.folder.length > 0 ? args.folder : 'docs';
         const limit =
-          typeof args.limit === "number" && Number.isFinite(args.limit)
+          typeof args.limit === 'number' && Number.isFinite(args.limit)
             ? Math.min(Math.max(1, Math.floor(args.limit)), 200)
             : 25;
         const documents = await listDocuments(folder, limit);
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify({ folder, documents }, null, 2),
             },
           ],
         };
       }
 
-      case "ps_preview_document": {
-        if (typeof args.path !== "string") {
-          throw new McpError(ErrorCode.InvalidRequest, "path is required");
+      case 'ps_preview_document': {
+        if (typeof args.path !== 'string') {
+          throw new McpError(ErrorCode.InvalidRequest, 'path is required');
         }
         const lines =
-          typeof args.lines === "number" && Number.isFinite(args.lines)
+          typeof args.lines === 'number' && Number.isFinite(args.lines)
             ? Math.min(Math.max(5, Math.floor(args.lines)), 200)
             : 40;
         const preview = await previewDocument(args.path, { lines });
-        return { content: [{ type: "text", text: preview }] };
+        return { content: [{ type: 'text', text: preview }] };
       }
 
-      case "ps_search_topics": {
+      case 'ps_search_topics': {
         const folders =
           Array.isArray(args.folders) && args.folders.length > 0
             ? args.folders.map(String)
             : DEFAULT_DOC_FOLDERS;
         const limit =
-          typeof args.limit === "number" && Number.isFinite(args.limit)
+          typeof args.limit === 'number' && Number.isFinite(args.limit)
             ? Math.min(Math.max(1, Math.floor(args.limit)), 30)
             : 10;
-        const results = await searchDocuments(String(args.keyword ?? ""), folders, limit);
+        const results = await searchDocuments(String(args.keyword ?? ''), folders, limit);
         return {
           content: [
             {
-              type: "text",
+              type: 'text',
               text: JSON.stringify({ keyword: args.keyword, results }, null, 2),
             },
           ],
         };
       }
 
-      case "ps_governance_tasks": {
+      case 'ps_governance_tasks': {
         const tasks = await extractGovernanceTasks();
         return {
-          content: [{ type: "text", text: JSON.stringify({ tasks }, null, 2) }],
+          content: [{ type: 'text', text: JSON.stringify({ tasks }, null, 2) }],
         };
       }
 
@@ -267,16 +267,16 @@ class PoliticalSphereServer extends Server {
     return {
       resources: [
         {
-          uri: "political-sphere://docs/catalog",
-          name: "Documentation catalog",
-          description: "High-level list of important documentation folders",
-          mimeType: "application/json",
+          uri: 'political-sphere://docs/catalog',
+          name: 'Documentation catalog',
+          description: 'High-level list of important documentation folders',
+          mimeType: 'application/json',
         },
         {
-          uri: "political-sphere://governance/todos",
-          name: "Governance TODOs",
-          description: "Current governance tasks captured in docs/TODO.md",
-          mimeType: "application/json",
+          uri: 'political-sphere://governance/todos',
+          name: 'Governance TODOs',
+          description: 'Current governance tasks captured in docs/TODO.md',
+          mimeType: 'application/json',
         },
       ],
     };
@@ -284,34 +284,34 @@ class PoliticalSphereServer extends Server {
 
   async readResource(request) {
     const uri = request.params?.uri;
-    if (uri === "political-sphere://docs/catalog") {
+    if (uri === 'political-sphere://docs/catalog') {
       const catalog = await Promise.all(
-        DEFAULT_DOC_FOLDERS.map(async (folder) => {
+        DEFAULT_DOC_FOLDERS.map(async folder => {
           try {
             const entries = await listDocuments(folder, 15);
             return { folder, count: entries.length };
           } catch {
             return { folder, count: 0 };
           }
-        }),
+        })
       );
       return {
         contents: [
           {
             uri,
-            mimeType: "application/json",
+            mimeType: 'application/json',
             text: JSON.stringify({ folders: catalog }, null, 2),
           },
         ],
       };
     }
-    if (uri === "political-sphere://governance/todos") {
+    if (uri === 'political-sphere://governance/todos') {
       const tasks = await extractGovernanceTasks();
       return {
         contents: [
           {
             uri,
-            mimeType: "application/json",
+            mimeType: 'application/json',
             text: JSON.stringify({ tasks }, null, 2),
           },
         ],
@@ -325,10 +325,10 @@ async function main() {
   const server = new PoliticalSphereServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("Political Sphere MCP server ready on STDIO");
+  console.error('Political Sphere MCP server ready on STDIO');
 }
 
-main().catch((error) => {
-  console.error("Political Sphere MCP server failed:", error);
+main().catch(error => {
+  console.error('Political Sphere MCP server failed:', error);
   process.exitCode = 1;
 });

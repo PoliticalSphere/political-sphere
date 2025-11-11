@@ -1,5 +1,5 @@
-const { getConnection } = require("./database-connection");
-const logger = require("./logger");
+const { getConnection } = require('./database-connection');
+const logger = require('./logger');
 
 /**
  * Database Performance Monitor
@@ -23,7 +23,7 @@ class DatabasePerformanceMonitor {
    */
   enable() {
     this.isEnabled = true;
-    logger.info("Database performance monitoring enabled", {
+    logger.info('Database performance monitoring enabled', {
       slowQueryThreshold: this.slowQueryThreshold,
       maxQueriesToTrack: this.maxQueriesToTrack,
     });
@@ -34,7 +34,7 @@ class DatabasePerformanceMonitor {
    */
   disable() {
     this.isEnabled = false;
-    logger.info("Database performance monitoring disabled");
+    logger.info('Database performance monitoring disabled');
   }
 
   /**
@@ -91,7 +91,7 @@ class DatabasePerformanceMonitor {
         this.slowQueries.shift();
       }
 
-      logger.warn("Slow query detected", {
+      logger.warn('Slow query detected', {
         duration,
         threshold: this.slowQueryThreshold,
         query: this.enableDetailedLogging ? sql : queryKey,
@@ -134,11 +134,11 @@ class DatabasePerformanceMonitor {
 
     // Get top slow queries
     const sortedQueries = Array.from(this.queryStats.values())
-      .filter((q) => q.slowCallCount > 0)
+      .filter(q => q.slowCallCount > 0)
       .sort((a, b) => b.avgDuration - a.avgDuration)
       .slice(0, 10);
 
-    stats.topSlowQueries = sortedQueries.map((q) => ({
+    stats.topSlowQueries = sortedQueries.map(q => ({
       query: this.enableDetailedLogging ? q.query : q.normalizedQuery,
       callCount: q.callCount,
       slowCallCount: q.slowCallCount,
@@ -175,9 +175,9 @@ class DatabasePerformanceMonitor {
       const connection = await getConnection();
 
       // Database size and page statistics
-      const dbStats = connection.db.prepare("PRAGMA page_count").get();
-      const pageSize = connection.db.prepare("PRAGMA page_size").get();
-      const freelist = connection.db.prepare("PRAGMA freelist_count").get();
+      const dbStats = connection.db.prepare('PRAGMA page_count').get();
+      const pageSize = connection.db.prepare('PRAGMA page_size').get();
+      const freelist = connection.db.prepare('PRAGMA freelist_count').get();
 
       metrics.database = {
         pageCount: dbStats.page_count,
@@ -194,7 +194,7 @@ class DatabasePerformanceMonitor {
 				SELECT name, tbl_name, sql
 				FROM sqlite_master
 				WHERE type = 'index' AND name NOT LIKE 'sqlite_%'
-			`,
+			`
         )
         .all();
 
@@ -203,11 +203,11 @@ class DatabasePerformanceMonitor {
           const stat = connection.db.prepare(`PRAGMA index_info(${index.name})`).all();
           metrics.indexes[index.name] = {
             table: index.tbl_name,
-            columns: stat.map((s) => s.name),
+            columns: stat.map(s => s.name),
             rowCount: stat.length,
           };
         } catch (error) {
-          logger.warn("Failed to get index info", {
+          logger.warn('Failed to get index info', {
             index: index.name,
             error: error.message,
           });
@@ -215,16 +215,16 @@ class DatabasePerformanceMonitor {
       }
 
       // Cache statistics
-      const cacheStats = connection.db.prepare("PRAGMA cache_size").get();
+      const cacheStats = connection.db.prepare('PRAGMA cache_size').get();
       metrics.cache = {
         cacheSize: cacheStats.cache_size,
-        cacheUsed: connection.db.prepare("PRAGMA cache_used").get()?.cache_used || 0,
+        cacheUsed: connection.db.prepare('PRAGMA cache_used').get()?.cache_used || 0,
       };
 
       // Generate recommendations
       metrics.recommendations = this.generateRecommendations(metrics);
     } catch (error) {
-      logger.error("Failed to collect health metrics", {
+      logger.error('Failed to collect health metrics', {
         error: error.message,
       });
       metrics.error = error.message;
@@ -245,28 +245,28 @@ class DatabasePerformanceMonitor {
     if (metrics.database.totalSize > 100 * 1024 * 1024) {
       // 100MB
       recommendations.push(
-        "Consider database size optimization - current size: " +
+        'Consider database size optimization - current size: ' +
           (metrics.database.totalSize / (1024 * 1024)).toFixed(2) +
-          "MB",
+          'MB'
       );
     }
 
     // Index recommendations
     const tableCount = Object.keys(metrics.indexes).length;
     if (tableCount === 0) {
-      recommendations.push("Consider adding indexes for frequently queried columns");
+      recommendations.push('Consider adding indexes for frequently queried columns');
     }
 
     // Cache recommendations
     if (metrics.cache.cacheUsed > metrics.cache.cacheSize * 0.9) {
-      recommendations.push("Cache utilization is high - consider increasing cache size");
+      recommendations.push('Cache utilization is high - consider increasing cache size');
     }
 
     // Slow query recommendations
     const slowQueryCount = this.slowQueries.length;
     if (slowQueryCount > 10) {
       recommendations.push(
-        `High number of slow queries detected (${slowQueryCount}) - review query optimization`,
+        `High number of slow queries detected (${slowQueryCount}) - review query optimization`
       );
     }
 
@@ -323,16 +323,16 @@ class DatabasePerformanceMonitor {
    * @returns {string} Normalized query
    */
   normalizeQuery(sql) {
-    if (!sql) return "";
+    if (!sql) return '';
 
     // Remove extra whitespace and normalize case
-    let normalized = sql.replace(/\s+/g, " ").trim().toLowerCase();
+    let normalized = sql.replace(/\s+/g, ' ').trim().toLowerCase();
 
     // Replace literal values with placeholders
     normalized = normalized
-      .replace(/'[^']*'/g, "?")
-      .replace(/"[^"]*"/g, "?")
-      .replace(/\b\d+\b/g, "?");
+      .replace(/'[^']*'/g, '?')
+      .replace(/"[^"]*"/g, '?')
+      .replace(/\b\d+\b/g, '?');
 
     return normalized;
   }
@@ -343,7 +343,7 @@ class DatabasePerformanceMonitor {
   reset() {
     this.queryStats.clear();
     this.slowQueries = [];
-    logger.info("Performance monitoring data reset");
+    logger.info('Performance monitoring data reset');
   }
 
   /**
@@ -360,7 +360,7 @@ class DatabasePerformanceMonitor {
       },
       stats: this.getStats(),
       slowQueries: this.enableDetailedLogging ? this.slowQueries : [],
-      queryStats: Array.from(this.queryStats.values()).map((stats) => ({
+      queryStats: Array.from(this.queryStats.values()).map(stats => ({
         ...stats,
         query: this.enableDetailedLogging ? stats.query : stats.normalizedQuery,
       })),
@@ -372,7 +372,7 @@ class DatabasePerformanceMonitor {
 const performanceMonitor = new DatabasePerformanceMonitor();
 
 // Auto-enable in development
-if (process.env.NODE_ENV === "development") {
+if (process.env.NODE_ENV === 'development') {
   performanceMonitor.enable();
 }
 

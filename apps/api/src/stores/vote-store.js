@@ -1,11 +1,11 @@
-const fs = require("fs").promises;
-const path = require("path");
+const fs = require('fs').promises;
+const path = require('path');
 
 class VoteStore {
   constructor(db, cache = null) {
     this.db = db;
     this.cache = cache;
-    this.tableName = "votes";
+    this.tableName = 'votes';
   }
 
   async create(voteData) {
@@ -27,17 +27,17 @@ class VoteStore {
 
   async getById(id) {
     const votes = this.db[this.tableName] || [];
-    return votes.find((vote) => vote.id === id) || null;
+    return votes.find(vote => vote.id === id) || null;
   }
 
   async getByBillId(billId) {
     const votes = this.db[this.tableName] || [];
-    return votes.filter((vote) => vote.billId === billId);
+    return votes.filter(vote => vote.billId === billId);
   }
 
   async getByUserId(userId) {
     const votes = this.db[this.tableName] || [];
-    return votes.filter((vote) => vote.userId === userId);
+    return votes.filter(vote => vote.userId === userId);
   }
 
   async getAll() {
@@ -46,7 +46,7 @@ class VoteStore {
 
   async update(id, updates) {
     const votes = this.db[this.tableName] || [];
-    const index = votes.findIndex((vote) => vote.id === id);
+    const index = votes.findIndex(vote => vote.id === id);
 
     if (index === -1) {
       return null;
@@ -63,7 +63,7 @@ class VoteStore {
 
   async delete(id) {
     const votes = this.db[this.tableName] || [];
-    const index = votes.findIndex((vote) => vote.id === id);
+    const index = votes.findIndex(vote => vote.id === id);
 
     if (index === -1) {
       return false;

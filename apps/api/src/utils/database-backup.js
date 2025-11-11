@@ -1,8 +1,8 @@
-const fs = require("fs");
-const path = require("path");
+const fs = require('fs');
+const path = require('path');
 
 // Note: Avoid using child_process for backup operations; prefer library APIs
-const logger = require("./logger");
+const logger = require('./logger');
 
 /**
  * Database Backup Manager
@@ -12,7 +12,7 @@ const logger = require("./logger");
 
 class DatabaseBackupManager {
   constructor(options = {}) {
-    this.backupDir = options.backupDir || path.join(process.cwd(), "backups");
+    this.backupDir = options.backupDir || path.join(process.cwd(), 'backups');
     this.retentionDays = options.retentionDays || 30;
     this.compressionEnabled = options.compressionEnabled !== false;
     this.maxConcurrentBackups = options.maxConcurrentBackups || 3;
@@ -22,7 +22,7 @@ class DatabaseBackupManager {
     // Ensure backup directory exists
     if (!fs.existsSync(this.backupDir)) {
       fs.mkdirSync(this.backupDir, { recursive: true });
-      logger.info("Backup directory created", { backupDir: this.backupDir });
+      logger.info('Backup directory created', { backupDir: this.backupDir });
     }
   }
 
@@ -72,7 +72,7 @@ class DatabaseBackupManager {
     };
 
     try {
-      logger.info("Starting database backup", { dbPath, backupPath, compress });
+      logger.info('Starting database backup', { dbPath, backupPath, compress });
 
       // Create backup using SQLite .backup command
       await this.createSQLiteBackup(dbPath, backupPath);
@@ -99,7 +99,7 @@ class DatabaseBackupManager {
       result.success = true;
       result.duration = Date.now() - startTime;
 
-      logger.info("Database backup completed", {
+      logger.info('Database backup completed', {
         backupPath: result.backupPath,
         size: result.size,
         duration: result.duration,
@@ -107,7 +107,7 @@ class DatabaseBackupManager {
         verified: result.verified,
       });
     } catch (error) {
-      logger.error("Database backup failed", {
+      logger.error('Database backup failed', {
         dbPath,
         backupPath,
         error: error.message,
@@ -130,7 +130,7 @@ class DatabaseBackupManager {
 
   async createSQLiteBackup(dbPath, backupPath) {
     return new Promise((resolve, reject) => {
-      const sqlite3 = require("better-sqlite3");
+      const sqlite3 = require('better-sqlite3');
 
       try {
         const db = sqlite3(dbPath);
@@ -151,27 +151,27 @@ class DatabaseBackupManager {
     const compressedPath = `${backupPath}.gz`;
 
     return new Promise((resolve, reject) => {
-      const gzip = require("zlib").createGzip();
+      const gzip = require('zlib').createGzip();
       const input = fs.createReadStream(backupPath);
       const output = fs.createWriteStream(compressedPath);
 
       input.pipe(gzip).pipe(output);
 
-      output.on("finish", () => resolve(compressedPath));
-      output.on("error", reject);
+      output.on('finish', () => resolve(compressedPath));
+      output.on('error', reject);
     });
   }
 
   async verifyBackup(backupPath, _originalDbPath) {
     // For compressed backups, we need to decompress first
     let tempPath = backupPath;
-    if (backupPath.endsWith(".gz")) {
-      tempPath = backupPath.replace(".gz", ".tmp");
+    if (backupPath.endsWith('.gz')) {
+      tempPath = backupPath.replace('.gz', '.tmp');
       await this.decompressBackup(backupPath, tempPath);
     }
 
     try {
-      const sqlite3 = require("better-sqlite3");
+      const sqlite3 = require('better-sqlite3');
 
       // Open backup database and verify it has the expected tables
       const backupDb = sqlite3(tempPath);
@@ -181,18 +181,18 @@ class DatabaseBackupManager {
         .all();
 
       if (tables.length === 0) {
-        throw new Error("Backup database contains no tables");
+        throw new Error('Backup database contains no tables');
       }
 
       // Verify foreign key constraints
-      const fkViolations = backupDb.prepare("PRAGMA foreign_key_check").all();
+      const fkViolations = backupDb.prepare('PRAGMA foreign_key_check').all();
       if (fkViolations.length > 0) {
         throw new Error(`Backup has foreign key violations: ${JSON.stringify(fkViolations)}`);
       }
 
       backupDb.close();
 
-      logger.debug("Backup verification completed", { backupPath });
+      logger.debug('Backup verification completed', { backupPath });
     } finally {
       // Clean up temporary file
       if (tempPath !== backupPath && fs.existsSync(tempPath)) {
@@ -203,14 +203,14 @@ class DatabaseBackupManager {
 
   async decompressBackup(compressedPath, outputPath) {
     return new Promise((resolve, reject) => {
-      const gunzip = require("zlib").createGunzip();
+      const gunzip = require('zlib').createGunzip();
       const input = fs.createReadStream(compressedPath);
       const output = fs.createWriteStream(outputPath);
 
       input.pipe(gunzip).pipe(output);
 
-      output.on("finish", () => resolve());
-      output.on("error", reject);
+      output.on('finish', () => resolve());
+      output.on('error', reject);
     });
   }
 
@@ -230,12 +230,12 @@ class DatabaseBackupManager {
     };
 
     try {
-      logger.info("Starting database restore", { backupPath, dbPath });
+      logger.info('Starting database restore', { backupPath, dbPath });
 
       // Handle compressed backups
       let tempPath = backupPath;
-      if (backupPath.endsWith(".gz")) {
-        tempPath = backupPath.replace(".gz", ".tmp");
+      if (backupPath.endsWith('.gz')) {
+        tempPath = backupPath.replace('.gz', '.tmp');
         await this.decompressBackup(backupPath, tempPath);
       }
 
@@ -254,13 +254,13 @@ class DatabaseBackupManager {
       }
 
       // Verify restored database
-      const sqlite3 = require("better-sqlite3");
+      const sqlite3 = require('better-sqlite3');
       const db = sqlite3(dbPath);
 
       // Run integrity check
-      const integrity = db.prepare("PRAGMA integrity_check").get();
-      if (integrity.integrity_check !== "ok") {
-        throw new Error("Database integrity check failed");
+      const integrity = db.prepare('PRAGMA integrity_check').get();
+      if (integrity.integrity_check !== 'ok') {
+        throw new Error('Database integrity check failed');
       }
 
       db.close();
@@ -268,13 +268,13 @@ class DatabaseBackupManager {
       result.success = true;
       result.duration = Date.now() - startTime;
 
-      logger.info("Database restore completed", {
+      logger.info('Database restore completed', {
         backupPath,
         dbPath,
         duration: result.duration,
       });
     } catch (error) {
-      logger.error("Database restore failed", {
+      logger.error('Database restore failed', {
         backupPath,
         dbPath,
         error: error.message,
@@ -304,18 +304,18 @@ class DatabaseBackupManager {
         if (stats.mtime < cutoffDate) {
           fs.unlinkSync(filePath);
           deletedFiles.push(file);
-          logger.debug("Old backup deleted", { file, age: stats.mtime });
+          logger.debug('Old backup deleted', { file, age: stats.mtime });
         }
       }
 
       if (deletedFiles.length > 0) {
-        logger.info("Old backups cleaned up", {
+        logger.info('Old backups cleaned up', {
           deletedCount: deletedFiles.length,
           retentionDays: this.retentionDays,
         });
       }
     } catch (error) {
-      logger.error("Failed to cleanup old backups", { error: error.message });
+      logger.error('Failed to cleanup old backups', { error: error.message });
     }
 
     return deletedFiles;
@@ -355,13 +355,13 @@ class DatabaseBackupManager {
         retentionDays: this.retentionDays,
       };
     } catch (error) {
-      logger.error("Failed to get backup stats", { error: error.message });
+      logger.error('Failed to get backup stats', { error: error.message });
       return { error: error.message };
     }
   }
 
   generateBackupName() {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     return `political-sphere-${timestamp}.db`;
   }
 
@@ -378,7 +378,7 @@ class DatabaseBackupManager {
 
     const intervalMs = intervalHours * 60 * 60 * 1000;
 
-    logger.info("Scheduling automated backups", {
+    logger.info('Scheduling automated backups', {
       intervalHours,
       maxBackups,
       dbPath,
@@ -394,13 +394,13 @@ class DatabaseBackupManager {
         // Check if we exceed max backups
         const stats = this.getBackupStats();
         if (stats.totalBackups > maxBackups) {
-          logger.warn("Too many backups, consider increasing retention or reducing schedule", {
+          logger.warn('Too many backups, consider increasing retention or reducing schedule', {
             totalBackups: stats.totalBackups,
             maxBackups,
           });
         }
       } catch (error) {
-        logger.error("Automated backup failed", { error: error.message });
+        logger.error('Automated backup failed', { error: error.message });
       }
     }, intervalMs);
   }

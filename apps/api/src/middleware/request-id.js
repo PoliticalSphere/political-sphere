@@ -1,4 +1,4 @@
-const { v4: uuidv4 } = require("uuid");
+const { v4: uuidv4 } = require('uuid');
 
 /**
  * Middleware to add request ID for correlation and tracing
@@ -7,7 +7,7 @@ const { v4: uuidv4 } = require("uuid");
 function requestId(req, res, next) {
   // Check for existing request ID from upstream services
   const existingId =
-    req.headers["x-request-id"] || req.headers["x-correlation-id"] || req.headers["request-id"];
+    req.headers['x-request-id'] || req.headers['x-correlation-id'] || req.headers['request-id'];
 
   // Generate new ID if none exists
   const requestId = existingId || uuidv4();
@@ -16,7 +16,7 @@ function requestId(req, res, next) {
   req.requestId = requestId;
 
   // Add to response headers for client visibility
-  res.setHeader("x-request-id", requestId);
+  res.setHeader('x-request-id', requestId);
 
   next();
 }

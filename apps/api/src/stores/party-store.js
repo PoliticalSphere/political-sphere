@@ -2,7 +2,7 @@ class PartyStore {
   constructor(db, cache = null) {
     this.db = db;
     this.cache = cache;
-    this.tableName = "parties";
+    this.tableName = 'parties';
   }
 
   async create(partyData) {
@@ -24,7 +24,7 @@ class PartyStore {
 
   async getById(id) {
     const parties = this.db[this.tableName] || [];
-    return parties.find((party) => party.id === id) || null;
+    return parties.find(party => party.id === id) || null;
   }
 
   async getAll() {
@@ -33,7 +33,7 @@ class PartyStore {
 
   async update(id, updates) {
     const parties = this.db[this.tableName] || [];
-    const index = parties.findIndex((party) => party.id === id);
+    const index = parties.findIndex(party => party.id === id);
 
     if (index === -1) {
       return null;
@@ -50,7 +50,7 @@ class PartyStore {
 
   async delete(id) {
     const parties = this.db[this.tableName] || [];
-    const index = parties.findIndex((party) => party.id === id);
+    const index = parties.findIndex(party => party.id === id);
 
     if (index === -1) {
       return false;

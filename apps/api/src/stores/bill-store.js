@@ -1,11 +1,11 @@
-const fs = require("fs").promises;
-const path = require("path");
+const fs = require('fs').promises;
+const path = require('path');
 
 class BillStore {
   constructor(db, cache = null) {
     this.db = db;
     this.cache = cache;
-    this.tableName = "bills";
+    this.tableName = 'bills';
   }
 
   async create(billData) {
@@ -29,7 +29,7 @@ class BillStore {
 
   async getById(id) {
     const bills = this.db[this.tableName] || [];
-    return bills.find((bill) => bill.id === id) || null;
+    return bills.find(bill => bill.id === id) || null;
   }
 
   async getAll() {
@@ -38,7 +38,7 @@ class BillStore {
 
   async update(id, updates) {
     const bills = this.db[this.tableName] || [];
-    const index = bills.findIndex((bill) => bill.id === id);
+    const index = bills.findIndex(bill => bill.id === id);
 
     if (index === -1) {
       return null;
@@ -55,7 +55,7 @@ class BillStore {
 
   async delete(id) {
     const bills = this.db[this.tableName] || [];
-    const index = bills.findIndex((bill) => bill.id === id);
+    const index = bills.findIndex(bill => bill.id === id);
 
     if (index === -1) {
       return false;

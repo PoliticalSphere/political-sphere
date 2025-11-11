@@ -4,12 +4,12 @@
  * Implements Online Safety Act and DSA compliance requirements
  */
 
-import logger from "../logger.js";
+import logger from '../logger.js';
 
 let OpenAI;
 let PerspectiveAPI;
 try {
-  const openaiModule = await import("openai");
+  const openaiModule = await import('openai');
   OpenAI = openaiModule.OpenAI;
 } catch (e) {
   // Provide a lightweight stub for tests when OpenAI package isn't installed
@@ -20,7 +20,7 @@ try {
       };
       this.chat = {
         completions: {
-          create: async () => ({ choices: [{ message: { content: "" } }] }),
+          create: async () => ({ choices: [{ message: { content: '' } }] }),
         },
       };
     }
@@ -28,7 +28,7 @@ try {
 }
 
 try {
-  const perspectiveModule = await import("perspective-api-client");
+  const perspectiveModule = await import('perspective-api-client');
   PerspectiveAPI = perspectiveModule.PerspectiveAPI;
 } catch (e) {
   // Minimal stub for Perspective API used in tests
@@ -40,7 +40,7 @@ try {
   };
 }
 
-import { CircuitBreaker } from "./error-handler.js";
+import { CircuitBreaker } from './error-handler.js';
 
 class ModerationService {
   // Accept an optional moderationDb (tests pass mockDb.moderation)
@@ -62,9 +62,9 @@ class ModerationService {
    * @param {string} type - Content type (text, image, video)
    * @returns {Promise<ModerationResult>}
    */
-  async analyzeContent(content, type = "text", userId = null) {
+  async analyzeContent(content, type = 'text', userId = null) {
     try {
-      logger.info("Analyzing content", {
+      logger.info('Analyzing content', {
         contentLength: content.length,
         type,
         userId,
@@ -76,11 +76,11 @@ class ModerationService {
         return this.contentCache.get(cacheKey);
       }
 
-      let result = { isSafe: true, scores: {}, reasons: [], category: "safe" };
+      let result = { isSafe: true, scores: {}, reasons: [], category: 'safe' };
 
-      if (type === "text") {
+      if (type === 'text') {
         result = await this.analyzeText(content);
-      } else if (type === "image") {
+      } else if (type === 'image') {
         result = await this.analyzeImage(content);
       } // Add video analysis if needed
 
@@ -89,7 +89,7 @@ class ModerationService {
       setTimeout(() => this.contentCache.delete(cacheKey), 3600000);
 
       // Log moderation decision
-      logger.info("Content analysis complete", {
+      logger.info('Content analysis complete', {
         contentId: result.id,
         isSafe: result.isSafe,
         category: result.category,
@@ -98,7 +98,7 @@ class ModerationService {
 
       return result;
     } catch (error) {
-      logger.error("Content analysis failed", {
+      logger.error('Content analysis failed', {
         error: error.message,
         contentLength: content.length,
       });
@@ -106,8 +106,8 @@ class ModerationService {
       return {
         isSafe: false,
         scores: {},
-        reasons: ["Analysis failed"],
-        category: "blocked",
+        reasons: ['Analysis failed'],
+        category: 'blocked',
       };
     }
   }
@@ -128,7 +128,7 @@ class ModerationService {
         sexual: 0,
       },
       reasons: [],
-      category: "safe",
+      category: 'safe',
     };
 
     // Handle empty content
@@ -150,7 +150,7 @@ class ModerationService {
     if (maxScore > this.moderationThreshold) {
       result.flagged = true;
       result.isSafe = false;
-      result.category = "violation";
+      result.category = 'violation';
       result.reasons.push(`High content score detected: ${maxScore}`);
     }
 
@@ -159,8 +159,8 @@ class ModerationService {
       const openaiResponse = await this.openaiCircuitBreaker.execute(() =>
         this.openai.moderations.create({
           input: text,
-          model: "text-moderation-latest",
-        }),
+          model: 'text-moderation-latest',
+        })
       );
 
       const openaiFlags = openaiResponse.results[0].flagged;
@@ -168,8 +168,8 @@ class ModerationService {
         result.isSafe = false;
         result.flagged = true;
         result.scores.openai = openaiResponse.results[0].categories;
-        result.reasons.push("OpenAI flagged content");
-        result.category = "flagged";
+        result.reasons.push('OpenAI flagged content');
+        result.category = 'flagged';
       }
     } catch (error) {
       // OpenAI API not available, continue with basic scoring
@@ -180,14 +180,14 @@ class ModerationService {
       const perspectiveResponse = await this.perspectiveCircuitBreaker.execute(() =>
         this.perspective.analyze(text, {
           attributes: [
-            "TOXICITY",
-            "SEVERE_TOXICITY",
-            "IDENTITY_ATTACK",
-            "INSULT",
-            "PROFANITY",
-            "THREAT",
+            'TOXICITY',
+            'SEVERE_TOXICITY',
+            'IDENTITY_ATTACK',
+            'INSULT',
+            'PROFANITY',
+            'THREAT',
           ],
-        }),
+        })
       );
 
       const toxicityScore = perspectiveResponse.attributeScores.TOXICITY.summaryScore.value;
@@ -197,7 +197,7 @@ class ModerationService {
         result.isSafe = false;
         result.flagged = true;
         result.reasons.push(`High toxicity score: ${toxicityScore}`);
-        result.category = "toxic";
+        result.category = 'toxic';
       }
     } catch (error) {
       // Perspective API not available, continue with basic scoring
@@ -209,7 +209,7 @@ class ModerationService {
       result.isSafe = false;
       result.flagged = true;
       result.reasons.push(...customViolations);
-      result.category = "violation";
+      result.category = 'violation';
     }
 
     // Age-appropriate content check
@@ -234,9 +234,9 @@ class ModerationService {
       /bomb|explosive|weapon/gi,
     ];
 
-    hateSpeechPatterns.forEach((pattern) => {
+    hateSpeechPatterns.forEach(pattern => {
       if (pattern.test(text)) {
-        violations.push("Potential hate speech detected");
+        violations.push('Potential hate speech detected');
       }
     });
 
@@ -246,15 +246,15 @@ class ModerationService {
       /meet.*alone|secret|private/gi,
     ];
 
-    childSafetyPatterns.forEach((pattern) => {
+    childSafetyPatterns.forEach(pattern => {
       if (pattern.test(text)) {
-        violations.push("Child safety violation - immediate escalation");
+        violations.push('Child safety violation - immediate escalation');
       }
     });
 
     // Online Safety Act specific: Cyberbullying
-    if (/bullying|harass|stalk/gi.test(text) && text.includes("@")) {
-      violations.push("Potential cyberbullying");
+    if (/bullying|harass|stalk/gi.test(text) && text.includes('@')) {
+      violations.push('Potential cyberbullying');
     }
 
     return violations;
@@ -272,11 +272,11 @@ class ModerationService {
 
     const maxScore = Math.max(violenceScore, languageScore, sexualContentScore);
 
-    if (maxScore < 0.2) return "U";
-    if (maxScore < 0.4) return "PG";
-    if (maxScore < 0.6) return "12";
-    if (maxScore < 0.8) return "15";
-    return "18";
+    if (maxScore < 0.2) return 'U';
+    if (maxScore < 0.4) return 'PG';
+    if (maxScore < 0.6) return '12';
+    if (maxScore < 0.8) return '15';
+    return '18';
   }
 
   /**
@@ -284,39 +284,39 @@ class ModerationService {
    */
   calculateViolenceScore(text) {
     const violenceWords = [
-      "kill",
-      "murder",
-      "fight",
-      "war",
-      "bomb",
-      "violence",
-      "violent",
-      "extreme",
-      "threat",
-      "threats",
-      "harmful",
+      'kill',
+      'murder',
+      'fight',
+      'war',
+      'bomb',
+      'violence',
+      'violent',
+      'extreme',
+      'threat',
+      'threats',
+      'harmful',
     ];
-    const count = violenceWords.filter((word) => text.toLowerCase().includes(word)).length;
+    const count = violenceWords.filter(word => text.toLowerCase().includes(word)).length;
     return Math.min(count / 3, 1); // More sensitive threshold
   }
 
   calculateLanguageScore(text) {
     const profanityWords = [
-      "fuck",
-      "shit",
-      "damn",
-      "bitch",
-      "asshole",
-      "inappropriate",
-      "offensive",
+      'fuck',
+      'shit',
+      'damn',
+      'bitch',
+      'asshole',
+      'inappropriate',
+      'offensive',
     ];
-    const count = profanityWords.filter((word) => text.toLowerCase().includes(word)).length;
+    const count = profanityWords.filter(word => text.toLowerCase().includes(word)).length;
     return Math.min(count / 3, 1); // More sensitive threshold
   }
 
   calculateSexualContentScore(text) {
-    const sexualWords = ["sex", "porn", "nude", "fuck", "orgasm"];
-    const count = sexualWords.filter((word) => text.toLowerCase().includes(word)).length;
+    const sexualWords = ['sex', 'porn', 'nude', 'fuck', 'orgasm'];
+    const count = sexualWords.filter(word => text.toLowerCase().includes(word)).length;
     return Math.min(count / 5, 1);
   }
 
@@ -330,41 +330,41 @@ class ModerationService {
     try {
       const visionResponse = await this.openaiCircuitBreaker.execute(() =>
         this.openai.chat.completions.create({
-          model: "gpt-4-vision-preview",
+          model: 'gpt-4-vision-preview',
           messages: [
             {
-              role: "user",
+              role: 'user',
               content: [
                 {
-                  type: "text",
-                  text: "Is this image safe for all ages? Describe any harmful content.",
+                  type: 'text',
+                  text: 'Is this image safe for all ages? Describe any harmful content.',
                 },
-                { type: "image_url", image_url: { url: image } },
+                { type: 'image_url', image_url: { url: image } },
               ],
             },
           ],
-        }),
+        })
       );
 
       const description = visionResponse.choices[0].message.content;
       const isSafe =
-        !description.toLowerCase().includes("harmful") &&
-        !description.toLowerCase().includes("violence") &&
-        !description.toLowerCase().includes("nudity");
+        !description.toLowerCase().includes('harmful') &&
+        !description.toLowerCase().includes('violence') &&
+        !description.toLowerCase().includes('nudity');
 
       return {
         id: Date.now().toString(),
         isSafe,
         scores: { vision: description },
-        reasons: isSafe ? [] : ["Image contains potentially harmful content"],
-        category: isSafe ? "safe" : "flagged",
+        reasons: isSafe ? [] : ['Image contains potentially harmful content'],
+        category: isSafe ? 'safe' : 'flagged',
       };
     } catch (error) {
-      logger.error("Image analysis failed", { error: error.message });
+      logger.error('Image analysis failed', { error: error.message });
       return {
         isSafe: false,
-        reasons: ["Image analysis failed"],
-        category: "blocked",
+        reasons: ['Image analysis failed'],
+        category: 'blocked',
       };
     }
   }
@@ -377,11 +377,11 @@ class ModerationService {
   async handleReport(report) {
     const { contentId, userId, reason, evidence } = report;
 
-    logger.info("Processing user report", { contentId, userId, reason });
+    logger.info('Processing user report', { contentId, userId, reason });
 
     // Escalate high-priority reports (child safety, threats)
     const priority = this.assessReportPriority(reason);
-    const escalationRequired = priority === "high";
+    const escalationRequired = priority === 'high';
 
     // Store report in database (pseudo-code)
     const reportId = await this.storeReport({
@@ -395,7 +395,7 @@ class ModerationService {
       await this.notifyLegal(reportId);
     }
 
-    return { reportId, status: "received", escalated: escalationRequired };
+    return { reportId, status: 'received', escalated: escalationRequired };
   }
 
   /**
@@ -404,7 +404,7 @@ class ModerationService {
    * @param {string} userId
    */
   async moderateContent(content, userId = null) {
-    const analysis = await this.analyzeContent(content, "text", userId);
+    const analysis = await this.analyzeContent(content, 'text', userId);
     const approved = !analysis.flagged; // Inverted: flagged content is NOT approved
     const moderationRecord = {
       id: `mod-${Date.now()}`,
@@ -432,7 +432,7 @@ class ModerationService {
    * Retrieve moderation history. If userId is provided, call DB with a filter.
    */
   async getModerationHistory(userId = null) {
-    if (this.moderationDb && typeof this.moderationDb.getAll === "function") {
+    if (this.moderationDb && typeof this.moderationDb.getAll === 'function') {
       if (userId) return this.moderationDb.getAll({ userId });
       return this.moderationDb.getAll();
     }
@@ -445,7 +445,7 @@ class ModerationService {
   async updateModerationRules(rules = {}) {
     if (rules.violenceThreshold !== undefined) {
       if (rules.violenceThreshold < 0 || rules.violenceThreshold > 1)
-        throw new Error("Invalid threshold value");
+        throw new Error('Invalid threshold value');
       this.moderationThreshold = rules.violenceThreshold;
     }
     // other rule assignments can be added here
@@ -457,20 +457,20 @@ class ModerationService {
    */
   async getModerationStats() {
     const items =
-      this.moderationDb && typeof this.moderationDb.getAll === "function"
+      this.moderationDb && typeof this.moderationDb.getAll === 'function'
         ? await this.moderationDb.getAll()
         : [];
 
     const total = items.length;
-    const approved = items.filter((i) => i.approved).length;
-    const rejected = items.filter((i) => !i.approved).length;
+    const approved = items.filter(i => i.approved).length;
+    const rejected = items.filter(i => !i.approved).length;
 
     // average scores aggregation
     const scoreSums = {};
     let scoreCount = 0;
-    items.forEach((it) => {
+    items.forEach(it => {
       if (it.scores) {
-        Object.keys(it.scores).forEach((k) => {
+        Object.keys(it.scores).forEach(k => {
           scoreSums[k] = (scoreSums[k] || 0) + (it.scores[k] || 0);
         });
         scoreCount++;
@@ -478,7 +478,7 @@ class ModerationService {
     });
 
     const averageScores = {};
-    Object.keys(scoreSums).forEach((k) => {
+    Object.keys(scoreSums).forEach(k => {
       averageScores[k] = scoreCount ? scoreSums[k] / scoreCount : 0;
     });
 
@@ -491,8 +491,8 @@ class ModerationService {
   }
 
   assessReportPriority(reason) {
-    const highPriority = ["child_safety", "threat", "hate_speech", "harassment"];
-    return highPriority.includes(reason) ? "high" : "medium";
+    const highPriority = ['child_safety', 'threat', 'hate_speech', 'harassment'];
+    return highPriority.includes(reason) ? 'high' : 'medium';
   }
 
   async storeReport(report) {
@@ -503,13 +503,13 @@ class ModerationService {
 
   async notifyModerators(reportId) {
     // Send notification to moderation team
-    logger.info("Escalated to moderators", { reportId });
+    logger.info('Escalated to moderators', { reportId });
     // Integrate with Slack/email/SMS
   }
 
   async notifyLegal(reportId) {
     // Notify legal team for high-risk reports
-    logger.info("Escalated to legal", { reportId });
+    logger.info('Escalated to legal', { reportId });
     // Integrate with legal notification system
   }
 
@@ -519,7 +519,7 @@ class ModerationService {
    * @param {string} status
    * @returns {Promise<ModerationQueue>}
    */
-  async getModerationQueue(limit = 20, status = "pending") {
+  async getModerationQueue(limit = 20, status = 'pending') {
     // Database query - pseudo-code
     // const queue = await db.moderationQueue.find({ status }).limit(limit);
     const queue = []; // Placeholder
@@ -533,14 +533,14 @@ class ModerationService {
    * @param {string} moderatorId
    * @returns {Promise<ReviewResult>}
    */
-  async reviewContent(contentId, decision, moderatorId, notes = "") {
-    logger.info("Content review", { contentId, decision, moderatorId });
+  async reviewContent(contentId, decision, moderatorId, notes = '') {
+    logger.info('Content review', { contentId, decision, moderatorId });
 
     // Update content status in database
     // await db.content.update({ id: contentId }, { status: decision, reviewedBy: moderatorId, notes });
 
     // Log for audit trail
-    logger.audit("Content reviewed", {
+    logger.audit('Content reviewed', {
       contentId,
       decision,
       moderatorId,
@@ -548,8 +548,8 @@ class ModerationService {
     });
 
     // Notify user if rejected
-    if (decision === "reject") {
-      await this.notifyUser(contentId, "rejected", notes);
+    if (decision === 'reject') {
+      await this.notifyUser(contentId, 'rejected', notes);
     }
 
     return { success: true, contentId, decision };
@@ -557,7 +557,7 @@ class ModerationService {
 
   async notifyUser(contentId, status, message) {
     // Send notification to content owner
-    logger.info("Notifying user", { contentId, status, message });
+    logger.info('Notifying user', { contentId, status, message });
     // Integrate with notification service
   }
 
@@ -580,11 +580,11 @@ class ModerationService {
     // stats.totalReports = await db.reports.count();
     // stats.resolvedReports = await db.reports.count({ status: 'resolved' });
 
-    logger.info("Generated transparency report", { filters, stats });
+    logger.info('Generated transparency report', { filters, stats });
 
     return {
       generatedAt: new Date().toISOString(),
-      period: filters.period || "monthly",
+      period: filters.period || 'monthly',
       ...stats,
     };
   }
@@ -594,7 +594,7 @@ class ModerationService {
    */
   clearCache() {
     this.contentCache.clear();
-    logger.info("Moderation cache cleared");
+    logger.info('Moderation cache cleared');
   }
 
   /**
@@ -617,10 +617,10 @@ class ModerationService {
         topCategories: await this.getTopCategories(),
       };
 
-      logger.info("Retrieved moderation stats", stats);
+      logger.info('Retrieved moderation stats', stats);
       return stats;
     } catch (error) {
-      logger.error("Failed to get moderation stats", { error: error.message });
+      logger.error('Failed to get moderation stats', { error: error.message });
       throw error;
     }
   }
@@ -658,10 +658,10 @@ class ModerationService {
 
 // Export class but attach default instance bound methods so module works as singleton
 const _defaultModerationInstance = new ModerationService();
-Object.getOwnPropertyNames(ModerationService.prototype).forEach((name) => {
-  if (name === "constructor") return;
+Object.getOwnPropertyNames(ModerationService.prototype).forEach(name => {
+  if (name === 'constructor') return;
   const desc = Object.getOwnPropertyDescriptor(ModerationService.prototype, name);
-  if (desc && typeof desc.value === "function") {
+  if (desc && typeof desc.value === 'function') {
     ModerationService[name] = _defaultModerationInstance[name].bind(_defaultModerationInstance);
   }
 });

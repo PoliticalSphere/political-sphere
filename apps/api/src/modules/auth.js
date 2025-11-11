@@ -1,6 +1,6 @@
-const jwt = require("jsonwebtoken");
+const jwt = require('jsonwebtoken');
 
-const crypto = require("node:crypto");
+const crypto = require('node:crypto');
 
 /*
   filepath: /Users/morganlowman/politicial-sphere (V1)/apps/api/src/auth.js
@@ -10,9 +10,9 @@ const crypto = require("node:crypto");
 
 // Roles
 const ROLES = {
-  ADMIN: "ADMIN",
-  EDITOR: "EDITOR",
-  VIEWER: "VIEWER",
+  ADMIN: 'ADMIN',
+  EDITOR: 'EDITOR',
+  VIEWER: 'VIEWER',
 };
 
 // In-memory stores exposed for tests
@@ -21,23 +21,29 @@ const refreshTokens = new Set(); // active refresh tokens
 const activeSessions = new Map(); // key: sessionId -> session object
 
 // Read and validate secrets at module load (tests set env before import)
-const JWT_SECRET = process.env.JWT_SECRET || "";
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || "";
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "15m";
-const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || "7d";
+// SECURITY: NO empty string fallbacks - fail fast if secrets are missing
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
+  throw new Error(
+    'FATAL: JWT_SECRET environment variable must be set and at least 32 characters long. ' +
+      "Generate with: node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\""
+  );
+}
+if (!process.env.JWT_REFRESH_SECRET || process.env.JWT_REFRESH_SECRET.length < 32) {
+  throw new Error(
+    'FATAL: JWT_REFRESH_SECRET environment variable must be set and at least 32 characters long. ' +
+      "Generate with: node -e \"console.log(require('crypto').randomBytes(64).toString('hex'))\""
+  );
+}
 
-// Enforce strong secrets in ALL environments - no dangerous fallbacks
-if (JWT_SECRET.length < 32) {
-  throw new Error("JWT_SECRET must be at least 32 characters long for security");
-}
-if (JWT_REFRESH_SECRET.length < 32) {
-  throw new Error("JWT_REFRESH_SECRET must be at least 32 characters long for security");
-}
+const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '15m';
+const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || '7d';
 
 // Password hashing using Node's crypto (scrypt) to avoid native deps in test environments
 // Stored format: <salt>$<derivedKeyBase64>
-const { scrypt: _scrypt, randomBytes } = require("node:crypto");
-const { promisify } = require("node:util");
+const { scrypt: _scrypt, randomBytes } = require('node:crypto');
+const { promisify } = require('node:util');
 
 const scrypt = promisify(_scrypt);
 
@@ -46,27 +52,27 @@ async function hashPassword(password) {
   // Return a value prefixed with `$2b$` so existing tests that assert on
   // a bcrypt-like prefix remain satisfied. The internal verification will
   // recognise and handle this prefixed format.
-  const pwd = String(password || "");
-  const salt = randomBytes(16).toString("hex");
+  const pwd = String(password || '');
+  const salt = randomBytes(16).toString('hex');
   const derived = await scrypt(pwd, salt, 64);
   // Format: $2b$<salt>$<derivedHex>
-  return `$2b$${salt}$${derived.toString("hex")}`;
+  return `$2b$${salt}$${derived.toString('hex')}`;
 }
 
 async function verifyPassword(password, stored) {
-  if (!stored || typeof stored !== "string") return false;
+  if (!stored || typeof stored !== 'string') return false;
   // Support both legacy '<salt>$<hex>' format and our '$2b$<salt>$<hex>' shim.
   let salt, keyHex;
-  if (stored.startsWith("$2b$")) {
-    const parts = stored.slice(4).split("$");
+  if (stored.startsWith('$2b$')) {
+    const parts = stored.slice(4).split('$');
     // parts[0] = salt, parts[1] = hex
     [salt, keyHex] = parts;
   } else {
-    [salt, keyHex] = stored.split("$");
+    [salt, keyHex] = stored.split('$');
   }
   if (!salt || !keyHex) return false;
-  const derived = await scrypt(String(password || ""), salt, 64);
-  return derived.toString("hex") === keyHex;
+  const derived = await scrypt(String(password || ''), salt, 64);
+  return derived.toString('hex') === keyHex;
 }
 
 // Token generation & verification
@@ -75,7 +81,7 @@ function generateAccessToken(user) {
     userId: user.id,
     email: user.email,
     role: user.role,
-    type: "access",
+    type: 'access',
   };
   return jwt.sign(payload, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
 }
@@ -83,7 +89,7 @@ function generateAccessToken(user) {
 function generateRefreshToken(user) {
   const payload = {
     userId: user.id,
-    type: "refresh",
+    type: 'refresh',
   };
   const token = jwt.sign(payload, JWT_REFRESH_SECRET, {
     expiresIn: JWT_REFRESH_EXPIRES_IN,
@@ -94,10 +100,9 @@ function generateRefreshToken(user) {
 
 function verifyAccessToken(token) {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    if (decoded && decoded.type === "access") return decoded;
-    return null;
-  } catch (err) {
+    const payload = jwt.verify(token, JWT_SECRET);
+    return payload;
+  } catch (_err) {
     return null;
   }
 }
@@ -106,24 +111,30 @@ function verifyRefreshToken(token) {
   try {
     if (!refreshTokens.has(token)) return null;
     const decoded = jwt.verify(token, JWT_REFRESH_SECRET);
-    if (decoded && decoded.type === "refresh") return decoded;
+    if (decoded && decoded.type === 'refresh') return decoded;
     return null;
-  } catch (err) {
+  } catch (_err) {
     return null;
   }
 }
 
 // Sanitize outgoing user objects (tests assert sensitive fields are not exposed)
 function sanitizeUser(user) {
-  if (!user) return null;
-  const { passwordHash, passwordResetToken, passwordResetExpires, password, ...rest } = user;
-  return { ...rest };
+  // Destructure to filter out sensitive fields (unused vars intentionally prefixed with _)
+  const {
+    passwordHash: _passwordHash,
+    passwordResetToken: _passwordResetToken,
+    passwordResetExpires: _passwordResetExpires,
+    password: _password,
+    ...rest
+  } = user;
+  return rest;
 }
 
 // User management
-async function createUser(email, password = "", role = ROLES.VIEWER) {
-  if (!email) throw new Error("Email required");
-  if (users.has(email)) throw new Error("User already exists");
+async function createUser(email, password = '', role = ROLES.VIEWER) {
+  if (!email) throw new Error('Email required');
+  if (users.has(email)) throw new Error('User already exists');
   const id = crypto.randomUUID();
   const passwordHash = await hashPassword(password);
   const user = {
@@ -157,7 +168,7 @@ async function initiatePasswordReset(email) {
     // Do not reveal existence
     return true;
   }
-  const token = crypto.randomBytes(32).toString("hex");
+  const token = crypto.randomBytes(32).toString('hex');
   user.passwordResetToken = token;
   user.passwordResetExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
   users.set(email, user);
@@ -165,12 +176,12 @@ async function initiatePasswordReset(email) {
 }
 
 async function resetPassword(token, newPassword) {
-  if (!token) throw new Error("Invalid or expired reset token");
-  const user = Array.from(users.values()).find((u) => u.passwordResetToken === token);
+  if (!token) throw new Error('Invalid or expired reset token');
+  const user = Array.from(users.values()).find(u => u.passwordResetToken === token);
   if (!user || !user.passwordResetExpires || user.passwordResetExpires.getTime() < Date.now()) {
-    throw new Error("Invalid or expired reset token");
+    throw new Error('Invalid or expired reset token');
   }
-  user.passwordHash = await hashPassword(newPassword || "");
+  user.passwordHash = await hashPassword(newPassword || '');
   user.passwordResetToken = undefined;
   user.passwordResetExpires = undefined;
   users.set(user.email, user);
@@ -222,7 +233,7 @@ function cleanupExpiredSessions(maxAgeMs) {
 // Lookup
 function getUserById(id) {
   if (!id) return null;
-  const user = Array.from(users.values()).find((u) => u.id === id);
+  const user = Array.from(users.values()).find(u => u.id === id);
   return sanitizeUser(user);
 }
 
@@ -240,17 +251,17 @@ function revokeAllUserTokens(/* userId */) {
 function requireAuth(allowedRoles = []) {
   return (req, res, next) => {
     const authHeader = req.headers && (req.headers.authorization || req.headers.Authorization);
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res.status(401).json({ error: "Access token required" });
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return res.status(401).json({ error: 'Access token required' });
     }
-    const token = authHeader.slice("Bearer ".length).trim();
+    const token = authHeader.slice('Bearer '.length).trim();
     const decoded = verifyAccessToken(token);
     if (!decoded) {
-      return res.status(401).json({ error: "Invalid or expired token" });
+      return res.status(401).json({ error: 'Invalid or expired token' });
     }
     req.user = { id: decoded.userId, email: decoded.email, role: decoded.role };
     if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({ error: "Insufficient permissions" });
+      return res.status(403).json({ error: 'Insufficient permissions' });
     }
     return next();
   };

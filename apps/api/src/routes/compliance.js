@@ -4,20 +4,20 @@
  * Supports DSA, GDPR, and ISO 27001 compliance requirements
  */
 
-const express = require("express");
+const express = require('express');
 
 const router = express.Router();
-const rateLimit = require("express-rate-limit");
+const rateLimit = require('express-rate-limit');
 
-const complianceService = require("../complianceService");
-const { authenticate, requireRole } = require("../middleware/auth");
-const logger = require("../utils/logger.js");
+const complianceService = require('../complianceService');
+const { authenticate, requireRole } = require('../middleware/auth');
+const logger = require('../utils/logger.js');
 
 // Rate limiting for compliance endpoints
 const complianceLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs
-  message: "Too many compliance requests, please try again later.",
+  message: 'Too many compliance requests, please try again later.',
   standardHeaders: true,
   legacyHeaders: false,
 });
@@ -30,7 +30,7 @@ router.use(complianceLimiter);
  * Get compliance dashboard data
  * Requires moderator or admin role
  */
-router.get("/dashboard", authenticate, requireRole("moderator"), async (req, res) => {
+router.get('/dashboard', authenticate, requireRole('moderator'), async (req, res) => {
   try {
     const dashboard = complianceService.getComplianceDashboard();
 
@@ -39,14 +39,14 @@ router.get("/dashboard", authenticate, requireRole("moderator"), async (req, res
       data: dashboard,
     });
   } catch (error) {
-    logger.error("Failed to fetch compliance dashboard", {
+    logger.error('Failed to fetch compliance dashboard', {
       error: error.message,
       userId: req.user.id,
     });
     res.status(500).json({
       success: false,
-      error: "Dashboard fetch failed",
-      message: "Unable to retrieve compliance dashboard at this time",
+      error: 'Dashboard fetch failed',
+      message: 'Unable to retrieve compliance dashboard at this time',
     });
   }
 });
@@ -56,9 +56,9 @@ router.get("/dashboard", authenticate, requireRole("moderator"), async (req, res
  * Get DSA transparency report
  * Public endpoint (aggregated data only)
  */
-router.get("/transparency", async (req, res) => {
+router.get('/transparency', async (req, res) => {
   try {
-    const { period = "monthly", startDate, endDate } = req.query;
+    const { period = 'monthly', startDate, endDate } = req.query;
 
     const filters = {
       period,
@@ -73,13 +73,13 @@ router.get("/transparency", async (req, res) => {
       data: report,
     });
   } catch (error) {
-    logger.error("Transparency report generation failed", {
+    logger.error('Transparency report generation failed', {
       error: error.message,
     });
     res.status(500).json({
       success: false,
-      error: "Report generation failed",
-      message: "Unable to generate transparency report at this time",
+      error: 'Report generation failed',
+      message: 'Unable to generate transparency report at this time',
     });
   }
 });
@@ -89,7 +89,7 @@ router.get("/transparency", async (req, res) => {
  * Get compliance alerts
  * Requires moderator or admin role
  */
-router.get("/alerts", authenticate, requireRole("moderator"), async (req, res) => {
+router.get('/alerts', authenticate, requireRole('moderator'), async (req, res) => {
   try {
     const { status, framework, severity, limit = 50, offset = 0 } = req.query;
 
@@ -114,14 +114,14 @@ router.get("/alerts", authenticate, requireRole("moderator"), async (req, res) =
       },
     });
   } catch (error) {
-    logger.error("Failed to fetch compliance alerts", {
+    logger.error('Failed to fetch compliance alerts', {
       error: error.message,
       userId: req.user.id,
     });
     res.status(500).json({
       success: false,
-      error: "Alerts fetch failed",
-      message: "Unable to retrieve compliance alerts at this time",
+      error: 'Alerts fetch failed',
+      message: 'Unable to retrieve compliance alerts at this time',
     });
   }
 });
@@ -131,7 +131,7 @@ router.get("/alerts", authenticate, requireRole("moderator"), async (req, res) =
  * Resolve a compliance alert
  * Requires admin role
  */
-router.put("/alerts/:alertId/resolve", authenticate, requireRole("admin"), async (req, res) => {
+router.put('/alerts/:alertId/resolve', authenticate, requireRole('admin'), async (req, res) => {
   try {
     const { alertId } = req.params;
     const { resolution } = req.body;
@@ -139,32 +139,32 @@ router.put("/alerts/:alertId/resolve", authenticate, requireRole("admin"), async
     if (!resolution || resolution.trim().length === 0) {
       return res.status(400).json({
         success: false,
-        error: "Resolution required",
-        message: "Please provide a resolution description",
+        error: 'Resolution required',
+        message: 'Please provide a resolution description',
       });
     }
 
     complianceService.resolveComplianceAlert(alertId, resolution, req.user.id);
 
-    logger.audit("Compliance alert resolved via API", {
+    logger.audit('Compliance alert resolved via API', {
       alertId,
       resolvedBy: req.user.id,
-      resolution: resolution.substring(0, 100) + "...",
+      resolution: resolution.substring(0, 100) + '...',
     });
 
     res.json({
       success: true,
-      message: "Compliance alert resolved successfully",
+      message: 'Compliance alert resolved successfully',
     });
   } catch (error) {
-    logger.error("Failed to resolve compliance alert", {
+    logger.error('Failed to resolve compliance alert', {
       error: error.message,
       alertId: req.params.alertId,
     });
     res.status(500).json({
       success: false,
-      error: "Alert resolution failed",
-      message: "Unable to resolve compliance alert at this time",
+      error: 'Alert resolution failed',
+      message: 'Unable to resolve compliance alert at this time',
     });
   }
 });
@@ -174,26 +174,26 @@ router.put("/alerts/:alertId/resolve", authenticate, requireRole("admin"), async
  * Log a compliance event
  * Internal endpoint for services to log compliance events
  */
-router.post("/events", authenticate, async (req, res) => {
+router.post('/events', authenticate, async (req, res) => {
   try {
     const eventData = req.body;
 
     // Validate required fields
-    const requiredFields = ["category", "action"];
-    const missingFields = requiredFields.filter((field) => !eventData[field]);
+    const requiredFields = ['category', 'action'];
+    const missingFields = requiredFields.filter(field => !eventData[field]);
 
     if (missingFields.length > 0) {
       return res.status(400).json({
         success: false,
-        error: "Missing required fields",
-        message: `Required fields: ${missingFields.join(", ")}`,
+        error: 'Missing required fields',
+        message: `Required fields: ${missingFields.join(', ')}`,
       });
     }
 
     // Add request context
     eventData.userId = req.user.id;
     eventData.ip = req.ip;
-    eventData.userAgent = req.get("User-Agent");
+    eventData.userAgent = req.get('User-Agent');
 
     const eventId = complianceService.logComplianceEvent(eventData);
 
@@ -202,11 +202,11 @@ router.post("/events", authenticate, async (req, res) => {
       data: { eventId },
     });
   } catch (error) {
-    logger.error("Failed to log compliance event", { error: error.message });
+    logger.error('Failed to log compliance event', { error: error.message });
     res.status(500).json({
       success: false,
-      error: "Event logging failed",
-      message: "Unable to log compliance event at this time",
+      error: 'Event logging failed',
+      message: 'Unable to log compliance event at this time',
     });
   }
 });
@@ -216,9 +216,9 @@ router.post("/events", authenticate, async (req, res) => {
  * Export audit log (filtered)
  * Requires admin role
  */
-router.get("/audit-log", authenticate, requireRole("admin"), async (req, res) => {
+router.get('/audit-log', authenticate, requireRole('admin'), async (req, res) => {
   try {
-    const { startDate, endDate, category, userId, limit = 1000, format = "json" } = req.query;
+    const { startDate, endDate, category, userId, limit = 1000, format = 'json' } = req.query;
 
     const filters = {
       startDate,
@@ -232,11 +232,11 @@ router.get("/audit-log", authenticate, requireRole("admin"), async (req, res) =>
     // Apply limit
     const limitedLog = auditLog.slice(0, parseInt(limit));
 
-    if (format === "csv") {
+    if (format === 'csv') {
       // Convert to CSV format
       const csvData = convertToCSV(limitedLog);
-      res.setHeader("Content-Type", "text/csv");
-      res.setHeader("Content-Disposition", 'attachment; filename="audit-log.csv"');
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 'attachment; filename="audit-log.csv"');
       res.send(csvData);
     } else {
       res.json({
@@ -250,21 +250,21 @@ router.get("/audit-log", authenticate, requireRole("admin"), async (req, res) =>
       });
     }
 
-    logger.audit("Audit log exported via API", {
+    logger.audit('Audit log exported via API', {
       exportedBy: req.user.id,
       entriesCount: limitedLog.length,
       format,
       filters,
     });
   } catch (error) {
-    logger.error("Failed to export audit log", {
+    logger.error('Failed to export audit log', {
       error: error.message,
       userId: req.user.id,
     });
     res.status(500).json({
       success: false,
-      error: "Audit log export failed",
-      message: "Unable to export audit log at this time",
+      error: 'Audit log export failed',
+      message: 'Unable to export audit log at this time',
     });
   }
 });
@@ -274,25 +274,25 @@ router.get("/audit-log", authenticate, requireRole("admin"), async (req, res) =>
  * Generate GDPR breach notification
  * Requires admin role
  */
-router.post("/breach-notification", authenticate, requireRole("admin"), async (req, res) => {
+router.post('/breach-notification', authenticate, requireRole('admin'), async (req, res) => {
   try {
     const breachDetails = req.body;
 
     // Validate required breach details
-    const requiredFields = ["date", "time", "categories", "approximateNumber"];
-    const missingFields = requiredFields.filter((field) => !breachDetails[field]);
+    const requiredFields = ['date', 'time', 'categories', 'approximateNumber'];
+    const missingFields = requiredFields.filter(field => !breachDetails[field]);
 
     if (missingFields.length > 0) {
       return res.status(400).json({
         success: false,
-        error: "Missing required breach details",
-        message: `Required fields: ${missingFields.join(", ")}`,
+        error: 'Missing required breach details',
+        message: `Required fields: ${missingFields.join(', ')}`,
       });
     }
 
     const notification = complianceService.generateBreachNotification(breachDetails);
 
-    logger.audit("GDPR breach notification generated via API", {
+    logger.audit('GDPR breach notification generated via API', {
       breachId: notification.breachId,
       generatedBy: req.user.id,
       categories: breachDetails.categories,
@@ -303,13 +303,13 @@ router.post("/breach-notification", authenticate, requireRole("admin"), async (r
       data: notification,
     });
   } catch (error) {
-    logger.error("Failed to generate breach notification", {
+    logger.error('Failed to generate breach notification', {
       error: error.message,
     });
     res.status(500).json({
       success: false,
-      error: "Breach notification generation failed",
-      message: "Unable to generate breach notification at this time",
+      error: 'Breach notification generation failed',
+      message: 'Unable to generate breach notification at this time',
     });
   }
 });
@@ -319,13 +319,13 @@ router.post("/breach-notification", authenticate, requireRole("admin"), async (r
  * Clean up old audit entries
  * Requires admin role
  */
-router.post("/admin/cleanup-audit", authenticate, requireRole("admin"), async (req, res) => {
+router.post('/admin/cleanup-audit', authenticate, requireRole('admin'), async (req, res) => {
   try {
     const { daysOld = 90 } = req.body;
 
     complianceService.cleanupAuditLog(parseInt(daysOld));
 
-    logger.audit("Audit log cleaned up via API", {
+    logger.audit('Audit log cleaned up via API', {
       cleanedBy: req.user.id,
       daysOld: parseInt(daysOld),
     });
@@ -335,11 +335,11 @@ router.post("/admin/cleanup-audit", authenticate, requireRole("admin"), async (r
       message: `Audit log cleaned up. Removed entries older than ${daysOld} days.`,
     });
   } catch (error) {
-    logger.error("Failed to cleanup audit log", { error: error.message });
+    logger.error('Failed to cleanup audit log', { error: error.message });
     res.status(500).json({
       success: false,
-      error: "Audit cleanup failed",
-      message: "Unable to cleanup audit log at this time",
+      error: 'Audit cleanup failed',
+      message: 'Unable to cleanup audit log at this time',
     });
   }
 });
@@ -349,12 +349,12 @@ router.post("/admin/cleanup-audit", authenticate, requireRole("admin"), async (r
  * Get compliance metrics for monitoring
  * Requires moderator role
  */
-router.get("/metrics", authenticate, requireRole("moderator"), async (_req, res) => {
+router.get('/metrics', authenticate, requireRole('moderator'), async (_req, res) => {
   try {
     const metrics = {
       complianceScore: complianceService.calculateComplianceScore(),
       activeAlerts: complianceService.getComplianceAlerts({
-        status: "active",
+        status: 'active',
       }).length,
       recentEvents: complianceService.auditLog.slice(-10), // Last 10 events
       frameworkCoverage: complianceService.getFrameworkCoverage(),
@@ -365,41 +365,41 @@ router.get("/metrics", authenticate, requireRole("moderator"), async (_req, res)
       data: metrics,
     });
   } catch (error) {
-    logger.error("Failed to fetch compliance metrics", {
+    logger.error('Failed to fetch compliance metrics', {
       error: error.message,
     });
     res.status(500).json({
       success: false,
-      error: "Metrics fetch failed",
-      message: "Unable to retrieve compliance metrics at this time",
+      error: 'Metrics fetch failed',
+      message: 'Unable to retrieve compliance metrics at this time',
     });
   }
 });
 
 // Helper function to convert audit log to CSV
 function convertToCSV(data) {
-  if (data.length === 0) return "";
+  if (data.length === 0) return '';
 
   const headers = Object.keys(data[0]);
   const csvRows = [];
 
   // Add headers
-  csvRows.push(headers.join(","));
+  csvRows.push(headers.join(','));
 
   // Add data rows
-  data.forEach((row) => {
-    const values = headers.map((header) => {
+  data.forEach(row => {
+    const values = headers.map(header => {
       const value = row[header];
       // Escape commas and quotes in CSV
-      if (typeof value === "string" && (value.includes(",") || value.includes('"'))) {
+      if (typeof value === 'string' && (value.includes(',') || value.includes('"'))) {
         return `"${value.replace(/"/g, '""')}"`;
       }
-      return value || "";
+      return value || '';
     });
-    csvRows.push(values.join(","));
+    csvRows.push(values.join(','));
   });
 
-  return csvRows.join("\n");
+  return csvRows.join('\n');
 }
 
 module.exports = router;

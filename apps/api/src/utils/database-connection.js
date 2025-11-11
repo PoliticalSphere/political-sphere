@@ -1,12 +1,12 @@
-import path from "path";
-import { fileURLToPath } from "url";
+import path from 'path';
+import { fileURLToPath } from 'url';
 
-import Database from "better-sqlite3";
+import Database from 'better-sqlite3';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DB_PATH = path.join(__dirname, "../../../data/political_sphere.db");
+const DB_PATH = path.join(__dirname, '../../../data/political_sphere.db');
 
 class DatabaseConnection {
   constructor() {
@@ -17,10 +17,10 @@ class DatabaseConnection {
   getConnection() {
     if (!this.db) {
       this.db = new Database(DB_PATH);
-      this.db.pragma("journal_mode = WAL");
-      this.db.pragma("foreign_keys = ON");
-      this.db.pragma("busy_timeout = 30000");
-      this.db.pragma("synchronous = NORMAL");
+      this.db.pragma('journal_mode = WAL');
+      this.db.pragma('foreign_keys = ON');
+      this.db.pragma('busy_timeout = 30000');
+      this.db.pragma('synchronous = NORMAL');
     }
     return this.db;
   }

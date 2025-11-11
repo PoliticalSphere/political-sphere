@@ -4,9 +4,9 @@
  * Supports multiple regulatory frameworks (DSA, GDPR, ISO 27001, etc.)
  */
 
-import crypto from "crypto";
+import crypto from 'crypto';
 
-import logger from "../logger.js";
+import logger from '../logger.js';
 
 class ComplianceService {
   // accept optional complianceDb for tests
@@ -28,7 +28,7 @@ class ComplianceService {
     const auditEntry = {
       id: eventId,
       timestamp: new Date().toISOString(),
-      category: event.category || "general",
+      category: event.category || 'general',
       action: event.action,
       userId: event.userId,
       resource: event.resource,
@@ -45,7 +45,7 @@ class ComplianceService {
       this.auditLog.shift();
     }
 
-    logger.audit("Compliance event logged", {
+    logger.audit('Compliance event logged', {
       eventId,
       category: auditEntry.category,
       action: auditEntry.action,
@@ -66,41 +66,41 @@ class ComplianceService {
     const violations = [];
 
     // GDPR violations
-    if (auditEntry.category === "data_processing" && !auditEntry.details.lawfulBasis) {
+    if (auditEntry.category === 'data_processing' && !auditEntry.details.lawfulBasis) {
       violations.push({
-        framework: "GDPR",
-        rule: "Article 6 - Lawful Basis",
-        severity: "high",
-        description: "Data processing without documented lawful basis",
+        framework: 'GDPR',
+        rule: 'Article 6 - Lawful Basis',
+        severity: 'high',
+        description: 'Data processing without documented lawful basis',
       });
     }
 
     // DSA violations
     if (
-      auditEntry.category === "content_moderation" &&
+      auditEntry.category === 'content_moderation' &&
       auditEntry.details.responseTime > 24 * 60 * 60 * 1000
     ) {
       // 24 hours
       violations.push({
-        framework: "DSA",
-        rule: "Content Moderation Timeliness",
-        severity: "medium",
-        description: "Content moderation exceeded 24-hour response time",
+        framework: 'DSA',
+        rule: 'Content Moderation Timeliness',
+        severity: 'medium',
+        description: 'Content moderation exceeded 24-hour response time',
       });
     }
 
     // ISO 27001 violations
-    if (auditEntry.category === "access_control" && auditEntry.details.failedAttempts > 5) {
+    if (auditEntry.category === 'access_control' && auditEntry.details.failedAttempts > 5) {
       violations.push({
-        framework: "ISO 27001",
-        rule: "Access Control",
-        severity: "medium",
-        description: "Multiple failed access attempts detected",
+        framework: 'ISO 27001',
+        rule: 'Access Control',
+        severity: 'medium',
+        description: 'Multiple failed access attempts detected',
       });
     }
 
     // Trigger alerts for violations
-    violations.forEach((violation) => {
+    violations.forEach(violation => {
       this.createComplianceAlert(violation, auditEntry);
     });
   }
@@ -116,13 +116,13 @@ class ComplianceService {
       timestamp: new Date().toISOString(),
     };
 
-    if (this.complianceDb && typeof this.complianceDb.create === "function") {
+    if (this.complianceDb && typeof this.complianceDb.create === 'function') {
       return this.complianceDb.create(payload);
     }
 
     // Fallback: push to in-memory auditLog
     const id = this.logComplianceEvent({
-      category: "general",
+      category: 'general',
       action: eventType,
       userId,
       details,
@@ -134,7 +134,7 @@ class ComplianceService {
    * Retrieve compliance reports (optionally filtered by userId)
    */
   async getComplianceReports(userId = null) {
-    if (this.complianceDb && typeof this.complianceDb.getAll === "function") {
+    if (this.complianceDb && typeof this.complianceDb.getAll === 'function') {
       if (userId) return this.complianceDb.getAll({ userId });
       return this.complianceDb.getAll();
     }
@@ -146,11 +146,11 @@ class ComplianceService {
    */
   async checkCompliance(framework, context = {}) {
     // Very small deterministic logic to satisfy tests
-    if (framework === "GDPR") {
-      if (context.action === "unauthorized_data_access") {
+    if (framework === 'GDPR') {
+      if (context.action === 'unauthorized_data_access') {
         return {
           compliant: false,
-          violations: ["Unauthorized data access violates GDPR Article 5"],
+          violations: ['Unauthorized data access violates GDPR Article 5'],
         };
       }
       return { compliant: true, violations: [] };
@@ -161,9 +161,9 @@ class ComplianceService {
   /**
    * Generate a simple compliance report over events
    */
-  async generateComplianceReport(period = "monthly") {
+  async generateComplianceReport(period = 'monthly') {
     const items =
-      this.complianceDb && typeof this.complianceDb.getAll === "function"
+      this.complianceDb && typeof this.complianceDb.getAll === 'function'
         ? await this.complianceDb.getAll()
         : [];
 
@@ -193,14 +193,14 @@ class ComplianceService {
       severity: violation.severity,
       description: violation.description,
       auditEntryId: auditEntry.id,
-      status: "active",
+      status: 'active',
       assignedTo: null,
       resolvedAt: null,
     };
 
     this.alerts.push(alert);
 
-    logger.warn("Compliance alert created", {
+    logger.warn('Compliance alert created', {
       alertId: alert.id,
       framework: violation.framework,
       severity: violation.severity,
@@ -220,21 +220,21 @@ class ComplianceService {
       const notification = {
         subject: `Compliance Alert: ${alert.framework} - ${alert.severity}`,
         message: `Alert ID: ${alert.id}\nFramework: ${alert.framework}\nSeverity: ${alert.severity}\nDescription: ${alert.description}\nTimestamp: ${alert.timestamp}`,
-        recipients: process.env.COMPLIANCE_TEAM_EMAILS?.split(",") || [
-          "compliance@political-sphere.com",
+        recipients: process.env.COMPLIANCE_TEAM_EMAILS?.split(',') || [
+          'compliance@political-sphere.com',
         ],
-        channels: ["email"], // Could add 'sms', 'slack', etc.
+        channels: ['email'], // Could add 'sms', 'slack', etc.
       };
 
       // Send notification via configured channels
       await this.sendNotification(notification);
 
-      logger.info("Compliance team notified", {
+      logger.info('Compliance team notified', {
         alertId: alert.id,
         channels: notification.channels,
       });
     } catch (error) {
-      logger.error("Failed to notify compliance team", {
+      logger.error('Failed to notify compliance team', {
         error: error.message,
         alertId: alert.id,
       });
@@ -250,17 +250,17 @@ class ComplianceService {
 
     for (const channel of channels) {
       switch (channel) {
-        case "email":
+        case 'email':
           await this.sendEmail(subject, message, recipients);
           break;
-        case "sms":
+        case 'sms':
           await this.sendSMS(message, recipients);
           break;
-        case "slack":
+        case 'slack':
           await this.sendSlackMessage(subject, message);
           break;
         default:
-          logger.warn("Unknown notification channel", { channel });
+          logger.warn('Unknown notification channel', { channel });
       }
     }
   }
@@ -273,7 +273,7 @@ class ComplianceService {
    */
   async sendEmail(subject, message, recipients) {
     // Placeholder for email service integration (e.g., SendGrid, SES)
-    logger.info("Email notification sent", {
+    logger.info('Email notification sent', {
       subject,
       message: message.substring(0, 50),
       recipients: recipients.length,
@@ -288,7 +288,7 @@ class ComplianceService {
    */
   async sendSMS(message, recipients) {
     // Placeholder for SMS service integration (e.g., Twilio)
-    logger.info("SMS notification sent", {
+    logger.info('SMS notification sent', {
       message: message.substring(0, 50),
       recipients: recipients.length,
     });
@@ -302,7 +302,7 @@ class ComplianceService {
    */
   async sendSlackMessage(subject, message) {
     // Placeholder for Slack integration
-    logger.info("Slack notification sent", {
+    logger.info('Slack notification sent', {
       subject,
       message: message.substring(0, 50),
     });
@@ -318,16 +318,14 @@ class ComplianceService {
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
 
     // Filter recent audit entries
-    const recentEntries = this.auditLog.filter(
-      (entry) => new Date(entry.timestamp) > thirtyDaysAgo,
-    );
+    const recentEntries = this.auditLog.filter(entry => new Date(entry.timestamp) > thirtyDaysAgo);
 
     // Calculate metrics
     const metrics = {
       totalEvents: recentEntries.length,
       eventsByCategory: this.groupByCategory(recentEntries),
-      activeAlerts: this.alerts.filter((alert) => alert.status === "active").length,
-      resolvedAlerts: this.alerts.filter((alert) => alert.status === "resolved").length,
+      activeAlerts: this.alerts.filter(alert => alert.status === 'active').length,
+      resolvedAlerts: this.alerts.filter(alert => alert.status === 'resolved').length,
       complianceScore: this.calculateComplianceScore(),
       topViolations: this.getTopViolations(),
       frameworkCoverage: this.getFrameworkCoverage(),
@@ -354,8 +352,8 @@ class ComplianceService {
    */
   calculateComplianceScore() {
     // Simplified scoring algorithm
-    const activeAlerts = this.alerts.filter((alert) => alert.status === "active").length;
-    const resolvedAlerts = this.alerts.filter((alert) => alert.status === "resolved").length;
+    const activeAlerts = this.alerts.filter(alert => alert.status === 'active').length;
+    const resolvedAlerts = this.alerts.filter(alert => alert.status === 'resolved').length;
     const totalAlerts = activeAlerts + resolvedAlerts;
 
     if (totalAlerts === 0) return 100;
@@ -392,10 +390,10 @@ class ComplianceService {
     return {
       GDPR: { implemented: true, score: 85 },
       DSA: { implemented: true, score: 75 },
-      "ISO 27001": { implemented: true, score: 70 },
-      "Online Safety Act": { implemented: true, score: 80 },
-      "WCAG 2.2": { implemented: true, score: 90 },
-      "EU AI Act": { implemented: true, score: 85 },
+      'ISO 27001': { implemented: true, score: 70 },
+      'Online Safety Act': { implemented: true, score: 80 },
+      'WCAG 2.2': { implemented: true, score: 90 },
+      'EU AI Act': { implemented: true, score: 85 },
     };
   }
 
@@ -407,8 +405,8 @@ class ComplianceService {
   generateDSATransparencyReport(filters = {}) {
     const report = {
       generatedAt: new Date().toISOString(),
-      reportingPeriod: filters.period || "monthly",
-      platformName: "Political Sphere",
+      reportingPeriod: filters.period || 'monthly',
+      platformName: 'Political Sphere',
       totalUsers: 0, // Would come from user database
       activeUsers: 0,
       contentModeration: {
@@ -434,7 +432,7 @@ class ComplianceService {
     // const moderationStats = await db.moderationStats.find(filters);
     // Object.assign(report.contentModeration, moderationStats);
 
-    logger.info("DSA transparency report generated", {
+    logger.info('DSA transparency report generated', {
       period: report.reportingPeriod,
     });
 
@@ -458,11 +456,11 @@ class ComplianceService {
         consequences: breachDetails.consequences,
         measuresTaken: breachDetails.measuresTaken,
       },
-      supervisoryAuthority: "ICO (UK)", // or relevant authority
-      status: "draft",
+      supervisoryAuthority: 'ICO (UK)', // or relevant authority
+      status: 'draft',
     };
 
-    logger.audit("GDPR breach notification generated", {
+    logger.audit('GDPR breach notification generated', {
       breachId: notification.breachId,
       categories: breachDetails.categories,
     });
@@ -481,25 +479,25 @@ class ComplianceService {
     // Apply filters
     if (filters.startDate) {
       filteredLog = filteredLog.filter(
-        (entry) => new Date(entry.timestamp) >= new Date(filters.startDate),
+        entry => new Date(entry.timestamp) >= new Date(filters.startDate)
       );
     }
 
     if (filters.endDate) {
       filteredLog = filteredLog.filter(
-        (entry) => new Date(entry.timestamp) <= new Date(filters.endDate),
+        entry => new Date(entry.timestamp) <= new Date(filters.endDate)
       );
     }
 
     if (filters.category) {
-      filteredLog = filteredLog.filter((entry) => entry.category === filters.category);
+      filteredLog = filteredLog.filter(entry => entry.category === filters.category);
     }
 
     if (filters.userId) {
-      filteredLog = filteredLog.filter((entry) => entry.userId === filters.userId);
+      filteredLog = filteredLog.filter(entry => entry.userId === filters.userId);
     }
 
-    logger.audit("Audit log exported", {
+    logger.audit('Audit log exported', {
       filters,
       entriesExported: filteredLog.length,
     });
@@ -514,18 +512,18 @@ class ComplianceService {
    * @param {string} resolvedBy
    */
   resolveComplianceAlert(alertId, resolution, resolvedBy) {
-    const alert = this.alerts.find((a) => a.id === alertId);
+    const alert = this.alerts.find(a => a.id === alertId);
 
     if (alert) {
-      alert.status = "resolved";
+      alert.status = 'resolved';
       alert.resolution = resolution;
       alert.resolvedBy = resolvedBy;
       alert.resolvedAt = new Date().toISOString();
 
-      logger.audit("Compliance alert resolved", {
+      logger.audit('Compliance alert resolved', {
         alertId,
         resolvedBy,
-        resolution: resolution.substring(0, 100) + "...",
+        resolution: resolution.substring(0, 100) + '...',
       });
     }
   }
@@ -539,15 +537,15 @@ class ComplianceService {
     let filteredAlerts = [...this.alerts];
 
     if (filters.status) {
-      filteredAlerts = filteredAlerts.filter((alert) => alert.status === filters.status);
+      filteredAlerts = filteredAlerts.filter(alert => alert.status === filters.status);
     }
 
     if (filters.framework) {
-      filteredAlerts = filteredAlerts.filter((alert) => alert.framework === filters.framework);
+      filteredAlerts = filteredAlerts.filter(alert => alert.framework === filters.framework);
     }
 
     if (filters.severity) {
-      filteredAlerts = filteredAlerts.filter((alert) => alert.severity === filters.severity);
+      filteredAlerts = filteredAlerts.filter(alert => alert.severity === filters.severity);
     }
 
     return filteredAlerts;
@@ -561,11 +559,11 @@ class ComplianceService {
     const cutoffDate = new Date(Date.now() - daysOld * 24 * 60 * 60 * 1000);
     const initialLength = this.auditLog.length;
 
-    this.auditLog = this.auditLog.filter((entry) => new Date(entry.timestamp) > cutoffDate);
+    this.auditLog = this.auditLog.filter(entry => new Date(entry.timestamp) > cutoffDate);
 
     const removedCount = initialLength - this.auditLog.length;
 
-    logger.info("Audit log cleaned up", {
+    logger.info('Audit log cleaned up', {
       daysOld,
       removedCount,
       remainingCount: this.auditLog.length,
@@ -601,10 +599,10 @@ class ComplianceService {
 // Export the class but attach a default instance's bound methods so the module can
 // be used as either a constructor (for tests) or a singleton (for app code).
 const _defaultComplianceInstance = new ComplianceService();
-Object.getOwnPropertyNames(ComplianceService.prototype).forEach((name) => {
-  if (name === "constructor") return;
+Object.getOwnPropertyNames(ComplianceService.prototype).forEach(name => {
+  if (name === 'constructor') return;
   const desc = Object.getOwnPropertyDescriptor(ComplianceService.prototype, name);
-  if (desc && typeof desc.value === "function") {
+  if (desc && typeof desc.value === 'function') {
     ComplianceService[name] = _defaultComplianceInstance[name].bind(_defaultComplianceInstance);
   }
 });

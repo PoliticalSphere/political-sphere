@@ -1,5 +1,52 @@
 # TODO.md - Political Sphere Development Tasks
 
+## ESM Migration Tracker
+
+**Goal**: Incrementally convert `/apps/api/**/*.js` files from CommonJS to ESM
+**Strategy**: See ADR [docs/architecture/decisions/0001-esm-migration-strategy.md](docs/architecture/decisions/0001-esm-migration-strategy.md)
+**Target Completion**: Q1 2026
+
+### Priority 1: Utilities (Low dependency)
+
+- [ ] `/apps/api/src/utils/log-sanitizer.js`
+- [ ] `/apps/api/src/utils/http-utils.js`
+- [ ] `/apps/api/src/utils/config.js`
+- [ ] `/apps/api/src/utils/database-connection.js`
+- [ ] `/apps/api/src/utils/database-performance-monitor.js`
+
+### Priority 2: Stores (Medium dependency)
+
+- [ ] `/apps/api/src/stores/user-store.js`
+- [ ] `/apps/api/src/stores/party-store.js`
+- [ ] `/apps/api/src/stores/bill-store.js`
+- [ ] `/apps/api/src/stores/vote-store.js`
+
+### Priority 3: Middleware & Routes (High dependency)
+
+- [ ] `/apps/api/src/middleware/auth.js`
+- [ ] `/apps/api/src/middleware/csrf.js`
+- [ ] `/apps/api/src/middleware/request-id.js`
+- [ ] `/apps/api/src/routes/auth.js`
+- [ ] `/apps/api/src/routes/users.js`
+- [ ] `/apps/api/src/routes/parties.js`
+- [ ] `/apps/api/src/routes/bills.js`
+- [ ] `/apps/api/src/routes/votes.js`
+
+### Priority 4: Core Application (Final)
+
+- [ ] `/apps/api/src/app.js`
+- [ ] `/apps/api/src/server.js`
+- [ ] `/apps/api/src/index.js`
+
+### Conversion Checklist (per file)
+
+1. Change `const x = require('y')` → `import x from 'y'`
+2. Change `module.exports = x` → `export default x` or `export { x }`
+3. Update `package.json` with `"type": "module"` (when entire app converted)
+4. Run tests for converted file
+5. Check all imports of this file are updated
+6. Mark item complete above with current date
+
 ## E2E Testing Infrastructure (Completed 2025-11-11)
 
 ### Completed

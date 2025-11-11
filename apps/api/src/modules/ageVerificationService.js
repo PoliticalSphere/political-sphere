@@ -4,11 +4,11 @@
  * Implements Online Safety Act and COPPA compliance
  */
 
-import * as crypto from "node:crypto";
+import * as crypto from 'node:crypto';
 
-import jwt from "jsonwebtoken";
+import jwt from 'jsonwebtoken';
 
-import logger from "../logger.js";
+import logger from '../logger.js';
 
 class AgeVerificationService {
   constructor(db = null) {
@@ -24,9 +24,9 @@ class AgeVerificationService {
    * @param {string} method - 'self_declaration', 'credit_card', 'government_id', 'parental_consent'
    * @returns {Promise<VerificationResult>}
    */
-  async initiateVerification(userId, method = "self_declaration") {
+  async initiateVerification(userId, method = 'self_declaration') {
     try {
-      logger.info("Initiating age verification", { userId, method });
+      logger.info('Initiating age verification', { userId, method });
 
       const token = this.generateVerificationToken(userId);
       const verificationId = crypto.randomUUID();
@@ -35,7 +35,7 @@ class AgeVerificationService {
         id: verificationId,
         userId,
         method,
-        status: "pending",
+        status: 'pending',
         createdAt: new Date().toISOString(),
         expiresAt: new Date(Date.now() + this.tokenExpiry).toISOString(),
         token,
@@ -47,7 +47,7 @@ class AgeVerificationService {
       // Clean up expired tokens periodically
       this.cleanupExpiredTokens();
 
-      logger.audit("Age verification initiated", {
+      logger.audit('Age verification initiated', {
         verificationId,
         userId,
         method,
@@ -61,11 +61,11 @@ class AgeVerificationService {
         expiresAt: verification.expiresAt,
       };
     } catch (error) {
-      logger.error("Age verification initiation failed", {
+      logger.error('Age verification initiation failed', {
         error: error.message,
         userId,
       });
-      return { success: false, error: "Verification initiation failed" };
+      return { success: false, error: 'Verification initiation failed' };
     }
   }
 
@@ -80,18 +80,18 @@ class AgeVerificationService {
       const verification = this.verificationTokens.get(verificationId);
 
       if (!verification) {
-        return { success: false, error: "Invalid verification ID" };
+        return { success: false, error: 'Invalid verification ID' };
       }
 
       if (new Date() > new Date(verification.expiresAt)) {
         this.verificationTokens.delete(verificationId);
-        return { success: false, error: "Verification expired" };
+        return { success: false, error: 'Verification expired' };
       }
 
       const result = await this.processVerification(verification, verificationData);
 
       if (result.success) {
-        verification.status = "completed";
+        verification.status = 'completed';
         verification.completedAt = new Date().toISOString();
         verification.age = result.age;
         verification.confidence = result.confidence;
@@ -99,25 +99,25 @@ class AgeVerificationService {
         // Store verified age in user profile (pseudo-code)
         // await db.users.update({ id: verification.userId }, { verifiedAge: result.age });
 
-        logger.audit("Age verification completed", {
+        logger.audit('Age verification completed', {
           verificationId,
           userId: verification.userId,
           age: result.age,
           method: verification.method,
         });
       } else {
-        verification.status = "failed";
+        verification.status = 'failed';
         verification.failedAt = new Date().toISOString();
         verification.failureReason = result.error;
       }
 
       return result;
     } catch (error) {
-      logger.error("Age verification completion failed", {
+      logger.error('Age verification completion failed', {
         error: error.message,
         verificationId,
       });
-      return { success: false, error: "Verification processing failed" };
+      return { success: false, error: 'Verification processing failed' };
     }
   }
 
@@ -129,16 +129,16 @@ class AgeVerificationService {
    */
   async processVerification(verification, data) {
     switch (verification.method) {
-      case "self_declaration":
+      case 'self_declaration':
         return this.processSelfDeclaration(data);
-      case "credit_card":
+      case 'credit_card':
         return this.processCreditCardVerification(data);
-      case "government_id":
+      case 'government_id':
         return this.processGovernmentIdVerification(data);
-      case "parental_consent":
+      case 'parental_consent':
         return this.processParentalConsent(data);
       default:
-        return { success: false, error: "Unsupported verification method" };
+        return { success: false, error: 'Unsupported verification method' };
     }
   }
 
@@ -151,13 +151,13 @@ class AgeVerificationService {
     const { age, consent } = data;
 
     if (!consent) {
-      return { success: false, error: "User consent required" };
+      return { success: false, error: 'User consent required' };
     }
 
     if (!age || age < 13) {
       return {
         success: false,
-        error: "Must be 13 or older to use this service",
+        error: 'Must be 13 or older to use this service',
       };
     }
 
@@ -167,7 +167,7 @@ class AgeVerificationService {
     return {
       success: true,
       age: parseInt(age, 10),
-      confidence: "low", // Self-declaration has low confidence
+      confidence: 'low', // Self-declaration has low confidence
       requiresAdditionalVerification,
       restrictions: this.getAgeRestrictions(parseInt(age, 10)),
     };
@@ -192,18 +192,18 @@ class AgeVerificationService {
         return {
           success: true,
           age: ageEstimation.age,
-          confidence: "high",
+          confidence: 'high',
           restrictions: this.getAgeRestrictions(ageEstimation.age),
         };
       } else {
         return {
           success: false,
-          error: "Unable to verify age with sufficient confidence",
+          error: 'Unable to verify age with sufficient confidence',
         };
       }
     } catch (error) {
-      logger.error("Credit card verification failed", { error: error.message });
-      return { success: false, error: "Payment verification failed" };
+      logger.error('Credit card verification failed', { error: error.message });
+      return { success: false, error: 'Payment verification failed' };
     }
   }
 
@@ -224,20 +224,20 @@ class AgeVerificationService {
         return {
           success: true,
           age: verificationResult.age,
-          confidence: "very_high",
+          confidence: 'very_high',
           restrictions: this.getAgeRestrictions(verificationResult.age),
         };
       } else {
         return {
           success: false,
-          error: verificationResult.error || "ID verification failed",
+          error: verificationResult.error || 'ID verification failed',
         };
       }
     } catch (error) {
-      logger.error("Government ID verification failed", {
+      logger.error('Government ID verification failed', {
         error: error.message,
       });
-      return { success: false, error: "ID verification service unavailable" };
+      return { success: false, error: 'ID verification service unavailable' };
     }
   }
 
@@ -250,13 +250,13 @@ class AgeVerificationService {
     const { parentEmail, parentConsent, childAge } = data;
 
     if (!parentConsent) {
-      return { success: false, error: "Parental consent required" };
+      return { success: false, error: 'Parental consent required' };
     }
 
     if (childAge >= 13) {
       return {
         success: false,
-        error: "Parental consent not required for users 13+",
+        error: 'Parental consent not required for users 13+',
       };
     }
 
@@ -268,19 +268,19 @@ class AgeVerificationService {
       parentEmail,
       childAge,
       requestedAt: new Date().toISOString(),
-      status: "pending",
+      status: 'pending',
     });
 
     // Send email to parent (pseudo-code)
     // await emailService.sendParentalConsentEmail(parentEmail, consentToken);
 
-    logger.audit("Parental consent requested", { parentEmail, childAge });
+    logger.audit('Parental consent requested', { parentEmail, childAge });
 
     return {
       success: true,
-      message: "Parental consent email sent",
+      message: 'Parental consent email sent',
       consentToken,
-      nextStep: "parent_verification",
+      nextStep: 'parent_verification',
     };
   }
 
@@ -294,17 +294,17 @@ class AgeVerificationService {
     const consent = this.parentalConsents.get(consentToken);
 
     if (!consent) {
-      return { success: false, error: "Invalid consent token" };
+      return { success: false, error: 'Invalid consent token' };
     }
 
-    consent.status = approved ? "approved" : "denied";
+    consent.status = approved ? 'approved' : 'denied';
     consent.respondedAt = new Date().toISOString();
 
     if (approved) {
       // Create verified user account for child
       const childUserId = await this.createChildAccount(consent);
 
-      logger.audit("Parental consent approved", {
+      logger.audit('Parental consent approved', {
         parentEmail: consent.parentEmail,
         childAge: consent.childAge,
         childUserId,
@@ -316,10 +316,10 @@ class AgeVerificationService {
         restrictions: this.getAgeRestrictions(consent.childAge),
       };
     } else {
-      logger.audit("Parental consent denied", {
+      logger.audit('Parental consent denied', {
         parentEmail: consent.parentEmail,
       });
-      return { success: false, error: "Parental consent denied" };
+      return { success: false, error: 'Parental consent denied' };
     }
   }
 
@@ -330,26 +330,26 @@ class AgeVerificationService {
    */
   getAgeRestrictions(age) {
     const restrictions = {
-      contentRating: "U", // Default safe
+      contentRating: 'U', // Default safe
       features: [],
       monitoring: false,
     };
 
     if (age < 13) {
-      restrictions.contentRating = "U";
-      restrictions.features = ["parental_controls", "time_limits", "content_filtering"];
+      restrictions.contentRating = 'U';
+      restrictions.features = ['parental_controls', 'time_limits', 'content_filtering'];
       restrictions.monitoring = true;
     } else if (age < 16) {
-      restrictions.contentRating = "12";
-      restrictions.features = ["content_warnings"];
+      restrictions.contentRating = '12';
+      restrictions.features = ['content_warnings'];
       restrictions.monitoring = false;
     } else if (age < 18) {
-      restrictions.contentRating = "15";
-      restrictions.features = ["age_verification"];
+      restrictions.contentRating = '15';
+      restrictions.features = ['age_verification'];
       restrictions.monitoring = false;
     } else {
-      restrictions.contentRating = "18";
-      restrictions.features = ["full_access"];
+      restrictions.contentRating = '18';
+      restrictions.features = ['full_access'];
       restrictions.monitoring = false;
     }
 
@@ -375,12 +375,12 @@ class AgeVerificationService {
    */
   getMethodInstructions(method) {
     const instructions = {
-      self_declaration: "Please confirm your age. This will be used to customize your experience.",
-      credit_card: "We will verify your age using payment information. No charges will be made.",
-      government_id: "Upload a photo of your government-issued ID and a selfie for verification.",
-      parental_consent: "We will send a consent request to your parent/guardian for approval.",
+      self_declaration: 'Please confirm your age. This will be used to customize your experience.',
+      credit_card: 'We will verify your age using payment information. No charges will be made.',
+      government_id: 'Upload a photo of your government-issued ID and a selfie for verification.',
+      parental_consent: 'We will send a consent request to your parent/guardian for approval.',
     };
-    return instructions[method] || "Please follow the verification prompts.";
+    return instructions[method] || 'Please follow the verification prompts.';
   }
 
   /**
@@ -391,7 +391,7 @@ class AgeVerificationService {
   generateVerificationToken(userId) {
     const payload = {
       userId,
-      type: "age_verification",
+      type: 'age_verification',
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor((Date.now() + this.tokenExpiry) / 1000),
     };
@@ -409,7 +409,7 @@ class AgeVerificationService {
     const payload = {
       parentEmail,
       childAge,
-      type: "parental_consent",
+      type: 'parental_consent',
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor((Date.now() + this.tokenExpiry) / 1000),
     };
@@ -455,17 +455,17 @@ class AgeVerificationService {
 
     // Validate required fields
     const missingFields = [];
-    if (!dateOfBirth) missingFields.push("dateOfBirth");
-    if (!verificationMethod) missingFields.push("verificationMethod");
+    if (!dateOfBirth) missingFields.push('dateOfBirth');
+    if (!verificationMethod) missingFields.push('verificationMethod');
 
     if (missingFields.length > 0) {
-      throw new Error(`Missing required fields: ${missingFields.join(", ")}`);
+      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
     }
 
     // Parse and validate date
     const dob = new Date(dateOfBirth);
     if (Number.isNaN(dob.getTime())) {
-      throw new Error("Invalid date of birth format");
+      throw new Error('Invalid date of birth format');
     }
 
     // Calculate age
@@ -478,7 +478,7 @@ class AgeVerificationService {
 
     // Ensure age is a valid number
     if (Number.isNaN(age) || age < 0) {
-      throw new Error("Invalid age calculation");
+      throw new Error('Invalid age calculation');
     }
 
     // Check minimum age requirement (18+)
@@ -488,7 +488,7 @@ class AgeVerificationService {
       return {
         verified: false,
         age,
-        reason: "User must be at least 18 years old",
+        reason: 'User must be at least 18 years old',
       };
     }
 
@@ -558,12 +558,12 @@ class AgeVerificationService {
     if (!verification) {
       return {
         eligible: false,
-        reason: "Age verification required",
+        reason: 'Age verification required',
       };
     }
 
     // Check content type requirements
-    const contentMinAge = contentType === "adult_content" ? 18 : 13;
+    const contentMinAge = contentType === 'adult_content' ? 18 : 13;
 
     if (verification.age < contentMinAge) {
       return {
@@ -591,16 +591,16 @@ class AgeVerificationService {
     }
 
     const totalVerifications = verifications.length;
-    const verifiedCount = verifications.filter((v) => v.verified).length;
-    const rejectedCount = verifications.filter((v) => !v.verified).length;
+    const verifiedCount = verifications.filter(v => v.verified).length;
+    const rejectedCount = verifications.filter(v => !v.verified).length;
 
     const totalAge = verifications.reduce((sum, v) => sum + (v.age || 0), 0);
     const averageAge =
       totalVerifications > 0 ? Math.round((totalAge / totalVerifications) * 100) / 100 : 0;
 
     const methodStats = {};
-    verifications.forEach((v) => {
-      const method = v.verificationMethod || "unknown";
+    verifications.forEach(v => {
+      const method = v.verificationMethod || 'unknown';
       methodStats[method] = (methodStats[method] || 0) + 1;
     });
 
@@ -623,12 +623,12 @@ class AgeVerificationService {
 const _defaultAgeVerificationInstance = new AgeVerificationService();
 // Copy prototype methods to the constructor as bound functions so callers using the
 // singleton-style API (require(...) and call methods) continue to work.
-Object.getOwnPropertyNames(AgeVerificationService.prototype).forEach((name) => {
-  if (name === "constructor") return;
+Object.getOwnPropertyNames(AgeVerificationService.prototype).forEach(name => {
+  if (name === 'constructor') return;
   const desc = Object.getOwnPropertyDescriptor(AgeVerificationService.prototype, name);
-  if (desc && typeof desc.value === "function") {
+  if (desc && typeof desc.value === 'function') {
     AgeVerificationService[name] = _defaultAgeVerificationInstance[name].bind(
-      _defaultAgeVerificationInstance,
+      _defaultAgeVerificationInstance
     );
   }
 });

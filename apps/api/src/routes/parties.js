@@ -9,7 +9,7 @@ const router = express.Router();
 
 // Conditional auth bypass for test env unless FORCE_AUTH=1 is set
 const requireAuth = (req, res, next) => {
-  if (process.env.NODE_ENV === "test" && process.env.FORCE_AUTH !== "1") {
+  if (process.env.NODE_ENV === 'test' && process.env.FORCE_AUTH !== '1') {
     return next();
   }
   return authenticate(req, res, next);

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-require-imports, import/order */
 const fs = require('fs');
 const path = require('path');
 

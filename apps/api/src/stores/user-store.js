@@ -2,7 +2,7 @@ class UserStore {
   constructor(db, cache = null) {
     this.db = db;
     this.cache = cache;
-    this.tableName = "users";
+    this.tableName = 'users';
   }
 
   async create(userData) {
@@ -24,12 +24,12 @@ class UserStore {
 
   async getById(id) {
     const users = this.db[this.tableName] || [];
-    return users.find((user) => user.id === id) || null;
+    return users.find(user => user.id === id) || null;
   }
 
   async getByEmail(email) {
     const users = this.db[this.tableName] || [];
-    return users.find((user) => user.email === email) || null;
+    return users.find(user => user.email === email) || null;
   }
 
   async getAll() {
@@ -38,7 +38,7 @@ class UserStore {
 
   async update(id, updates) {
     const users = this.db[this.tableName] || [];
-    const index = users.findIndex((user) => user.id === id);
+    const index = users.findIndex(user => user.id === id);
 
     if (index === -1) {
       return null;
@@ -55,7 +55,7 @@ class UserStore {
 
   async delete(id) {
     const users = this.db[this.tableName] || [];
-    const index = users.findIndex((user) => user.id === id);
+    const index = users.findIndex(user => user.id === id);
 
     if (index === -1) {
       return false;

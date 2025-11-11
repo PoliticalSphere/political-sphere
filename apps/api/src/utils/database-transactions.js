@@ -1,5 +1,5 @@
-const { getConnection } = require("./database-connection");
-const logger = require("./logger");
+const { getConnection } = require('./database-connection');
+const logger = require('./logger');
 
 /**
  * Database Transaction Manager
@@ -16,30 +16,30 @@ class Transaction {
 
   async begin() {
     if (this.isActive) {
-      throw new Error("Transaction already active");
+      throw new Error('Transaction already active');
     }
 
     try {
-      this.connection.db.exec("BEGIN TRANSACTION");
+      this.connection.db.exec('BEGIN TRANSACTION');
       this.isActive = true;
-      logger.debug("Database transaction started");
+      logger.debug('Database transaction started');
     } catch (error) {
-      logger.error("Failed to start transaction", { error: error.message });
+      logger.error('Failed to start transaction', { error: error.message });
       throw error;
     }
   }
 
   async commit() {
     if (!this.isActive) {
-      throw new Error("No active transaction to commit");
+      throw new Error('No active transaction to commit');
     }
 
     try {
-      this.connection.db.exec("COMMIT");
+      this.connection.db.exec('COMMIT');
       this.isActive = false;
-      logger.debug("Database transaction committed");
+      logger.debug('Database transaction committed');
     } catch (error) {
-      logger.error("Failed to commit transaction", { error: error.message });
+      logger.error('Failed to commit transaction', { error: error.message });
       throw error;
     }
   }
@@ -50,26 +50,26 @@ class Transaction {
     }
 
     try {
-      this.connection.db.exec("ROLLBACK");
+      this.connection.db.exec('ROLLBACK');
       this.isActive = false;
-      logger.debug("Database transaction rolled back");
+      logger.debug('Database transaction rolled back');
     } catch (error) {
-      logger.error("Failed to rollback transaction", { error: error.message });
+      logger.error('Failed to rollback transaction', { error: error.message });
       throw error;
     }
   }
 
   async savepoint(name) {
     if (!this.isActive) {
-      throw new Error("No active transaction for savepoint");
+      throw new Error('No active transaction for savepoint');
     }
 
     try {
       this.connection.db.exec(`SAVEPOINT ${name}`);
       this.savepoints.push(name);
-      logger.debug("Transaction savepoint created", { savepoint: name });
+      logger.debug('Transaction savepoint created', { savepoint: name });
     } catch (error) {
-      logger.error("Failed to create savepoint", {
+      logger.error('Failed to create savepoint', {
         savepoint: name,
         error: error.message,
       });
@@ -79,7 +79,7 @@ class Transaction {
 
   async rollbackToSavepoint(name) {
     if (!this.isActive) {
-      throw new Error("No active transaction for savepoint rollback");
+      throw new Error('No active transaction for savepoint rollback');
     }
 
     try {
@@ -89,9 +89,9 @@ class Transaction {
       if (index > -1) {
         this.savepoints = this.savepoints.slice(0, index + 1);
       }
-      logger.debug("Rolled back to savepoint", { savepoint: name });
+      logger.debug('Rolled back to savepoint', { savepoint: name });
     } catch (error) {
-      logger.error("Failed to rollback to savepoint", {
+      logger.error('Failed to rollback to savepoint', {
         savepoint: name,
         error: error.message,
       });
@@ -101,7 +101,7 @@ class Transaction {
 
   async releaseSavepoint(name) {
     if (!this.isActive) {
-      throw new Error("No active transaction for savepoint release");
+      throw new Error('No active transaction for savepoint release');
     }
 
     try {
@@ -110,9 +110,9 @@ class Transaction {
       if (index > -1) {
         this.savepoints.splice(index, 1);
       }
-      logger.debug("Savepoint released", { savepoint: name });
+      logger.debug('Savepoint released', { savepoint: name });
     } catch (error) {
-      logger.error("Failed to release savepoint", {
+      logger.error('Failed to release savepoint', {
         savepoint: name,
         error: error.message,
       });
@@ -133,7 +133,7 @@ class Transaction {
  */
 async function withTransaction(fn, options = {}) {
   const {
-    isolationLevel = "DEFERRED", // DEFERRED, IMMEDIATE, or EXCLUSIVE
+    isolationLevel = 'DEFERRED', // DEFERRED, IMMEDIATE, or EXCLUSIVE
     timeout = 30000, // 30 seconds
     retryCount = 3,
     retryDelay = 1000,
@@ -148,7 +148,7 @@ async function withTransaction(fn, options = {}) {
       // Set isolation level
       connection.db.exec(`PRAGMA read_uncommitted = 0`);
       // Validate isolation level against allowed set to avoid SQL injection
-      const allowedLevels = new Set(["DEFERRED", "IMMEDIATE", "EXCLUSIVE"]);
+      const allowedLevels = new Set(['DEFERRED', 'IMMEDIATE', 'EXCLUSIVE']);
       const level = String(isolationLevel).toUpperCase();
       if (!allowedLevels.has(level)) {
         throw new Error(`Invalid isolation level: ${isolationLevel}`);
@@ -160,10 +160,10 @@ async function withTransaction(fn, options = {}) {
 
       // Set timeout
       const timeoutId = setTimeout(() => {
-        transaction.rollback().catch((err) =>
-          logger.error("Failed to rollback timed out transaction", {
+        transaction.rollback().catch(err =>
+          logger.error('Failed to rollback timed out transaction', {
             error: err.message,
-          }),
+          })
         );
       }, timeout);
 
@@ -171,9 +171,9 @@ async function withTransaction(fn, options = {}) {
         const result = await fn(transaction, connection);
 
         clearTimeout(timeoutId);
-        connection.db.exec("COMMIT");
+        connection.db.exec('COMMIT');
 
-        logger.debug("Transaction completed successfully", {
+        logger.debug('Transaction completed successfully', {
           attempt: attempt + 1,
           isolationLevel,
         });
@@ -181,26 +181,26 @@ async function withTransaction(fn, options = {}) {
         return result;
       } catch (error) {
         clearTimeout(timeoutId);
-        connection.db.exec("ROLLBACK");
+        connection.db.exec('ROLLBACK');
         throw error;
       }
     } catch (error) {
       lastError = error;
 
       if (attempt < retryCount) {
-        logger.warn("Transaction failed, retrying", {
+        logger.warn('Transaction failed, retrying', {
           attempt: attempt + 1,
           error: error.message,
           retryDelay,
         });
 
         // Wait before retry
-        await new Promise((resolve) => setTimeout(resolve, retryDelay));
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
       }
     }
   }
 
-  logger.error("Transaction failed after all retries", {
+  logger.error('Transaction failed after all retries', {
     retryCount,
     error: lastError.message,
   });
@@ -234,11 +234,11 @@ async function executeInTransaction(operations, options = {}) {
  */
 function createTransactionalQuery(transaction) {
   if (!transaction.isTransactionActive) {
-    throw new Error("Transaction is not active");
+    throw new Error('Transaction is not active');
   }
 
   return {
-    prepare: (sql) => {
+    prepare: sql => {
       return transaction.connection.db.prepare(sql);
     },
 

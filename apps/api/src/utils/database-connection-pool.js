@@ -1,10 +1,10 @@
-const path = require("path");
+const path = require('path');
 
-const Database = require("better-sqlite3");
+const Database = require('better-sqlite3');
 
-const logger = require("./logger");
+const logger = require('./logger');
 
-const DB_PATH = path.join(__dirname, "../../../data/political_sphere.db");
+const DB_PATH = path.join(__dirname, '../../../data/political_sphere.db');
 
 // Connection pool configuration
 const POOL_CONFIG = {
@@ -46,12 +46,12 @@ class DatabaseConnectionPool {
         this.pool.push(connection);
         this.available.push(connection);
       }
-      logger.info("Database connection pool initialized", {
+      logger.info('Database connection pool initialized', {
         minConnections: POOL_CONFIG.minConnections,
         maxConnections: POOL_CONFIG.maxConnections,
       });
     } catch (error) {
-      logger.error("Failed to initialize database connection pool", {
+      logger.error('Failed to initialize database connection pool', {
         error: error.message,
       });
       throw error;
@@ -69,19 +69,19 @@ class DatabaseConnectionPool {
 
     try {
       connection.db = new Database(DB_PATH);
-      connection.db.pragma("journal_mode = WAL");
-      connection.db.pragma("foreign_keys = ON");
-      connection.db.pragma("busy_timeout = 30000");
-      connection.db.pragma("synchronous = NORMAL");
-      connection.db.pragma("cache_size = 1000000"); // 1GB cache
-      connection.db.pragma("temp_store = memory");
+      connection.db.pragma('journal_mode = WAL');
+      connection.db.pragma('foreign_keys = ON');
+      connection.db.pragma('busy_timeout = 30000');
+      connection.db.pragma('synchronous = NORMAL');
+      connection.db.pragma('cache_size = 1000000'); // 1GB cache
+      connection.db.pragma('temp_store = memory');
 
-      logger.debug("Database connection created", {
+      logger.debug('Database connection created', {
         connectionId: connection.id,
       });
       return connection;
     } catch (error) {
-      logger.error("Failed to create database connection", {
+      logger.error('Failed to create database connection', {
         error: error.message,
       });
       throw error;
@@ -90,7 +90,7 @@ class DatabaseConnectionPool {
 
   async acquire() {
     if (this.isShuttingDown) {
-      throw new Error("Connection pool is shutting down");
+      throw new Error('Connection pool is shutting down');
     }
 
     // Try to get available connection
@@ -99,7 +99,7 @@ class DatabaseConnectionPool {
       connection.lastUsed = Date.now();
       this.stats.acquired++;
       this.stats.borrowed++;
-      logger.debug("Database connection acquired from pool", {
+      logger.debug('Database connection acquired from pool', {
         connectionId: connection.id,
         available: this.available.length,
         borrowed: this.stats.borrowed,
@@ -117,7 +117,7 @@ class DatabaseConnectionPool {
         this.stats.borrowed++;
         return connection;
       } catch (error) {
-        logger.warn("Failed to create new connection, will retry", {
+        logger.warn('Failed to create new connection, will retry', {
           error: error.message,
         });
       }
@@ -131,7 +131,7 @@ class DatabaseConnectionPool {
         if (index > -1) {
           this.waitingQueue.splice(index, 1);
         }
-        reject(new Error("Connection acquire timeout"));
+        reject(new Error('Connection acquire timeout'));
       }, POOL_CONFIG.acquireTimeoutMillis);
 
       this.waitingQueue.push({ resolve, reject, timeout });
@@ -159,7 +159,7 @@ class DatabaseConnectionPool {
     this.stats.released++;
     this.stats.borrowed--;
 
-    logger.debug("Database connection released to pool", {
+    logger.debug('Database connection released to pool', {
       connectionId: connection.id,
       available: this.available.length,
       borrowed: this.stats.borrowed,
@@ -191,11 +191,11 @@ class DatabaseConnectionPool {
         this.available.splice(availableIndex, 1);
       }
 
-      logger.debug("Database connection destroyed", {
+      logger.debug('Database connection destroyed', {
         connectionId: connection.id,
       });
     } catch (error) {
-      logger.error("Error destroying database connection", {
+      logger.error('Error destroying database connection', {
         connectionId: connection.id,
         error: error.message,
       });
@@ -211,7 +211,7 @@ class DatabaseConnectionPool {
   reapStaleConnections() {
     const now = Date.now();
     const staleConnections = this.available.filter(
-      (conn) => now - conn.lastUsed > 300000, // 5 minutes
+      conn => now - conn.lastUsed > 300000 // 5 minutes
     );
 
     for (const connection of staleConnections) {
@@ -227,7 +227,7 @@ class DatabaseConnectionPool {
     // Reject all pending acquires
     for (const waiter of this.waitingQueue) {
       clearTimeout(waiter.timeout);
-      waiter.reject(new Error("Connection pool is shutting down"));
+      waiter.reject(new Error('Connection pool is shutting down'));
     }
     this.waitingQueue = [];
     this.stats.pending = 0;
@@ -240,7 +240,7 @@ class DatabaseConnectionPool {
 
     await Promise.all(closePromises);
 
-    logger.info("Database connection pool closed", {
+    logger.info('Database connection pool closed', {
       totalConnections: this.stats.created,
       destroyedConnections: this.stats.destroyed,
     });
@@ -264,7 +264,7 @@ let legacyConnection = null;
 function getConnection() {
   if (!legacyConnection) {
     legacyConnection = {
-      prepare: (sql) => {
+      prepare: sql => {
         return {
           run: async (...params) => {
             const conn = await connectionPool.acquire();

@@ -60,7 +60,7 @@ jobs:
           # Dependabot PRs don't have access to secrets for security reasons
           if [ "${ACTOR}" == "dependabot[bot]" ]; then
             echo "::notice::Skipping secret validation for Dependabot PR (secrets not available)"
-            echo "NX_CLOUD_DISABLED=true" >> "$GITHUB_ENV"
+            echo "NX_CLOUD_DISABLED=true" >> "${GITHUB_ENV}"
             exit 0
           fi
 
@@ -72,7 +72,7 @@ jobs:
             fi
           else
             echo "::notice::Skipping secret validation for fork PR"
-            echo "NX_CLOUD_DISABLED=true" >> "$GITHUB_ENV"
+            echo "NX_CLOUD_DISABLED=true" >> "${GITHUB_ENV}"
           fi
 
       - name: Validate workflow files
@@ -132,13 +132,13 @@ jobs:
           # Extract team names from CODEOWNERS (format: @org/team-name)
           TEAMS=$(grep -oE '@[a-zA-Z0-9_-]+/[a-zA-Z0-9_-]+' .github/CODEOWNERS | sort -u || true)
 
-          if [ -z "$TEAMS" ]; then
+          if [ -z "${TEAMS}" ]; then
             echo "::notice::No teams found in CODEOWNERS file"
             exit 0
           fi
 
           echo "Found teams in CODEOWNERS:"
-          echo "$TEAMS"
+          echo "${TEAMS}"
 
           # For fork PRs, skip validation as secrets aren't available
           if [ "$EVENT_NAME" = "pull_request" ] && \
@@ -256,13 +256,13 @@ jobs:
           EXPECTED_SHARDS=3
           DOWNLOADED_SHARDS=$(find coverage-shards -name "lcov.info" | wc -l)
 
-          if [ "$DOWNLOADED_SHARDS" -ne "$EXPECTED_SHARDS" ]; then
-            echo "❌ Expected $EXPECTED_SHARDS shards but found $DOWNLOADED_SHARDS"
+          if [ "${DOWNLOADED_SHARDS}" -ne "${EXPECTED_SHARDS}" ]; then
+            echo "❌ Expected \"${EXPECTED_SHARDS}\" shards but found \"${DOWNLOADED_SHARDS}\""
             echo "Available artifacts:"
             ls -la coverage-shards/
             exit 1
           fi
-          echo "✅ All $DOWNLOADED_SHARDS shards downloaded successfully"
+          echo "✅ All \"${DOWNLOADED_SHARDS}\" shards downloaded successfully"
 
       - name: Combine coverage reports
         run: |
@@ -443,17 +443,17 @@ jobs:
           echo "Verifying database schema after migrations..."
           # Check if migrations table exists and has entries
           if ! MIGRATION_COUNT=$(psql -h localhost -U test -d testdb -t -c "SELECT COUNT(*) FROM _prisma_migrations;" 2>&1); then
-            echo "❌ Database connection or query failed: $MIGRATION_COUNT"
+            echo "❌ Database connection or query failed: \"${MIGRATION_COUNT}\""
             exit 1
           fi
 
-          MIGRATION_COUNT=$(echo "$MIGRATION_COUNT" | tr -d '[:space:]')
+          MIGRATION_COUNT=$(echo "${MIGRATION_COUNT}" | tr -d '[:space:]')
 
-          if [ "$MIGRATION_COUNT" -eq "0" ]; then
+          if [ "${MIGRATION_COUNT}" -eq "0" ]; then
             echo "❌ No migrations found in database"
             exit 1
           fi
-          echo "✅ Found $MIGRATION_COUNT migration(s) applied"
+          echo "✅ Found \"${MIGRATION_COUNT}\" migration(s) applied"
 
       - name: Run integration tests
         run: npm run test:integration
@@ -554,8 +554,8 @@ jobs:
         run: |
           if [ -f artifacts/accessibility-report.json ]; then
             violations=$(jq '.violations | length' artifacts/accessibility-report.json)
-            if [ "$violations" -gt 0 ]; then
-              echo "❌ Found $violations accessibility violations"
+            if [ "${violations}" -gt 0 ]; then
+              echo "❌ Found \"${violations}\" accessibility violations"
               jq '.violations' artifacts/accessibility-report.json
               exit 1
             fi
@@ -777,8 +777,8 @@ jobs:
                 accessibility-test) result="${{ needs.accessibility-test.result }}" ;;
               esac
               
-              if [[ "$result" != "success" && "$result" != "skipped" ]]; then
-                echo "❌ $job failed (result: $result)"
+              if [[ "${result}" != "success" && "${result}" != "skipped" ]]; then
+                echo "❌ \"${job}\" failed (result: \"${result}\")"
                 FAILED=true
               fi
             done
@@ -812,12 +812,12 @@ jobs:
 
           # ci-performance-monitoring can be skipped
           PERF_MONITOR_RESULT="${{ needs.ci-performance-monitoring.result }}"
-          if [[ "$PERF_MONITOR_RESULT" != "success" && "$PERF_MONITOR_RESULT" != "skipped" ]]; then
-            echo "⚠️  ci-performance-monitoring failed (result: $PERF_MONITOR_RESULT)"
+          if [[ "${PERF_MONITOR_RESULT}" != "success" && "${PERF_MONITOR_RESULT}" != "skipped" ]]; then
+            echo "⚠️  ci-performance-monitoring failed (result: \"${PERF_MONITOR_RESULT}\")"
             # Not failing the build for monitoring issues
           fi
 
-          if [[ "$FAILED" == "true" ]]; then
+          if [[ "${FAILED}" == "true" ]]; then
             echo "❌ One or more CI checks failed"
             exit 1
           fi

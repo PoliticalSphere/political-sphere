@@ -93,10 +93,10 @@ jobs:
         id: check_dockerfile
         run: |
           if [ -f "${{ matrix.service.dockerfile }}" ]; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "exists=true" >> "${GITHUB_OUTPUT}"
             echo "✅ Dockerfile found: ${{ matrix.service.dockerfile }}"
           else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "exists=false" >> "${GITHUB_OUTPUT}"
             echo "⚠️ Dockerfile not found: ${{ matrix.service.dockerfile }}"
           fi
 
@@ -180,10 +180,10 @@ jobs:
         id: check_compose
         run: |
           if [ -f "docker-compose.yml" ] || [ -f "docker-compose.yaml" ]; then
-            echo "exists=true" >> "$GITHUB_OUTPUT"
+            echo "exists=true" >> "${GITHUB_OUTPUT}"
             echo "✅ docker-compose file found"
           else
-            echo "exists=false" >> "$GITHUB_OUTPUT"
+            echo "exists=false" >> "${GITHUB_OUTPUT}"
             echo "⚠️ docker-compose file not found"
           fi
 
@@ -231,11 +231,11 @@ jobs:
           if [ "${{ needs.build-and-push.result }}" == "success" ] && \
              [ "${{ needs.security-scan.result }}" == "success" ] && \
              [ "${{ needs.docker-compose-test.result }}" == "success" ]; then
-            echo "status=success" >> "$GITHUB_OUTPUT"
-            echo "message=✅ All Docker builds completed successfully" >> "$GITHUB_OUTPUT"
+            echo "status=success" >> "${GITHUB_OUTPUT}"
+            echo "message=✅ All Docker builds completed successfully" >> "${GITHUB_OUTPUT}"
           else
-            echo "status=failure" >> "$GITHUB_OUTPUT"
-            echo "message=❌ Some Docker builds failed" >> "$GITHUB_OUTPUT"
+            echo "status=failure" >> "${GITHUB_OUTPUT}"
+            echo "message=❌ Some Docker builds failed" >> "${GITHUB_OUTPUT}"
           fi
 
       - name: Summary
@@ -248,4 +248,4 @@ jobs:
             echo "- Docker Compose Test: ${{ needs.docker-compose-test.result }}"
             echo ""
             echo "${{ steps.status.outputs.message }}"
-          } >> "$GITHUB_STEP_SUMMARY"
+          } >> "${GITHUB_STEP_SUMMARY}"

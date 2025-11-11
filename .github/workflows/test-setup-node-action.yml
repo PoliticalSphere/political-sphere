@@ -43,8 +43,8 @@ jobs:
           MAJOR_EXPECTED="${MAJOR_EXPECTED%%.*}"
           MAJOR_ACTUAL="${{ steps.setup.outputs.resolved-version }}"
           MAJOR_ACTUAL="${MAJOR_ACTUAL%%.*}"
-          if [[ "$MAJOR_EXPECTED" != "$MAJOR_ACTUAL" ]]; then
-            echo "::error title=Version mismatch::Expected major $MAJOR_EXPECTED got $MAJOR_ACTUAL"
+          if [[ "${MAJOR_EXPECTED}" != "${MAJOR_ACTUAL}" ]]; then
+            echo "::error title=Version mismatch::Expected major \"${MAJOR_EXPECTED}\" got \"${MAJOR_ACTUAL}\""
             exit 1
           fi
           node -v
@@ -65,7 +65,7 @@ jobs:
           set -euo pipefail
           which node
           node -v
-          echo "PATH=$PATH" | sed -E 's/:/\n/g' | head -20
+          echo "PATH=${PATH}" | sed -E 's/:/\n/g' | head -20
 
   cache-sanity:
     name: Cache seed (npm)

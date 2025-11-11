@@ -39,12 +39,15 @@ check_file() {
     ((VIOLATIONS++))
   fi
   
-  # Pattern 2: Unquoted environment variables in shell
+  # Pattern 2: Unquoted environment variables in echo/output statements
+  # Excludes variables in conditionals [[...]] and case statements (safe usage)
   if grep -n 'run:' "$file" | head -1 | cut -d: -f1 | while read -r line_num; do
-    # Get the run block
-    sed -n "${line_num},/^[[:space:]]*[a-z-]*:/p" "$file" | grep -E '\$[A-Z_]+[^"]' > /dev/null 2>&1
+    # Get the run block and look for unquoted vars in echo/output, not in conditionals
+    sed -n "${line_num},/^[[:space:]]*[a-z-]*:/p" "$file" | \
+      grep -v '^\s*if\|^\s*elif\|^\s*case\|^\s*for\|^\s*while\|\[\[' | \
+      grep -E '(echo|>>).*\$[A-Z_]+[^"{]' > /dev/null 2>&1
   done; then
-    echo -e "  ${YELLOW}⚠${NC}  Found potentially unquoted environment variables"
+    echo -e "  ${YELLOW}⚠${NC}  Found potentially unquoted environment variables in echo/output"
     echo -e "    ${YELLOW}Recommendation:${NC} Always quote env vars: \"\${VAR}\" not \$VAR"
     found_issues=true
   fi

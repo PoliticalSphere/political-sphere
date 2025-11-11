@@ -65,7 +65,7 @@ runs:
           fi
         fi
 
-        echo "pm=$pm" >> "$GITHUB_OUTPUT"
+        echo "pm=${pm}" >> "${GITHUB_OUTPUT}"
 
     - id: cache-vars
       name: Prepare cache variables
@@ -100,14 +100,14 @@ runs:
             esac
             ;;
           *)
-            echo "::notice title=Unsupported OS for caching::RUNNER_OS=$RUNNER_OS not recognized; skipping cache."
+            echo "::notice title=Unsupported OS for caching::RUNNER_OS=\"${RUNNER_OS}\" not recognized; skipping cache."
             cachePath=""
             ;;
         esac
 
-        echo "pm=$pm" >> "$GITHUB_OUTPUT"
-        echo "dep-path=$depPath" >> "$GITHUB_OUTPUT"
-        echo "cache-path=$cachePath" >> "$GITHUB_OUTPUT"
+        echo "pm=${pm}" >> "${GITHUB_OUTPUT}"
+        echo "dep-path=${depPath}" >> "${GITHUB_OUTPUT}"
+        echo "cache-path=${cachePath}" >> "${GITHUB_OUTPUT}"
 
     - id: dep-hash
       name: Compute dependency hash
@@ -117,7 +117,7 @@ runs:
         set -euo pipefail
         depPath="${{ steps.cache-vars.outputs.dep-path }}"
         if [[ -z "$depPath" ]]; then
-          echo "hash=none" >> "$GITHUB_OUTPUT"
+          echo "hash=none" >> "${GITHUB_OUTPUT}"
           exit 0
         fi
         shopt -s globstar nullglob
@@ -129,8 +129,8 @@ runs:
           done
         done
         if [[ ${#files[@]} -eq 0 ]]; then
-          echo "::notice title=No lockfiles found::Patterns: $depPath" >&2
-          echo "hash=none" >> "$GITHUB_OUTPUT"
+          echo "::notice title=No lockfiles found::Patterns: \"${depPath}\"" >&2
+          echo "hash=none" >> "${GITHUB_OUTPUT}"
           exit 0
         fi
         # Hash concatenation of per-file hashes and paths for stability across orderings
@@ -153,7 +153,7 @@ runs:
         else
           all=$(openssl dgst -sha256 -r "$tmp" | awk '{print $1}')
         fi
-        echo "hash=$all" >> "$GITHUB_OUTPUT"
+        echo "hash=${all}" >> "${GITHUB_OUTPUT}"
         rm -f "$tmp"
 
     - id: cache

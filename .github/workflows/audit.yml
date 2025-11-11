@@ -42,14 +42,14 @@ jobs:
       - name: Install audit tools
         run: |
           # actionlint for GitHub workflow validation
-          wget -qO- https://github.com/rhysd/actionlint/releases/latest/download/actionlint_1.7.8_linux_amd64.tar.gz | tar -xz actionlint
+          wget -qO- https://github.com/rhysd/actionlint/releases/download/v1.7.8/actionlint_1.7.8_linux_amd64.tar.gz | tar -xz actionlint
           sudo mv actionlint /usr/local/bin/
 
           # yamllint for YAML validation
           pip install yamllint==1.35.1
 
           # gitleaks for secret scanning
-          wget -qO- https://github.com/gitleaks/gitleaks/releases/latest/download/gitleaks_8.28.0_linux_x64.tar.gz | tar -xz gitleaks
+          wget -qO- https://github.com/gitleaks/gitleaks/releases/download/v8.29.0/gitleaks_8.29.0_linux_x64.tar.gz | tar -xz gitleaks
           sudo mv gitleaks /usr/local/bin/
 
           # hadolint for Dockerfile linting
@@ -57,7 +57,7 @@ jobs:
           chmod +x /usr/local/bin/hadolint
 
           # trivy for container vulnerability scanning
-          wget -qO- https://github.com/aquasecurity/trivy/releases/latest/download/trivy_0.67.2_Linux-64bit.tar.gz | tar -xz trivy
+          wget -qO- https://github.com/aquasecurity/trivy/releases/download/v0.67.2/trivy_0.67.2_Linux-64bit.tar.gz | tar -xz trivy
           sudo mv trivy /usr/local/bin/
 
       - name: Run GitHub workflow audit

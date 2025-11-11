@@ -41,6 +41,15 @@ runs:
       shell: bash
       run: |
         echo "📦 Installing dependencies..."
+        
+        # Workaround for npm optional dependencies bug on Node 22
+        # See: https://github.com/npm/cli/issues/4828
+        if [ -f package-lock.json ]; then
+          echo "🔄 Cleaning package-lock for fresh install (npm bug workaround)..."
+          rm -f package-lock.json
+          npm install --package-lock-only
+        fi
+        
         eval "${{ inputs.install-command }}"
         echo "✅ Dependencies installed successfully"
 

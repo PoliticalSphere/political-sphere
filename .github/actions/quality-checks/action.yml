@@ -57,10 +57,10 @@ runs:
         echo "🔍 Running linting checks..."
         if eval "${{ inputs.lint-command }}"; then
           echo "✅ Linting passed"
-          echo "lint-result=passed" >> "$GITHUB_OUTPUT"
+          echo "lint-result=passed" >> "${GITHUB_OUTPUT}"
         else
           echo "❌ Linting failed"
-          echo "lint-result=failed" >> "$GITHUB_OUTPUT"
+          echo "lint-result=failed" >> "${GITHUB_OUTPUT}"
           exit 1
         fi
       continue-on-error: false
@@ -73,10 +73,10 @@ runs:
         echo "🔍 Running TypeScript type checking..."
         if eval "${{ inputs.typecheck-command }}"; then
           echo "✅ Type checking passed"
-          echo "typecheck-result=passed" >> "$GITHUB_OUTPUT"
+          echo "typecheck-result=passed" >> "${GITHUB_OUTPUT}"
         else
           echo "❌ Type checking failed"
-          echo "typecheck-result=failed" >> "$GITHUB_OUTPUT"
+          echo "typecheck-result=failed" >> "${GITHUB_OUTPUT}"
           exit 1
         fi
       continue-on-error: false
@@ -89,10 +89,10 @@ runs:
         echo "🔍 Checking code formatting..."
         if eval "${{ inputs.format-check-command }}"; then
           echo "✅ Format checking passed"
-          echo "format-result=passed" >> "$GITHUB_OUTPUT"
+          echo "format-result=passed" >> "${GITHUB_OUTPUT}"
         else
           echo "❌ Format checking failed"
-          echo "format-result=failed" >> "$GITHUB_OUTPUT"
+          echo "format-result=failed" >> "${GITHUB_OUTPUT}"
           exit 1
         fi
       continue-on-error: false
@@ -105,14 +105,14 @@ runs:
         TYPECHECK_RESULT="${{ steps.typecheck.outputs.typecheck-result || 'skipped' }}"
         FORMAT_RESULT="${{ steps.format.outputs.format-result || 'skipped' }}"
 
-        echo "lint-passed=$LINT_RESULT" >> "$GITHUB_OUTPUT"
-        echo "typecheck-passed=$TYPECHECK_RESULT" >> "$GITHUB_OUTPUT"
-        echo "format-passed=$FORMAT_RESULT" >> "$GITHUB_OUTPUT"
+        echo "lint-passed=${LINT_RESULT}" >> "${GITHUB_OUTPUT}"
+        echo "typecheck-passed=${TYPECHECK_RESULT}" >> "${GITHUB_OUTPUT}"
+        echo "format-passed=${FORMAT_RESULT}" >> "${GITHUB_OUTPUT}"
 
-        echo "## Quality Checks Summary" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "| Check | Result |" >> $GITHUB_STEP_SUMMARY
-        echo "|-------|--------|" >> $GITHUB_STEP_SUMMARY
-        echo "| Linting | $LINT_RESULT |" >> $GITHUB_STEP_SUMMARY
-        echo "| Type Checking | $TYPECHECK_RESULT |" >> $GITHUB_STEP_SUMMARY
-        echo "| Format Checking | $FORMAT_RESULT |" >> $GITHUB_STEP_SUMMARY
+        echo "## Quality Checks Summary" >> "${GITHUB_STEP_SUMMARY}"
+        echo "" >> "${GITHUB_STEP_SUMMARY}"
+        echo "| Check | Result |" >> "${GITHUB_STEP_SUMMARY}"
+        echo "|-------|--------|" >> "${GITHUB_STEP_SUMMARY}"
+        echo "| Linting | ${LINT_RESULT} |" >> "${GITHUB_STEP_SUMMARY}"
+        echo "| Type Checking | ${TYPECHECK_RESULT} |" >> "${GITHUB_STEP_SUMMARY}"
+        echo "| Format Checking | ${FORMAT_RESULT} |" >> "${GITHUB_STEP_SUMMARY}"

@@ -173,45 +173,45 @@ runs:
 
         # Validate environment
         if [[ ! "$INPUT_ENVIRONMENT" =~ ^(dev|staging|production)$ ]]; then
-          echo "::error::Invalid environment: $INPUT_ENVIRONMENT. Must be dev, staging, or production"
+          echo "::error::Invalid environment: \"${INPUT_ENVIRONMENT}\". Must be dev, staging, or production"
           exit 1
         fi
 
         # Validate application
         if [[ ! "$INPUT_APPLICATION" =~ ^(frontend|api|worker|game-server)$ ]]; then
-          echo "::error::Invalid application: $INPUT_APPLICATION"
+          echo "::error::Invalid application: \"${INPUT_APPLICATION}\""
           exit 1
         fi
 
         # Validate deployment strategy
         if [[ ! "$INPUT_STRATEGY" =~ ^(rolling|blue-green|canary)$ ]]; then
-          echo "::error::Invalid deployment strategy: $INPUT_STRATEGY"
+          echo "::error::Invalid deployment strategy: \"${INPUT_STRATEGY}\""
           exit 1
         fi
 
         # Validate canary percentage
         if [[ "$INPUT_STRATEGY" == "canary" ]]; then
           if ! [[ "$INPUT_CANARY_PCT" =~ ^[0-9]+$ ]] || [ "$INPUT_CANARY_PCT" -lt 0 ] || [ "$INPUT_CANARY_PCT" -gt 100 ]; then
-            echo "::error::Invalid canary percentage: $INPUT_CANARY_PCT. Must be 0-100"
+            echo "::error::Invalid canary percentage: \"${INPUT_CANARY_PCT}\". Must be 0-100"
             exit 1
           fi
         fi
 
         # SEC-01: Validate image tag format to prevent injection
         if [[ ! "$INPUT_IMAGE_TAG" =~ ^[a-zA-Z0-9._-]+$ ]]; then
-          echo "::error::Invalid image tag format: $INPUT_IMAGE_TAG. Only alphanumeric, dots, underscores, and hyphens allowed"
+          echo "::error::Invalid image tag format: \"${INPUT_IMAGE_TAG}\". Only alphanumeric, dots, underscores, and hyphens allowed"
           exit 1
         fi
 
         # Validate EKS cluster name format
         if [[ ! "$INPUT_EKS_CLUSTER" =~ ^[a-zA-Z0-9._-]+$ ]]; then
-          echo "::error::Invalid EKS cluster name format: $INPUT_EKS_CLUSTER"
+          echo "::error::Invalid EKS cluster name format: \"${INPUT_EKS_CLUSTER}\""
           exit 1
         fi
 
         # Validate AWS region format
         if [[ ! "$INPUT_AWS_REGION" =~ ^[a-z]{2}-[a-z]+-[0-9]$ ]]; then
-          echo "::error::Invalid AWS region format: $INPUT_AWS_REGION"
+          echo "::error::Invalid AWS region format: \"${INPUT_AWS_REGION}\""
           exit 1
         fi
 
@@ -465,7 +465,7 @@ runs:
             ;;
         esac
 
-        echo "SLO Target for $STRATEGY: ${SLO_TARGET}s"
+        echo "SLO Target for ${STRATEGY}: ${SLO_TARGET}s"
 
         # Check if deployment timing is available
         if [ -f /tmp/deploy_start_time ]; then
@@ -489,7 +489,7 @@ runs:
               --namespace "PoliticalSphere/Deployments" \
               --metric-name PerformanceRegression \
               --value 1 \
-              --dimensions Strategy="$STRATEGY",Application="$APPLICATION" \
+              --dimensions Strategy="${STRATEGY}",Application="${APPLICATION}" \
               --region "${AWS_REGION:-us-east-1}" || true
           else
             echo "✅ Performance within SLO"
@@ -497,7 +497,7 @@ runs:
           fi
 
           # Store benchmark for historical tracking
-          echo "${ACTUAL_DURATION}" > /tmp/deployment_benchmark_${STRATEGY}.txt
+          echo "${ACTUAL_DURATION}" > "/tmp/deployment_benchmark_${STRATEGY}.txt"
         else
           echo "::warning::Deployment start time not found, skipping performance test"
         fi
@@ -526,28 +526,28 @@ runs:
         echo "Creating backup of current deployment state..."
 
         # Backup current deployment
-        if kubectl get deployment "$APPLICATION" -n "$ENVIRONMENT" &>/dev/null; then
-          kubectl get deployment "$APPLICATION" -n "$ENVIRONMENT" -o yaml > "$BACKUP_DIR/deployment.yaml"
+        if kubectl get deployment "${APPLICATION}" -n "${ENVIRONMENT}" &>/dev/null; then
+          kubectl get deployment "${APPLICATION}" -n "${ENVIRONMENT}" -o yaml > "${BACKUP_DIR}/deployment.yaml"
           echo "✅ Deployment backed up"
         else
           echo "::warning::No existing deployment found to backup"
         fi
 
         # Backup current service
-        if kubectl get service "$APPLICATION" -n "$ENVIRONMENT" &>/dev/null; then
-          kubectl get service "$APPLICATION" -n "$ENVIRONMENT" -o yaml > "$BACKUP_DIR/service.yaml"
+        if kubectl get service "${APPLICATION}" -n "${ENVIRONMENT}" &>/dev/null; then
+          kubectl get service "${APPLICATION}" -n "${ENVIRONMENT}" -o yaml > "${BACKUP_DIR}/service.yaml"
           echo "✅ Service backed up"
         fi
 
         # Backup current configmap
-        if kubectl get configmap "$APPLICATION-config" -n "$ENVIRONMENT" &>/dev/null; then
-          kubectl get configmap "$APPLICATION-config" -n "$ENVIRONMENT" -o yaml > "$BACKUP_DIR/configmap.yaml"
+        if kubectl get configmap "${APPLICATION}-config" -n "${ENVIRONMENT}" &>/dev/null; then
+          kubectl get configmap "${APPLICATION}-config" -n "${ENVIRONMENT}" -o yaml > "${BACKUP_DIR}/configmap.yaml"
           echo "✅ ConfigMap backed up"
         fi
 
         # Store backup location for potential rollback
-        echo "backup_dir=$BACKUP_DIR" >> $GITHUB_OUTPUT
-        echo "Backup stored in: $BACKUP_DIR"
+        echo "backup_dir=${BACKUP_DIR}" >> "${GITHUB_OUTPUT}"
+        echo "Backup stored in: ${BACKUP_DIR}"
         echo "::notice::Pre-deployment backup created successfully"
 
         echo "::endgroup::"
@@ -567,13 +567,13 @@ runs:
         set -euo pipefail
         echo "::group::GDPR Compliance Check"
 
-        echo "Verifying GDPR controls for $APPLICATION deployment..."
+        echo "Verifying GDPR controls for ${APPLICATION} deployment..."
 
         # Check for required GDPR-related environment variables
         GDPR_CHECKS_PASSED=true
 
         # Verify data retention policy is configured
-        if ! kubectl get configmap gdpr-retention-policy -n "$ENVIRONMENT" &>/dev/null; then
+        if ! kubectl get configmap gdpr-retention-policy -n "${ENVIRONMENT}" &>/dev/null; then
           echo "::warning::GDPR retention policy not found"
           GDPR_CHECKS_PASSED=false
         else
@@ -582,14 +582,14 @@ runs:
 
         # Verify data protection impact assessment exists
         if [ ! -f "docs/03-legal-and-compliance/dpia-${APPLICATION}.md" ]; then
-          echo "::warning::DPIA not found for $APPLICATION at docs/03-legal-and-compliance/dpia-${APPLICATION}.md"
+          echo "::warning::DPIA not found for ${APPLICATION} at docs/03-legal-and-compliance/dpia-${APPLICATION}.md"
           echo "::warning::Consider creating a Data Protection Impact Assessment"
         else
-          echo "✅ DPIA exists for $APPLICATION"
+          echo "✅ DPIA exists for ${APPLICATION}"
         fi
 
         # Check for audit logging configuration
-        if kubectl get deployment "$APPLICATION" -n "$ENVIRONMENT" -o yaml 2>/dev/null | grep -q "AUDIT_LOG_ENABLED"; then
+        if kubectl get deployment "${APPLICATION}" -n "${ENVIRONMENT}" -o yaml 2>/dev/null | grep -q "AUDIT_LOG_ENABLED"; then
           echo "✅ Audit logging configured"
         else
           echo "::warning::Audit logging may not be configured"
@@ -598,17 +598,17 @@ runs:
 
         # Verify encryption settings
         echo "Checking encryption configuration..."
-        if kubectl get secret "$APPLICATION-secrets" -n "$ENVIRONMENT" &>/dev/null; then
+        if kubectl get secret "${APPLICATION}-secrets" -n "${ENVIRONMENT}" &>/dev/null; then
           echo "✅ Application secrets exist"
         else
           echo "::notice::No application secrets found (may be expected)"
         fi
 
-        if [ "$GDPR_CHECKS_PASSED" = "true" ]; then
+        if [ "${GDPR_CHECKS_PASSED}" = "true" ]; then
           echo "✅ GDPR compliance checks passed"
         else
           echo "::warning::Some GDPR controls may be missing - review warnings above"
-          if [ "$ENVIRONMENT" = "production" ]; then
+          if [ "${ENVIRONMENT}" = "production" ]; then
             echo "::error::GDPR compliance issues detected in production deployment"
             echo "::error::Please ensure all GDPR controls are in place before deploying to production"
             # Note: Not failing the deployment, but logging critical warnings
@@ -630,11 +630,11 @@ runs:
         set -euo pipefail
         echo "::group::EKS Configuration"
 
-        echo "Updating kubeconfig for cluster: $CLUSTER_NAME"
+        echo "Updating kubeconfig for cluster: ${CLUSTER_NAME}"
         aws eks update-kubeconfig \
-          --name "$CLUSTER_NAME" \
-          --region "$AWS_REGION" \
-          --alias "$CLUSTER_NAME"
+          --name "${CLUSTER_NAME}" \
+          --region "${AWS_REGION}" \
+          --alias "${CLUSTER_NAME}"
 
         # Verify connection
         kubectl cluster-info
@@ -693,11 +693,11 @@ runs:
         echo "::group::Health Check"
 
         # Get service URL
-        SERVICE_URL=$(kubectl get service "$APPLICATION" \
-          -n "$ENVIRONMENT" \
+        SERVICE_URL=$(kubectl get service "${APPLICATION}" \
+          -n "${ENVIRONMENT}" \
           -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null || echo "")
 
-        if [ -z "$SERVICE_URL" ]; then
+        if [ -z "${SERVICE_URL}" ]; then
           echo "::warning::Service URL not found, skipping health check"
           echo "::endgroup::"
           exit 0
@@ -706,13 +706,13 @@ runs:
         # SEC-04: Determine protocol based on environment
         PROTOCOL="https"
         SSL_VERIFY="--cacert /etc/ssl/certs/ca-certificates.crt"
-        if [ "$ENVIRONMENT" = "dev" ]; then
+        if [ "${ENVIRONMENT}" = "dev" ]; then
           PROTOCOL="http"
           SSL_VERIFY=""
         fi
 
         FULL_URL="${PROTOCOL}://${SERVICE_URL}${HEALTH_CHECK_URL}"
-        echo "Checking health endpoint: $FULL_URL"
+        echo "Checking health endpoint: ${FULL_URL}"
 
         # SEC-10: Retry health check with exponential backoff and max wait cap
         MAX_RETRIES=10
@@ -720,26 +720,26 @@ runs:
         WAIT_TIME=5
         MAX_WAIT_TIME=60  # Maximum 60 seconds between retries
 
-        while [ $RETRY -lt $MAX_RETRIES ]; do
-          if curl -sf -m 10 $SSL_VERIFY "$FULL_URL" > /dev/null 2>&1; then
+        while [ "${RETRY}" -lt "${MAX_RETRIES}" ]; do
+          if curl -sf -m 10 ${SSL_VERIFY} "${FULL_URL}" > /dev/null 2>&1; then
             echo "✅ Health check passed"
             echo "::endgroup::"
             exit 0
           fi
           
           RETRY=$((RETRY + 1))
-          if [ $RETRY -lt $MAX_RETRIES ]; then
-            echo "Health check failed, retrying in ${WAIT_TIME}s... (Attempt $RETRY/$MAX_RETRIES)"
-            sleep $WAIT_TIME
+          if [ "${RETRY}" -lt "${MAX_RETRIES}" ]; then
+            echo "Health check failed, retrying in ${WAIT_TIME}s... (Attempt ${RETRY}/${MAX_RETRIES})"
+            sleep "${WAIT_TIME}"
             # Exponential backoff with ceiling
             WAIT_TIME=$((WAIT_TIME * 2))
-            if [ $WAIT_TIME -gt $MAX_WAIT_TIME ]; then
-              WAIT_TIME=$MAX_WAIT_TIME
+            if [ "${WAIT_TIME}" -gt "${MAX_WAIT_TIME}" ]; then
+              WAIT_TIME="${MAX_WAIT_TIME}"
             fi
           fi
         done
 
-        echo "::error::Health check failed after $MAX_RETRIES attempts"
+        echo "::error::Health check failed after ${MAX_RETRIES} attempts"
         echo "::endgroup::"
         exit 1
 
@@ -759,11 +759,11 @@ runs:
         echo "::group::Accessibility Validation (WCAG 2.2 AA)"
 
         # Get service URL
-        SERVICE_URL=$(kubectl get service "$APPLICATION" \
-          -n "$ENVIRONMENT" \
+        SERVICE_URL=$(kubectl get service "${APPLICATION}" \
+          -n "${ENVIRONMENT}" \
           -o jsonpath='{.status.loadBalancer.ingress[0].hostname}' 2>/dev/null || echo "")
 
-        if [ -z "$SERVICE_URL" ]; then
+        if [ -z "${SERVICE_URL}" ]; then
           echo "::warning::Service URL not found, skipping accessibility check"
           echo "::endgroup::"
           exit 0
@@ -771,12 +771,12 @@ runs:
 
         # Determine protocol
         PROTOCOL="https"
-        if [ "$ENVIRONMENT" = "dev" ]; then
+        if [ "${ENVIRONMENT}" = "dev" ]; then
           PROTOCOL="http"
         fi
 
         TARGET_URL="${PROTOCOL}://${SERVICE_URL}"
-        echo "Running accessibility audit on: $TARGET_URL"
+        echo "Running accessibility audit on: ${TARGET_URL}"
 
         # Install pa11y if not present
         if ! command -v pa11y &> /dev/null; then
@@ -789,13 +789,13 @@ runs:
         pa11y --standard WCAG2AA \
           --reporter json \
           --timeout 30000 \
-          "$TARGET_URL" > pa11y-results.json || true
+          "${TARGET_URL}" > pa11y-results.json || true
 
         # Check for violations
         VIOLATION_COUNT=$(jq '. | length' pa11y-results.json 2>/dev/null || echo "0")
 
-        if [ "$VIOLATION_COUNT" -gt 0 ]; then
-          echo "::warning::Found $VIOLATION_COUNT accessibility violations"
+        if [ "${VIOLATION_COUNT}" -gt 0 ]; then
+          echo "::warning::Found ${VIOLATION_COUNT} accessibility violations"
           echo "::warning::Review pa11y-results.json for details"
           # Display first few violations
           jq -r '.[] | "- \(.type): \(.message) (\(.selector))"' pa11y-results.json | head -10
@@ -833,10 +833,10 @@ runs:
           DURATION=0
         fi
 
-        echo "Deployment Status: $DEPLOYMENT_STATUS"
-        echo "Application: $APPLICATION"
-        echo "Environment: $ENVIRONMENT"
-        echo "Strategy: $STRATEGY"
+        echo "Deployment Status: ${DEPLOYMENT_STATUS}"
+        echo "Application: ${APPLICATION}"
+        echo "Environment: ${ENVIRONMENT}"
+        echo "Strategy: ${STRATEGY}"
         echo "Duration: ${DURATION} seconds"
 
         # Record metrics to CloudWatch
@@ -844,26 +844,26 @@ runs:
 
         # Deployment status metric (1=success, 0=failed)
         STATUS_VALUE=0
-        if [ "$DEPLOYMENT_STATUS" = "success" ]; then
+        if [ "${DEPLOYMENT_STATUS}" = "success" ]; then
           STATUS_VALUE=1
         fi
 
         aws cloudwatch put-metric-data \
           --namespace "PoliticalSphere/Deployments" \
           --metric-name DeploymentStatus \
-          --value $STATUS_VALUE \
-          --dimensions Environment="$ENVIRONMENT",Application="$APPLICATION",Strategy="$STRATEGY" \
-          --region "$AWS_REGION" || echo "::warning::Failed to record status metric"
+          --value "${STATUS_VALUE}" \
+          --dimensions Environment="${ENVIRONMENT}",Application="${APPLICATION}",Strategy="${STRATEGY}" \
+          --region "${AWS_REGION}" || echo "::warning::Failed to record status metric"
 
         # Deployment duration metric
-        if [ $DURATION -gt 0 ]; then
+        if [ "${DURATION}" -gt 0 ]; then
           aws cloudwatch put-metric-data \
             --namespace "PoliticalSphere/Deployments" \
             --metric-name DeploymentDuration \
-            --value $DURATION \
+            --value "${DURATION}" \
             --unit Seconds \
-            --dimensions Environment="$ENVIRONMENT",Application="$APPLICATION",Strategy="$STRATEGY" \
-            --region "$AWS_REGION" || echo "::warning::Failed to record duration metric"
+            --dimensions Environment="${ENVIRONMENT}",Application="${APPLICATION}",Strategy="${STRATEGY}" \
+            --region "${AWS_REGION}" || echo "::warning::Failed to record duration metric"
         fi
 
         # Deployment count metric
@@ -872,8 +872,8 @@ runs:
           --metric-name DeploymentCount \
           --value 1 \
           --unit Count \
-          --dimensions Environment="$ENVIRONMENT",Application="$APPLICATION",Strategy="$STRATEGY" \
-          --region "$AWS_REGION" || echo "::warning::Failed to record count metric"
+          --dimensions Environment="${ENVIRONMENT}",Application="${APPLICATION}",Strategy="${STRATEGY}" \
+          --region "${AWS_REGION}" || echo "::warning::Failed to record count metric"
 
         echo "✅ Metrics recorded successfully"
         echo "::endgroup::"
@@ -899,7 +899,7 @@ runs:
         CHANGELOG_FILE="CHANGELOG.md"
 
         # Check if CHANGELOG exists
-        if [ ! -f "$CHANGELOG_FILE" ]; then
+        if [ ! -f "${CHANGELOG_FILE}" ]; then
           echo "::warning::CHANGELOG.md not found, skipping update"
           echo "::endgroup::"
           exit 0
@@ -909,19 +909,19 @@ runs:
         ENTRY="- **Deployed** \`${APPLICATION}\` to \`${ENVIRONMENT}\` using \`${STRATEGY}\` strategy (version: \`${IMAGE_TAG}\`) - ${TIMESTAMP}"
 
         # Check if entry already exists to prevent duplicates
-        if grep -qF "$ENTRY" "$CHANGELOG_FILE"; then
+        if grep -qF "${ENTRY}" "${CHANGELOG_FILE}"; then
           echo "Entry already exists in CHANGELOG, skipping"
         else
           # Find [Unreleased] section and append
-          if grep -q "## \[Unreleased\]" "$CHANGELOG_FILE"; then
+          if grep -q "## \[Unreleased\]" "${CHANGELOG_FILE}"; then
             # Insert after [Unreleased] header - use temp file to avoid sed multiline issues
-            grep -n "## \[Unreleased\]" "$CHANGELOG_FILE" | head -1 | cut -d: -f1 | {
+            grep -n "## \[Unreleased\]" "${CHANGELOG_FILE}" | head -1 | cut -d: -f1 | {
               read line_num
               next_line=$((line_num + 1))
-              head -n "$line_num" "$CHANGELOG_FILE" > "${CHANGELOG_FILE}.tmp"
-              echo "$ENTRY" >> "${CHANGELOG_FILE}.tmp"
-              tail -n +$next_line "$CHANGELOG_FILE" >> "${CHANGELOG_FILE}.tmp"
-              mv "${CHANGELOG_FILE}.tmp" "$CHANGELOG_FILE"
+              head -n "${line_num}" "${CHANGELOG_FILE}" > "${CHANGELOG_FILE}.tmp"
+              echo "${ENTRY}" >> "${CHANGELOG_FILE}.tmp"
+              tail -n +"${next_line}" "${CHANGELOG_FILE}" >> "${CHANGELOG_FILE}.tmp"
+              mv "${CHANGELOG_FILE}.tmp" "${CHANGELOG_FILE}"
             }
             
             echo "✅ CHANGELOG updated with deployment record"
@@ -931,7 +931,7 @@ runs:
               git config --global user.name "github-actions[bot]"
               git config --global user.email "github-actions[bot]@users.noreply.github.com"
               
-              git add "$CHANGELOG_FILE"
+              git add "${CHANGELOG_FILE}"
               git commit -m "chore: update CHANGELOG for ${APPLICATION} ${ENVIRONMENT} deployment" || echo "Nothing to commit"
               git push || echo "::warning::Failed to push CHANGELOG update"
             fi

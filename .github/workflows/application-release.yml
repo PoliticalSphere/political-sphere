@@ -68,8 +68,8 @@ jobs:
         id: image
         run: |
           IMAGE_URI=$(cat image-uri/image-uri.txt)
-          echo "image_uri=${IMAGE_URI}" >> $GITHUB_OUTPUT
-          echo "image_tag=${IMAGE_URI##*:}" >> $GITHUB_OUTPUT
+          echo "image_uri=${IMAGE_URI}" >> "${GITHUB_OUTPUT}"
+          echo "image_tag=${IMAGE_URI##*:}" >> "${GITHUB_OUTPUT}"
       - name: Deploy via Argo CD
         uses: political-sphere/ci/.github/workflows/deploy-argocd.yaml@main
         with:

@@ -57,8 +57,10 @@ app.use(
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        logger.warn(`CORS: Blocked request from unauthorized origin: ${origin}`);
-        callback(new Error(`Origin ${origin} not allowed by CORS policy`));
+        // Sanitize origin header before logging to prevent log injection
+        const sanitizedOrigin = origin ? String(origin).replace(/[\r\n\t]/g, ' ').substring(0, 200) : 'unknown';
+        logger.warn(`CORS: Blocked request from unauthorized origin: ${sanitizedOrigin}`);
+        callback(new Error(`Origin ${sanitizedOrigin} not allowed by CORS policy`));
       }
     },
     credentials: true,

@@ -8,16 +8,19 @@ on:
     branches:
       - main
 
-permissions:
-  contents: read
-  security-events: write
-  actions: read
-  id-token: write
+# The scorecard action requires job-level permissions (not workflow-level)
+# to meet security requirements. See: https://github.com/ossf/scorecard-action#workflow-restrictions
+permissions: read-all
 
 jobs:
   analysis:
     name: OpenSSF Scorecard
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write
+      actions: read
+      id-token: write
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4

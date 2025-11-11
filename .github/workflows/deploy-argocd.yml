@@ -1,4 +1,4 @@
-tname: deploy-argocd
+name: deploy-argocd
 
 on:
   workflow_call:
@@ -35,7 +35,7 @@ on:
         description: Argo CD API token (bearer token)
       DATABASE_URL:
         required: false
-        description: "Optional DATABASE_URL secret (if not provided via input)
+        description: "Optional DATABASE_URL secret (if not provided via input)"
 
 jobs:
   migrate:

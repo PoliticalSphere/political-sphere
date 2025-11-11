@@ -7,6 +7,15 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
 ## [Unreleased]
 
 ### Fixed
+- **CI/CD:** Fixed YAML syntax errors and workflow permission configuration (2025-11-11)
+  - Fixed unclosed string in `deploy-argocd.yml` DATABASE_URL description field
+  - Fixed typo in `deploy-argocd.yml` workflow name field (`tname` → `name`)
+  - Fixed OpenSSF Scorecard permission requirements (job-level instead of workflow-level)
+  - Updated scorecard.yml to use `permissions: read-all` at workflow level and specific permissions at job level
+  - Resolves: scorecard-action error "global perm is set to write: permission for security-events is set to write"
+  - Resolves: "could not parse as YAML: yaml: line 36: did not find expected key" errors
+  - All 25 workflow files now pass YAML validation
+  - See: https://github.com/ossf/scorecard-action#workflow-restrictions
 - **CI/CD:** Fixed Rollup optional dependency issue on Node.js v22 (2025-11-11)
   - Added `@rollup/rollup-linux-x64-gnu` as optionalDependency (auto-installs on Linux, skips on macOS)
   - Implemented clean reinstall workaround in `.github/actions/setup-node-deps/action.yml`

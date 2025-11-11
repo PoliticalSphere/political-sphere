@@ -8,6 +8,8 @@
 # This workflow will monitor application health endpoints and alert on failures.
 
 name: Health Check Monitoring
+permissions:
+  contents: read
 
 on:
   schedule:

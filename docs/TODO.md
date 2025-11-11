@@ -1,5 +1,31 @@
 # TODO.md - Political Sphere Development Tasks
 
+## Linting & Code Quality (Completed 2025-11-11)
+
+### Phase 1: ESLint Configuration & Prettier Auto-fixes ✅ COMPLETE
+
+- [x] Add CommonJS override to eslint.config.js for `/apps/api/**/*.js` files
+- [x] Apply Prettier auto-fixes across all API files (single quotes, formatting)
+- [x] Reduce errors from 21,000+ to 27 (99.87% improvement)
+- [x] Verify test suite passing after changes
+
+### Phase 2: Manual ESLint Error Fixes ✅ COMPLETE
+
+- [x] Fix 8 unused variable errors in moderationService.js
+- [x] Fix 2 unused catch parameters in auth.js
+- [x] Fix 1 unused catch parameter in middleware/auth.js
+- [x] Remove unused fs/path imports from bill-store.js and vote-store.js
+- [x] Fix 2 unused catch parameters in useLocalStorage.js
+- [x] Fix filePath scope issue in database-seeder.js
+- [x] Fix empty catch block in database-seeder.js
+- [x] Fix unused error parameter in http-utils.js
+- [x] Create ADR documenting hybrid CommonJS/ESM strategy
+- [x] Revert .lefthook.yml to strict `--max-warnings 0`
+- [x] Update CHANGELOG.md with Phase 2 completion
+- [x] Mark Phase 2 complete in TODO.md
+
+**Results**: All 9 target files passing ESLint, 0 errors in originally failing files, CI/CD unblocked
+
 ## ESM Migration Tracker
 
 **Goal**: Incrementally convert `/apps/api/**/*.js` files from CommonJS to ESM

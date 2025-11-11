@@ -23,9 +23,7 @@ pre-commit:
 
     eslint:
       glob: '*.{ts,tsx,js,jsx}'
-      # TODO: Revert to --max-warnings 0 after manual ESLint fixes complete (see docs/TODO.md)
-      # Temporarily allowing errors during Phase 1 ESM migration cleanup
-      run: npx eslint --fix --max-warnings 50 {staged_files}
+      run: npx eslint --fix --max-warnings 0 {staged_files}
       stage_fixed: true
 
     # Security: Secret scanning

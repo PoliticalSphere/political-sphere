@@ -6,6 +6,21 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
 
 ## [Unreleased]
 
+### Fixed
+- **Linting:** Completed Phase 2 of ESM migration - fixed all 27 manual ESLint errors (2025-11-11)
+  - Fixed 8 unused variable errors in moderationService.js (catch params, function params)
+  - Fixed 2 unused catch parameters in auth.js
+  - Fixed 1 unused catch parameter in middleware/auth.js  
+  - Removed unused fs/path imports from bill-store.js and vote-store.js
+  - Fixed 2 unused catch parameters in useLocalStorage.js (React hook)
+  - Fixed filePath scope issue and empty catch block in database-seeder.js
+  - Fixed unused error parameter in http-utils.js
+  - Error reduction: 21,000+ → 0 errors in target files (100%)
+  - All tests passing: 42 test files, 278 tests
+  - Created ADR: docs/architecture/decisions/0001-esm-migration-strategy.md
+  - Reverted .lefthook.yml back to strict `--max-warnings 0` enforcement
+  - CI/CD pipeline now unblocked for all development work
+
 ### Changed
 - CI installs: use `npm ci --legacy-peer-deps` in CI workflows to avoid peer dependency resolution failures on Node 22 (2025-11-11)
   - Updated across audit, test, build-and-test, security, lighthouse, release, e2e, and migrate workflows

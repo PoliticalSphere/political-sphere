@@ -277,6 +277,13 @@ const SAFE_PATTERNS = [
   /\b(ACTIONLINT_SHA256|TRIVY_SHA256|GRYPE_SHA256)\b/, // integrity checksum variables (not secrets)
   /sha256sum\s+-c\b/, // checksum verification lines
   /integrity checksum/i, // annotated integrity comments nearby
+  // OpenAPI example data (safe illustrative values, not secrets)
+  /\bexample\s*:/i,
+  /\bexamples\s*:/i,
+  /\bvalue\s*:/i,
+  /\bpassword\s*:\s*['\"][^'\"]+['\"]/i,
+  /\bsignature\s*:/i,
+  /\bpublicKey\s*:/i,
 ];
 
 function isSafeContext(line) {

@@ -139,6 +139,9 @@ tags:
     x-displayName: 🏥 Health & Status
     x-tag-expanded: false
 
+security:
+  - bearerAuth: []
+
 webhooks:
   voteCompleted:
     post:
@@ -3094,29 +3097,34 @@ components:
         and server authenticate each other using X.509 certificates. This 
         provides the highest level of security for administrative endpoints.
 
-        **Usage:**
-        - Certificate must be issued by a trusted CA
+    oauth2Auth:
+      type: oauth2
+      description: |
+        OAuth 2.0 authorization code flow for delegated access.
+
+        Usage:
+        - Certificate must be issued by a trusted CA (for mutual TLS endpoints)
         - Subject DN must match authorized admin principals
         - Certificate must not be expired or revoked
-        - Client must present certificate during TLS handshake
+        - Client must present certificate during TLS handshake when mutual TLS is required
 
-        **Applied to:**
-        - /admin/audit (audit log access)
-        - /admin/users/{userId}/status (user status modifications)
+        Applied to (selected admin endpoints):
+        - /admin/audit
+        - /admin/users/{userId}/status
 
-        **Certificate Requirements:**
+        Certificate Requirements (when using mutual TLS):
         - Key size: RSA 2048-bit minimum (Ed25519 preferred)
         - Validity period: Maximum 365 days
         - Extended Key Usage: Client Authentication
         - Subject Alternative Name: admin.political-sphere.com
-
-    oauth2Auth:
-      type: oauth2
       flows:
         authorizationCode:
-          authorizationUrl: https://auth.political-sphere.com/oauth/authorize
-          tokenUrl: https://auth.political-sphere.com/oauth/token
+          authorizationUrl: https://auth.political-sphere.com/oauth2/authorize
+          tokenUrl: https://auth.political-sphere.com/oauth2/token
           scopes:
+            admin: Full administrative access
+            read: Read-only access
+            write: Read-write access
             read:user: Read user profile information
             write:user: Update user profile information
             read:votes: Read voting information
@@ -3125,7 +3133,6 @@ components:
             write:parties: Create and manage political parties
             read:news: Read news articles
             write:news: Create and manage news articles
-            admin: Full administrative access
 
   examples:
     UserRegistrationExample:

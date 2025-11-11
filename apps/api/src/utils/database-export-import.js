@@ -1,15 +1,16 @@
-const fs = require("fs");
-const path = require("path");
+/* eslint-disable @typescript-eslint/no-require-imports, import/order */
+const fs = require('fs');
+const path = require('path');
 
 const {
   validateTableName,
   validateFilename,
   safeJoin,
-} = require("../../../libs/shared/src/path-security");
+} = require('../../../libs/shared/src/path-security');
 
-const { getConnection } = require("./database-connection");
-const { withTransaction } = require("./database-transactions");
-const logger = require("./logger");
+const { getConnection } = require('./database-connection');
+const { withTransaction } = require('./database-transactions');
+const logger = require('./logger');
 
 /**
  * Database Export/Import Manager
@@ -19,7 +20,7 @@ const logger = require("./logger");
 
 class DatabaseExportImportManager {
   constructor(options = {}) {
-    this.exportDir = options.exportDir || path.join(process.cwd(), "exports");
+    this.exportDir = options.exportDir || path.join(process.cwd(), 'exports');
     this.batchSize = options.batchSize || 1000;
     this.includeMetadata = options.includeMetadata !== false;
 
@@ -37,7 +38,7 @@ class DatabaseExportImportManager {
   async exportToJSON(options = {}) {
     const {
       tables = null, // null means all tables
-      fileName = this.generateExportFileName("json"),
+      fileName = this.generateExportFileName('json'),
       pretty = true,
       includeSchema = false,
     } = options;
@@ -55,15 +56,15 @@ class DatabaseExportImportManager {
     const startTime = Date.now();
 
     try {
-      logger.info("Starting JSON export", { exportPath, tables });
+      logger.info('Starting JSON export', { exportPath, tables });
 
       const connection = await getConnection();
       const exportData = {
         metadata: this.includeMetadata
           ? {
               exportedAt: new Date().toISOString(),
-              version: "1.0",
-              database: "political-sphere",
+              version: '1.0',
+              database: 'political-sphere',
             }
           : undefined,
         tables: {},
@@ -75,7 +76,7 @@ class DatabaseExportImportManager {
         const allTables = connection.db
           .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
           .all();
-        tablesToExport = allTables.map((t) => t.name);
+        tablesToExport = allTables.map(t => t.name);
       }
 
       // Export each table
@@ -85,7 +86,7 @@ class DatabaseExportImportManager {
         result.tables.push(tableName);
         result.recordCount += tableData.records.length;
 
-        logger.debug("Table exported", {
+        logger.debug('Table exported', {
           table: tableName,
           records: tableData.records.length,
         });
@@ -99,13 +100,13 @@ class DatabaseExportImportManager {
       // Write to file
       const jsonContent = pretty ? JSON.stringify(exportData, null, 2) : JSON.stringify(exportData);
 
-      fs.writeFileSync(exportPath, jsonContent, "utf8");
+      fs.writeFileSync(exportPath, jsonContent, 'utf8');
 
       result.success = true;
       result.duration = Date.now() - startTime;
       result.fileSize = fs.statSync(exportPath).size;
 
-      logger.info("JSON export completed", {
+      logger.info('JSON export completed', {
         filePath: exportPath,
         tables: result.tables.length,
         recordCount: result.recordCount,
@@ -113,7 +114,7 @@ class DatabaseExportImportManager {
         duration: result.duration,
       });
     } catch (error) {
-      logger.error("JSON export failed", { error: error.message, exportPath });
+      logger.error('JSON export failed', { error: error.message, exportPath });
       throw error;
     }
 
@@ -121,6 +122,8 @@ class DatabaseExportImportManager {
   }
 
   async exportTableToJSON(connection, tableName) {
+    // Validate table name to prevent SQL injection on identifier usage
+    const validatedTableName = validateTableName(tableName);
     const tableData = {
       name: tableName,
       records: [],
@@ -128,16 +131,18 @@ class DatabaseExportImportManager {
     };
 
     // Get table schema
-    const schema = connection.db.prepare(`PRAGMA table_info(${tableName})`).all();
+    const schema = connection.db.prepare(`PRAGMA table_info(${validatedTableName})`).all();
     tableData.schema = schema;
 
     // Export data in batches
     let offset = 0;
-    const rowIdColumn = schema.find((col) => col.pk === 1)?.name || "ROWID";
+    const rowIdColumn = schema.find(col => col.pk === 1)?.name || 'ROWID';
+    const allowedColumns = new Set(schema.map(col => col.name));
+    const safeOrderBy = allowedColumns.has(rowIdColumn) ? rowIdColumn : 'ROWID';
 
     while (true) {
       const rows = connection.db
-        .prepare(`SELECT * FROM ${tableName} ORDER BY ${rowIdColumn} LIMIT ? OFFSET ?`)
+        .prepare(`SELECT * FROM ${validatedTableName} ORDER BY ${safeOrderBy} LIMIT ? OFFSET ?`)
         .all(this.batchSize, offset);
 
       if (rows.length === 0) break;
@@ -147,7 +152,7 @@ class DatabaseExportImportManager {
 
       // Prevent memory issues with very large tables
       if (tableData.records.length > 100000) {
-        logger.warn("Large table detected, consider splitting export", {
+        logger.warn('Large table detected, consider splitting export', {
           table: tableName,
           records: tableData.records.length,
         });
@@ -167,7 +172,7 @@ class DatabaseExportImportManager {
     // Export table schemas
     const tables = connection.db
       .prepare(
-        "SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'",
+        "SELECT name, sql FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'"
       )
       .all();
 
@@ -182,7 +187,7 @@ class DatabaseExportImportManager {
     // Export indexes
     const indexes = connection.db
       .prepare(
-        "SELECT name, tbl_name, sql FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%'",
+        "SELECT name, tbl_name, sql FROM sqlite_master WHERE type='index' AND name NOT LIKE 'sqlite_%'"
       )
       .all();
 
@@ -238,7 +243,7 @@ class DatabaseExportImportManager {
     const startTime = Date.now();
 
     try {
-      logger.info("Starting JSON import", {
+      logger.info('Starting JSON import', {
         filePath,
         tables,
         clearExisting,
@@ -246,11 +251,11 @@ class DatabaseExportImportManager {
       });
 
       // Read and parse JSON
-      const jsonContent = fs.readFileSync(filePath, "utf8");
+      const jsonContent = fs.readFileSync(filePath, 'utf8');
       const importData = JSON.parse(jsonContent);
 
       if (!importData.tables) {
-        throw new Error("Invalid export format: missing tables");
+        throw new Error('Invalid export format: missing tables');
       }
 
       await withTransaction(
@@ -277,20 +282,20 @@ class DatabaseExportImportManager {
             result.tables.push(tableName);
             result.recordCount += tableData.records.length;
 
-            logger.debug("Table imported", {
+            logger.debug('Table imported', {
               table: tableName,
               records: tableData.records.length,
               dryRun,
             });
           }
         },
-        { isolationLevel: "EXCLUSIVE" },
+        { isolationLevel: 'EXCLUSIVE' }
       );
 
       result.success = !dryRun;
       result.duration = Date.now() - startTime;
 
-      logger.info("JSON import completed", {
+      logger.info('JSON import completed', {
         filePath,
         tables: result.tables.length,
         recordCount: result.recordCount,
@@ -299,7 +304,7 @@ class DatabaseExportImportManager {
         dryRun,
       });
     } catch (error) {
-      logger.error("JSON import failed", { error: error.message, filePath });
+      logger.error('JSON import failed', { error: error.message, filePath });
       throw error;
     }
 
@@ -308,7 +313,7 @@ class DatabaseExportImportManager {
 
   async importTableFromJSON(connection, tableName, tableData, clearExisting, dryRun) {
     // Validate identifiers to prevent SQL injection via table/column names
-    const isValidIdentifier = (name) => /^[A-Za-z_][A-Za-z0-9_]*$/.test(String(name));
+    const isValidIdentifier = name => /^[A-Za-z_][A-Za-z0-9_]*$/.test(String(name));
     if (!isValidIdentifier(tableName)) {
       throw new Error(`Invalid table name: ${tableName}`);
     }
@@ -316,7 +321,7 @@ class DatabaseExportImportManager {
     // Clear existing data if requested
     if (clearExisting && !dryRun) {
       connection.db.exec(`DELETE FROM ${tableName}`);
-      logger.debug("Cleared existing data", { table: tableName });
+      logger.debug('Cleared existing data', { table: tableName });
     }
 
     // Import records in batches
@@ -330,8 +335,8 @@ class DatabaseExportImportManager {
         throw new Error(`Invalid column name on table ${tableName}: ${col}`);
       }
     }
-    const placeholders = columns.map(() => "?").join(", ");
-    const columnList = columns.join(", ");
+    const placeholders = columns.map(() => '?').join(', ');
+    const columnList = columns.join(', ');
 
     const insertSql = `INSERT OR REPLACE INTO ${tableName} (${columnList}) VALUES (${placeholders})`;
     const insertStmt = dryRun ? null : connection.db.prepare(insertSql);
@@ -341,12 +346,12 @@ class DatabaseExportImportManager {
 
       if (!dryRun) {
         for (const record of batch) {
-          const values = columns.map((col) => record[col]);
+          const values = columns.map(col => record[col]);
           insertStmt.run(values);
         }
       }
 
-      logger.debug("Imported batch", {
+      logger.debug('Imported batch', {
         table: tableName,
         batchSize: batch.length,
         progress: `${i + batch.length}/${records.length}`,
@@ -371,7 +376,7 @@ class DatabaseExportImportManager {
       }
     }
 
-    logger.debug("Import schema validation passed");
+    logger.debug('Import schema validation passed');
   }
 
   /**
@@ -382,7 +387,7 @@ class DatabaseExportImportManager {
   async exportToCSV(options = {}) {
     const {
       tables = null,
-      fileName = this.generateExportFileName("zip"), // ZIP containing CSVs
+      fileName = this.generateExportFileName('zip'), // ZIP containing CSVs
       includeHeaders = true,
     } = options;
 
@@ -399,7 +404,7 @@ class DatabaseExportImportManager {
     const startTime = Date.now();
 
     try {
-      logger.info("Starting CSV export", { exportPath, tables });
+      logger.info('Starting CSV export', { exportPath, tables });
 
       const connection = await getConnection();
       const csvFiles = [];
@@ -410,7 +415,7 @@ class DatabaseExportImportManager {
         const allTables = connection.db
           .prepare("SELECT name FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'")
           .all();
-        tablesToExport = allTables.map((t) => t.name);
+        tablesToExport = allTables.map(t => t.name);
       }
 
       // Export each table to CSV
@@ -433,7 +438,7 @@ class DatabaseExportImportManager {
         fs.unlinkSync(csvFile.path);
       }
 
-      logger.info("CSV export completed", {
+      logger.info('CSV export completed', {
         filePath: exportPath,
         tables: result.tables.length,
         recordCount: result.recordCount,
@@ -441,7 +446,7 @@ class DatabaseExportImportManager {
         duration: result.duration,
       });
     } catch (error) {
-      logger.error("CSV export failed", { error: error.message, exportPath });
+      logger.error('CSV export failed', { error: error.message, exportPath });
       throw error;
     }
 
@@ -459,47 +464,47 @@ class DatabaseExportImportManager {
 
       // Get table schema for headers
       const columns = connection.db.prepare(`PRAGMA table_info(${validatedTableName})`).all();
-      const columnNames = columns.map((col) => col.name);
+      const columnNames = columns.map(col => col.name);
 
       if (includeHeaders) {
-        writeStream.write(columnNames.join(",") + "\n");
+        writeStream.write(columnNames.join(',') + '\n');
       }
 
       // Export data
       const rows = connection.db.prepare(`SELECT * FROM ${validatedTableName}`).all();
 
       for (const row of rows) {
-        const values = columnNames.map((col) => {
+        const values = columnNames.map(col => {
           const value = row[col];
           // Escape CSV values
-          if (value === null || value === undefined) return "";
+          if (value === null || value === undefined) return '';
           const str = String(value);
-          if (str.includes(",") || str.includes('"') || str.includes("\n")) {
+          if (str.includes(',') || str.includes('"') || str.includes('\n')) {
             return '"' + str.replace(/"/g, '""') + '"';
           }
           return str;
         });
-        writeStream.write(values.join(",") + "\n");
+        writeStream.write(values.join(',') + '\n');
         recordCount++;
       }
 
       writeStream.end();
-      writeStream.on("finish", () => {
+      writeStream.on('finish', () => {
         resolve({ path: csvPath, recordCount, tableName });
       });
-      writeStream.on("error", reject);
+      writeStream.on('error', reject);
     });
   }
 
   async createZipArchive(files, zipPath) {
-    const archiver = require("archiver");
+    const archiver = require('archiver');
     const output = fs.createWriteStream(zipPath);
-    const archive = archiver("zip", { zlib: { level: 9 } });
+    const archive = archiver('zip', { zlib: { level: 9 } });
 
     return new Promise((resolve, reject) => {
-      output.on("close", () => resolve());
-      output.on("error", reject);
-      archive.on("error", reject);
+      output.on('close', () => resolve());
+      output.on('error', reject);
+      archive.on('error', reject);
 
       archive.pipe(output);
 
@@ -512,7 +517,7 @@ class DatabaseExportImportManager {
   }
 
   generateExportFileName(extension) {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
     return `political-sphere-export-${timestamp}.${extension}`;
   }
 
@@ -524,8 +529,8 @@ class DatabaseExportImportManager {
     try {
       const files = fs
         .readdirSync(this.exportDir)
-        .filter((file) => file.endsWith(".json") || file.endsWith(".zip"))
-        .map((file) => {
+        .filter(file => file.endsWith('.json') || file.endsWith('.zip'))
+        .map(file => {
           // Validate filename before joining to prevent path traversal
           const sanitizedFile = validateFilename(file);
           const filePath = safeJoin(this.exportDir, sanitizedFile);
@@ -542,7 +547,7 @@ class DatabaseExportImportManager {
 
       return files;
     } catch (error) {
-      logger.error("Failed to list exports", { error: error.message });
+      logger.error('Failed to list exports', { error: error.message });
       return [];
     }
   }
@@ -567,18 +572,18 @@ class DatabaseExportImportManager {
         if (stats.mtime < cutoffDate) {
           fs.unlinkSync(filePath);
           deletedFiles.push(file);
-          logger.debug("Old export deleted", { file, age: stats.mtime });
+          logger.debug('Old export deleted', { file, age: stats.mtime });
         }
       }
 
       if (deletedFiles.length > 0) {
-        logger.info("Old exports cleaned up", {
+        logger.info('Old exports cleaned up', {
           deletedCount: deletedFiles.length,
           maxAgeDays,
         });
       }
     } catch (error) {
-      logger.error("Failed to cleanup old exports", { error: error.message });
+      logger.error('Failed to cleanup old exports', { error: error.message });
     }
 
     return deletedFiles;

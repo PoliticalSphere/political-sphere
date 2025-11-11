@@ -5,26 +5,27 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import request from 'supertest';
 
-// eslint-disable-next-line no-restricted-imports
-import { closeDatabase, getDatabase } from '../../src/modules/stores/index.ts';
+import { getTestDatabase } from '../../src/test-support/index.ts';
 
 /**
  * Database test utilities
  */
 export const dbHelpers = {
+  testDb: getTestDatabase(),
+
   /**
    * Initialize database for tests
    * @returns {Object} Database instance
    */
   async setupDatabase() {
-    return getDatabase();
+    return this.testDb.setup();
   },
 
   /**
    * Clean up database after tests
    */
   async teardownDatabase() {
-    closeDatabase();
+    await this.testDb.teardown();
   },
 
   /**
@@ -33,13 +34,7 @@ export const dbHelpers = {
    * @returns {Object} Created user
    */
   async createTestUser(overrides = {}) {
-    const db = getDatabase();
-    const userData = {
-      username: `testuser_${Date.now()}`,
-      email: `test${Date.now()}@example.com`,
-      ...overrides,
-    };
-    return db.users.create(userData);
+    return this.testDb.createTestUser(overrides);
   },
 
   /**
@@ -48,14 +43,7 @@ export const dbHelpers = {
    * @returns {Object} Created party
    */
   async createTestParty(overrides = {}) {
-    const db = getDatabase();
-    const partyData = {
-      name: `Test Party ${Date.now()}`,
-      description: "A test political party",
-      color: "#FF6B6B",
-      ...overrides,
-    };
-    return db.parties.create(partyData);
+    return this.testDb.createTestParty(overrides);
   },
 
   /**
@@ -64,14 +52,7 @@ export const dbHelpers = {
    * @returns {Object} Created bill
    */
   async createTestBill(overrides = {}) {
-    const db = getDatabase();
-    const billData = {
-      title: `Test Bill ${Date.now()}`,
-      description: "A test bill for political simulation",
-      proposerId: overrides.proposerId || (await this.createTestUser()).id,
-      ...overrides,
-    };
-    return db.bills.create(billData);
+    return this.testDb.createTestBill(overrides);
   },
 };
 

@@ -51,17 +51,12 @@ docs/examples/
 **Usage:**
 
 ```typescript
-import {
-  registerUser,
-  loginUser,
-  authenticate,
-  authorize,
-} from "./authentication.example";
+import { registerUser, loginUser, authenticate, authorize } from './authentication.example';
 
-app.post("/api/auth/register", registerUser);
-app.post("/api/auth/login", loginUser);
-app.get("/api/users/me", authenticate, getProfile);
-app.delete("/api/users/:id", authenticate, authorize("admin"), deleteUser);
+app.post('/api/auth/register', registerUser);
+app.post('/api/auth/login', loginUser);
+app.get('/api/users/me', authenticate, getProfile);
+app.delete('/api/users/:id', authenticate, authorize('admin'), deleteUser);
 ```
 
 ---
@@ -86,11 +81,11 @@ app.delete("/api/users/:id", authenticate, authorize("admin"), deleteUser);
 **Usage:**
 
 ```typescript
-import { castVote, getVoteResults, getUserVote } from "./voting.example";
+import { castVote, getVoteResults, getUserVote } from './voting.example';
 
-app.post("/api/votes", authenticate, castVote);
-app.get("/api/bills/:billId/results", getVoteResults);
-app.get("/api/bills/:billId/my-vote", authenticate, getUserVote);
+app.post('/api/votes', authenticate, castVote);
+app.get('/api/bills/:billId/results', getVoteResults);
+app.get('/api/bills/:billId/my-vote', authenticate, getUserVote);
 ```
 
 **Critical Features:**
@@ -169,11 +164,11 @@ function ProposalsPage() {
 **Usage:**
 
 ```typescript
-import { describe, it, expect } from "vitest";
-import { UserFactory } from "@political-sphere/testing/factories";
+import { describe, it, expect } from 'vitest';
+import { UserFactory } from '@political-sphere/testing/factories';
 
-describe("UserService", () => {
-  it("should create user with valid data", async () => {
+describe('UserService', () => {
+  it('should create user with valid data', async () => {
     // Arrange
     const userData = UserFactory.build();
 
@@ -272,7 +267,7 @@ Use testing examples as templates for your test files:
 // New test file for BillService
 // Template: docs/examples/testing/unit-test.example.ts
 
-describe("BillService", () => {
+describe('BillService', () => {
   // Copy AAA structure, mocking patterns, edge cases
 });
 ```

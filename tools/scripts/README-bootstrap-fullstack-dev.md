@@ -7,6 +7,7 @@ To start all required infrastructure and app servers for a complete development 
 ```
 
 This script will:
+
 - Run the core infrastructure bootstrap (`bootstrap-dev.sh`)
 - Start frontend dev server (`nx serve frontend`)
 - Start API/backend dev server (`nx serve api`)

@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import request from "supertest";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
+
 import { createApp } from "../src/app.ts";
 
 let server: import("http").Server;
@@ -19,7 +20,7 @@ afterAll(() => {
 async function register(username: string, password: string) {
   const res = await agent
     .post("/auth/register")
-    .send({ username, password })
+    .send({ username, password, email: `${username}@example.com` })
     .set("Content-Type", "application/json");
   expect([200, 201]).toContain(res.status);
   return res.body.tokens.accessToken as string;

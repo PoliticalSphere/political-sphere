@@ -11,7 +11,7 @@ beforeAll(async () => {
   process.env.JWT_EXPIRES_IN = "15m";
   process.env.JWT_REFRESH_EXPIRES_IN = "7d";
 
-  auth = await import("../src/auth.js");
+  auth = await import("../../src/modules/auth.js");
 
   ({ hashPassword } = auth);
 });

@@ -4,9 +4,9 @@
  * Caches common queries and responses to speed up AI assistance
  */
 
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-const crypto = require("crypto");
 
 const ROOT_CACHE_DIR = path.join(__dirname, "../../../ai-cache");
 const LEGACY_CACHE_DIR = path.join(__dirname, "../../../ai/ai-cache");

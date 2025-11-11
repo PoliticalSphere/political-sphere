@@ -137,9 +137,7 @@ export function BillProposalForm() {
           onChange={(e) => setFormData({ ...formData, title: e.target.value })}
           aria-required="true"
           aria-invalid={!!errors.title}
-          aria-describedby={
-            errors.title ? "title-error title-hint" : "title-hint"
-          }
+          aria-describedby={errors.title ? "title-error title-hint" : "title-hint"}
           disabled={isSubmitting}
           autoComplete="off"
         />
@@ -168,23 +166,19 @@ export function BillProposalForm() {
         <textarea
           id="bill-description"
           value={formData.description}
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
+          onChange={(e) => setFormData({ ...formData, description: e.target.value })}
           rows={10}
           aria-required="true"
           aria-invalid={!!errors.description}
           aria-describedby={
-            errors.description
-              ? "description-error description-hint"
-              : "description-hint"
+            errors.description ? "description-error description-hint" : "description-hint"
           }
           disabled={isSubmitting}
         />
 
         <div id="description-hint" className="hint-text">
-          Provide a detailed explanation of the bill's purpose and provisions.
-          Minimum 10 characters.
+          Provide a detailed explanation of the bill's purpose and provisions. Minimum 10
+          characters.
         </div>
 
         {errors.description && (

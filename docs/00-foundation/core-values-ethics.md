@@ -11,7 +11,6 @@
 </div>
 ## 🎯 Purpose
 
-
 ## Operational strengthening
 
 ### Ethics by Design
@@ -25,24 +24,36 @@ We optimise for informed participation and learning outcomes, not time-on-site, 
 ## How this applies in practice — 6 sample edge cases
 
 1. Fake campaign promising direct cash payouts.
-  - Allowed as satire mechanics if clearly fictional and disconnected from real money.
-  - Disallowed: any mechanism enabling real-player fundraising, payment links, or real-world mobilisation.
+
+- Allowed as satire mechanics if clearly fictional and disconnected from real money.
+- Disallowed: any mechanism enabling real-player fundraising, payment links, or real-world mobilisation.
+
 2. Player-run referendum urging real-world action.
-  - Allowed: in-game referendum with in-game consequences only.
-  - Disallowed: any content that directs players to external real-world events or mobilises off-platform action.
+
+- Allowed: in-game referendum with in-game consequences only.
+- Disallowed: any content that directs players to external real-world events or mobilises off-platform action.
+
 3. AI-generated 'opinion leader' NPC that mimics a real person.
-  - Allowed only if explicitly fictional, provenance included, and cannot be used to contact or influence real accounts.
+
+- Allowed only if explicitly fictional, provenance included, and cannot be used to contact or influence real accounts.
+
 4. Targeted messaging to swing in-game votes.
-  - Allowed as game mechanic when targeted messages are purely fictional and transparent.
-  - Disallowed: targeted content that profiles players for likely real-world political persuasion; profiling is prohibited.
+
+- Allowed as game mechanic when targeted messages are purely fictional and transparent.
+- Disallowed: targeted content that profiles players for likely real-world political persuasion; profiling is prohibited.
+
 5. Satirical ads causing emotional escalation.
-  - Allowed as labelled satire with safe-guards and opt-outs.
-  - Disallowed: emotionally manipulative content designed to increase engagement via outrage.
+
+- Allowed as labelled satire with safe-guards and opt-outs.
+- Disallowed: emotionally manipulative content designed to increase engagement via outrage.
+
 6. Cross-play with external social platforms.
-  - Allowed: sharing anonymised, non-political achievement badges.
-  - Disallowed: any pipeline that enriches contact lists, political persuasion, or recruitment.
+
+- Allowed: sharing anonymised, non-political achievement badges.
+- Disallowed: any pipeline that enriches contact lists, political persuasion, or recruitment.
 
 ## 📋 Ethical Decision Framework
+
 Political Sphere teaches the skills of democratic life by simulating politics responsibly, transparently, and free from real-world influence.
 
 We operate like a democracy, not a casino; like a civic institution, not a tech product.
@@ -197,7 +208,6 @@ The game grows, but values remain stable.
 To make governance and operational changes easier to manage, we separate enduring constitutional values from adaptive operational principles:
 
 - 🌱 Enduring Constitutional Values
-
   - No real-world political influence
   - Safety & dignity
   - Fairness

@@ -1,11 +1,17 @@
 // Express CSRF protection middleware setup
 // Uses modern 'csrf' package (csurf is deprecated)
 // See: https://www.npmjs.com/package/csrf
-const { doubleCsrf } = require("csrf-csrf");
+import { doubleCsrf } from "csrf-csrf";
 
 // Configure CSRF protection using double-submit cookie pattern
 const { invalidCsrfTokenError, generateToken, doubleCsrfProtection } = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET || require("crypto").randomBytes(32).toString("hex"),
+  getSecret: () => {
+    const secret = process.env.CSRF_SECRET;
+    if (!secret || secret.length < 32) {
+      throw new Error("CSRF_SECRET must be set and at least 32 characters long");
+    }
+    return secret;
+  },
   cookieName: "x-csrf-token",
   cookieOptions: {
     httpOnly: true,
@@ -27,8 +33,4 @@ const csrfTokenMiddleware = (req, res, next) => {
   next();
 };
 
-module.exports = {
-  csrfProtection: doubleCsrfProtection,
-  csrfTokenMiddleware,
-  invalidCsrfTokenError,
-};
+export { doubleCsrfProtection as csrfProtection, csrfTokenMiddleware, invalidCsrfTokenError };

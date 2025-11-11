@@ -1,6 +1,6 @@
 ---
-description: "Testing standards and patterns for Vitest, including AAA pattern, mocking, and accessibility testing"
-applyTo: "**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx"
+description: 'Testing standards and patterns for Vitest, including AAA pattern, mocking, and accessibility testing'
+applyTo: '**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx'
 ---
 
 # Testing Instructions
@@ -12,10 +12,10 @@ applyTo: "**/*.test.ts,**/*.test.tsx,**/*.spec.ts,**/*.spec.tsx"
 Use the Arrange-Act-Assert pattern:
 
 ```typescript
-describe("UserService", () => {
-  it("should create user with valid data", async () => {
+describe('UserService', () => {
+  it('should create user with valid data', async () => {
     // Arrange
-    const userData = { name: "Test User", email: "test@example.com" };
+    const userData = { name: 'Test User', email: 'test@example.com' };
     const mockRepo = createMockRepository();
 
     // Act
@@ -80,7 +80,7 @@ it("should have no accessibility violations", async () => {
 Test performance-critical operations:
 
 ```typescript
-it("should process large dataset in under 1 second", async () => {
+it('should process large dataset in under 1 second', async () => {
   const start = performance.now();
   await processLargeDataset(data);
   const duration = performance.now() - start;
@@ -101,7 +101,7 @@ it("should process large dataset in under 1 second", async () => {
 ### Setup and Teardown
 
 ```typescript
-describe("DatabaseTests", () => {
+describe('DatabaseTests', () => {
   beforeEach(async () => {
     await database.connect();
     await seedTestData();
@@ -118,9 +118,9 @@ describe("DatabaseTests", () => {
 
 ```typescript
 const testCases = [
-  { input: "valid@email.com", expected: true },
-  { input: "invalid.email", expected: false },
-  { input: "", expected: false },
+  { input: 'valid@email.com', expected: true },
+  { input: 'invalid.email', expected: false },
+  { input: '', expected: false },
 ];
 
 testCases.forEach(({ input, expected }) => {
@@ -133,14 +133,14 @@ testCases.forEach(({ input, expected }) => {
 ### Async Testing
 
 ```typescript
-it("should fetch user data", async () => {
+it('should fetch user data', async () => {
   const promise = fetchUserData(123);
   await expect(promise).resolves.toMatchObject({ id: 123 });
 });
 
-it("should handle errors", async () => {
+it('should handle errors', async () => {
   const promise = fetchUserData(-1);
-  await expect(promise).rejects.toThrow("Invalid user ID");
+  await expect(promise).rejects.toThrow('Invalid user ID');
 });
 ```
 
@@ -158,11 +158,11 @@ For projects using ES modules (`package.json` with `"type": "module"`):
 
 ```typescript
 // ✅ Good: Native ESM test file
-import { describe, it, expect } from "vitest";
-import { processData } from "./data-processor.js"; // Note .js extension
+import { describe, it, expect } from 'vitest';
+import { processData } from './data-processor.js'; // Note .js extension
 
-describe("DataProcessor", () => {
-  it("should process data correctly", () => {
+describe('DataProcessor', () => {
+  it('should process data correctly', () => {
     expect(processData([1, 2, 3])).toEqual([2, 4, 6]);
   });
 });
@@ -181,7 +181,7 @@ If unavoidable CJS/ESM mixing occurs, add a tiny CJS shim:
 
 ```javascript
 // test-file.cjs (if needed for compatibility)
-describe.skip("Skipped CJS placeholder", () => {
+describe.skip('Skipped CJS placeholder', () => {
   // No imports - prevents parse errors
 });
 ```
@@ -212,14 +212,14 @@ Monitor these indicators:
 
 ```typescript
 // ❌ Bad: Testing implementation details
-it("should call internal method", () => {
-  const spy = vi.spyOn(service, "internalMethod");
+it('should call internal method', () => {
+  const spy = vi.spyOn(service, 'internalMethod');
   service.publicMethod();
   expect(spy).toHaveBeenCalled(); // Brittle!
 });
 
 // ✅ Good: Testing behavior
-it("should return correct result", () => {
+it('should return correct result', () => {
   const result = service.publicMethod();
   expect(result).toBe(expectedValue); // Robust!
 });
@@ -228,24 +228,24 @@ it("should return correct result", () => {
 ### Security Testing Examples
 
 ```typescript
-describe("Security validations", () => {
-  it("should prevent SQL injection", () => {
+describe('Security validations', () => {
+  it('should prevent SQL injection', () => {
     const maliciousInput = "'; DROP TABLE users; --";
-    expect(() => queryDatabase(maliciousInput)).toThrow("Invalid input");
+    expect(() => queryDatabase(maliciousInput)).toThrow('Invalid input');
   });
 
-  it("should sanitize XSS attempts", () => {
+  it('should sanitize XSS attempts', () => {
     const xssInput = '<script>alert("XSS")</script>';
     const sanitized = sanitizeInput(xssInput);
-    expect(sanitized).not.toContain("<script>");
+    expect(sanitized).not.toContain('<script>');
   });
 
-  it("should enforce rate limiting", async () => {
+  it('should enforce rate limiting', async () => {
     const requests = Array(101)
       .fill(null)
       .map(() => api.makeRequest());
 
-    await expect(Promise.all(requests)).rejects.toThrow("Rate limit exceeded");
+    await expect(Promise.all(requests)).rejects.toThrow('Rate limit exceeded');
   });
 });
 ```

@@ -4,6 +4,7 @@
  */
 
 const jwt = require("jsonwebtoken");
+
 const logger = require("../utils/logger.js");
 
 // JWT configuration

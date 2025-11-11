@@ -1,0 +1,10 @@
+{
+  "extends": "../../tools/config/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": "./",
+    "types": ["vitest/globals", "node"]
+  },
+  "include": ["src", "tests", "test-setup.*", "vite.config.*", "environment.d.ts", "vite-env.d.ts"],
+  "exclude": ["dist", "node_modules"]
+}

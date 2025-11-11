@@ -6,23 +6,23 @@ on:
       node_version:
         description: Node.js version to use
         type: string
-        default: "20"
+        default: '20'
       services:
         description: Comma delimited list of Nx projects to build (e.g. "api,frontend")
         type: string
-        default: "api"
+        default: 'api'
       dockerfile:
         description: Path to Dockerfile relative to repo root
         type: string
-        default: "apps/api/Dockerfile"
+        default: 'apps/api/Dockerfile'
       image_name:
         description: Image name (repository portion only)
         type: string
-        default: "api"
+        default: 'api'
       working_directory:
         description: Path to repository working directory
         type: string
-        default: "."
+        default: '.'
       enable_trivy:
         description: Run Trivy scan on built image
         type: boolean

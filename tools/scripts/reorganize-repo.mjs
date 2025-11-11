@@ -23,9 +23,9 @@
  * @date 2025-11-10
  */
 
+import { execSync } from "child_process";
 import fs from "fs/promises";
 import path from "path";
-import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -164,7 +164,10 @@ class RepositoryReorganizer {
 
     // Check for uncommitted changes
     try {
-      const status = execSync("git status --porcelain", { cwd: ROOT_DIR, encoding: "utf-8" });
+      const status = execSync("git status --porcelain", {
+        cwd: ROOT_DIR,
+        encoding: "utf-8",
+      });
       if (status.trim() !== "") {
         throw new Error(
           "Repository has uncommitted changes. Please commit or stash changes before running migration.",
@@ -257,7 +260,10 @@ class RepositoryReorganizer {
       await fs.mkdir(targetParent, { recursive: true });
 
       // Use git mv to preserve history
-      execSync(`git mv "${source}" "${target}"`, { cwd: ROOT_DIR, stdio: "pipe" });
+      execSync(`git mv "${source}" "${target}"`, {
+        cwd: ROOT_DIR,
+        stdio: "pipe",
+      });
       this.log(`  ✓ Successfully moved ${source} to ${target}`);
       return true;
     } catch (error) {
@@ -272,7 +278,10 @@ class RepositoryReorganizer {
     const allMigrations = [];
 
     // Collect all migrations and sort by priority
-    allMigrations.push({ ...MIGRATION_PLAN.infrastructure, key: "infrastructure" });
+    allMigrations.push({
+      ...MIGRATION_PLAN.infrastructure,
+      key: "infrastructure",
+    });
 
     MIGRATION_PLAN.auditReports.forEach((item, index) => {
       allMigrations.push({ ...item, key: `auditReport${index}` });

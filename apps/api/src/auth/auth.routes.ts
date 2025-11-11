@@ -4,6 +4,7 @@
  */
 
 import { Router } from "express";
+
 import type { AuthRequest } from "./auth.middleware.ts";
 import { authenticate } from "./auth.middleware.ts";
 import { authService } from "./auth.service.ts";
@@ -30,8 +31,7 @@ router.post("/register", async (req, res) => {
       tokens: result.tokens,
     });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Registration failed";
+    const message = error instanceof Error ? error.message : "Registration failed";
     res.status(400).json({ error: message });
   }
 });
@@ -78,9 +78,30 @@ router.post("/refresh", async (req, res) => {
 
     res.json(result);
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Token refresh failed";
+    const message = error instanceof Error ? error.message : "Token refresh failed";
     res.status(401).json({ error: message });
+  }
+});
+
+/**
+ * POST /auth/logout
+ * Revoke refresh token (logout)
+ */
+router.post("/logout", async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+
+    if (!refreshToken) {
+      res.status(400).json({ error: "Refresh token is required" });
+      return;
+    }
+
+    await authService.revokeRefreshToken(refreshToken);
+
+    res.json({ message: "Logged out successfully" });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : "Logout failed";
+    res.status(400).json({ error: message });
   }
 });
 
@@ -103,8 +124,7 @@ router.get("/me", authenticate, async (req: AuthRequest, res) => {
 
     res.json({ user });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to get user";
+    const message = error instanceof Error ? error.message : "Failed to get user";
     res.status(500).json({ error: message });
   }
 });

@@ -7,9 +7,10 @@
 
 const fs = require("fs");
 const path = require("path");
+
+const CodeAnalyzer = require("./code-analyzer.cjs");
 const ExpertKnowledge = require("./expert-knowledge.cjs");
 const PatternMatcher = require("./pattern-matcher.cjs");
-const CodeAnalyzer = require("./code-analyzer.cjs");
 
 const AI_DIR = path.join(__dirname, "../../../ai");
 const CONTEXT_DIR = path.join(__dirname, "../../../tools/ai/context-bundles");

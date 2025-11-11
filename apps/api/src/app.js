@@ -2,22 +2,24 @@ const compression = require("compression");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
 const express = require("express");
-const helmet = require("helmet");
 const rateLimit = require("express-rate-limit");
-const { getDatabase } = require("./index");
+const helmet = require("helmet");
+
 const { authenticate, requireRole } = require("./middleware/auth");
 const { csrfProtection, csrfTokenMiddleware } = require("./middleware/csrf");
-const { sanitizeRequestForLog } = require("./utils/log-sanitizer");
 const requestId = require("./middleware/request-id");
 const ageVerificationRoutes = require("./routes/ageVerification");
 const authRoutes = require("./routes/auth");
 const billRoutes = require("./routes/bills");
 const complianceRoutes = require("./routes/compliance");
 const moderationRoutes = require("./routes/moderation");
+const newsRoutes = require("./routes/news");
 const partyRoutes = require("./routes/parties");
 const userRoutes = require("./routes/users");
 const voteRoutes = require("./routes/votes");
-const newsRoutes = require("./routes/news");
+const { sanitizeRequestForLog } = require("./utils/log-sanitizer");
+
+const { getDatabase } = require("./index");
 
 const app = express();
 const logger = console;

@@ -17,12 +17,12 @@ pre-commit:
   commands:
     # Auto-fix code formatting
     prettier:
-      glob: "*.{ts,tsx,js,jsx,json,css,scss,md,yml,yaml}"
+      glob: '*.{ts,tsx,js,jsx,json,css,scss,md,yml,yaml}'
       run: npx prettier --write {staged_files}
       stage_fixed: true
 
     eslint:
-      glob: "*.{ts,tsx,js,jsx}"
+      glob: '*.{ts,tsx,js,jsx}'
       run: npx eslint --fix --max-warnings 0 {staged_files}
       stage_fixed: true
 
@@ -35,9 +35,13 @@ pre-commit:
           echo "⚠️  gitleaks not installed (brew install gitleaks)"
         fi
 
-    # Security: Check for hardcoded secrets
+    # Security: Environment validation and secret detection
+    env-validation:
+      run: node tools/scripts/validation/validate-environment.mjs --mode=scan
+
+    # Security: Check for hardcoded secrets (legacy fallback)
     detect-secrets:
-      glob: "*.{ts,tsx,js,jsx,json,yml,yaml,env,sh}"
+      glob: '*.{ts,tsx,js,jsx,json,yml,yaml,env,sh}'
       run: |
         if grep -nE "(password|secret|key|token).*=.*['\"][^'\"]{20,}" {staged_files} 2>/dev/null; then
           echo "❌ Potential hardcoded secrets detected!"
@@ -46,13 +50,13 @@ pre-commit:
 
     # TypeScript validation
     type-check:
-      glob: "*.{ts,tsx}"
+      glob: '*.{ts,tsx}'
       run: npx tsc --noEmit --skipLibCheck
 
     # No console.log in production
     no-console:
-      glob: "apps/**/*.{ts,tsx}"
-      exclude: "*.test.{ts,tsx}|*.spec.{ts,tsx}"
+      glob: 'apps/**/*.{ts,tsx}'
+      exclude: '*.test.{ts,tsx}|*.spec.{ts,tsx}'
       run: |
         if grep -n "console\\.log" {staged_files} 2>/dev/null; then
           echo "❌ console.log found in production code"
@@ -61,7 +65,7 @@ pre-commit:
 
     # No .only() in tests
     no-only-tests:
-      glob: "*.{test,spec}.{ts,tsx}"
+      glob: '*.{test,spec}.{ts,tsx}'
       run: |
         if grep -nE "(describe|it|test)\\.only" {staged_files} 2>/dev/null; then
           echo "❌ .only() found in tests"
@@ -70,7 +74,7 @@ pre-commit:
 
     # Validate JSON
     validate-json:
-      glob: "*.json"
+      glob: '*.json'
       run: |
         for file in {staged_files}; do
           jq empty "$file" 2>/dev/null || exit 1
@@ -78,7 +82,7 @@ pre-commit:
 
     # Validate YAML
     validate-yaml:
-      glob: "*.{yml,yaml}"
+      glob: '*.{yml,yaml}'
       run: |
         if command -v yamllint >/dev/null 2>&1; then
           yamllint --strict {staged_files}
@@ -86,7 +90,7 @@ pre-commit:
 
     # GitHub workflows
     actionlint:
-      glob: ".github/workflows/*.{yml,yaml}"
+      glob: '.github/workflows/*.{yml,yaml}'
       run: |
         if command -v actionlint >/dev/null 2>&1; then
           actionlint {staged_files}
@@ -94,7 +98,7 @@ pre-commit:
 
     # Docker linting
     hadolint:
-      glob: "**/Dockerfile*"
+      glob: '**/Dockerfile*'
       run: |
         if command -v hadolint >/dev/null 2>&1; then
           hadolint {staged_files}

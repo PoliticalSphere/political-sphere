@@ -2,14 +2,7 @@ import http from "node:http";
 import os from "node:os";
 import process from "node:process";
 import { URL } from "node:url";
-import {
-  checkRateLimit,
-  getCorsHeaders,
-  getLogger,
-  getRateLimitInfo,
-  isIpAllowed,
-  SECURITY_HEADERS,
-} from "@political-sphere/shared";
+
 import {
   authenticateUser,
   createUser,
@@ -29,12 +22,43 @@ import {
   sendJson,
 } from "./utils/http-utils.js";
 
+import {
+  checkRateLimit,
+  getCorsHeaders,
+  getLogger,
+  getRateLimitInfo,
+  isIpAllowed,
+  SECURITY_HEADERS,
+} from "@political-sphere/shared";
+
 function parsePositiveInt(value: string | undefined | null, fallback: number): number {
   const parsed = Number.parseInt(value ?? "", 10);
   if (Number.isFinite(parsed) && parsed > 0) {
     return parsed;
   }
   return fallback;
+}
+
+/**
+ * Type guard to check if error has a code property
+ */
+function hasErrorCode(error: unknown): error is { code: string } {
+  return typeof error === "object" && error !== null && "code" in error;
+}
+
+/**
+ * Type guard for validation errors with details
+ */
+function isValidationError(
+  error: unknown,
+): error is { code: string; message: string; details?: unknown } {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    (error as { code: string }).code === "VALIDATION_ERROR" &&
+    "message" in error
+  );
 }
 
 const RATE_LIMIT_OPTIONS = {
@@ -88,10 +112,25 @@ function applyHeaders(
   }
 }
 
+const allowedLogLevels = ["debug", "info", "warn", "error"] as const;
+const logLevelString = process.env.LOG_LEVEL;
+if (logLevelString && !allowedLogLevels.includes(logLevelString)) {
+  throw new Error(
+    `Invalid LOG_LEVEL: "${logLevelString}". Allowed values are: ${allowedLogLevels.join(", ")}`
+  );
+}
+const logLevelMap = {
+  debug: 0,
+  info: 1,
+  warn: 2,
+  error: 3,
+} as const;
+const logLevel = logLevelString ? logLevelMap[logLevelString as typeof allowedLogLevels[number]] : undefined;
+const logFile = process.env.LOG_FILE;
 const logger = getLogger({
   service: "api",
-  level: (process.env.LOG_LEVEL as "debug" | "info" | "warn" | "error") || "info",
-  file: process.env.LOG_FILE,
+  ...(logLevel !== undefined && { level: logLevel }),
+  ...(logFile !== undefined && { file: logFile }),
 });
 
 export interface NewsService {
@@ -164,7 +203,7 @@ async function handleRequest(
   // Check IP allowlist/blocklist
   if (!isIpAllowed(clientIp)) {
     logger.logSecurityEvent("ip_blocked", { ip: clientIp }, req);
-    applyHeaders(res, getCorsHeaders(origin || undefined));
+    applyHeaders(res, getCorsHeaders(origin ?? ""));
     sendError(res, 403, "Access denied");
     return;
   }
@@ -175,7 +214,7 @@ async function handleRequest(
       logger.logSecurityEvent("rate_limit_exceeded", { ip: clientIp }, req);
       const rateLimitInfo = getRateLimitInfo(clientIp, RATE_LIMIT_OPTIONS);
       const retryAfter = Math.max(1, rateLimitInfo.reset);
-      applyHeaders(res, getCorsHeaders(origin || undefined));
+      applyHeaders(res, getCorsHeaders(origin ?? ""));
       sendJson(
         res,
         429,
@@ -204,7 +243,7 @@ async function handleRequest(
   }
 
   // CORS handling
-  const corsHeaders = getCorsHeaders(origin || undefined);
+  const corsHeaders = getCorsHeaders(origin ?? "");
 
   if (method === "OPTIONS") {
     applyHeaders(res, corsHeaders);
@@ -233,16 +272,21 @@ async function handleRequest(
   if (pathname === apiBasePath) {
     if (method === "GET") {
       try {
+        const category = url.searchParams.get("category");
+        const tag = url.searchParams.get("tag");
+        const search = url.searchParams.get("search");
+        const limit = url.searchParams.get("limit");
+
         const list = await newsService.list({
-          category: url.searchParams.get("category") || undefined,
-          tag: url.searchParams.get("tag") || undefined,
-          search: url.searchParams.get("search") || undefined,
-          limit: url.searchParams.get("limit") || undefined,
+          ...(category && { category }),
+          ...(tag && { tag }),
+          ...(search && { search }),
+          ...(limit && { limit }),
         });
         sendJson(res, 200, { data: list });
       } catch (error) {
-        if ((error as any).code === "VALIDATION_ERROR") {
-          sendError(res, 400, (error as Error).message, (error as any).details);
+        if (isValidationError(error)) {
+          sendError(res, 400, error.message, error.details);
           return;
         }
         throw error;
@@ -254,12 +298,12 @@ async function handleRequest(
       try {
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
-        if (error.code === "PAYLOAD_TOO_LARGE") {
+        if (hasErrorCode(error) && error.code === "PAYLOAD_TOO_LARGE") {
           logger.logSecurityEvent("payload_too_large", { limit: MAX_BODY_BYTES }, req);
           sendError(res, 413, "Payload too large");
           return;
         }
-        if (error.code === "UNSUPPORTED_MEDIA_TYPE") {
+        if (hasErrorCode(error) && error.code === "UNSUPPORTED_MEDIA_TYPE") {
           logger.logSecurityEvent(
             "unsupported_media_type",
             { contentType: req.headers["content-type"] },
@@ -268,7 +312,7 @@ async function handleRequest(
           sendError(res, 415, "Unsupported content type");
           return;
         }
-        if (error.code === "INVALID_JSON") {
+        if (hasErrorCode(error) && error.code === "INVALID_JSON") {
           sendError(res, 400, "Invalid JSON payload");
           return;
         }
@@ -278,8 +322,8 @@ async function handleRequest(
         const record = await newsService.create(payload);
         sendJson(res, 201, { data: record });
       } catch (error) {
-        if ((error as any).code === "VALIDATION_ERROR") {
-          sendError(res, 400, (error as Error).message, (error as any).details);
+        if (isValidationError(error)) {
+          sendError(res, 400, error.message, error.details);
           return;
         }
         throw error;
@@ -308,12 +352,12 @@ async function handleRequest(
       try {
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
-        if (error.code === "PAYLOAD_TOO_LARGE") {
+        if (hasErrorCode(error) && error.code === "PAYLOAD_TOO_LARGE") {
           logger.logSecurityEvent("payload_too_large", { limit: MAX_BODY_BYTES }, req);
           sendError(res, 413, "Payload too large");
           return;
         }
-        if (error.code === "UNSUPPORTED_MEDIA_TYPE") {
+        if (hasErrorCode(error) && error.code === "UNSUPPORTED_MEDIA_TYPE") {
           logger.logSecurityEvent(
             "unsupported_media_type",
             { contentType: req.headers["content-type"] },
@@ -322,7 +366,7 @@ async function handleRequest(
           sendError(res, 415, "Unsupported content type");
           return;
         }
-        if (error.code === "INVALID_JSON") {
+        if (hasErrorCode(error) && error.code === "INVALID_JSON") {
           sendError(res, 400, "Invalid JSON payload");
           return;
         }
@@ -337,8 +381,8 @@ async function handleRequest(
         }
         sendJson(res, 200, { data: updated });
       } catch (error) {
-        if ((error as any).code === "VALIDATION_ERROR") {
-          sendError(res, 400, (error as Error).message, (error as any).details);
+        if (isValidationError(error)) {
+          sendError(res, 400, error.message, error.details);
           return;
         }
         throw error;
@@ -362,11 +406,11 @@ async function handleRequest(
       try {
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
-        if (error.code === "PAYLOAD_TOO_LARGE") {
+        if (hasErrorCode(error) && error.code === "PAYLOAD_TOO_LARGE") {
           sendError(res, 413, "Payload too large");
           return;
         }
-        if (error.code === "INVALID_JSON") {
+        if (hasErrorCode(error) && error.code === "INVALID_JSON") {
           sendError(res, 400, "Invalid JSON payload");
           return;
         }
@@ -394,7 +438,7 @@ async function handleRequest(
           refreshToken,
         });
       } catch (error) {
-        if (error.message === "User already exists") {
+        if (error instanceof Error && error.message === "User already exists") {
           sendError(res, 409, "User already exists");
           return;
         }
@@ -412,11 +456,11 @@ async function handleRequest(
       try {
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
-        if (error.code === "PAYLOAD_TOO_LARGE") {
+        if (hasErrorCode(error) && error.code === "PAYLOAD_TOO_LARGE") {
           sendError(res, 413, "Payload too large");
           return;
         }
-        if (error.code === "INVALID_JSON") {
+        if (hasErrorCode(error) && error.code === "INVALID_JSON") {
           sendError(res, 400, "Invalid JSON payload");
           return;
         }
@@ -458,11 +502,11 @@ async function handleRequest(
       try {
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
-        if (error.code === "PAYLOAD_TOO_LARGE") {
+        if (hasErrorCode(error) && error.code === "PAYLOAD_TOO_LARGE") {
           sendError(res, 413, "Payload too large");
           return;
         }
-        if (error.code === "INVALID_JSON") {
+        if (hasErrorCode(error) && error.code === "INVALID_JSON") {
           sendError(res, 400, "Invalid JSON payload");
           return;
         }
@@ -476,14 +520,24 @@ async function handleRequest(
       }
 
       const decoded = verifyRefreshToken(refreshToken);
-      if (!decoded) {
+      if (!decoded || typeof decoded === "string") {
         sendError(res, 401, "Invalid or expired refresh token");
         return;
       }
 
-      const user = getUserById(decoded.userId);
-      if (!user) {
-        sendError(res, 401, "User not found");
+      if (
+        typeof decoded === "object" &&
+        decoded !== null &&
+        "userId" in decoded &&
+        typeof (decoded as any).userId === "string"
+      ) {
+        const user = getUserById((decoded as { userId: string }).userId);
+        if (!user) {
+          sendError(res, 401, "User not found");
+          return;
+        }
+      } else {
+        sendError(res, 401, "Invalid or expired refresh token");
         return;
       }
 
@@ -506,11 +560,11 @@ async function handleRequest(
       try {
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
-        if (error.code === "PAYLOAD_TOO_LARGE") {
+        if (hasErrorCode(error) && error.code === "PAYLOAD_TOO_LARGE") {
           sendError(res, 413, "Payload too large");
           return;
         }
-        if (error.code === "INVALID_JSON") {
+        if (hasErrorCode(error) && error.code === "INVALID_JSON") {
           sendError(res, 400, "Invalid JSON payload");
           return;
         }
@@ -534,11 +588,11 @@ async function handleRequest(
       try {
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
-        if (error.code === "PAYLOAD_TOO_LARGE") {
+        if (hasErrorCode(error) && error.code === "PAYLOAD_TOO_LARGE") {
           sendError(res, 413, "Payload too large");
           return;
         }
-        if (error.code === "INVALID_JSON") {
+        if (hasErrorCode(error) && error.code === "INVALID_JSON") {
           sendError(res, 400, "Invalid JSON payload");
           return;
         }
@@ -570,11 +624,11 @@ async function handleRequest(
       try {
         payload = await readJsonBody(req, { limit: MAX_BODY_BYTES });
       } catch (error) {
-        if (error.code === "PAYLOAD_TOO_LARGE") {
+        if (hasErrorCode(error) && error.code === "PAYLOAD_TOO_LARGE") {
           sendError(res, 413, "Payload too large");
           return;
         }
-        if (error.code === "INVALID_JSON") {
+        if (hasErrorCode(error) && error.code === "INVALID_JSON") {
           sendError(res, 400, "Invalid JSON payload");
           return;
         }
@@ -614,7 +668,23 @@ async function handleRequest(
         "/auth/logout",
         "/auth/forgot-password",
         "/auth/reset-password",
+        "/users",
+        "/users/{id}",
+        "/parties",
+        "/parties/{id}",
+        "/bills",
+        "/bills/{id}",
+        "/votes",
+        "/bills/{id}/votes",
+        "/bills/{id}/vote-counts",
       ],
+      security: {
+        rateLimit: RATE_LIMIT_POLICY,
+        maxBodyBytes: MAX_BODY_BYTES,
+        corsEnabled: true,
+        securityHeaders: true,
+        authenticationRequired: true,
+      },
     });
     return;
   }

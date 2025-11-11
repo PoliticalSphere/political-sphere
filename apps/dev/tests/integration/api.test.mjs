@@ -1,6 +1,7 @@
 import https from "https";
 import { spawn, spawnSync } from "node:child_process";
 import { setTimeout as delay } from "node:timers/promises";
+
 import { afterAll, beforeAll, expect, test } from "vitest";
 
 // Polyfill fetch for Node.js versions that don't have it

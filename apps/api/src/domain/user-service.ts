@@ -1,5 +1,6 @@
-import { type CreateUserInput, CreateUserSchema, type User } from "@political-sphere/shared";
 import { getDatabase } from "../modules/stores/index.js";
+
+import { type CreateUserInput, CreateUserSchema, type User } from "@political-sphere/shared";
 
 export class UserService {
   // Use a lazy getter so the service always obtains the current database connection.

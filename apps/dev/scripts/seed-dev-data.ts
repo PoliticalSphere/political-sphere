@@ -7,7 +7,7 @@
  * @module scripts/seed-dev-data
  */
 
-import { DatabaseConnector } from "../../../data/src/connectors/database-connector.js";
+import { DatabaseConnector } from "../../data-pipeline/src/connectors/database-connector";
 
 interface SeedConfig {
   users?: number;
@@ -209,8 +209,8 @@ async function seedProposals(db: DatabaseConnector, count: number): Promise<void
   const statuses = ["draft", "proposed", "debate", "voting", "passed", "rejected"];
 
   for (let i = 0; i < count; i++) {
-    const topic = topics[i % topics.length];
-    const status = statuses[Math.floor(Math.random() * statuses.length)];
+    const topic = topics[i % topics.length] ?? "General";
+    const status = statuses[Math.floor(Math.random() * statuses.length)] ?? "draft";
 
     await db.query(
       `INSERT INTO proposals (title, description, status, category, proposed_date, created_at)
@@ -219,7 +219,7 @@ async function seedProposals(db: DatabaseConnector, count: number): Promise<void
         `${topic} Act ${2025 + i}`,
         `A comprehensive proposal to address ${topic.toLowerCase()} in the United Kingdom.`,
         status,
-        topics[i % topics.length].split(" ")[0].toLowerCase(),
+        (topics[i % topics.length] ?? "General").split(" ")[0]?.toLowerCase() ?? "general",
         new Date(Date.now() - Math.random() * 90 * 24 * 60 * 60 * 1000),
         new Date(),
       ],

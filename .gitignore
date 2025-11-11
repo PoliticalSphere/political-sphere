@@ -63,8 +63,10 @@ temp/
 # package-lock.json
 # pnpm-lock.yaml
 # yarn.lock
+
 # Nx cache/workspace artifacts (don't commit generated caches or workspace DBs)
 .nx/
+graph.json
 
 # AI indexes and generated artifacts
 ai-index/
@@ -109,5 +111,16 @@ ai/ai-knowledge/semantic-index-*.json
 !.ai/write/cache/.gitkeep
 !.ai/write/evals/.gitkeep
 
-# Migration reports (temporary)
-reports/reorganization-log.json
+# Generated reports and audits (temporary/generated files)
+reports/**/*.json
+reports/**/*.log
+reports/**/*.txt
+!reports/**/.gitkeep
+!reports/**/README.md
+
+# Test results (generated)
+test-results/
+.last-run.json
+
+# Temporary directories
+tools/tmp/

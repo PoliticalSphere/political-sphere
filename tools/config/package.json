@@ -20,7 +20,6 @@
     "@playwright/mcp": "^0.0.45",
     "@playwright/test": "^1.45.0",
     "@swc/core": "^1.14.0",
-
     "@types/better-sqlite3": "^7.6.13",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
     "@typescript-eslint/parser": "^8.46.2",
@@ -33,7 +32,6 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-filenames": "^1.3.2",
     "html-webpack-plugin": "^5.5.0",
-
     "lefthook": "^1.6.10",
     "lint-staged": "^16.2.6",
     "markdownlint-cli": "^0.39.0",
@@ -113,7 +111,7 @@
     "ci:metrics:report": "node scripts/ci/ci-metrics.mjs report",
     "mcp:filesystem": "node ../../apps/dev/mcp-servers/filesystem/index.mjs",
     "mcp:github": "node ../../apps/dev/mcp-servers/github/index.mjs",
-    "mcp:sqlite": "node ../../apps/dev/mcp-servers/sqlite/index.mjs",
+    "mcp:sqlite": "node ../../tools/mcp-servers/sqlite/index.mjs",
     "mcp:puppeteer": "node ../../apps/dev/mcp-servers/puppeteer/index.mjs",
     "mcp:git": "node ../../apps/dev/mcp-servers/git/index.mjs",
     "mcp:political-sphere": "node ../../apps/dev/mcp-servers/political-sphere/index.mjs",
@@ -124,7 +122,12 @@
     "mcp:filesystem-official": "npx -y @modelcontextprotocol/server-filesystem ../../",
     "mcp:time": "npx -y time-mcp",
     "mcp:duckduckgo": "node ../../apps/dev/mcp-servers/duckduckgo/server.mjs",
-    "mcp:all": "concurrently -k \"npm run mcp:filesystem\" \"npm run mcp:github\" \"npm run mcp:sqlite\" \"npm run mcp:puppeteer\" \"npm run mcp:git\" \"npm run mcp:political-sphere\" \"npm run mcp:ai-assistant\" \"npm run mcp:microsoft-learn\" \"npm run mcp:duckduckgo\""
+    "mcp:code-intel": "node ../../tools/mcp-servers/code-intel/index.mjs",
+    "mcp:docs-search": "node ../../tools/mcp-servers/docs-search/index.mjs",
+    "mcp:test-runner": "node ../../tools/mcp-servers/test-runner/index.mjs",
+    "mcp:config": "node ../../tools/mcp-servers/config/index.mjs",
+    "mcp:issues": "node ../../tools/mcp-servers/issues/index.mjs",
+    "mcp:all": "concurrently -k \"npm run mcp:filesystem\" \"npm run mcp:github\" \"npm run mcp:sqlite\" \"npm run mcp:puppeteer\" \"npm run mcp:git\" \"npm run mcp:political-sphere\" \"npm run mcp:ai-assistant\" \"npm run mcp:microsoft-learn\" \"npm run mcp:duckduckgo\" \"npm run mcp:code-intel\" \"npm run mcp:docs-search\" \"npm run mcp:test-runner\" \"npm run mcp:config\" \"npm run mcp:issues\""
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.0",

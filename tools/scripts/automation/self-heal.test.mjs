@@ -8,9 +8,9 @@
  * @see tools/scripts/automation/self-heal.js
  */
 
+import { spawn } from "child_process";
 import assert from "node:assert";
 import { describe, it } from "node:test";
-import { spawn } from "child_process";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 

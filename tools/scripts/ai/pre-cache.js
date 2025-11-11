@@ -8,6 +8,7 @@
 import { promises as fsp } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
+
 import { recordScriptEvent } from "./analytics.js";
 import { updateRecentChanges } from "./update-recent-changes.js";
 

@@ -816,10 +816,10 @@ Every deployed resource includes audit metadata:
 
 ```yaml
 annotations:
-  deployment.political-sphere.com/deployed-at: "2025-11-07T10:30:00Z"
-  deployment.political-sphere.com/deployed-by: "github-actions"
-  deployment.political-sphere.com/commit-sha: "abc123def456"
-  deployment.political-sphere.com/run-id: "123456789"
+  deployment.political-sphere.com/deployed-at: '2025-11-07T10:30:00Z'
+  deployment.political-sphere.com/deployed-by: 'github-actions'
+  deployment.political-sphere.com/commit-sha: 'abc123def456'
+  deployment.political-sphere.com/run-id: '123456789'
 ```
 
 **Benefits:**

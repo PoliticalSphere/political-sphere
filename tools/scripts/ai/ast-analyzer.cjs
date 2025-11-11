@@ -9,10 +9,11 @@
  * @source VS Code (microsoft/vscode) - Code intelligence and semantic tokens
  */
 
-const acorn = require("acorn");
-const walk = require("acorn-walk");
 const fs = require("fs");
 const path = require("path");
+
+const acorn = require("acorn");
+const walk = require("acorn-walk");
 
 class ASTAnalyzer {
   constructor() {

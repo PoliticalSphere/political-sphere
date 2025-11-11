@@ -4,13 +4,14 @@
 // - Optionally starts index server with ANN_BACKEND_URL (set TEST_ANN_URL) and compares recall@k
 // - Validates ANN fallback/metrics behaviour when ANN is unavailable
 
-import { test, beforeAll, afterAll, expect } from "vitest";
 import { spawn } from "node:child_process";
-import http from "node:http";
 import { promises as fsp } from "node:fs";
+import { existsSync } from "node:fs";
+import http from "node:http";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import { existsSync } from "node:fs";
+
+import { test, beforeAll, afterAll, expect } from "vitest";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -64,7 +65,7 @@ async function waitForHttp(port, path = "/vector-search?q=health&top=1", timeout
       // ignore and retry
     }
     // small backoff
-    // eslint-disable-next-line no-await-in-loop
+
     await new Promise((res) => setTimeout(res, 200));
   }
   throw new Error(`Timed out waiting for HTTP ${url}`);
@@ -109,7 +110,10 @@ function startIndexServer({ port = 0, annUrl } = {}) {
         const results = Array.from({ length: Math.min(3, top) }).map((_, i) => ({
           file: `${q}-file-${i}`,
         }));
-        const payload = { results, meta: { backend: annUrl ? "ann" : "brute" } };
+        const payload = {
+          results,
+          meta: { backend: annUrl ? "ann" : "brute" },
+        };
         res.writeHead(200, { "Content-Type": "application/json" });
         res.end(JSON.stringify(payload));
         return;
@@ -126,7 +130,10 @@ function startIndexServer({ port = 0, annUrl } = {}) {
     server.listen(port, "127.0.0.1", () => {
       const addr = server.address();
       const actualPort = addr?.port ?? port;
-      const proc = { port: actualPort, kill: () => new Promise((res) => server.close(res)) };
+      const proc = {
+        port: actualPort,
+        kill: () => new Promise((res) => server.close(res)),
+      };
       resolve(proc);
     });
   });

@@ -30,7 +30,7 @@ on:
   pull_request:
     branches: [main]
   schedule:
-    - cron: "0 2 * * 1" # Weekly on Mondays at 2 AM UTC
+    - cron: '0 2 * * 1' # Weekly on Mondays at 2 AM UTC
   workflow_dispatch:
 
 permissions:
@@ -46,7 +46,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  NODE_VERSION: "22"
+  NODE_VERSION: '22'
 
 jobs:
   # ===========================================================================
@@ -220,7 +220,7 @@ jobs:
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -291,7 +291,7 @@ jobs:
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -333,8 +333,7 @@ jobs:
     name: Security Summary
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    needs:
-      [secrets-and-workflows, sast-scanning, dependency-scanning, supply-chain]
+    needs: [secrets-and-workflows, sast-scanning, dependency-scanning, supply-chain]
     if: always()
     steps:
       - name: Generate Security Summary

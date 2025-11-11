@@ -24,7 +24,7 @@ export const CreateUserSchema = z.object({
     .max(50, "Username must not exceed 50 characters")
     .regex(
       /^[a-z0-9_-]+$/,
-      "Username can only contain lowercase letters, numbers, hyphens, and underscores"
+      "Username can only contain lowercase letters, numbers, hyphens, and underscores",
     ),
 
   email: z
@@ -39,10 +39,7 @@ export const CreateUserSchema = z.object({
     .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
     .regex(/[a-z]/, "Password must contain at least one lowercase letter")
     .regex(/[0-9]/, "Password must contain at least one number")
-    .regex(
-      /[^A-Za-z0-9]/,
-      "Password must contain at least one special character"
-    ),
+    .regex(/[^A-Za-z0-9]/, "Password must contain at least one special character"),
 
   role: z.enum(["user", "moderator", "admin"]).default("user"),
 });
@@ -95,7 +92,7 @@ export const CreateBillSchema = z
     {
       message: "Voting end date must be after start date",
       path: ["votingEndsAt"],
-    }
+    },
   );
 
 export type CreateBillInput = z.infer<typeof CreateBillSchema>;
@@ -137,10 +134,7 @@ export type PaginationInput = z.infer<typeof PaginationSchema>;
  * app.get('/bills', validate('query', PaginationSchema), listBillsHandler);
  * ```
  */
-export function validate(
-  source: "body" | "query" | "params",
-  schema: z.ZodSchema
-) {
+export function validate(source: "body" | "query" | "params", schema: z.ZodSchema) {
   return async (req: Request, res: Response, next: NextFunction) => {
     try {
       const data = req[source];
@@ -241,10 +235,7 @@ export async function castVoteHandler(req: Request, res: Response) {
   }
 
   // Check for duplicate vote
-  const existingVote = await voteRepository.findByUserAndBill(
-    userId,
-    voteData.billId
-  );
+  const existingVote = await voteRepository.findByUserAndBill(userId, voteData.billId);
 
   if (existingVote) {
     return res.status(409).json({
@@ -282,17 +273,13 @@ export const UpdateUserSchema = z
     },
     {
       message: "At least one field must be provided for update",
-    }
+    },
   );
 
 /**
  * Middleware to check role-based field permissions
  */
-export function validateRoleUpdate(
-  req: Request,
-  res: Response,
-  next: NextFunction
-) {
+export function validateRoleUpdate(req: Request, res: Response, next: NextFunction) {
   const currentUser = req.user!;
   const updates = req.body;
 
@@ -390,7 +377,7 @@ describe("validate middleware", () => {
             message: expect.stringContaining("at least 3 characters"),
           }),
         ]),
-      })
+      }),
     );
     expect(next).not.toHaveBeenCalled();
   });

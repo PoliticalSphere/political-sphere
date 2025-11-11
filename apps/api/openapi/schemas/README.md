@@ -21,7 +21,7 @@ Schemas in this directory should be referenced in `api.yaml` using `$ref`:
 components:
   schemas:
     User:
-      $ref: "./schemas/users/User.yaml"
+      $ref: './schemas/users/User.yaml'
 ```
 
 ## Best Practices

@@ -18,6 +18,7 @@
     "esbenp.prettier-vscode", // Code formatting
     "streetsidesoftware.code-spell-checker", // Documentation quality
     "ms-vscode.vscode-typescript-next", // TypeScript support
+    "nrwl.angular-console", // Nx Console GUI for monorepo targets
 
     // Testing - Keep only necessary test runners (Level 4: Integrated testing)
     "vitest.explorer", // Test exploration and running
@@ -35,7 +36,10 @@
     "yoavbls.pretty-ts-errors", // Enhanced error display
     "redhat.vscode-yaml", // YAML editing support
     "bradlc.vscode-tailwindcss", // CSS framework support
-    "ms-vscode-remote.remote-containers" // Dev container support
+    "ms-vscode-remote.remote-containers", // Dev container support
+
+    // API productivity (Level 4: Local contract testing)
+    "rangav.vscode-thunder-client" // GUI REST client scoped to workspace
   ],
 
   // Extensions with known performance issues - avoid or disable (Level 4: Performance optimization)
@@ -50,6 +54,9 @@
     "HookyQR.beautify", // Duplicate beautify extension
 
     // Security concerns
-    "ms-vscode-remote.remote-ssh" // Potential security risks in shared environments
+    "ms-vscode-remote.remote-ssh", // Potential security risks in shared environments
+
+    // Unstable/crashing extensions
+    "arjun.swagger-viewer" // Causes repeated extension host errors in this workspace
   ]
 }

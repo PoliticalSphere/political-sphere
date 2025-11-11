@@ -40,14 +40,7 @@
     "status": {
       "type": "string",
       "description": "Current status of the bill in the legislative process",
-      "enum": [
-        "draft",
-        "proposed",
-        "active_voting",
-        "passed",
-        "rejected",
-        "withdrawn"
-      ],
+      "enum": ["draft", "proposed", "active_voting", "passed", "rejected", "withdrawn"],
       "examples": ["draft", "active_voting", "passed"]
     },
     "category": {

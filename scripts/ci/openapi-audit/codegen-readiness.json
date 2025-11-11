@@ -1,1 +1,5 @@
-scripts/ci/openapi-audit.sh: line 337: timeout: command not found
+{
+  "status": "error",
+  "message": "scripts/ci/openapi-audit.sh: line 337: timeout: command not found",
+  "nextStep": "Ensure GNU coreutils timeout is available in the CI image before re-running openapi-audit."
+}

@@ -1,53 +1,53 @@
-name: "Quality Checks"
-description: "Run linting, type checking, and code quality checks"
-author: "Political Sphere"
+name: 'Quality Checks'
+description: 'Run linting, type checking, and code quality checks'
+author: 'Political Sphere'
 
 inputs:
   run-lint:
-    description: "Run linting checks"
+    description: 'Run linting checks'
     required: false
-    default: "true"
+    default: 'true'
 
   run-typecheck:
-    description: "Run TypeScript type checking"
+    description: 'Run TypeScript type checking'
     required: false
-    default: "true"
+    default: 'true'
 
   run-format-check:
-    description: "Check code formatting"
+    description: 'Check code formatting'
     required: false
-    default: "true"
+    default: 'true'
 
   lint-command:
-    description: "Command to run linting"
+    description: 'Command to run linting'
     required: false
-    default: "npm run lint"
+    default: 'npm run lint'
 
   typecheck-command:
-    description: "Command to run type checking"
+    description: 'Command to run type checking'
     required: false
-    default: "npm run type-check"
+    default: 'npm run type-check'
 
   format-check-command:
-    description: "Command to check formatting"
+    description: 'Command to check formatting'
     required: false
-    default: "npm run format:check"
+    default: 'npm run format:check'
 
 outputs:
   lint-passed:
-    description: "Whether linting passed"
+    description: 'Whether linting passed'
     value: ${{ steps.results.outputs.lint-passed }}
 
   typecheck-passed:
-    description: "Whether type checking passed"
+    description: 'Whether type checking passed'
     value: ${{ steps.results.outputs.typecheck-passed }}
 
   format-passed:
-    description: "Whether format checking passed"
+    description: 'Whether format checking passed'
     value: ${{ steps.results.outputs.format-passed }}
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Run Linting
       id: lint

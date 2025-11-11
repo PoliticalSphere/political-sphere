@@ -4,15 +4,7 @@
   "title": "Party",
   "description": "A political party in the Political Sphere platform",
   "type": "object",
-  "required": [
-    "id",
-    "name",
-    "abbreviation",
-    "foundedAt",
-    "isActive",
-    "createdAt",
-    "updatedAt"
-  ],
+  "required": ["id", "name", "abbreviation", "foundedAt", "isActive", "createdAt", "updatedAt"],
   "properties": {
     "id": {
       "type": "string",

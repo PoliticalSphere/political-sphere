@@ -1,7 +1,8 @@
 import express from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import authRoutes from "../routes/auth.js";
+
+import authRoutes from "../../src/routes/auth.js";
 
 // Set required environment variables for tests
 process.env.JWT_SECRET = "test-secret-key";
@@ -13,15 +14,16 @@ const mockDb = {
     create: vi.fn(),
     getById: vi.fn(),
     getByUsername: vi.fn(),
+    getUserForAuth: vi.fn(),
   },
 };
 
 // Mock the database and auth dependencies
-vi.mock("../index.js", () => ({
+vi.mock("../../src/modules/stores/index.ts", () => ({
   getDatabase: vi.fn(() => mockDb),
 }));
 
-vi.mock("../logger.js", () => ({
+vi.mock("../../src/logger.js", () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -93,8 +95,6 @@ describe("Auth Routes", () => {
     });
 
     it("should return 409 for duplicate username", async () => {
-      const { getDatabase } = await import("../modules/stores/index.js");
-      const mockDb = getDatabase();
       mockDb.users.create.mockRejectedValue(new Error("UNIQUE constraint failed: users.username"));
 
       const response = await request(app)
@@ -113,11 +113,12 @@ describe("Auth Routes", () => {
 
   describe("POST /auth/login", () => {
     it("should login user successfully", async () => {
-      mockDb.users.getByUsername.mockResolvedValue({
+      mockDb.users.getUserForAuth.mockResolvedValue({
         id: "user-123",
         username: "testuser",
         email: "test@example.com",
         passwordHash: "hashed-password",
+        role: "VIEWER",
       });
 
       const response = await request(app)
@@ -134,7 +135,7 @@ describe("Auth Routes", () => {
     });
 
     it("should return 401 for invalid credentials", async () => {
-      mockDb.users.getByUsername.mockResolvedValue(null);
+      mockDb.users.getUserForAuth.mockResolvedValue(null);
 
       const response = await request(app)
         .post("/auth/login")

@@ -25,7 +25,7 @@ class AppError extends Error {
     public code: string,
     message: string,
     public details?: unknown,
-    public isOperational = true
+    public isOperational = true,
   ) {
     super(message);
     this.name = this.constructor.name;
@@ -99,12 +99,7 @@ class RateLimitError extends AppError {
  *
  * Place this as the last middleware in your Express app
  */
-function errorHandler(
-  err: Error,
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+function errorHandler(err: Error, req: Request, res: Response, next: NextFunction): void {
   // Log error with context
   logError(err, {
     method: req.method,
@@ -156,9 +151,7 @@ function errorHandler(
  * }));
  * ```
  */
-function asyncHandler(
-  fn: (req: Request, res: Response, next: NextFunction) => Promise<any>
-) {
+function asyncHandler(fn: (req: Request, res: Response, next: NextFunction) => Promise<any>) {
   return (req: Request, res: Response, next: NextFunction) => {
     Promise.resolve(fn(req, res, next)).catch(next);
   };
@@ -292,11 +285,7 @@ function logError(error: Error, context: ErrorContext = {}): void {
 /**
  * Catch-all 404 handler - place before error handler
  */
-function notFoundHandler(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+function notFoundHandler(req: Request, res: Response, next: NextFunction): void {
   next(new NotFoundError("Route", `${req.method} ${req.path}`));
 }
 

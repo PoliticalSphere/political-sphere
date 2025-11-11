@@ -1,35 +1,35 @@
 import assert from "node:assert";
-import request from "supertest";
+
 import express from "express";
+
+import authRoutes from "../../src/auth/auth.routes.ts";
+import { closeDatabase, getDatabase } from "../../src/modules/stores/index.ts";
 import usersRouter from "../../src/routes/users.js";
-import { getDatabase, closeDatabase } from "../../src/index.js";
+import { dispatchRequest } from "../utils/express-request.js";
 
 describe("Users Routes", () => {
   let app;
+  let authToken;
 
-  beforeEach(() => {
+  beforeEach(async () => {
     getDatabase();
     app = express();
-    // Debugging middleware to capture raw request headers before body parsing
-    // eslint-disable-next-line no-console
-    app.use((req, res, next) => {
-      console.debug("[test] incoming headers:", req.headers);
-      next();
-    });
-    // Use text parser + manual JSON parse to avoid body-parser charset handling quirks in the test environment
-    app.use(express.text({ type: "*/*" }));
-    app.use((req, res, next) => {
-      try {
-        if (typeof req.body === "string" && req.body.length > 0) {
-          // eslint-disable-next-line no-param-reassign
-          req.body = JSON.parse(req.body);
-        }
-        return next();
-      } catch (err) {
-        return next(err);
-      }
-    });
     app.use("/api", usersRouter);
+    app.use("/auth", authRoutes);
+
+    // Create a test user and get auth token
+    const timestamp = Date.now();
+    const createResponse = await dispatchRequest(app, {
+      method: "POST",
+      url: "/auth/register",
+      body: {
+        username: `testuser${timestamp}`,
+        password: "password123",
+        email: `test${timestamp}@example.com`,
+      },
+    });
+    assert.strictEqual(createResponse.status, 201);
+    authToken = createResponse.body.tokens.accessToken;
   });
 
   afterEach(() => {
@@ -39,26 +39,15 @@ describe("Users Routes", () => {
   describe("POST /api/users", () => {
     it("should create a new user", async () => {
       const timestamp = Date.now();
-      // Capture full response for debugging (don't use .expect so we can log body on 415)
-      const response = await request(app)
-        .post("/api/users")
-        .set("Content-Type", "application/json; charset=utf-8")
-        .send({
+      const response = await dispatchRequest(app, {
+        method: "POST",
+        url: "/api/users",
+        body: {
           username: `user${timestamp}`,
           email: `test-${timestamp}@example.com`,
-        });
-
-      // Debug output to inspect why a 415 is returned
-      // eslint-disable-next-line no-console
-      console.log("[test-debug] status:", response.status);
-      // eslint-disable-next-line no-console
-      console.log("[test-debug] headers:", response.headers);
-      // eslint-disable-next-line no-console
-      console.log("[test-debug] body:", response.body);
-      // eslint-disable-next-line no-console
-      console.log("[test-debug] text:", response.text);
-
-      assert.strictEqual(response.status, 201, `Expected 201 but got ${response.status}`);
+        },
+      });
+      assert.strictEqual(response.status, 201);
       assert(response.body.data.id);
       assert.strictEqual(response.body.data.username, `user${timestamp}`);
       assert.strictEqual(response.body.data.email, `test-${timestamp}@example.com`);
@@ -67,40 +56,39 @@ describe("Users Routes", () => {
     });
 
     it("should return 400 for invalid input", async () => {
-      const response = await request(app)
-        .post("/api/users")
-        .set("Content-Type", "application/json")
-        .send({
+      const response = await dispatchRequest(app, {
+        method: "POST",
+        url: "/api/users",
+        body: {
           username: "",
           email: "invalid-email",
-        })
-        .expect(400);
-
+        },
+      });
+      assert.strictEqual(response.status, 400);
       assert(response.body.error);
     });
 
     it("should return 400 for duplicate username", async () => {
       const timestamp = Date.now();
-      // Create first user
-      await request(app)
-        .post("/api/users")
-        .set("Content-Type", "application/json")
-        .send({
+      const first = await dispatchRequest(app, {
+        method: "POST",
+        url: "/api/users",
+        body: {
           username: `user${timestamp}`,
           email: `test-${timestamp}@example.com`,
-        })
-        .expect(201);
+        },
+      });
+      assert.strictEqual(first.status, 201);
 
-      // Try to create duplicate
-      const response = await request(app)
-        .post("/api/users")
-        .set("Content-Type", "application/json")
-        .send({
+      const response = await dispatchRequest(app, {
+        method: "POST",
+        url: "/api/users",
+        body: {
           username: `user${timestamp}`,
           email: `test2-${timestamp}@example.com`,
-        })
-        .expect(400);
-
+        },
+      });
+      assert.strictEqual(response.status, 400);
       assert(response.body.error);
     });
   });
@@ -108,25 +96,33 @@ describe("Users Routes", () => {
   describe("GET /api/users/:id", () => {
     it("should return user by id", async () => {
       const timestamp = Date.now();
-      const createResponse = await request(app)
-        .post("/api/users")
-        .set("Content-Type", "application/json")
-        .send({
+      const createResponse = await dispatchRequest(app, {
+        method: "POST",
+        url: "/api/users",
+        body: {
           username: `user${timestamp}`,
           email: `test-${timestamp}@example.com`,
-        })
-        .expect(201);
+        },
+      });
+      assert.strictEqual(createResponse.status, 201);
 
       const userId = createResponse.body.data.id;
 
-      const getResponse = await request(app).get(`/api/users/${userId}`).expect(200);
-
+      const getResponse = await dispatchRequest(app, {
+        method: "GET",
+        url: `/api/users/${userId}`,
+        headers: authToken ? { Authorization: `Bearer ${authToken}` } : {},
+      });
+      assert.strictEqual(getResponse.status, 200);
       assert.deepStrictEqual(getResponse.body, createResponse.body.data);
     });
 
     it("should return 404 for non-existent user", async () => {
-      const response = await request(app).get("/api/users/non-existent-id").expect(404);
-
+      const response = await dispatchRequest(app, {
+        method: "GET",
+        url: "/api/users/non-existent-id",
+      });
+      assert.strictEqual(response.status, 404);
       assert.strictEqual(response.body.error, "User not found");
     });
   });

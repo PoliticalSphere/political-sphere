@@ -19,14 +19,14 @@ This document outlines secure cryptographic practices for the Political Sphere p
 
 ```javascript
 // ❌ NEVER USE
-crypto.createHash("md5").update(data).digest("hex");
+crypto.createHash('md5').update(data).digest('hex');
 ```
 
 **Replacement:**
 
 ```javascript
 // ✅ USE INSTEAD
-crypto.createHash("sha256").update(data).digest("hex");
+crypto.createHash('sha256').update(data).digest('hex');
 ```
 
 ### ❌ SHA-1 (Secure Hash Algorithm 1)
@@ -38,14 +38,14 @@ crypto.createHash("sha256").update(data).digest("hex");
 
 ```javascript
 // ❌ NEVER USE
-crypto.createHash("sha1").update(data).digest("hex");
+crypto.createHash('sha1').update(data).digest('hex');
 ```
 
 **Replacement:**
 
 ```javascript
 // ✅ USE INSTEAD
-crypto.createHash("sha256").update(data).digest("hex");
+crypto.createHash('sha256').update(data).digest('hex');
 ```
 
 ## Approved Algorithms
@@ -55,16 +55,16 @@ crypto.createHash("sha256").update(data).digest("hex");
 **Use for:** Checksums, content hashing, non-cryptographic integrity checks
 
 ```javascript
-const crypto = require("crypto");
+const crypto = require('crypto');
 
 // File integrity check
-const hash = crypto.createHash("sha256").update(fileContent).digest("hex");
+const hash = crypto.createHash('sha256').update(fileContent).digest('hex');
 
 // Content-based cache key
 const cacheKey = crypto
-  .createHash("sha256")
+  .createHash('sha256')
   .update(JSON.stringify(data))
-  .digest("hex")
+  .digest('hex')
   .slice(0, 16); // Can truncate for shorter keys
 ```
 
@@ -74,7 +74,7 @@ const cacheKey = crypto
 
 ```javascript
 // Higher security hash
-const hash = crypto.createHash("sha512").update(sensitiveData).digest("hex");
+const hash = crypto.createHash('sha512').update(sensitiveData).digest('hex');
 ```
 
 ### ✅ SHA-3 Family (Latest Standard)
@@ -83,7 +83,7 @@ const hash = crypto.createHash("sha512").update(sensitiveData).digest("hex");
 
 ```javascript
 // SHA-3 (when available in Node.js crypto)
-const hash = crypto.createHash("sha3-256").update(data).digest("hex");
+const hash = crypto.createHash('sha3-256').update(data).digest('hex');
 ```
 
 ## Special Use Cases
@@ -94,18 +94,18 @@ const hash = crypto.createHash("sha3-256").update(data).digest("hex");
 
 ```javascript
 // ❌ WRONG - Even SHA-256 is inadequate for passwords
-const passwordHash = crypto.createHash("sha256").update(password).digest("hex");
+const passwordHash = crypto.createHash('sha256').update(password).digest('hex');
 ```
 
 **✅ USE password-specific algorithms:**
 
 ```javascript
 // ✅ CORRECT - Use bcrypt
-const bcrypt = require("bcryptjs");
+const bcrypt = require('bcryptjs');
 const hash = bcrypt.hashSync(password, 12); // 12 rounds minimum
 
 // ✅ BETTER - Use Argon2 (if available)
-const argon2 = require("argon2");
+const argon2 = require('argon2');
 const hash = await argon2.hash(password, {
   type: argon2.argon2id,
   memoryCost: 65536, // 64 MB
@@ -127,10 +127,10 @@ const token = Math.random().toString(36).substring(7);
 
 ```javascript
 // ✅ CORRECT - Cryptographically secure
-const token = crypto.randomBytes(32).toString("hex");
+const token = crypto.randomBytes(32).toString('hex');
 
 // ✅ For UUIDs
-const { v4: uuidv4 } = require("uuid");
+const { v4: uuidv4 } = require('uuid');
 const id = uuidv4(); // Uses crypto.randomBytes internally
 ```
 
@@ -140,16 +140,10 @@ const id = uuidv4(); // Uses crypto.randomBytes internally
 
 ```javascript
 // ✅ CORRECT
-const hmac = crypto
-  .createHmac("sha256", secretKey)
-  .update(message)
-  .digest("hex");
+const hmac = crypto.createHmac('sha256', secretKey).update(message).digest('hex');
 
 // ✅ BETTER (for high security)
-const hmac = crypto
-  .createHmac("sha512", secretKey)
-  .update(message)
-  .digest("hex");
+const hmac = crypto.createHmac('sha512', secretKey).update(message).digest('hex');
 ```
 
 ## Migration Guide
@@ -160,7 +154,7 @@ If you encounter existing code using weak algorithms:
 
 ```javascript
 // Example: Old code using MD5
-const hash = crypto.createHash("md5").update(content).digest("hex");
+const hash = crypto.createHash('md5').update(content).digest('hex');
 ```
 
 ### Step 2: Determine the Purpose
@@ -174,7 +168,7 @@ const hash = crypto.createHash("md5").update(content).digest("hex");
 
 ```javascript
 // ✅ Replaced with SHA-256
-const hash = crypto.createHash("sha256").update(content).digest("hex");
+const hash = crypto.createHash('sha256').update(content).digest('hex');
 ```
 
 ### Step 4: Update Any Stored Hashes
@@ -183,7 +177,7 @@ If the hash is stored (e.g., in a database), you may need a migration:
 
 ```javascript
 // Option 1: Rehash on next use (for passwords)
-if (user.passwordHash.startsWith("$2b$")) {
+if (user.passwordHash.startsWith('$2b$')) {
   // Already bcrypt, verify normally
 } else {
   // Old MD5 hash - force password reset
@@ -191,9 +185,9 @@ if (user.passwordHash.startsWith("$2b$")) {
 }
 
 // Option 2: Regenerate on demand (for content hashes)
-if (file.hashAlgorithm === "md5") {
-  file.hash = crypto.createHash("sha256").update(content).digest("hex");
-  file.hashAlgorithm = "sha256";
+if (file.hashAlgorithm === 'md5') {
+  file.hash = crypto.createHash('sha256').update(content).digest('hex');
+  file.hashAlgorithm = 'sha256';
   await file.save();
 }
 ```

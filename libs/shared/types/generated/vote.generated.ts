@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * This file was automatically generated from vote.schema.json.
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSON Schema file,
@@ -24,7 +23,7 @@ export interface Vote {
   /**
    * Voting position
    */
-  position: 'for' | 'against' | 'abstain';
+  position: "for" | "against" | "abstain";
   /**
    * Weight of the vote (default 1.0 for standard votes)
    */

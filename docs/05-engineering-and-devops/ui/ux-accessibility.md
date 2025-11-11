@@ -1,6 +1,6 @@
 ---
-description: "User experience, ethical design, and WCAG 2.2 AA+ accessibility requirements"
-applyTo: "**/apps/frontend/**/*,**/libs/ui/**/*"
+description: 'User experience, ethical design, and WCAG 2.2 AA+ accessibility requirements'
+applyTo: '**/apps/frontend/**/*,**/libs/ui/**/*'
 ---
 
 # User Experience & Accessibility

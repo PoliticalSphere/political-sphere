@@ -164,7 +164,10 @@ function checkVSCodeHealth() {
       command = 'ps aux | grep -i "[c]ode" | head -5';
     }
 
-    const output = execSync(command, { encoding: "utf-8", stdio: ["pipe", "pipe", "ignore"] });
+    const output = execSync(command, {
+      encoding: "utf-8",
+      stdio: ["pipe", "pipe", "ignore"],
+    });
     const processes = output
       .trim()
       .split("\n")

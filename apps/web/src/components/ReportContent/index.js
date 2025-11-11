@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from "react";
+
 import { useAccessibility } from "../../hooks/useAccessibility";
 import "./ReportContent.css";
 

@@ -38,6 +38,7 @@
 | [Dashboards and Alerts](dashboards-and-alerts.md)                                       | Monitoring dashboards and alert configurations | Active |
 | [On-Call and Incident Handbook](on-call-and-incident-handbook.md)                       | Incident response procedures                   | Active |
 | [Runbooks Index](runbooks-index.md)                                                     | Operational runbooks for common issues         | Active |
+| [SigNoz Local Stack](signoz.md)                                                         | Self-hosted OTEL collector for developers      | Active |
 | [Capacity and Demand Management](capacity-and-demand-management.md)                     | Resource planning and scaling                  | Draft  |
 | [Change Failure Rate and Velocity Metrics](change-failure-rate-and-velocity-metrics.md) | Deployment and reliability metrics             | Active |
 | [Ops KPIs and Executive Reporting](ops-kpis-and-executive-reporting.md)                 | Key performance indicators and reporting       | Active |

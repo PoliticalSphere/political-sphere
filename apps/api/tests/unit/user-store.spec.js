@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import UserStore from "../stores/user-store.js";
 
 // Mock the database
-vi.mock("../index.js", () => ({
+vi.mock("../../src/modules/stores/index.ts", () => ({
   getDatabase: vi.fn(() => ({
     users: {
       create: vi.fn(),
@@ -22,7 +23,7 @@ describe("UserStore", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const { getDatabase } = await import("../modules/stores/index.js");
+    const { getDatabase } = await import("../../src/modules/stores/index.ts");
     mockDb = getDatabase();
     store = new UserStore(mockDb.users);
   });

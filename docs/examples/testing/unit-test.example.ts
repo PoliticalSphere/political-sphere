@@ -11,8 +11,8 @@
  * Standards: QUAL-01 to QUAL-09
  */
 
-import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 import { UserFactory, BillFactory } from "@political-sphere/testing/factories";
+import { describe, it, expect, beforeEach, afterEach, vi } from "vitest";
 
 // ============================================================================
 // EXAMPLE 1: Testing Pure Functions
@@ -112,7 +112,7 @@ describe("UserService", () => {
         expect.objectContaining({
           username: userData.username,
           email: userData.email,
-        })
+        }),
       );
       expect(mockRepository.save).toHaveBeenCalledTimes(1);
     });
@@ -138,9 +138,7 @@ describe("UserService", () => {
       mockRepository.findByEmail.mockResolvedValue(existingUser);
 
       // Act & Assert
-      await expect(userService.createUser(newUserData)).rejects.toThrow(
-        "Email already exists"
-      );
+      await expect(userService.createUser(newUserData)).rejects.toThrow("Email already exists");
       expect(mockRepository.save).not.toHaveBeenCalled();
     });
 
@@ -191,7 +189,7 @@ describe("BillService", () => {
       expect(result.status).toBe("passed");
       expect(mockBillRepo.update).toHaveBeenCalledWith(
         bill.id,
-        expect.objectContaining({ status: "passed" })
+        expect.objectContaining({ status: "passed" }),
       );
     });
 
@@ -217,9 +215,7 @@ describe("BillService", () => {
       mockBillRepo.findById.mockResolvedValue(null);
 
       // Act & Assert
-      await expect(billService.finalizeBill("bill-999")).rejects.toThrow(
-        "Bill not found"
-      );
+      await expect(billService.finalizeBill("bill-999")).rejects.toThrow("Bill not found");
     });
 
     it("should throw error if bill not in active_voting status", async () => {
@@ -229,7 +225,7 @@ describe("BillService", () => {
 
       // Act & Assert
       await expect(billService.finalizeBill(draftBill.id)).rejects.toThrow(
-        "Bill is not in voting phase"
+        "Bill is not in voting phase",
       );
     });
   });
@@ -252,9 +248,9 @@ describe("VotingService", () => {
       const invalidId = "not-a-bill-id";
 
       // Act & Assert
-      await expect(
-        votingService.castVote(invalidId, "user-1", "for")
-      ).rejects.toThrow("Invalid bill ID format");
+      await expect(votingService.castVote(invalidId, "user-1", "for")).rejects.toThrow(
+        "Invalid bill ID format",
+      );
     });
 
     it("should throw on invalid position", async () => {
@@ -264,9 +260,9 @@ describe("VotingService", () => {
       const invalidPosition = "maybe" as string;
 
       // Act & Assert
-      await expect(
-        votingService.castVote(billId, userId, invalidPosition)
-      ).rejects.toThrow("Invalid vote position");
+      await expect(votingService.castVote(billId, userId, invalidPosition)).rejects.toThrow(
+        "Invalid vote position",
+      );
     });
 
     it("should handle database connection failure gracefully", async () => {
@@ -276,9 +272,9 @@ describe("VotingService", () => {
       mockBillRepo.findById.mockRejectedValue(new Error("Connection refused"));
 
       // Act & Assert
-      await expect(
-        votingService.castVote(billId, userId, "for")
-      ).rejects.toThrow("Database operation failed");
+      await expect(votingService.castVote(billId, userId, "for")).rejects.toThrow(
+        "Database operation failed",
+      );
     });
   });
 });
@@ -406,7 +402,7 @@ class UserService {
 class BillService {
   constructor(
     private billRepo: MockBillRepository,
-    _voteRepo: MockVoteRepository
+    _voteRepo: MockVoteRepository,
   ) {}
 
   async finalizeBill(billId: string) {
@@ -436,7 +432,7 @@ class VotingService {
 class VotingWindow {
   constructor(
     private duration: number,
-    private onClose: () => void
+    private onClose: () => void,
   ) {}
 
   start() {

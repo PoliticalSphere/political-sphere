@@ -91,6 +91,41 @@
       "env": {
         "NODE_ENV": "development"
       }
+    },
+    "political-sphere-code-intel": {
+      "command": "npm",
+      "args": ["run", "mcp:code-intel"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "political-sphere-docs-search": {
+      "command": "npm",
+      "args": ["run", "mcp:docs-search"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "political-sphere-test-runner": {
+      "command": "npm",
+      "args": ["run", "mcp:test-runner"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "political-sphere-config": {
+      "command": "npm",
+      "args": ["run", "mcp:config"],
+      "env": {
+        "NODE_ENV": "development"
+      }
+    },
+    "political-sphere-issues": {
+      "command": "npm",
+      "args": ["run", "mcp:issues"],
+      "env": {
+        "NODE_ENV": "development"
+      }
     }
   }
 }

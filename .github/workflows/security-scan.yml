@@ -6,7 +6,7 @@ on:
       working_directory:
         description: Path to scan (defaults to repo root)
         type: string
-        default: "."
+        default: '.'
       npm_audit:
         description: Run npm audit (true/false)
         type: boolean
@@ -14,11 +14,11 @@ on:
       trivy_config:
         description: Additional Trivy config flags
         type: string
-        default: ""
+        default: ''
       grype_config:
         description: Additional Grype config flags
         type: string
-        default: ""
+        default: ''
     secrets:
       gh_token:
         required: false

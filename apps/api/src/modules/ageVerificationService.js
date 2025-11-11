@@ -4,9 +4,11 @@
  * Implements Online Safety Act and COPPA compliance
  */
 
-const logger = require("../utils/logger.js");
-const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
+import * as crypto from "node:crypto";
+
+import jwt from "jsonwebtoken";
+
+import logger from "../logger.js";
 
 class AgeVerificationService {
   constructor(db = null) {
@@ -164,10 +166,10 @@ class AgeVerificationService {
 
     return {
       success: true,
-      age: parseInt(age),
+      age: parseInt(age, 10),
       confidence: "low", // Self-declaration has low confidence
       requiresAdditionalVerification,
-      restrictions: this.getAgeRestrictions(parseInt(age)),
+      restrictions: this.getAgeRestrictions(parseInt(age, 10)),
     };
   }
 
@@ -474,6 +476,11 @@ class AgeVerificationService {
       age--;
     }
 
+    // Ensure age is a valid number
+    if (Number.isNaN(age) || age < 0) {
+      throw new Error("Invalid age calculation");
+    }
+
     // Check minimum age requirement (18+)
     const verified = age >= 18;
 
@@ -627,7 +634,7 @@ Object.getOwnPropertyNames(AgeVerificationService.prototype).forEach((name) => {
 });
 AgeVerificationService.defaultInstance = _defaultAgeVerificationInstance;
 
-module.exports = AgeVerificationService;
+export default AgeVerificationService;
 /**
  * Types
  * @typedef {Object} VerificationResult

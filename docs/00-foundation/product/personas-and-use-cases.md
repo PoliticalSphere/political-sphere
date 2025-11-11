@@ -44,4 +44,3 @@ Our Personas and Use Cases document defines the key user archetypes and behavior
 ---
 
 ## 👥 Primary User Personas
-

@@ -1,4 +1,4 @@
-import { CacheService } from "../../src/cache.ts";
+import { CacheService } from "../../src/utils/cache.ts";
 
 class FakePipeline {
   #commands = [];

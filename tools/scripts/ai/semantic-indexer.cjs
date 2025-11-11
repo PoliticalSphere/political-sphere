@@ -6,9 +6,9 @@
  * Optimized for lightning-fast AI assistance
  */
 
+const crypto = require("crypto");
 const fs = require("fs");
 const path = require("path");
-const crypto = require("crypto");
 
 const PROJECT_ROOT = path.join(__dirname, "../../..");
 const INDEX_DIR = path.join(PROJECT_ROOT, "ai/ai-index");

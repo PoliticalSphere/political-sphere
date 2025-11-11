@@ -1,6 +1,6 @@
 ---
-description: "Strategic alignment, ADR governance, and lifecycle management practices"
-applyTo: "**/*"
+description: 'Strategic alignment, ADR governance, and lifecycle management practices'
+applyTo: '**/*'
 ---
 
 # Strategic & Lifecycle Governance

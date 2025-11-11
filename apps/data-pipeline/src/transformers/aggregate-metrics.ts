@@ -64,9 +64,11 @@ export class AggregateMetricsTransformer {
   private calculateStats(metrics: MetricData[]): AggregatedMetric {
     const values = metrics.map((m) => m.value);
     const timestamps = metrics.map((m) => m.timestamp);
+    const firstMetric = metrics[0];
+    const dimensions = firstMetric?.dimensions;
 
     return {
-      metric: metrics[0]?.metric || "unknown",
+      metric: firstMetric?.metric || "unknown",
       count: metrics.length,
       sum: values.reduce((a, b) => a + b, 0),
       min: Math.min(...values),
@@ -76,7 +78,7 @@ export class AggregateMetricsTransformer {
         start: new Date(Math.min(...timestamps.map((t) => t.getTime()))),
         end: new Date(Math.max(...timestamps.map((t) => t.getTime()))),
       },
-      dimensions: metrics[0]?.dimensions,
+      ...(dimensions !== undefined && { dimensions }),
     };
   }
 

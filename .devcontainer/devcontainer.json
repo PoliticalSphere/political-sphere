@@ -4,74 +4,323 @@
   "service": "dev",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
   "shutdownAction": "stopCompose",
-  "forwardPorts": [3000, 4000, 5000, 8080],
+
+  // Port forwarding configuration
+  "forwardPorts": [3000, 4000, 5000, 5432, 6379, 8080, 9229],
   "portsAttributes": {
     "3000": {
-      "label": "Web App",
-      "onAutoForward": "notify"
+      "label": "Web App (Frontend)",
+      "onAutoForward": "notify",
+      "requireLocalPort": false,
+      "protocol": "https"
     },
     "4000": {
-      "label": "API Server",
-      "onAutoForward": "notify"
+      "label": "API Server (Backend)",
+      "onAutoForward": "notify",
+      "requireLocalPort": false
     },
     "5000": {
-      "label": "Game Server",
-      "onAutoForward": "notify"
+      "label": "Game Server (WebSocket)",
+      "onAutoForward": "notify",
+      "requireLocalPort": false
+    },
+    "5432": {
+      "label": "PostgreSQL Database",
+      "onAutoForward": "silent",
+      "requireLocalPort": true
+    },
+    "6379": {
+      "label": "Redis Cache",
+      "onAutoForward": "silent",
+      "requireLocalPort": true
     },
     "8080": {
-      "label": "Worker",
-      "onAutoForward": "notify"
+      "label": "Worker Service",
+      "onAutoForward": "notify",
+      "requireLocalPort": false
+    },
+    "9229": {
+      "label": "Node.js Debug Port",
+      "onAutoForward": "silent",
+      "requireLocalPort": false
     }
   },
-  "postCreateCommand": "npm install",
-  "customizations": {
-    "vscode": {
-      "extensions": [
-        "dbaeumer.vscode-eslint",
-        "esbenp.prettier-vscode",
-        "streetsidesoftware.code-spell-checker",
-        "ms-vscode.vscode-typescript-next",
-        "vitest.explorer",
-        "ms-playwright.playwright",
-        "eamodio.gitlens",
-        "github.copilot",
-        "github.copilot-chat",
-        "yoavbls.pretty-ts-errors",
-        "redhat.vscode-yaml",
-        "bradlc.vscode-tailwindcss",
-        "ms-vscode.vscode-json",
-        "ms-vscode-remote.remote-containers"
-      ],
-      "settings": {
-        "typescript.preferences.importModuleSpecifier": "relative",
-        "editor.formatOnSave": true,
-        "editor.defaultFormatter": "esbenp.prettier-vscode",
-        "editor.codeActionsOnSave": {
-          "source.fixAll.eslint": "explicit"
-        },
-        "terminal.integrated.defaultProfile.linux": "bash"
-      }
-    }
+
+  // Lifecycle commands (12-factor app compliant)
+  "initializeCommand": "echo 'Initializing Political Sphere development environment...'",
+  "onCreateCommand": {
+    "setup-git": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+    "install-deps": "npm install --prefer-offline --no-audit"
   },
+  "updateContentCommand": "npm install --prefer-offline --no-audit",
+  "postCreateCommand": "bash .devcontainer/scripts/post-create.sh",
+  "postStartCommand": {
+    "display-info": "echo '✅ Political Sphere dev environment ready. Run npm run dev:api or npm run dev:web to start services.'",
+    "check-deps": "npm list --depth=0 || true"
+  },
+  "postAttachCommand": "echo '🚀 Attached to Political Sphere development container'",
+
+  // Dev container features from official catalog
   "features": {
+    // Docker-in-Docker with rootless mode for security (OWASP Rule #12)
     "ghcr.io/devcontainers/features/docker-in-docker:2": {
       "version": "latest",
-      "enableNonRootDocker": "true"
+      "enableNonRootDocker": "true",
+      "moby": "true",
+      "dockerDashComposeVersion": "v2"
     },
+    // GitHub CLI for repository management
     "ghcr.io/devcontainers/features/github-cli:1": {
       "installDirectlyFromGitHubRelease": true,
       "version": "latest"
     },
+    // Kubernetes tools for infrastructure work
     "ghcr.io/devcontainers/features/kubectl-helm-minikube:1": {
       "version": "latest",
       "helm": "latest",
-      "minikube": "latest"
+      "minikube": "none"
+    },
+    // AWS CLI for cloud deployments
+    "ghcr.io/devcontainers/features/aws-cli:1": {
+      "version": "latest"
+    },
+    // Terraform for IaC management
+    "ghcr.io/devcontainers/features/terraform:1": {
+      "version": "latest",
+      "tflint": "latest",
+      "terragrunt": "latest"
+    },
+    // Node.js version management
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20",
+      "nodeGypDependencies": true,
+      "nvmVersion": "latest"
+    },
+    // Git configuration and tools
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest",
+      "ppa": true
+    },
+    // Common utilities
+    "ghcr.io/devcontainers/features/common-utils:2": {
+      "installZsh": true,
+      "installOhMyZsh": true,
+      "configureZshAsDefaultShell": false,
+      "username": "node",
+      "userUid": "automatic",
+      "userGid": "automatic",
+      "upgradePackages": true
+    },
+    // Python for scripts and tools
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11",
+      "installTools": true
+    },
+    // SOPS for secrets management (12-factor config)
+    "ghcr.io/devcontainers/features/sops:1": {
+      "version": "latest"
     }
   },
+
+  // VS Code customizations
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Code quality and linting
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "streetsidesoftware.code-spell-checker",
+        "biomejs.biome",
+
+        // TypeScript and JavaScript
+        "ms-vscode.vscode-typescript-next",
+        "yoavbls.pretty-ts-errors",
+        "usernamehw.errorlens",
+        "nrwl.angular-console",
+
+        // Testing
+        "vitest.explorer",
+        "ms-playwright.playwright",
+
+        // Git and version control
+        "eamodio.gitlens",
+        "mhutchie.git-graph",
+
+        // AI assistants
+        "github.copilot",
+        "github.copilot-chat",
+
+        // Frontend development
+        "bradlc.vscode-tailwindcss",
+        "dsznajder.es7-react-js-snippets",
+        "styled-components.vscode-styled-components",
+
+        // Configuration files
+        "redhat.vscode-yaml",
+        "ms-vscode.vscode-json",
+        "tamasfe.even-better-toml",
+
+        // Docker and containers
+        "ms-azuretools.vscode-docker",
+        "ms-vscode-remote.remote-containers",
+
+        // DevOps and infrastructure
+        "hashicorp.terraform",
+        "ms-kubernetes-tools.vscode-kubernetes-tools",
+
+        // API development
+        "42crunch.vscode-openapi",
+        "humao.rest-client",
+        "rangav.vscode-thunder-client",
+
+        // Accessibility (WCAG compliance)
+        "deque-systems.vscode-axe-linter",
+
+        // Markdown and documentation
+        "yzhang.markdown-all-in-one",
+        "davidanson.vscode-markdownlint",
+
+        // Security
+        "snyk-security.snyk-vulnerability-scanner",
+
+        // Database
+        "mtxr.sqltools",
+        "mtxr.sqltools-driver-pg",
+
+        // Utilities
+        "christian-kohler.path-intellisense",
+        "visualstudioexptteam.vscodeintellicode",
+        "editorconfig.editorconfig"
+      ],
+      "settings": {
+        // Editor configuration
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit",
+          "source.organizeImports": "explicit"
+        },
+        "editor.tabSize": 2,
+        "editor.insertSpaces": true,
+        "editor.rulers": [80, 100],
+        "editor.bracketPairColorization.enabled": true,
+        "editor.guides.bracketPairs": "active",
+
+        // TypeScript configuration
+        "typescript.preferences.importModuleSpecifier": "relative",
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "typescript.suggest.autoImports": true,
+        "typescript.preferences.quoteStyle": "single",
+
+        // JavaScript configuration
+        "javascript.preferences.quoteStyle": "single",
+        "javascript.updateImportsOnFileMove.enabled": "always",
+
+        // Terminal configuration
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "terminal.integrated.profiles.linux": {
+          "bash": {
+            "path": "/bin/bash",
+            "icon": "terminal-bash"
+          },
+          "zsh": {
+            "path": "/bin/zsh",
+            "icon": "terminal-linux"
+          }
+        },
+
+        // Files configuration
+        "files.exclude": {
+          "**/node_modules": true,
+          "**/.git": true,
+          "**/dist": true,
+          "**/build": true,
+          "**/.next": true,
+          "**/coverage": true
+        },
+        "files.watcherExclude": {
+          "**/node_modules/**": true,
+          "**/dist/**": true,
+          "**/build/**": true,
+          "**/.next/**": true,
+          "**/coverage/**": true
+        },
+        "files.associations": {
+          "*.css": "tailwindcss"
+        },
+
+        // Search configuration
+        "search.exclude": {
+          "**/node_modules": true,
+          "**/dist": true,
+          "**/build": true,
+          "**/.next": true,
+          "**/coverage": true,
+          "**/reports": true
+        },
+
+        // Git configuration
+        "git.autofetch": true,
+        "git.confirmSync": false,
+        "git.enableSmartCommit": true,
+
+        // ESLint configuration
+        "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
+        "eslint.workingDirectories": [
+          {
+            "mode": "auto"
+          }
+        ],
+
+        // Testing configuration
+        "vitest.enable": true,
+        "vitest.commandLine": "npx vitest",
+
+        // Security
+        "security.workspace.trust.enabled": true,
+
+        // Accessibility
+        "editor.accessibilitySupport": "on",
+
+        // Performance
+        "extensions.experimental.affinity": {
+          "vscodevim.vim": 1
+        }
+      }
+    }
+  },
+
+  // Container user (non-root for security - OWASP Rule #3)
   "remoteUser": "node",
-  "updateContentCommand": "npm install",
-  "postStartCommand": "git config --global --add safe.directory ${containerWorkspaceFolder}",
+  "containerUser": "node",
+
+  // Environment variables (12-factor app pattern)
+  "containerEnv": {
+    "NODE_ENV": "development",
+    "LOG_LEVEL": "debug",
+    "DOCKER_HOST": "unix:///var/run/docker.sock"
+  },
+
+  // Host requirements
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+
+  // Additional mounts (removed Docker socket mount - handled by docker-in-docker feature)
   "mounts": [
-    "source=/var/run/docker.sock,target=/var/run/docker.sock,type=bind"
-  ]
+    // SSH keys for git operations (read-only for security)
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.ssh,target=/home/node/.ssh,type=bind,readonly",
+    // Git configuration (read-only)
+    "source=${localEnv:HOME}${localEnv:USERPROFILE}/.gitconfig,target=/home/node/.gitconfig,type=bind,readonly",
+    // NPM cache for faster installs
+    "source=political-sphere-npm-cache,target=/home/node/.npm,type=volume"
+  ],
+
+  // Wait for services to be ready before proceeding
+  "waitFor": "onCreateCommand",
+
+  // Override default command
+  "overrideCommand": false
 }

@@ -5,6 +5,7 @@
  */
 
 import React from "react";
+
 import { useAccessibility } from "../../hooks/useAccessibility";
 import "./AccessibilityControls.css";
 

@@ -1,0 +1,11 @@
+{
+  "id": "test-user-002",
+  "email": "bob.moderator@example.com",
+  "name": "Bob Moderator",
+  "role": "moderator",
+  "createdAt": "2024-12-01T00:00:00Z",
+  "preferences": {
+    "notifications": true,
+    "theme": "dark"
+  }
+}

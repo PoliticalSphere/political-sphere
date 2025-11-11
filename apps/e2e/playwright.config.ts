@@ -11,16 +11,12 @@ import { defineConfig } from "@playwright/test";
 const API_PORT = Number(process.env.API_PORT || 3001);
 const API_COMMAND = process.env.API_E2E_COMMAND || "npm run start:api"; // script defined in root package.json
 const WEB_PORT = Number(process.env.WEB_PORT || 3002);
-const WEB_COMMAND =
-  process.env.WEB_E2E_COMMAND || "cd apps/web && node server.js";
+const WEB_COMMAND = process.env.WEB_E2E_COMMAND || "cd apps/web && node server.js";
 
 export default defineConfig({
   timeout: 30000,
   use: {
-    baseURL:
-      process.env.WEB_BASE_URL ||
-      process.env.BASE_URL ||
-      "http://localhost:3000",
+    baseURL: process.env.WEB_BASE_URL || process.env.BASE_URL || "http://localhost:3000",
     headless: true,
   },
   webServer: [

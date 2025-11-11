@@ -1,6 +1,6 @@
 ---
-description: "Operational excellence, observability, and resilience expectations"
-applyTo: "**/apps/**/*,**/libs/**/*,**/tools/**/*"
+description: 'Operational excellence, observability, and resilience expectations'
+applyTo: '**/apps/**/*,**/libs/**/*,**/tools/**/*'
 ---
 
 # Operational Excellence

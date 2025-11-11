@@ -5,16 +5,17 @@
  * Ultra-fast, intelligent, context-aware code assistance
  */
 
+const { execSync } = require("child_process");
 const fs = require("fs");
 const path = require("path");
-const { execSync } = require("child_process");
+
 const { validateFilename, safeJoin } = require("../../../libs/shared/src/path-security");
 
 // Import all AI systems
+const AIHub = require("./ai-hub.cjs");
+const CodeAnalyzer = require("./code-analyzer.cjs");
 const ExpertKnowledge = require("./expert-knowledge.cjs");
 const PatternMatcher = require("./pattern-matcher.cjs");
-const CodeAnalyzer = require("./code-analyzer.cjs");
-const AIHub = require("./ai-hub.cjs");
 
 const ROOT = path.join(__dirname, "../../..");
 const WORKSPACE_CACHE_PRIMARY = path.join(ROOT, "ai-cache/workspace-state.json");

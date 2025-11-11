@@ -5,23 +5,35 @@
 
 import fs from "node:fs";
 import path from "node:path";
+
 import bodyParser from "body-parser";
 import type { CorsOptions } from "cors";
 import cors from "cors";
 import type { Request, Response } from "express";
 import express from "express";
 import { v4 as uuidv4 } from "uuid";
+
 import { advanceGameState } from "../../../libs/game-engine/src/engine";
-import { CircuitBreaker } from "../api/src/utils/error-handler";
+
 import complianceClient from "./complianceClient";
 
 // DB adapter (SQLite) handles persistence
 import dbModule from "./db";
+import { CircuitBreaker } from "./utils/circuit-breaker";
+
+// Extend Request to include user property
+interface AuthRequest extends Request {
+  user?: {
+    id?: string;
+    userId?: string;
+    username?: string;
+  };
+}
 
 const dbReady =
   dbModule && typeof (dbModule as Promise<unknown>).then === "function"
-    ? (dbModule as Promise<Database>)
-    : Promise.resolve(dbModule as Database);
+    ? (dbModule as unknown as Promise<Database>)
+    : Promise.resolve(dbModule as unknown as Database);
 
 interface Database {
   upsertGame: (id: string, game: Game) => Promise<void>;
@@ -227,7 +239,8 @@ async function remoteModeration(
       .logEvent({
         category: "content_moderation",
         action: "moderation_checked",
-        userId: userId || undefined,
+        userId: userId ?? "anonymous",
+        resource: "content_moderation",
         details: {
           endpoint: MODERATION_ENDPOINT,
           isSafe: result.isSafe,
@@ -248,6 +261,8 @@ async function remoteModeration(
       .logEvent({
         category: "content_moderation",
         action: "moderation_api_failure",
+        userId: "system",
+        resource: "moderation_api",
         details: {
           endpoint: MODERATION_ENDPOINT,
           error: errorMessage,
@@ -292,7 +307,7 @@ app.post("/games", async (req: Request, res: Response) => {
   await complianceClient.logGameCreated(
     id,
     (req.body as { userId?: string })?.userId ||
-      (req.user as { id?: string } | undefined)?.id ||
+      ((req as AuthRequest).user as { id?: string } | undefined)?.id ||
       "anonymous",
     name,
   );
@@ -386,6 +401,10 @@ async function checkContentAccess(userId: string, contentRating: string): Promis
 // Join a game
 app.post("/games/:id/join", async (req: Request, res: Response) => {
   const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ error: "Game ID is required" });
+  }
+
   const { displayName, userId } = req.body as {
     displayName?: string;
     userId?: string;
@@ -444,14 +463,24 @@ app.post("/games/:id/join", async (req: Request, res: Response) => {
 
 // Get game state
 app.get("/games/:id/state", (req: Request, res: Response) => {
-  const game = games.get(req.params.id);
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ error: "Game ID is required" });
+  }
+
+  const game = games.get(id);
   if (!game) return res.status(404).json({ error: "game not found" });
   return res.json({ game });
 });
 
 // List flagged proposals for a game (moderator view)
 app.get("/games/:id/flags", (req: Request, res: Response) => {
-  const game = games.get(req.params.id);
+  const { id } = req.params;
+  if (!id) {
+    return res.status(400).json({ error: "Game ID is required" });
+  }
+
+  const game = games.get(id);
   if (!game) return res.status(404).json({ error: "game not found" });
   const flagged = (game.proposals || []).filter(
     (p) => p.status === "flagged" || p.moderationStatus === "flagged",
@@ -465,6 +494,14 @@ app.post("/games/:id/flags/:proposalId/review", async (req: Request, res: Respon
     id: req.params.id,
     proposalId: req.params.proposalId,
   };
+
+  if (!gameId) {
+    return res.status(400).json({ error: "Game ID is required" });
+  }
+  if (!proposalId) {
+    return res.status(400).json({ error: "Proposal ID is required" });
+  }
+
   const { moderatorId, action, note } =
     (req.body as { moderatorId?: string; action?: string; note?: string }) || {};
   const game = games.get(gameId);
@@ -513,6 +550,10 @@ app.post("/games/:id/flags/:proposalId/review", async (req: Request, res: Respon
 // Submit player action (propose, start_debate, speak, vote, advance_turn) — integrated with deterministic engine
 app.post("/games/:id/action", async (req: Request, res: Response) => {
   const gameId = req.params.id;
+  if (!gameId) {
+    return res.status(400).json({ error: "Game ID is required" });
+  }
+
   const game = games.get(gameId);
   if (!game) return res.status(404).json({ error: "game not found" });
 

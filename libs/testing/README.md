@@ -12,7 +12,7 @@ import {
   BillFactory,
   PartyFactory,
   VoteFactory,
-} from "@political-sphere/testing/factories";
+} from '@political-sphere/testing/factories';
 ```
 
 ## Available Factories
@@ -34,9 +34,9 @@ const inactive = InactiveUserFactory.build();
 
 // Custom overrides
 const specificUser = UserFactory.build({
-  username: "johndoe",
-  email: "john@example.com",
-  role: "admin",
+  username: 'johndoe',
+  email: 'john@example.com',
+  role: 'admin',
 });
 
 // Multiple users
@@ -60,8 +60,8 @@ const inactiveParty = InactivePartyFactory.build();
 
 // Custom party
 const specificParty = PartyFactory.build({
-  name: "Progressive Alliance",
-  ideology: "progressive",
+  name: 'Progressive Alliance',
+  ideology: 'progressive',
   memberCount: 5000,
 });
 ```
@@ -113,7 +113,7 @@ const weighted = WeightedVoteFactory.build();
 const specificVote = VoteFactory.build({
   billId: bill.id,
   userId: user.id,
-  position: "for",
+  position: 'for',
 });
 ```
 
@@ -122,24 +122,20 @@ const specificVote = VoteFactory.build({
 ### Testing Related Entities
 
 ```typescript
-import {
-  UserFactory,
-  BillFactory,
-  VoteFactory,
-} from "@political-sphere/testing/factories";
+import { UserFactory, BillFactory, VoteFactory } from '@political-sphere/testing/factories';
 
-describe("Bill voting", () => {
-  it("should record user votes", () => {
+describe('Bill voting', () => {
+  it('should record user votes', () => {
     // Create related test data
-    const user = UserFactory.build({ id: "user-1" });
+    const user = UserFactory.build({ id: 'user-1' });
     const bill = ActiveVotingBillFactory.build({
-      id: "bill-1",
-      proposerId: "user-2", // Different user
+      id: 'bill-1',
+      proposerId: 'user-2', // Different user
     });
     const vote = VoteFactory.build({
       userId: user.id,
       billId: bill.id,
-      position: "for",
+      position: 'for',
     });
 
     // Test logic here
@@ -153,11 +149,11 @@ describe("Bill voting", () => {
 // Create a coalition government scenario
 const coalition = {
   majorParty: MajorPartyFactory.build({
-    name: "Democratic Alliance",
+    name: 'Democratic Alliance',
     memberCount: 45000,
   }),
   minorParty: MinorPartyFactory.build({
-    name: "Green Coalition",
+    name: 'Green Coalition',
     memberCount: 8000,
   }),
   leader: AdminUserFactory.build(),
@@ -202,14 +198,14 @@ const user = UserFactory.build();
 const admin = AdminUserFactory.build();
 
 // ❌ Less ideal: Override every time
-const admin = UserFactory.build({ role: "admin" });
+const admin = UserFactory.build({ role: 'admin' });
 ```
 
 ### 2. Build Related Entities Together
 
 ```typescript
 // ✅ Good: Clear relationships
-const user = UserFactory.build({ id: "user-1" });
+const user = UserFactory.build({ id: 'user-1' });
 const bill = BillFactory.build({ proposerId: user.id });
 
 // ❌ Confusing: Unclear relationships
@@ -221,13 +217,13 @@ const bill = BillFactory.build();
 
 ```typescript
 // ✅ Good: Override only relevant fields
-const user = UserFactory.build({ email: "test@example.com" });
+const user = UserFactory.build({ email: 'test@example.com' });
 
 // ❌ Excessive: Too many overrides
 const user = UserFactory.build({
-  id: "user-1",
-  username: "test",
-  email: "test@example.com",
+  id: 'user-1',
+  username: 'test',
+  email: 'test@example.com',
   // ... many more
 });
 ```
@@ -248,8 +244,8 @@ To add new factories, follow this pattern:
 
 ```typescript
 // libs/testing/factories/new-entity.factory.ts
-import { Factory } from "fishery";
-import { faker } from "@faker-js/faker";
+import { Factory } from 'fishery';
+import { faker } from '@faker-js/faker';
 
 export interface NewEntity {
   id: string;
@@ -257,17 +253,15 @@ export interface NewEntity {
   createdAt: string;
 }
 
-export const NewEntityFactory = Factory.define<NewEntity>(
-  ({ sequence, params }) => ({
-    id: params.id ?? `entity-${sequence}`,
-    name: params.name ?? faker.lorem.word(),
-    createdAt: params.createdAt ?? faker.date.past().toISOString(),
-  })
-);
+export const NewEntityFactory = Factory.define<NewEntity>(({ sequence, params }) => ({
+  id: params.id ?? `entity-${sequence}`,
+  name: params.name ?? faker.lorem.word(),
+  createdAt: params.createdAt ?? faker.date.past().toISOString(),
+}));
 
 // Export from index.ts
-export { NewEntityFactory } from "./new-entity.factory";
-export type { NewEntity } from "./new-entity.factory";
+export { NewEntityFactory } from './new-entity.factory';
+export type { NewEntity } from './new-entity.factory';
 ```
 
 ## Migration Guide
@@ -284,12 +278,12 @@ To migrate existing tests:
 
    ```typescript
    // Before
-   import { createMockUser } from "./test-helpers";
-   const user = createMockUser({ email: "test@example.com" });
+   import { createMockUser } from './test-helpers';
+   const user = createMockUser({ email: 'test@example.com' });
 
    // After
-   import { UserFactory } from "@political-sphere/testing/factories";
-   const user = UserFactory.build({ email: "test@example.com" });
+   import { UserFactory } from '@political-sphere/testing/factories';
+   const user = UserFactory.build({ email: 'test@example.com' });
    ```
 
 3. Run tests to verify:
@@ -315,10 +309,10 @@ If factories aren't found:
 
 ```typescript
 // ✅ Correct import
-import { UserFactory } from "@political-sphere/testing/factories";
+import { UserFactory } from '@political-sphere/testing/factories';
 
 // ❌ Wrong import
-import { UserFactory } from "libs/testing/factories";
+import { UserFactory } from 'libs/testing/factories';
 ```
 
 ## Performance

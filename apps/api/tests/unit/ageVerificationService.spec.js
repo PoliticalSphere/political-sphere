@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import AgeVerificationService from "../ageVerificationService.js";
+
+import AgeVerificationService from "../../src/modules/ageVerificationService.js";
 
 // Mock dependencies
-vi.mock("../logger.js", () => ({
+vi.mock("../../src/logger.js", () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -10,7 +11,7 @@ vi.mock("../logger.js", () => ({
   },
 }));
 
-vi.mock("../index.js", () => ({
+vi.mock("../../src/modules/stores/index.ts", () => ({
   getDatabase: vi.fn(() => ({
     ageVerification: {
       create: vi.fn(),
@@ -27,7 +28,7 @@ describe("AgeVerificationService", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const { getDatabase } = await import("../modules/stores/index.js");
+    const { getDatabase } = await import("../../src/modules/stores/index.ts");
     mockDb = getDatabase();
     service = new AgeVerificationService(mockDb.ageVerification);
   });

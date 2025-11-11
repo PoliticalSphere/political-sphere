@@ -78,9 +78,7 @@ async function vote(token: string, gameId: string, proposalId: string) {
   expect(res.status).toBe(200);
   expect(Array.isArray(data.game?.votes)).toBe(true);
   type Vote = { proposalId: string; choice: string; playerId?: string };
-  expect(
-    (data.game.votes as Vote[]).some((v) => v.proposalId === proposalId)
-  ).toBe(true);
+  expect((data.game.votes as Vote[]).some((v) => v.proposalId === proposalId)).toBe(true);
 }
 
 test.describe("Core Loop Smoke", () => {
@@ -103,9 +101,7 @@ test.describe("Core Loop Smoke", () => {
   // REASON: apps/web dev server configuration not yet aligned (ports, Vite root, scripts)
   // DEPENDENCIES: Correct Vite config (root=apps/web, port selection), npm scripts, stable selectors
   // ESTIMATED_READINESS: After frontend devserver wiring PR
-  test.skip("frontend login + lobby list renders (manual lightweight check)", async ({
-    page,
-  }) => {
+  test.skip("frontend login + lobby list renders (manual lightweight check)", async ({ page }) => {
     await page.goto(`${WEB_BASE}/`);
   });
 });

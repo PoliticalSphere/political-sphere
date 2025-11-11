@@ -59,7 +59,7 @@ describe('API Consumer Contract', () => {
     });
 
     it('returns health status', () => {
-      return provider.executeTest(async (mockserver) => {
+      return provider.executeTest(async mockserver => {
         const response = await fetch(`${mockserver.url}/health`);
         expect(response.status).toBe(200);
       });

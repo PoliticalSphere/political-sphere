@@ -2,8 +2,8 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
+| Classification | Version | Last Updated |        Owner         | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :------------------: | :----------: | :----------: |
 |  🔒 Internal   | `1.0.0` |  2025-11-01  | Technical Governance |  Quarterly   | **Approved** |
 
 </div>
@@ -30,36 +30,44 @@ This framework applies to all data used in AI systems, including:
 ## Provenance Principles
 
 ### 1. Complete Traceability
+
 **Objective:** Track data from origin to final use
 
 **Requirements:**
+
 - Capture data source and collection method
 - Record all transformations and processing steps
 - Maintain timestamps for all operations
 - Preserve data quality metrics at each stage
 
 ### 2. Data Integrity
+
 **Objective:** Ensure data authenticity and prevent tampering
 
 **Requirements:**
+
 - Cryptographic hashing of datasets
 - Immutable audit logs
 - Digital signatures for critical operations
 - Tamper-evident storage mechanisms
 
 ### 3. Ethical Compliance
+
 **Objective:** Ensure data usage aligns with ethical standards
 
 **Requirements:**
+
 - Consent tracking and verification
 - Privacy impact assessments
 - Bias detection and mitigation
 - Right to erasure implementation
 
 ### 4. Regulatory Compliance
+
 **Objective:** Meet legal and regulatory requirements
 
 **Requirements:**
+
 - GDPR Article 30 records of processing
 - Data retention policy compliance
 - Cross-border transfer documentation
@@ -140,9 +148,11 @@ Each data element must include comprehensive metadata:
 ### Source Verification
 
 #### 1. Data Source Inventory
+
 **Objective:** Catalog all data sources with provenance details
 
 **Required Information:**
+
 - Source identification and description
 - Data collection methodology
 - Legal basis for collection
@@ -150,15 +160,18 @@ Each data element must include comprehensive metadata:
 - Data quality assessment
 
 **Source Types:**
+
 - **Public Data:** Government datasets, public APIs, open data portals
 - **User-Generated:** Platform interactions, feedback, contributions
 - **Third-Party:** Licensed datasets, partner data, research data
 - **Synthetic:** Generated data for testing and training
 
 #### 2. Consent Tracking
+
 **Objective:** Maintain detailed consent records
 
 **Consent Metadata:**
+
 - Consent date and time
 - Consent method (explicit, implicit, opt-out)
 - Consent scope and purpose
@@ -168,9 +181,11 @@ Each data element must include comprehensive metadata:
 ### Collection Validation
 
 #### 1. Data Quality Gates
+
 **Objective:** Ensure data meets quality standards before processing
 
 **Quality Metrics:**
+
 - **Completeness:** Percentage of non-null values
 - **Accuracy:** Correctness of data values
 - **Consistency:** Adherence to defined formats and rules
@@ -178,9 +193,11 @@ Each data element must include comprehensive metadata:
 - **Uniqueness:** Absence of duplicate records
 
 #### 2. Ethical Screening
+
 **Objective:** Identify and mitigate ethical concerns early
 
 **Screening Criteria:**
+
 - Personal data identification
 - Sensitive information detection
 - Bias indicators in source data
@@ -192,9 +209,11 @@ Each data element must include comprehensive metadata:
 ### Transformation Tracking
 
 #### 1. Processing Pipeline Documentation
+
 **Objective:** Record all data transformations with full context
 
 **Processing Metadata:**
+
 - Transformation type and purpose
 - Input and output schemas
 - Processing parameters and logic
@@ -202,9 +221,11 @@ Each data element must include comprehensive metadata:
 - Error handling procedures
 
 #### 2. Quality Monitoring
+
 **Objective:** Track data quality throughout processing
 
 **Monitoring Points:**
+
 - Pre-processing quality baseline
 - Post-transformation quality metrics
 - Error rates and data loss tracking
@@ -214,9 +235,11 @@ Each data element must include comprehensive metadata:
 ### Version Control
 
 #### 1. Dataset Versioning
+
 **Objective:** Maintain immutable versions of datasets
 
 **Versioning Strategy:**
+
 - Semantic versioning (MAJOR.MINOR.PATCH)
 - Immutable storage with content addressing
 - Version metadata and change logs
@@ -224,9 +247,11 @@ Each data element must include comprehensive metadata:
 - Deprecation and archival policies
 
 #### 2. Model-Data Binding
+
 **Objective:** Link models to specific dataset versions
 
 **Binding Mechanisms:**
+
 - Dataset fingerprints and hashes
 - Model training manifests
 - Reproducibility metadata
@@ -238,9 +263,11 @@ Each data element must include comprehensive metadata:
 ### Model Training Tracking
 
 #### 1. Training Provenance
+
 **Objective:** Document complete training context
 
 **Training Metadata:**
+
 - Dataset versions and compositions
 - Training hyperparameters
 - Model architecture details
@@ -248,9 +275,11 @@ Each data element must include comprehensive metadata:
 - Performance metrics and validation results
 
 #### 2. Model Deployment Tracking
+
 **Objective:** Track model deployment and usage context
 
 **Deployment Metadata:**
+
 - Deployment environment and configuration
 - A/B testing parameters
 - Rollback capabilities
@@ -260,9 +289,11 @@ Each data element must include comprehensive metadata:
 ### Inference Logging
 
 #### 1. Input Provenance
+
 **Objective:** Track all inputs to AI models
 
 **Input Metadata:**
+
 - Source and context of input data
 - Preprocessing applied
 - Input validation results
@@ -270,9 +301,11 @@ Each data element must include comprehensive metadata:
 - Privacy impact assessment
 
 #### 2. Output Provenance
+
 **Objective:** Document AI outputs with full context
 
 **Output Metadata:**
+
 - Model version and confidence scores
 - Processing timestamp and duration
 - Input-output correlation
@@ -284,21 +317,24 @@ Each data element must include comprehensive metadata:
 ### Retention Policies
 
 #### 1. Data Classification Framework
+
 **Objective:** Define retention requirements by data sensitivity
 
 **Classification Levels:**
 
-| Level | Examples | Retention Period | Disposal Method |
-|-------|----------|------------------|-----------------|
-| Public | Documentation, public data | Indefinite | Standard deletion |
-| Internal | Logs, analytics | 3 years | Secure deletion |
-| Confidential | User data, training sets | 7 years | Cryptographic erasure |
-| Restricted | PII, political preferences | 10 years | Multi-pass erasure |
+| Level        | Examples                   | Retention Period | Disposal Method       |
+| ------------ | -------------------------- | ---------------- | --------------------- |
+| Public       | Documentation, public data | Indefinite       | Standard deletion     |
+| Internal     | Logs, analytics            | 3 years          | Secure deletion       |
+| Confidential | User data, training sets   | 7 years          | Cryptographic erasure |
+| Restricted   | PII, political preferences | 10 years         | Multi-pass erasure    |
 
 #### 2. Retention Automation
+
 **Objective:** Automate retention policy enforcement
 
 **Automation Features:**
+
 - Automatic classification tagging
 - Scheduled retention reviews
 - Disposal workflow triggers
@@ -308,18 +344,22 @@ Each data element must include comprehensive metadata:
 ### Disposal Procedures
 
 #### 1. Secure Deletion
+
 **Objective:** Ensure complete and irreversible data destruction
 
 **Deletion Methods:**
+
 - **Cryptographic Erasure:** Overwrite with random data then delete keys
 - **Physical Destruction:** For physical media
 - **Secure Wipe:** Multi-pass overwrite for digital storage
 - **Degaussing:** For magnetic media
 
 #### 2. Disposal Verification
+
 **Objective:** Confirm complete data destruction
 
 **Verification Processes:**
+
 - Post-deletion integrity checks
 - Chain of custody documentation
 - Third-party verification for critical data
@@ -330,18 +370,22 @@ Each data element must include comprehensive metadata:
 ### Privacy by Design
 
 #### 1. Data Minimization
+
 **Objective:** Collect and retain only necessary data
 
 **Implementation:**
+
 - Purpose limitation verification
 - Data retention audits
 - Automated cleanup procedures
 - Privacy impact assessments
 
 #### 2. Subject Rights
+
 **Objective:** Support all data subject rights
 
 **Supported Rights:**
+
 - **Access:** Data portability and access requests
 - **Rectification:** Data correction procedures
 - **Erasure:** Right to be forgotten implementation
@@ -351,18 +395,22 @@ Each data element must include comprehensive metadata:
 ### Ethical Oversight
 
 #### 1. Bias Monitoring
+
 **Objective:** Detect and mitigate bias in AI data
 
 **Monitoring Processes:**
+
 - Demographic representation analysis
 - Bias detection algorithms
 - Ethical review checkpoints
 - Regular bias audits
 
 #### 2. Transparency Requirements
+
 **Objective:** Maintain data usage transparency
 
 **Transparency Measures:**
+
 - Data source disclosure
 - Processing purpose documentation
 - Subject consent records
@@ -373,9 +421,11 @@ Each data element must include comprehensive metadata:
 ### Provenance Infrastructure
 
 #### 1. Metadata Storage
+
 **Objective:** Provide scalable, secure metadata storage
 
 **Storage Requirements:**
+
 - Immutable append-only logs
 - Cryptographic integrity protection
 - High availability and durability
@@ -383,9 +433,11 @@ Each data element must include comprehensive metadata:
 - Integration with existing systems
 
 #### 2. Provenance APIs
+
 **Objective:** Provide programmatic access to provenance data
 
 **API Endpoints:**
+
 - Data lineage queries
 - Provenance verification
 - Compliance reporting
@@ -395,9 +447,11 @@ Each data element must include comprehensive metadata:
 ### Automation Tools
 
 #### 1. Data Pipeline Integration
+
 **Objective:** Automatically capture provenance in data pipelines
 
 **Integration Points:**
+
 - Source system connectors
 - Processing step instrumentation
 - Quality metric collection
@@ -405,9 +459,11 @@ Each data element must include comprehensive metadata:
 - Error handling and logging
 
 #### 2. Monitoring and Alerting
+
 **Objective:** Detect provenance violations and issues
 
 **Monitoring Capabilities:**
+
 - Data quality threshold alerts
 - Provenance completeness checks
 - Retention policy compliance
@@ -419,9 +475,11 @@ Each data element must include comprehensive metadata:
 ### Regulatory Compliance
 
 #### 1. GDPR Compliance
+
 **Objective:** Meet GDPR Article 30 requirements
 
 **Required Records:**
+
 - Processing purposes and legal basis
 - Data categories and recipients
 - Retention periods and disposal procedures
@@ -429,9 +487,11 @@ Each data element must include comprehensive metadata:
 - Data protection impact assessments
 
 #### 2. Audit Trail Management
+
 **Objective:** Provide comprehensive audit capabilities
 
 **Audit Features:**
+
 - Tamper-evident logging
 - Cryptographic signatures
 - Timestamp verification
@@ -441,9 +501,11 @@ Each data element must include comprehensive metadata:
 ### Internal Governance
 
 #### 1. Regular Reviews
+
 **Objective:** Ensure ongoing compliance and effectiveness
 
 **Review Activities:**
+
 - Quarterly provenance audits
 - Annual retention policy reviews
 - Data quality assessments
@@ -451,9 +513,11 @@ Each data element must include comprehensive metadata:
 - Ethical oversight evaluations
 
 #### 2. Continuous Improvement
+
 **Objective:** Enhance provenance practices over time
 
 **Improvement Processes:**
+
 - Lessons learned integration
 - Technology updates adoption
 - Process optimization
@@ -463,24 +527,28 @@ Each data element must include comprehensive metadata:
 ## Implementation Roadmap
 
 ### Phase 1: Foundation (Months 1-3)
+
 - [ ] Design provenance metadata schema
 - [ ] Implement basic metadata capture
 - [ ] Establish data classification framework
 - [ ] Create initial retention policies
 
 ### Phase 2: Integration (Months 4-6)
+
 - [ ] Integrate provenance into data pipelines
 - [ ] Implement automated quality monitoring
 - [ ] Add privacy and ethics controls
 - [ ] Develop provenance APIs
 
 ### Phase 3: Automation (Months 7-9)
+
 - [ ] Deploy comprehensive monitoring
 - [ ] Implement automated retention
 - [ ] Add advanced analytics
 - [ ] Enable self-service provenance queries
 
 ### Phase 4: Optimization (Months 10-12)
+
 - [ ] Performance optimization
 - [ ] Advanced compliance features
 - [ ] External audit integrations
@@ -489,12 +557,14 @@ Each data element must include comprehensive metadata:
 ## Success Metrics
 
 ### Operational Metrics
+
 - **Provenance Coverage:** Percentage of data with complete provenance (Target: 100%)
 - **Metadata Accuracy:** Correctness of provenance metadata (Target: 99%)
 - **Query Performance:** Average response time for provenance queries (Target: <1s)
 - **Storage Efficiency:** Provenance data storage overhead (Target: <10%)
 
 ### Compliance Metrics
+
 - **Audit Readiness:** Time to provide audit evidence (Target: <24 hours)
 - **Retention Compliance:** Percentage of data complying with retention policies (Target: 100%)
 - **Privacy Compliance:** Successful subject rights fulfillment rate (Target: 100%)

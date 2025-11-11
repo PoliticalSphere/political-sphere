@@ -3,9 +3,9 @@ name: Update .github Directory Diagram
 on:
   push:
     paths:
-      - ".github/**"
-      - "!.github/README.md"
-      - "!.github/workflows/update-github-diagram.yml"
+      - '.github/**'
+      - '!.github/README.md'
+      - '!.github/workflows/update-github-diagram.yml'
   workflow_dispatch:
 
 permissions:
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: "20"
+          node-version: '20'
 
       - name: Generate diagram
         run: |

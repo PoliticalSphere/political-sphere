@@ -1,4 +1,4 @@
-const winston = require("winston");
+import winston from "winston";
 
 // Create logger instance
 const logger = winston.createLogger({
@@ -30,4 +30,4 @@ if (process.env.LOG_FILE) {
   );
 }
 
-module.exports = logger;
+export default logger;

@@ -31,9 +31,9 @@
 #   - Composite Actions: https://docs.github.com/en/actions/creating-actions/creating-a-composite-action
 # ============================================================================
 
-name: "Deploy to AWS EKS"
-description: "Composite action for secure, auditable deployments to AWS EKS with support for multiple deployment strategies"
-author: "Political Sphere DevOps Team"
+name: 'Deploy to AWS EKS'
+description: 'Composite action for secure, auditable deployments to AWS EKS with support for multiple deployment strategies'
+author: 'Political Sphere DevOps Team'
 
 # ============================================================================
 # INPUTS
@@ -42,83 +42,83 @@ author: "Political Sphere DevOps Team"
 
 inputs:
   environment:
-    description: "Target environment (dev, staging, production)"
+    description: 'Target environment (dev, staging, production)'
     required: true
 
   aws-region:
-    description: "AWS region for deployment"
+    description: 'AWS region for deployment'
     required: true
-    default: "us-east-1"
+    default: 'us-east-1'
 
   aws-role-to-assume:
-    description: "AWS IAM role ARN for OIDC authentication"
+    description: 'AWS IAM role ARN for OIDC authentication'
     required: true
 
   eks-cluster-name:
-    description: "EKS cluster name"
+    description: 'EKS cluster name'
     required: true
 
   application:
-    description: "Application name to deploy (frontend, api, worker, game-server)"
+    description: 'Application name to deploy (frontend, api, worker, game-server)'
     required: true
 
   image-tag:
-    description: "Docker image tag to deploy"
+    description: 'Docker image tag to deploy'
     required: true
 
   deployment-strategy:
-    description: "Deployment strategy (rolling, blue-green, canary)"
+    description: 'Deployment strategy (rolling, blue-green, canary)'
     required: false
-    default: "rolling"
+    default: 'rolling'
 
   canary-percentage:
-    description: "Percentage of traffic for canary deployment (0-100)"
+    description: 'Percentage of traffic for canary deployment (0-100)'
     required: false
-    default: "10"
+    default: '10'
 
   enable-health-check:
-    description: "Enable health checks before marking deployment successful"
+    description: 'Enable health checks before marking deployment successful'
     required: false
-    default: "true"
+    default: 'true'
 
   health-check-url:
-    description: "Health check endpoint URL"
+    description: 'Health check endpoint URL'
     required: false
-    default: "/healthz"
+    default: '/healthz'
 
   timeout-minutes:
-    description: "Deployment timeout in minutes"
+    description: 'Deployment timeout in minutes'
     required: false
-    default: "10"
+    default: '10'
 
   enable-rollback:
-    description: "Enable automatic rollback on failure"
+    description: 'Enable automatic rollback on failure'
     required: false
-    default: "true"
+    default: 'true'
 
   # STRAT-03: Multi-region deployment support
   target-regions:
-    description: "Comma-separated list of AWS regions for multi-region deployment (e.g., us-east-1,eu-west-2)"
+    description: 'Comma-separated list of AWS regions for multi-region deployment (e.g., us-east-1,eu-west-2)'
     required: false
-    default: ""
+    default: ''
 
   # OPS-05: Pre-deployment backup
   enable-backup:
-    description: "Create pre-deployment snapshot of current state"
+    description: 'Create pre-deployment snapshot of current state'
     required: false
-    default: "true"
+    default: 'true'
 
   # COMP-01: Production approval workflow
   require-approval:
-    description: "Require manual approval before deployment (production only)"
+    description: 'Require manual approval before deployment (production only)'
     required: false
-    default: "false"
+    default: 'false'
 
   # COMP-02: GDPR compliance check
   enable-gdpr-check:
-    description: "Verify GDPR controls are in place for deployments touching user data"
+    description: 'Verify GDPR controls are in place for deployments touching user data'
     required: false
-    default: "true"
+    default: 'true'
 
 # ============================================================================
 # OUTPUTS
@@ -126,19 +126,19 @@ inputs:
 
 outputs:
   deployment-status:
-    description: "Deployment status (success, failed, rolled-back)"
+    description: 'Deployment status (success, failed, rolled-back)'
     value: ${{ steps.deploy.outputs.status }}
 
   deployed-version:
-    description: "Version/tag that was deployed"
+    description: 'Version/tag that was deployed'
     value: ${{ steps.deploy.outputs.version }}
 
   deployment-url:
-    description: "URL of the deployed application"
+    description: 'URL of the deployed application'
     value: ${{ steps.deploy.outputs.url }}
 
   deployment-timestamp:
-    description: "Timestamp of deployment completion"
+    description: 'Timestamp of deployment completion'
     value: ${{ steps.deploy.outputs.timestamp }}
 
 # ============================================================================
@@ -146,7 +146,7 @@ outputs:
 # ============================================================================
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     # ------------------------------------------------------------------------
     # Step 1: Validate Inputs
@@ -242,7 +242,7 @@ runs:
     - name: Install kubectl
       shell: bash
       env:
-        KUBECTL_VERSION: "v1.29.0" # Pinned version matching EKS 1.29
+        KUBECTL_VERSION: 'v1.29.0' # Pinned version matching EKS 1.29
       run: |
         set -euo pipefail
         echo "::group::Installing kubectl ${KUBECTL_VERSION}"
@@ -287,7 +287,7 @@ runs:
       if: inputs.application == 'game-server' # Game server uses Helm charts
       shell: bash
       env:
-        HELM_VERSION: "v3.13.3" # Pinned Helm version
+        HELM_VERSION: 'v3.13.3' # Pinned Helm version
       run: |
         set -euo pipefail
         echo "::group::Installing Helm ${HELM_VERSION}"
@@ -980,5 +980,5 @@ runs:
 # Visual identification in GitHub Actions marketplace
 
 branding:
-  icon: "upload-cloud"
-  color: "blue"
+  icon: 'upload-cloud'
+  color: 'blue'

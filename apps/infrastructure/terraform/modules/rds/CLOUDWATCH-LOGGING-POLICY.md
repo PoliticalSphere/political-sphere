@@ -33,7 +33,6 @@
 PostgreSQL RDS instances support two log type exports:
 
 1. **`postgresql`**: General database logs including:
-
    - Connection attempts (successful and failed)
    - Query execution details
    - Error messages and warnings
@@ -122,11 +121,7 @@ To access RDS CloudWatch Logs, IAM users/roles need:
   "Statement": [
     {
       "Effect": "Allow",
-      "Action": [
-        "logs:DescribeLogStreams",
-        "logs:GetLogEvents",
-        "logs:FilterLogEvents"
-      ],
+      "Action": ["logs:DescribeLogStreams", "logs:GetLogEvents", "logs:FilterLogEvents"],
       "Resource": "arn:aws:logs:*:*:log-group:/aws/rds/instance/*"
     }
   ]
@@ -154,17 +149,14 @@ To access RDS CloudWatch Logs, IAM users/roles need:
 ### Recommended CloudWatch Alarms
 
 1. **Failed Authentication Attempts**:
-
    - Metric Filter: `[... , msg = "*authentication failed*"]`
    - Threshold: > 10 failures in 5 minutes
 
 2. **Slow Queries**:
-
    - Metric Filter: `[... , duration > 1000]` (duration in ms)
    - Threshold: > 50 slow queries in 5 minutes
 
 3. **Connection Errors**:
-
    - Metric Filter: `[... , msg = "*could not connect*"]`
    - Threshold: > 5 errors in 5 minutes
 

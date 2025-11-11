@@ -5,7 +5,8 @@
 
 import type { AxiosInstance } from "axios";
 import axios from "axios";
-import { CircuitBreaker } from "../api/src/utils/error-handler";
+
+import { CircuitBreaker } from "./utils/circuit-breaker";
 
 interface VerificationStatus {
   verified: boolean;

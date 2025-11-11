@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+
 import PartyStore from "../stores/party-store.js";
 
 // Mock the database
-vi.mock("../index.js", () => ({
+vi.mock("../../src/modules/stores/index.ts", () => ({
   getDatabase: vi.fn(() => ({
     parties: {
       create: vi.fn(),
@@ -21,7 +22,7 @@ describe("PartyStore", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const { getDatabase } = await import("../modules/stores/index.js");
+    const { getDatabase } = await import("../../src/modules/stores/index.ts");
     mockDb = getDatabase();
     store = new PartyStore(mockDb.parties);
   });

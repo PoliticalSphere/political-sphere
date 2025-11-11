@@ -1,58 +1,136 @@
-const express = require("express");
-const crypto = require("crypto");
+import bcrypt from "bcrypt";
+import express from "express";
+import jwt from "jsonwebtoken";
+
+import logger from "../logger.js";
+import { getDatabase } from "../modules/stores/index.ts";
 
 const router = express.Router();
 
-// Mock authentication routes for testing
-router.post("/login", (req, res) => {
-  const { email, password } = req.body;
+function getUserStore() {
+  return getDatabase().users;
+}
 
-  // Mock authentication - in real app this would validate against database
-  if (email && password) {
-    const token = crypto.randomBytes(32).toString("hex");
-    res.json({
-      success: true,
-      token,
-      user: { id: "1", email },
-    });
-  } else {
-    res.status(400).json({
-      success: false,
-      error: "Email and password required",
-    });
-  }
-});
+// POST /register - Register new user
+router.post("/register", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
 
-router.post("/register", (req, res) => {
-  const { email, password, name } = req.body;
+    // Validate input
+    if (!username || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: "Username, email, and password are required",
+      });
+    }
 
-  // Mock registration
-  if (email && password && name) {
-    const user = {
-      id: Date.now().toString(),
+    // Hash password
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    // Create user
+    const store = getUserStore();
+    const user = await store.create({
+      username,
       email,
-      name,
-      createdAt: new Date().toISOString(),
-    };
+      passwordHash,
+      role: "VIEWER",
+    });
+
+    logger.info("User registered successfully", { userId: user.id, username });
 
     res.status(201).json({
       success: true,
-      user,
+      data: {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      },
     });
-  } else {
-    res.status(400).json({
+  } catch (error) {
+    logger.error("Registration error:", error);
+
+    // Handle duplicate user
+    if (error.message?.includes("UNIQUE constraint")) {
+      return res.status(409).json({
+        success: false,
+        error: "User already exists",
+      });
+    }
+
+    res.status(500).json({
       success: false,
-      error: "Email, password, and name required",
+      error: "Registration failed",
     });
   }
 });
 
-router.post("/logout", (req, res) => {
-  // Mock logout
+// POST /login - Login user
+router.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: "Email and password required",
+      });
+    }
+
+    // Get user with password hash for authentication
+    const store = getUserStore();
+    const user = await store.getUserForAuth?.(email);
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid credentials",
+      });
+    }
+
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.passwordHash);
+    if (!isValidPassword) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid credentials",
+      });
+    }
+
+    // Generate JWT token
+    const token = jwt.sign(
+      { userId: user.id, username: user.username },
+      process.env.JWT_SECRET || "default-secret",
+      { expiresIn: "7d" },
+    );
+
+    logger.info("User logged in", { userId: user.id, username: user.username });
+
+    res.json({
+      success: true,
+      data: {
+        token,
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+      },
+    });
+  } catch (error) {
+    logger.error("Login error:", error);
+    res.status(500).json({
+      success: false,
+      error: "Login failed",
+    });
+  }
+});
+
+// POST /logout - Logout user
+router.post("/logout", (_req, res) => {
   res.json({
     success: true,
     message: "Logged out successfully",
   });
 });
 
-module.exports = router;
+export default router;

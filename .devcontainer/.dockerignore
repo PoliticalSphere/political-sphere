@@ -1,76 +1,415 @@
-# Dependencies
-node_modules
+# =============================================================================
+
+# Docker Build Context Exclusions for Political Sphere
+
+#
+
+# This file specifies which files should be excluded from the Docker build
+
+# context to improve build performance and reduce image size.
+
+#
+
+# Best Practices:
+
+# - Exclude large files that aren't needed in the container
+
+# - Exclude sensitive files (credentials, secrets)
+
+# - Exclude build artifacts and caches
+
+# - Include only what's necessary for the build
+
+# =============================================================================
+
+# =============================================================================
+
+# Dependencies (should be installed fresh in container)
+
+# =============================================================================
+
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+.pnpm-store/
+.yarn/
+bower_components/
 
-# Build outputs
-dist
-build
-.next
-out
-*.tsbuildinfo
+# Python dependencies
 
-# Testing
-coverage
-.nyc_output
-*.test.ts
-*.test.js
-*.spec.ts
-*.spec.js
+**pycache**/
+_.py[cod]
+_$py.class
+\*.so
+.Python
+venv/
+ENV/
 
-# Environment files
+# =============================================================================
+
+# Build Outputs (generated during build)
+
+# =============================================================================
+
+dist/
+build/
+.next/
+out/
+\*.tsbuildinfo
+.turbo/
+.nx/cache/
+.nx/workspace-data/
+
+# =============================================================================
+
+# Testing (not needed in production images)
+
+# =============================================================================
+
+coverage/
+.nyc_output/
+_.test.ts
+_.test.js
+_.spec.ts
+_.spec.js
+_.test.tsx
+_.test.jsx
+_.spec.tsx
+_.spec.jsx
+test-results/
+playwright-report/
+e2e-results/
+
+# =============================================================================
+
+# Environment Files (secrets should never be in images)
+
+# =============================================================================
+
 .env
 .env.local
-.env.*.local
-*.env
+.env._.local
+.env.development
+.env.production
+.env.test
+_.env
+.env.\*
 
-# IDE
-.vscode/*
+# Secrets directory
+
+secrets/
+_.secret
+_.key
+_.pem
+_.p12
+\*.pfx
+
+# =============================================================================
+
+# IDE and Editor Files
+
+# =============================================================================
+
+.vscode/_
 !.vscode/extensions.json
 !.vscode/settings.json
-.idea
-*.swp
-*.swo
-*~
-
-# OS
+.idea/
+_.swp
+_.swo
+_.swn
+_~
 .DS_Store
-Thumbs.db
+_.sublime-project
+\*.sublime-workspace
 
-# Git
-.git
+# =============================================================================
+
+# Operating System Files
+
+# =============================================================================
+
+.DS*Store
+.DS_Store?
+.*\*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# =============================================================================
+
+# Version Control
+
+# =============================================================================
+
+.git/
 .gitignore
 .gitattributes
-
-# CI/CD
-.github
+.github/
 .gitlab-ci.yml
 .travis.yml
+.circleci/
 
-# Documentation
-*.md
-docs
+# =============================================================================
+
+# CI/CD (not needed in images)
+
+# =============================================================================
+
+.github/
+.gitlab/
+.circleci/
+.travis.yml
+azure-pipelines.yml
+bitbucket-pipelines.yml
+Jenkinsfile
+
+# =============================================================================
+
+# Documentation (reduces image size)
+
+# =============================================================================
+
+\*.md
+!README.md
+docs/
+documentation/
 LICENSE
+CHANGELOG.md
+CONTRIBUTING.md
+CODE_OF_CONDUCT.md
 
-# Logs
-logs
-*.log
+# =============================================================================
 
-# Temporary files
-tmp
-temp
-*.tmp
+# Logs (should not be in images)
 
-# Audit and reports
-*-audit
-audit-results
-reports
-*.sarif
-*.json.log
+# =============================================================================
 
-# Docker
+logs/
+_.log
+npm-debug.log_
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+pnpm-debug.log*
+
+# =============================================================================
+
+# Temporary Files
+
+# =============================================================================
+
+tmp/
+temp/
+_.tmp
+_.temp
+.cache/
+.parcel-cache/
+
+# =============================================================================
+
+# Audit and Security Reports
+
+# =============================================================================
+
+_-audit/
+_-audit.json
+audit-results/
+reports/
+_.sarif
+_.json.log
+security-scan/
+vulnerability-reports/
+
+# SBOM (Software Bill of Materials)
+
+sbom/
+_.sbom.json
+_.spdx.json
+
+# =============================================================================
+
+# Docker Files (prevent recursive Docker builds)
+
+# =============================================================================
+
 Dockerfile*
+!Dockerfile
 docker-compose*.yml
 .dockerignore
+
+# =============================================================================
+
+# Database and Data Files
+
+# =============================================================================
+
+_.sql
+_.db
+_.sqlite
+_.sqlite3
+data/
+postgres_data/
+redis_data/
+mongo_data/
+
+# =============================================================================
+
+# Large Media Files (if present)
+
+# =============================================================================
+
+_.mp4
+_.mov
+_.avi
+_.mkv
+_.flv
+_.wmv
+_.zip
+_.tar
+_.tar.gz
+_.rar
+\*.7z
+
+# =============================================================================
+
+# Backups
+
+# =============================================================================
+
+_.bak
+_.backup
+\*.old
+backup/
+backups/
+
+# =============================================================================
+
+# macOS Specific
+
+# =============================================================================
+
+.AppleDouble
+.LSOverride
+Icon
+.\_\*
+
+# =============================================================================
+
+# Windows Specific
+
+# =============================================================================
+
+$RECYCLE.BIN/
+Desktop.ini
+
+# =============================================================================
+
+# Linux Specific
+
+# =============================================================================
+
+.fuse_hidden*
+.directory
+.Trash-*
+
+# =============================================================================
+
+# Development Tools
+
+# =============================================================================
+
+.devcontainer/
+!.devcontainer/Dockerfile
+
+# AI and code generation artifacts
+
+ai/
+.copilot/
+.cursor/
+
+# Performance profiling
+
+_.cpuprofile
+_.heapprofile
+\*.heapsnapshot
+
+# =============================================================================
+
+# Project-Specific Exclusions
+
+# =============================================================================
+
+# Nx workspace cache (large and regenerable)
+
+.nx/
+
+# Storybook
+
+storybook-static/
+
+# Lighthouse CI
+
+.lighthouseci/
+
+# Terraform state
+
+_.tfstate
+_.tfstate.\*
+.terraform/
+
+# Kubernetes
+
+\*.kubeconfig
+
+# =============================================================================
+
+# Keep These Files (override exclusions)
+
+# =============================================================================
+
+# Use ! prefix to include files that would otherwise be excluded
+
+# Include specific documentation needed at runtime
+
+!README.md
+
+# Include specific config files needed for the application
+
+!package.json
+!package-lock.json
+!pnpm-lock.yaml
+!tsconfig.json
+
+# =============================================================================
+
+# Notes
+
+# =============================================================================
+
+#
+
+# This .dockerignore file is optimized for:
+
+# - Fast Docker builds (excluding unnecessary files)
+
+# - Smaller image sizes (excluding large assets)
+
+# - Security (excluding secrets and sensitive files)
+
+#
+
+# To verify what's being included in builds:
+
+# docker build --no-cache -t test-build .
+
+# docker history test-build
+
+# docker run --rm test-build ls -la
+
+#
+
+# =============================================================================

@@ -5,13 +5,15 @@
  */
 
 const express = require("express");
+
 const router = express.Router();
+const rateLimit = require("express-rate-limit");
+
 const complianceService = require("../complianceService");
 const { authenticate, requireRole } = require("../middleware/auth");
 const logger = require("../utils/logger.js");
 
 // Rate limiting for compliance endpoints
-const rateLimit = require("express-rate-limit");
 const complianceLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs

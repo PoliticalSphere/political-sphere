@@ -1,27 +1,31 @@
 // Test utilities for Political Sphere API tests
 // Provides reusable helpers for database setup, mocking, and assertions
 
-import express from "express";
-import request from "supertest";
-import { closeDatabase, getDatabase } from "../../src/stores";
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import request from 'supertest';
+
+import { getTestDatabase } from '../../src/test-support/index.ts';
 
 /**
  * Database test utilities
  */
 export const dbHelpers = {
+  testDb: getTestDatabase(),
+
   /**
    * Initialize database for tests
    * @returns {Object} Database instance
    */
   async setupDatabase() {
-    return getDatabase();
+    return this.testDb.setup();
   },
 
   /**
    * Clean up database after tests
    */
   async teardownDatabase() {
-    closeDatabase();
+    await this.testDb.teardown();
   },
 
   /**
@@ -30,13 +34,7 @@ export const dbHelpers = {
    * @returns {Object} Created user
    */
   async createTestUser(overrides = {}) {
-    const db = getDatabase();
-    const userData = {
-      username: `testuser_${Date.now()}`,
-      email: `test${Date.now()}@example.com`,
-      ...overrides,
-    };
-    return db.users.create(userData);
+    return this.testDb.createTestUser(overrides);
   },
 
   /**
@@ -45,14 +43,7 @@ export const dbHelpers = {
    * @returns {Object} Created party
    */
   async createTestParty(overrides = {}) {
-    const db = getDatabase();
-    const partyData = {
-      name: `Test Party ${Date.now()}`,
-      description: "A test political party",
-      color: "#FF6B6B",
-      ...overrides,
-    };
-    return db.parties.create(partyData);
+    return this.testDb.createTestParty(overrides);
   },
 
   /**
@@ -61,14 +52,7 @@ export const dbHelpers = {
    * @returns {Object} Created bill
    */
   async createTestBill(overrides = {}) {
-    const db = getDatabase();
-    const billData = {
-      title: `Test Bill ${Date.now()}`,
-      description: "A test bill for political simulation",
-      proposerId: overrides.proposerId || (await this.createTestUser()).id,
-      ...overrides,
-    };
-    return db.bills.create(billData);
+    return this.testDb.createTestBill(overrides);
   },
 };
 
@@ -83,19 +67,19 @@ export const httpHelpers = {
    */
   createTestAgent(app) {
     // Add common test middleware
-    app.use((req, res, next) => {
+    app.use((req, _res, next) => {
       // Debug logging in test mode
-      if (process.env.NODE_ENV === "test") {
-        console.debug("[test] incoming headers:", req.headers);
+      if (process.env.NODE_ENV === 'test') {
+        console.debug('[test] incoming headers:', req.headers);
       }
       next();
     });
 
     // Custom body parser for test environment
-    app.use(express.text({ type: "*/*" }));
-    app.use((req, res, next) => {
+    app.use(express.text({ type: '*/*' }));
+    app.use((req, _res, next) => {
       try {
-        if (typeof req.body === "string" && req.body.length > 0) {
+        if (typeof req.body === 'string' && req.body.length > 0) {
           req.body = JSON.parse(req.body);
         }
         return next();
@@ -113,7 +97,35 @@ export const httpHelpers = {
    * @returns {Object} Request with headers set
    */
   setApiHeaders(request) {
-    return request.set("Content-Type", "application/json; charset=utf-8");
+    return request.set('Content-Type', 'application/json; charset=utf-8');
+  },
+
+  /**
+   * Generate JWT token for test authentication
+   * @param {Object} payload - Token payload (userId, username, etc.)
+   * @param {string} expiresIn - Token expiration (default: '1h')
+   * @returns {string} JWT token
+   */
+  generateTestToken(payload = {}, expiresIn = '1h') {
+    const defaultPayload = {
+      userId: `test-user-${Date.now()}`,
+      username: 'testuser',
+      ...payload,
+    };
+    
+    const secret = process.env.JWT_SECRET || 'test-secret-key-at-least-32-characters-long';
+    return jwt.sign(defaultPayload, secret, { expiresIn });
+  },
+
+  /**
+   * Add authorization header with JWT token to request
+   * @param {Object} request - Supertest request object
+   * @param {string} token - JWT token (if not provided, generates a test token)
+   * @returns {Object} Request with Authorization header
+   */
+  withAuth(request, token = null) {
+    const authToken = token || this.generateTestToken();
+    return request.set('Authorization', `Bearer ${authToken}`);
   },
 };
 

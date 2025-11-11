@@ -18,7 +18,7 @@ export default {
           "libs/*/src/**/*.{test,spec}.{js,mjs,ts,tsx,jsx}",
         ],
     exclude: ["**/node_modules/**", "**/e2e/**", "**/playwright.config.js", "ai/**", "tools/**"],
-    setupFiles: ["./scripts/test-setup.ts"],
+    setupFiles: [resolve(process.cwd(), "tools/test-setup.ts")],
   },
   cacheDir: ".vitest/cache-temp",
   resolve: {

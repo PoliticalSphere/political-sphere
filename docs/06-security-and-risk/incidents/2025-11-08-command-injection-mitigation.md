@@ -26,7 +26,7 @@ const child = spawn(command, options.args || [], { ... });
 ### Attack Vectors Prevented
 
 1. **Shell metacharacter injection**: `node; rm -rf /`
-2. **Command substitution**: `` node `whoami`  ``
+2. **Command substitution**: ``node `whoami` ``
 3. **Pipe operators**: `node | malicious-command`
 4. **Path traversal**: `../../../etc/passwd`
 5. **Null byte injection**: `file.js\0malicious`
@@ -42,20 +42,20 @@ We implemented multiple layers of security controls:
 
 ```javascript
 const ALLOWED_COMMANDS = new Set([
-  "node",
-  "npm",
-  "npx",
-  "pnpm",
-  "yarn",
-  "git",
-  "vitest",
-  "tsc",
-  "eslint",
-  "prettier",
+  'node',
+  'npm',
+  'npx',
+  'pnpm',
+  'yarn',
+  'git',
+  'vitest',
+  'tsc',
+  'eslint',
+  'prettier',
 ]);
 
 function isCommandSafe(command) {
-  const commandName = command.split("/").pop();
+  const commandName = command.split('/').pop();
   if (!ALLOWED_COMMANDS.has(commandName)) {
     return false; // REJECT
   }
@@ -73,13 +73,13 @@ function isCommandSafe(command) {
 function areArgumentsSafe(args) {
   for (const arg of args) {
     // Type validation
-    if (typeof arg !== "string") return false;
+    if (typeof arg !== 'string') return false;
 
     // Shell metacharacter detection
     if (/[;&|`$()]/.test(arg)) return false;
 
     // Null byte injection prevention
-    if (arg.includes("\0")) return false;
+    if (arg.includes('\0')) return false;
   }
   return true;
 }
@@ -97,7 +97,7 @@ function sanitizeFilePath(filePath, baseDir = process.cwd()) {
   }
 
   // Validate filename pattern
-  const fileName = absolutePath.split("/").pop();
+  const fileName = absolutePath.split('/').pop();
   if (!/^[\w\-/.]+$/.test(fileName)) {
     return null; // REJECT
   }
@@ -110,7 +110,7 @@ function sanitizeFilePath(filePath, baseDir = process.cwd()) {
 
 ```javascript
 const child = spawn(command, args, {
-  stdio: ["inherit", "pipe", "pipe"],
+  stdio: ['inherit', 'pipe', 'pipe'],
   shell: false, // ⚠️ CRITICAL: Prevents shell invocation
   ...options,
 });
@@ -129,7 +129,7 @@ class SelfHealingAutomation {
 
   async runCommandWithHealing(command, options) {
     if (this.retryCount >= this.maxRetries) {
-      throw new Error("Maximum retry limit exceeded");
+      throw new Error('Maximum retry limit exceeded');
     }
     // ... execute command ...
   }
@@ -140,15 +140,13 @@ class SelfHealingAutomation {
 
 ```javascript
 // Strict npm package name regex (official specification)
-if (
-  !/^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(moduleName)
-) {
+if (!/^(@[a-z0-9-~][a-z0-9-._~]*\/)?[a-z0-9-~][a-z0-9-._~]*$/.test(moduleName)) {
   return { success: false }; // REJECT
 }
 
 // Use execFileSync with array args (no shell)
-execFileSync("npm", ["install", moduleName], {
-  stdio: "inherit",
+execFileSync('npm', ['install', moduleName], {
+  stdio: 'inherit',
   shell: false, // Explicitly disabled
 });
 ```

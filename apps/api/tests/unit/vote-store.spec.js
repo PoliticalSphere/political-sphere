@@ -1,8 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import VoteStore from "../stores/vote-store.js";
 
-// Mock the database
-vi.mock("../index.js", () => ({
+// Use the actual implementation from the source instead of a missing test shim
+import VoteStore from "../../src/modules/stores/vote-store.ts";
+
+// Mock the module that provides the database for the tests (pointing to the real src path)
+vi.mock("../../src/modules/stores/index.ts", () => ({
   getDatabase: vi.fn(() => ({
     votes: {
       create: vi.fn(),
@@ -22,7 +24,7 @@ describe("VoteStore", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const { getDatabase } = await import("../modules/stores/index.js");
+    const { getDatabase } = await import("../../src/modules/stores/index.ts");
     mockDb = getDatabase();
     store = new VoteStore(mockDb.votes);
   });

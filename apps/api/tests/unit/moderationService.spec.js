@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import ModerationService from "../moderationService.js";
+
+import ModerationService from "../../src/moderationService.js";
 
 // Mock dependencies
-vi.mock("../logger.js", () => ({
+vi.mock("../../src/logger.js", () => ({
   default: {
     info: vi.fn(),
     warn: vi.fn(),
@@ -10,7 +11,7 @@ vi.mock("../logger.js", () => ({
   },
 }));
 
-vi.mock("../index.js", () => ({
+vi.mock("../../src/modules/stores/index.ts", () => ({
   getDatabase: vi.fn(() => ({
     moderation: {
       create: vi.fn(),
@@ -26,7 +27,7 @@ describe("ModerationService", () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    const { getDatabase } = await import("../modules/stores/index.js");
+    const { getDatabase } = await import("../../src/modules/stores/index.ts");
     mockDb = getDatabase();
     service = new ModerationService(mockDb.moderation);
   });

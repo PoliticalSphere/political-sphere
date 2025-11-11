@@ -5,7 +5,7 @@ on:
   workflow_call:
     inputs:
       secret_path:
-        description: "Vault KV path (e.g. secret/data/myapp/config)"
+        description: 'Vault KV path (e.g. secret/data/myapp/config)'
         required: true
         type: string
     secrets:

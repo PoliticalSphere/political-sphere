@@ -8,6 +8,7 @@ Add these dev dependencies to your root `package.json`:
 - `playwright` (if not already present)
 
 Install with:
+
 ```bash
 npm install --save-dev @axe-core/playwright playwright
 ```
@@ -41,5 +42,6 @@ Add a note to your onboarding docs about running accessibility tests with Playwr
 ---
 
 For more details, see:
+
 - https://github.com/axe-core/axe-playwright
 - https://playwright.dev/docs/test-intro

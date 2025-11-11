@@ -9,6 +9,7 @@ This document outlines the organized structure of the Political Sphere documenta
 ## Top-Level Categories
 
 ### 00-foundation/
+
 Foundation documents defining the project's core identity and standards.
 
 - **business/** - Business model, market analysis
@@ -24,6 +25,7 @@ Foundation documents defining the project's core identity and standards.
 - Core files: `vision-mission.md`, `core-values-ethics.md`, `success-metrics-north-star.md`
 
 ### 01-strategy/
+
 Strategic planning and roadmap documentation.
 
 - **roadmap/** - Long-term planning and assumptions
@@ -35,12 +37,14 @@ Strategic planning and roadmap documentation.
 - Core files: `product-strategy.md`, `objectives-and-key-results-okrs.md`, `ai-strategy-and-differentiation.md`
 
 ### 02-governance/
+
 Governance framework and decision-making processes.
 
 - **rfcs/** - Request for Comments documents
 - Core files: `governance-charter.md`, `decision-rights-matrix.md`, `roles-and-responsibilities-raci.md`
 
 ### 03-legal-and-compliance/
+
 Legal requirements, compliance, and data protection.
 
 - **ai-compliance/** - AI-specific compliance requirements
@@ -49,6 +53,7 @@ Legal requirements, compliance, and data protection.
 - Core files: `compliance.md`, `privacy-policy.md`, `terms-of-service.md`
 
 ### 04-architecture/
+
 System architecture and technical design.
 
 - **api-architecture/** - API design and contracts
@@ -57,6 +62,7 @@ System architecture and technical design.
 - Core files: `architecture.md`, `system-overview.md`, `domain-driven-design-map.md`
 
 ### 05-engineering-and-devops/
+
 Engineering practices, development guides, and DevOps.
 
 - **development/** - Development practices and patterns
@@ -73,6 +79,7 @@ Engineering practices, development guides, and DevOps.
 - **testing/** - Test infrastructure and frameworks
 
 ### 06-security-and-risk/
+
 Security policies, risk management, and incident response.
 
 - **audits/** - Security audits and assessments
@@ -80,12 +87,14 @@ Security policies, risk management, and incident response.
 - Core files: `security.md`, `risk-register.md`, `threat-modeling-stride.md`
 
 ### 07-ai-and-simulation/
+
 AI systems, governance, and simulation engine.
 
 - **model-inventory-and-system-cards/** - AI model documentation
 - Core files: `ai-governance.md`, `ai-governance-framework.md`, `multi-agent-orchestration.md`
 
 ### 08-game-design-and-mechanics/
+
 Game design documentation and mechanics.
 
 - **mechanics/** - Game mechanics and rules
@@ -101,6 +110,7 @@ Game design documentation and mechanics.
 - Core files: `game-design-document-gdd.md`, `content-moderation-and-enforcement.md`
 
 ### 09-observability-and-ops/
+
 Operations, monitoring, and observability.
 
 - Core files: `operations.md`, observability architecture, SLO definitions

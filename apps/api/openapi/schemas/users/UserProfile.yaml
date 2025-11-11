@@ -15,48 +15,48 @@ properties:
     type: string
     format: uuid
     description: Unique user identifier
-    example: "550e8400-e29b-41d4-a716-446655440000"
+    example: '550e8400-e29b-41d4-a716-446655440000'
   email:
     type: string
     format: email
     description: User's email address
-    example: "john.citizen@example.com"
+    example: 'john.citizen@example.com'
   username:
     type: string
     description: Unique username
-    example: "john_citizen"
+    example: 'john_citizen'
   firstName:
     type: string
     description: User's first name
-    example: "John"
+    example: 'John'
   lastName:
     type: string
     description: User's last name
-    example: "Citizen"
+    example: 'Citizen'
   dateOfBirth:
     type: string
     format: date
     description: User's date of birth
-    example: "1990-01-01"
+    example: '1990-01-01'
   country:
     type: string
     description: ISO 3166-1 alpha-2 country code
-    example: "GB"
+    example: 'GB'
   bio:
     type: string
     maxLength: 500
     description: User's biography
-    example: "Political science graduate interested in democratic reform"
+    example: 'Political science graduate interested in democratic reform'
   avatarUrl:
     type: string
     format: uri
     description: URL to user's avatar image
-    example: "https://cdn.political-sphere.com/avatars/550e8400-e29b-41d4-a716-446655440000.jpg"
+    example: 'https://cdn.political-sphere.com/avatars/550e8400-e29b-41d4-a716-446655440000.jpg'
   status:
     type: string
     enum: [active, suspended, banned, pending_verification]
     description: Account status
-    example: "active"
+    example: 'active'
   emailVerified:
     type: boolean
     description: Whether email address has been verified
@@ -65,14 +65,14 @@ properties:
     type: string
     format: date-time
     description: Last login timestamp
-    example: "2025-11-08T10:30:00Z"
+    example: '2025-11-08T10:30:00Z'
   createdAt:
     type: string
     format: date-time
     description: Account creation timestamp
-    example: "2025-01-15T09:00:00Z"
+    example: '2025-01-15T09:00:00Z'
   updatedAt:
     type: string
     format: date-time
     description: Last profile update timestamp
-    example: "2025-11-08T10:30:00Z"
+    example: '2025-11-08T10:30:00Z'

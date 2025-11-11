@@ -1,4 +1,4 @@
 # Minimal Tiltfile for Political Sphere local development.
-# Launches the Docker Compose stack defined in dev/docker/docker-compose.dev.yaml.
+# Launches the Docker Compose stack defined in tools/docker/docker-compose.yml
 
-docker_compose('dev/docker/docker-compose.dev.yaml')
+docker_compose('tools/docker/docker-compose.yml')

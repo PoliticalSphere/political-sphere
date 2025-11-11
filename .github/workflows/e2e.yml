@@ -1,0 +1,140 @@
+name: E2E Tests
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'apps/web/**'
+      - 'apps/api/**'
+      - 'apps/e2e/**'
+      - 'libs/**'
+      - 'playwright.config.ts'
+      - '.github/workflows/e2e.yml'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  e2e-tests:
+    name: Run E2E Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      # Redis for session storage
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --legacy-peer-deps
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Create test environment file
+        env:
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          JWT_REFRESH_SECRET: ${{ secrets.JWT_REFRESH_SECRET }}
+        run: |
+          # Use provided secrets if available; otherwise generate strong random test-only values
+          JWT_SECRET_VALUE="${JWT_SECRET}"
+          if [ -z "$JWT_SECRET_VALUE" ]; then
+            JWT_SECRET_VALUE=$(node -e "console.log(require('crypto').randomBytes(48).toString('hex'))")
+          fi
+
+          JWT_REFRESH_SECRET_VALUE="${JWT_REFRESH_SECRET}"
+          if [ -z "$JWT_REFRESH_SECRET_VALUE" ]; then
+            JWT_REFRESH_SECRET_VALUE=$(node -e "console.log(require('crypto').randomBytes(48).toString('hex'))")
+          fi
+
+          cat > .env.test <<EOF
+          NODE_ENV=test
+          JWT_SECRET=${JWT_SECRET_VALUE}
+          JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET_VALUE}
+          JWT_EXPIRES_IN=15m
+          JWT_REFRESH_EXPIRES_IN=7d
+          REDIS_URL=redis://localhost:6379
+          DATABASE_URL=file:./test.db
+          LOG_LEVEL=warn
+          EOF
+
+      - name: Build applications
+        run: |
+          npm run build --if-present
+        env:
+          NODE_ENV: test
+
+      - name: Start API server
+        run: |
+          npm run start:api &
+          echo $! > api.pid
+          sleep 5
+        env:
+          NODE_ENV: test
+
+      - name: Start web server
+        run: |
+          npm run start:web &
+          echo $! > web.pid
+          sleep 5
+        env:
+          NODE_ENV: test
+          VITE_API_URL: http://localhost:3001
+
+      - name: Wait for services
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:3001/health; do sleep 2; done'
+          timeout 60 bash -c 'until curl -f http://localhost:3000; do sleep 2; done'
+
+      - name: Seed test data
+        run: npm run seed:dev
+        env:
+          NODE_ENV: test
+
+      - name: Run E2E tests
+        run: npm run test:e2e
+        env:
+          E2E_BASE_URL: http://localhost:3000
+          CI: true
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: reports/e2e-html/
+          retention-days: 30
+
+      - name: Upload test videos
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-videos
+          path: test-results/
+          retention-days: 7
+
+      - name: Cleanup processes
+        if: always()
+        run: |
+          if [ -f api.pid ]; then kill $(cat api.pid) || true; fi
+          if [ -f web.pid ]; then kill $(cat web.pid) || true; fi

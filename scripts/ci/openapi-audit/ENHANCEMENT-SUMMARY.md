@@ -9,14 +9,12 @@
 ### 🎯 Key Improvements
 
 1. **Industry-Standard Tool Integration**
-
    - **Spectral**: Advanced API linting with customizable rulesets
    - **Redocly**: Industry-standard OpenAPI validation
    - **Vacuum**: Comprehensive OpenAPI analysis
    - All tools optional with graceful fallback
 
 2. **Automated Remediation (Auto-Fix)**
-
    - Missing operationId generation
    - Bearer token format specification
    - ReadOnly/WriteOnly field annotations
@@ -24,14 +22,12 @@
    - All changes backed up with detailed logs
 
 3. **Extended OWASP API Security Coverage**
-
    - API6:2023 - Sensitive Business Flow Protection
    - API7:2023 - SSRF (Server-Side Request Forgery) Prevention
    - API10:2023 - Third-Party API Safety
    - Comprehensive security header validation
 
 4. **Enhanced Reporting**
-
    - Detailed auto-fix logs
    - Historical audit trail (JSONL format)
    - Production readiness assessment
@@ -161,27 +157,22 @@ docs/audit-trail/openapi/
 ### Authoritative Sources
 
 1. **OpenAPI Specification 3.1.0**
-
    - Source: https://spec.openapis.org/oas/v3.1.0
    - Coverage: Complete spec compliance validation
 
 2. **OWASP API Security Top 10 2023**
-
    - Source: https://owasp.org/API-Security/
    - Coverage: All 10 categories with specific checks
 
 3. **RFC 7807 Problem Details**
-
    - Source: https://www.rfc-editor.org/rfc/rfc7807.html
    - Coverage: Standardized error response format
 
 4. **Microsoft Azure API Guidelines**
-
    - Source: https://learn.microsoft.com/azure/architecture/best-practices/api-design
    - Coverage: Best practices for RESTful API design
 
 5. **42Crunch API Security**
-
    - Source: https://42crunch.com/
    - Coverage: Security-first API design principles
 

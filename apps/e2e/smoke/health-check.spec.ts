@@ -10,12 +10,9 @@
 import { expect, test } from "@playwright/test";
 
 // Allow skipping frontend tests when WEB_BASE_URL is not provided or frontend not running.
-const WEB_BASE: string | null =
-  process.env.WEB_BASE_URL ?? "http://localhost:3002";
+const WEB_BASE: string | null = process.env.WEB_BASE_URL ?? "http://localhost:3002";
 // Frontend now starts via Playwright webServer (Vite). Remove conditional skipping; retain helper for future env gating.
-function runFrontend(
-  fn: (page: import("@playwright/test").Page) => Promise<void>
-) {
+function runFrontend(fn: (page: import("@playwright/test").Page) => Promise<void>) {
   return async ({ page }: { page: import("@playwright/test").Page }) => {
     await fn(page);
   };
@@ -27,7 +24,7 @@ test.describe("Smoke Tests - Health Checks", () => {
     runFrontend(async (page) => {
       const response = await page.goto(WEB_BASE as string);
       expect(response?.status()).toBe(200);
-    })
+    }),
   );
 
   test(
@@ -51,11 +48,11 @@ test.describe("Smoke Tests - Health Checks", () => {
 
       // Filter out known acceptable errors (if any)
       const criticalErrors = errors.filter(
-        (error) => !error.includes("ResizeObserver") // Example: ignore non-critical warnings
+        (error) => !error.includes("ResizeObserver"), // Example: ignore non-critical warnings
       );
 
       expect(criticalErrors).toHaveLength(0);
-    })
+    }),
   );
 
   test("API health endpoint should respond", async ({ request }) => {
@@ -79,6 +76,6 @@ test.describe("Smoke Tests - Health Checks", () => {
       // This depends on your app structure - adjust as needed
       const mainContent = page.locator('main, [role="main"], #root');
       await expect(mainContent).toBeVisible();
-    })
+    }),
   );
 });

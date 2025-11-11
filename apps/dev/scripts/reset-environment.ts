@@ -13,7 +13,8 @@
 import { execSync } from "node:child_process";
 import { existsSync, rmSync } from "node:fs";
 import { join } from "node:path";
-import { DatabaseConnector } from "../../../data/src/connectors/database-connector.js";
+
+import { DatabaseConnector } from "../../data-pipeline/src/connectors/database-connector";
 
 interface ResetOptions {
   database?: boolean;

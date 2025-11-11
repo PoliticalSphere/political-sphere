@@ -189,11 +189,13 @@ class DatabasePerformanceMonitor {
 
       // Index statistics
       const indexes = connection.db
-        .prepare(`
+        .prepare(
+          `
 				SELECT name, tbl_name, sql
 				FROM sqlite_master
 				WHERE type = 'index' AND name NOT LIKE 'sqlite_%'
-			`)
+			`,
+        )
         .all();
 
       for (const index of indexes) {

@@ -1,6 +1,6 @@
 ---
-description: "TypeScript coding standards including strict mode, type safety, and ESM module guidelines"
-applyTo: "**/*.ts,**/*.tsx"
+description: 'TypeScript coding standards including strict mode, type safety, and ESM module guidelines'
+applyTo: '**/*.ts,**/*.tsx'
 ---
 
 # TypeScript Code Instructions

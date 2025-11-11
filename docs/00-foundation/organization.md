@@ -34,16 +34,37 @@ NEVER place files in root. Always use these structured locations:
 Exceptions to root placement
 While most project contents must live under structured directories, common top-level files required by standard tools and discoverability are excepted:
 
-- `/README.md`, `/LICENSE`, `/CHANGELOG.md`, `/CONTRIBUTING.md`
-- `/package.json`, `/pnpm-workspace.yaml`, `/nx.json`, `/tsconfig.base.json`
+**Documentation & Legal:**
+
+- `/README.md`, `/LICENSE`, `/CHANGELOG.md`, `/CONTRIBUTING.md`, `/SECURITY.md`
+
+**Package Management:**
+
+- `/package.json`, `/package-lock.json` (using npm, not pnpm)
+
+**Build & Tooling Config:**
+
+- `/nx.json`, `/tsconfig.json`, `/vitest.config.js`, `/biome.json`
+- `/Tiltfile` (development orchestration)
+
+**Editor & Code Quality:**
+
 - `/.editorconfig`, `/.gitignore`, `/.gitattributes`
+- `/.prettierrc`, `/.prettierignore`
+- `/.lefthook.yml` (git hooks)
+- `/.npmrc`, `/.yamllint`, `/.owasp-suppressions.xml`
+- `/.blackboxrules` (AI instructions, paired with `.github/copilot-instructions.md`)
+
+**IDE & CI/CD:**
+
 - `/.github/` (workflows, templates)
 - `/.vscode/` (IDE settings)
-- `/.lefthook/` (git hooks)
-- `/ai-controls.json`, `/ai-metrics.json` (legacy, to be moved to `/ai/`)
-- `/TODO-STEPS.md`, `/TODO.md` (project management)
 
-Rationale: These exceptions align with tooling expectations and improve discoverability across developer tools and CI.
+**Environment Files:**
+
+- `/.env.example` (safe defaults for development, actual `.env` is git-ignored)
+
+Rationale: These exceptions align with industry-standard tooling expectations (EditorConfig, Git, Nx, npm) and improve discoverability across developer tools and CI/CD pipelines.
 
 ## Naming Conventions (Strict)
 

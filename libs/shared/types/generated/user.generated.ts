@@ -1,4 +1,3 @@
-/* eslint-disable */
 /**
  * This file was automatically generated from user.schema.json.
  * DO NOT MODIFY IT BY HAND. Instead, modify the source JSON Schema file,
@@ -28,7 +27,7 @@ export interface User {
   /**
    * User's role in the system
    */
-  role?: 'user' | 'moderator' | 'admin';
+  role?: "user" | "moderator" | "admin";
   /**
    * Whether the user account is active
    */

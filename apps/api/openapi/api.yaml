@@ -1,5 +1,5 @@
 openapi: 3.1.0
-jsonSchemaDialect: "https://spec.openapis.org/oas/3.1/dialect/base"
+jsonSchemaDialect: 'https://spec.openapis.org/oas/3.1/dialect/base'
 info:
   title: Political Sphere API
   version: 1.0.0
@@ -76,8 +76,8 @@ info:
     identifier: MIT
   termsOfService: https://political-sphere.com/terms
   x-api-version-lifecycle:
-    currentVersion: "1.0.0"
-    supportedVersions: ["1.0.0"]
+    currentVersion: '1.0.0'
+    supportedVersions: ['1.0.0']
     deprecatedVersions: []
     sunsetVersions: []
     sunsetPolicy:
@@ -112,7 +112,7 @@ servers:
       Default port: 3000
     variables:
       port:
-        default: "3000"
+        default: '3000'
 
 tags:
   - name: auth
@@ -188,7 +188,7 @@ webhooks:
                   format: date-time
                   description: Timestamp when vote was completed
       responses:
-        "200":
+        '200':
           description: Webhook acknowledged successfully
           content:
             application/json:
@@ -198,12 +198,12 @@ webhooks:
                   acknowledged:
                     type: boolean
                     example: true
-        "410":
+        '410':
           description: Webhook subscription no longer valid
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ProblemDetails"
+                $ref: '#/components/schemas/ProblemDetails'
 
   partyEvent:
     post:
@@ -248,9 +248,9 @@ webhooks:
                   format: date-time
                   description: Event timestamp
       responses:
-        "200":
+        '200':
           description: Webhook acknowledged successfully
-        "410":
+        '410':
           description: Webhook subscription no longer valid
 
   newsModeration:
@@ -304,9 +304,9 @@ webhooks:
                   format: date-time
                   description: Moderation completion timestamp
       responses:
-        "200":
+        '200':
           description: Webhook acknowledged successfully
-        "410":
+        '410':
           description: Webhook subscription no longer valid
 
 paths:
@@ -319,27 +319,27 @@ paths:
       description: Returns the health status of the API and all dependent services
       operationId: getHealth
       responses:
-        "200":
+        '200':
           description: Service is healthy
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/HealthResponse"
+                $ref: '#/components/schemas/HealthResponse'
               example:
-                status: "ok"
-                timestamp: "2025-11-08T10:30:00Z"
+                status: 'ok'
+                timestamp: '2025-11-08T10:30:00Z'
                 uptime: 3600
-                version: "1.0.0"
+                version: '1.0.0'
                 services:
-                  database: "ok"
-                  redis: "ok"
-                  websocket: "ok"
-        "503":
+                  database: 'ok'
+                  redis: 'ok'
+                  websocket: 'ok'
+        '503':
           description: Service is unhealthy
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /health/detailed:
     get:
@@ -352,12 +352,12 @@ paths:
         - bearerAuth: []
         - oauth2Auth: [admin]
       responses:
-        "200":
+        '200':
           description: Detailed health information
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/DetailedHealthResponse"
+                $ref: '#/components/schemas/DetailedHealthResponse'
 
   # Authentication
   /auth/register:
@@ -372,35 +372,35 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserRegistration"
+              $ref: '#/components/schemas/UserRegistration'
             example:
-              email: "user@example.com"
-              password: "SecurePass123!"
-              username: "political_user"
-              firstName: "John"
-              lastName: "Citizen"
-              dateOfBirth: "1990-01-01"
-              country: "GB"
+              email: 'user@example.com'
+              password: 'SecurePass123!'
+              username: 'political_user'
+              firstName: 'John'
+              lastName: 'Citizen'
+              dateOfBirth: '1990-01-01'
+              country: 'GB'
               acceptedTerms: true
       responses:
-        "201":
+        '201':
           description: User registered successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthResponse"
-        "400":
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
           description: Invalid registration data
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
-        "409":
+                $ref: '#/components/schemas/ValidationError'
+        '409':
           description: User already exists
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /auth/login:
     post:
@@ -418,24 +418,24 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/LoginRequest"
+              $ref: '#/components/schemas/LoginRequest'
             example:
-              email: "user@example.com"
-              password: "SecurePass123!"
+              email: 'user@example.com'
+              password: 'SecurePass123!'
               rememberMe: true
       responses:
-        "200":
+        '200':
           description: Login successful
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthResponse"
-        "401":
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
           description: Invalid credentials
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /auth/refresh:
     post:
@@ -449,20 +449,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/RefreshTokenRequest"
+              $ref: '#/components/schemas/RefreshTokenRequest'
       responses:
-        "200":
+        '200':
           description: Token refreshed successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuthResponse"
-        "401":
+                $ref: '#/components/schemas/AuthResponse'
+        '401':
           description: Invalid refresh token
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /auth/logout:
     post:
@@ -474,7 +474,7 @@ paths:
       security:
         - bearerAuth: []
       responses:
-        "200":
+        '200':
           description: Logout successful
           content:
             application/json:
@@ -483,13 +483,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Logged out successfully"
-        "401":
+                    example: 'Logged out successfully'
+        '401':
           description: Invalid token
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /auth/verify-email:
     post:
@@ -503,9 +503,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/EmailVerification"
+              $ref: '#/components/schemas/EmailVerification'
       responses:
-        "200":
+        '200':
           description: Email verified successfully
           content:
             application/json:
@@ -514,13 +514,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Email verified successfully"
-        "400":
+                    example: 'Email verified successfully'
+        '400':
           description: Invalid verification token
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /auth/forgot-password:
     post:
@@ -541,9 +541,9 @@ paths:
                 email:
                   type: string
                   format: email
-                  example: "user@example.com"
+                  example: 'user@example.com'
       responses:
-        "200":
+        '200':
           description: Password reset email sent
           content:
             application/json:
@@ -552,13 +552,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Password reset email sent"
-        "404":
+                    example: 'Password reset email sent'
+        '404':
           description: User not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /auth/reset-password:
     post:
@@ -572,9 +572,9 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PasswordReset"
+              $ref: '#/components/schemas/PasswordReset'
       responses:
-        "200":
+        '200':
           description: Password reset successfully
           content:
             application/json:
@@ -583,13 +583,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Password reset successfully"
-        "400":
+                    example: 'Password reset successfully'
+        '400':
           description: Invalid reset token or password
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: '#/components/schemas/ValidationError'
 
   # User Management
   /users/me:
@@ -603,18 +603,18 @@ paths:
         - bearerAuth: []
         - oauth2Auth: [read:user]
       responses:
-        "200":
+        '200':
           description: User profile retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserProfile"
-        "401":
+                $ref: '#/components/schemas/UserProfile'
+        '401':
           description: Unauthorized
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
     patch:
       tags:
@@ -630,20 +630,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/UserUpdate"
+              $ref: '#/components/schemas/UserUpdate'
       responses:
-        "200":
+        '200':
           description: User profile updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserProfile"
-        "400":
+                $ref: '#/components/schemas/UserProfile'
+        '400':
           description: Invalid update data
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
+                $ref: '#/components/schemas/ValidationError'
 
   /users/{userId}:
     get:
@@ -661,18 +661,18 @@ paths:
             format: uuid
           description: Unique identifier of the user
       responses:
-        "200":
+        '200':
           description: User profile retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PublicUserProfile"
-        "404":
+                $ref: '#/components/schemas/PublicUserProfile'
+        '404':
           description: User not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /users/{userId}/activity:
     get:
@@ -702,12 +702,12 @@ paths:
             minimum: 0
             default: 0
       responses:
-        "200":
+        '200':
           description: User activity retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserActivityResponse"
+                $ref: '#/components/schemas/UserActivityResponse'
 
   # Political Parties
   /parties:
@@ -744,12 +744,12 @@ paths:
             enum: [asc, desc]
             default: desc
       responses:
-        "200":
+        '200':
           description: Parties retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PartyListResponse"
+                $ref: '#/components/schemas/PartyListResponse'
 
     post:
       tags:
@@ -765,26 +765,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PartyCreation"
+              $ref: '#/components/schemas/PartyCreation'
       responses:
-        "201":
+        '201':
           description: Party created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Party"
-        "400":
+                $ref: '#/components/schemas/Party'
+        '400':
           description: Invalid party data
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
-        "403":
+                $ref: '#/components/schemas/ValidationError'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /parties/{partyId}:
     get:
@@ -801,18 +801,18 @@ paths:
             type: string
             format: uuid
       responses:
-        "200":
+        '200':
           description: Party details retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Party"
-        "404":
+                $ref: '#/components/schemas/Party'
+        '404':
           description: Party not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
     patch:
       tags:
@@ -835,20 +835,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/PartyUpdate"
+              $ref: '#/components/schemas/PartyUpdate'
       responses:
-        "200":
+        '200':
           description: Party updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Party"
-        "403":
+                $ref: '#/components/schemas/Party'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /parties/{partyId}/members:
     get:
@@ -870,12 +870,12 @@ paths:
             type: string
             enum: [leader, officer, member]
       responses:
-        "200":
+        '200':
           description: Party members retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PartyMembersResponse"
+                $ref: '#/components/schemas/PartyMembersResponse'
 
     post:
       tags:
@@ -894,7 +894,7 @@ paths:
             type: string
             format: uuid
       responses:
-        "200":
+        '200':
           description: Join request submitted successfully
           content:
             application/json:
@@ -903,16 +903,16 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Join request submitted"
+                    example: 'Join request submitted'
                   requestId:
                     type: string
                     format: uuid
-        "409":
+        '409':
           description: Already a member or pending request
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /parties/{partyId}/members/{userId}:
     delete:
@@ -938,7 +938,7 @@ paths:
             type: string
             format: uuid
       responses:
-        "200":
+        '200':
           description: Member removed successfully
           content:
             application/json:
@@ -947,13 +947,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Member removed successfully"
-        "403":
+                    example: 'Member removed successfully'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   # Voting and Governance
   /votes:
@@ -989,12 +989,12 @@ paths:
             maximum: 50
             default: 20
       responses:
-        "200":
+        '200':
           description: Active votes retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VoteListResponse"
+                $ref: '#/components/schemas/VoteListResponse'
 
     post:
       tags:
@@ -1010,26 +1010,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/VoteCreation"
+              $ref: '#/components/schemas/VoteCreation'
       responses:
-        "201":
+        '201':
           description: Vote created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Vote"
-        "400":
+                $ref: '#/components/schemas/Vote'
+        '400':
           description: Invalid vote data
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ValidationError"
-        "403":
+                $ref: '#/components/schemas/ValidationError'
+        '403':
           description: Insufficient permissions to create votes
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /votes/{voteId}:
     get:
@@ -1046,18 +1046,18 @@ paths:
             type: string
             format: uuid
       responses:
-        "200":
+        '200':
           description: Vote details retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VoteDetail"
-        "404":
+                $ref: '#/components/schemas/VoteDetail'
+        '404':
           description: Vote not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /votes/{voteId}/cast:
     post:
@@ -1085,26 +1085,26 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/VoteCast"
+              $ref: '#/components/schemas/VoteCast'
       responses:
-        "200":
+        '200':
           description: Vote cast successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VoteReceipt"
-        "400":
+                $ref: '#/components/schemas/VoteReceipt'
+        '400':
           description: Invalid vote or already voted
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
-        "403":
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
           description: Not eligible to vote
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /votes/{voteId}/results:
     get:
@@ -1127,18 +1127,18 @@ paths:
             default: false
           description: Include detailed breakdown by demographic
       responses:
-        "200":
+        '200':
           description: Vote results retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/VoteResults"
-        "404":
+                $ref: '#/components/schemas/VoteResults'
+        '404':
           description: Vote not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   # News and Content
   /news:
@@ -1179,12 +1179,12 @@ paths:
             maximum: 50
             default: 20
       responses:
-        "200":
+        '200':
           description: News articles retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NewsListResponse"
+                $ref: '#/components/schemas/NewsListResponse'
 
     post:
       tags:
@@ -1200,20 +1200,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewsArticleCreation"
+              $ref: '#/components/schemas/NewsArticleCreation'
       responses:
-        "201":
+        '201':
           description: Article created successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NewsArticle"
-        "403":
+                $ref: '#/components/schemas/NewsArticle'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /news/{articleId}:
     get:
@@ -1230,18 +1230,18 @@ paths:
             type: string
             format: uuid
       responses:
-        "200":
+        '200':
           description: Article retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NewsArticle"
-        "404":
+                $ref: '#/components/schemas/NewsArticle'
+        '404':
           description: Article not found
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
     patch:
       tags:
@@ -1264,20 +1264,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/NewsArticleUpdate"
+              $ref: '#/components/schemas/NewsArticleUpdate'
       responses:
-        "200":
+        '200':
           description: Article updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/NewsArticle"
-        "403":
+                $ref: '#/components/schemas/NewsArticle'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
     delete:
       tags:
@@ -1296,7 +1296,7 @@ paths:
             type: string
             format: uuid
       responses:
-        "200":
+        '200':
           description: Article deleted successfully
           content:
             application/json:
@@ -1305,13 +1305,13 @@ paths:
                 properties:
                   message:
                     type: string
-                    example: "Article deleted successfully"
-        "403":
+                    example: 'Article deleted successfully'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   # Game Simulation
   /simulation/state:
@@ -1322,18 +1322,18 @@ paths:
       description: Retrieve current game simulation state
       operationId: getSimulationState
       responses:
-        "200":
+        '200':
           description: Simulation state retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SimulationState"
-        "503":
+                $ref: '#/components/schemas/SimulationState'
+        '503':
           description: Simulation service unavailable
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /simulation/control:
     post:
@@ -1350,20 +1350,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SimulationControl"
+              $ref: '#/components/schemas/SimulationControl'
       responses:
-        "200":
+        '200':
           description: Simulation control command executed
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SimulationStatus"
-        "403":
+                $ref: '#/components/schemas/SimulationStatus'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   # WebSocket Connection
   /websocket/auth:
@@ -1377,7 +1377,7 @@ paths:
         - bearerAuth: []
         - oauth2Auth: [read:user]
       responses:
-        "200":
+        '200':
           description: WebSocket token generated successfully
           content:
             application/json:
@@ -1394,12 +1394,12 @@ paths:
                     type: string
                     format: date-time
                     description: Token expiration time
-        "401":
+        '401':
           description: Invalid authentication
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   # Administrative Endpoints
   /admin/users:
@@ -1432,18 +1432,18 @@ paths:
             type: string
             enum: [active, suspended, banned, pending]
       responses:
-        "200":
+        '200':
           description: Users retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AdminUserListResponse"
-        "403":
+                $ref: '#/components/schemas/AdminUserListResponse'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /admin/users/{userId}/status:
     patch:
@@ -1468,20 +1468,20 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/AdminUserStatusUpdate"
+              $ref: '#/components/schemas/AdminUserStatusUpdate'
       responses:
-        "200":
+        '200':
           description: User status updated successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/UserProfile"
-        "403":
+                $ref: '#/components/schemas/UserProfile'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
   /admin/audit:
     get:
@@ -1529,18 +1529,18 @@ paths:
             maximum: 100
             default: 50
       responses:
-        "200":
+        '200':
           description: Audit logs retrieved successfully
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AuditLogResponse"
-        "403":
+                $ref: '#/components/schemas/AuditLogResponse'
+        '403':
           description: Insufficient permissions
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/ErrorResponse"
+                $ref: '#/components/schemas/ErrorResponse'
 
 components:
   schemas:
@@ -1584,7 +1584,7 @@ components:
 
     DetailedHealthResponse:
       allOf:
-        - $ref: "#/components/schemas/HealthResponse"
+        - $ref: '#/components/schemas/HealthResponse'
         - type: object
           properties:
             metrics:
@@ -1620,21 +1620,21 @@ components:
             code:
               type: string
               description: Machine-readable error code
-              example: "VALIDATION_ERROR"
+              example: 'VALIDATION_ERROR'
             message:
               type: string
               description: Human-readable error message
-              example: "The provided data is invalid"
+              example: 'The provided data is invalid'
             details:
               type: object
               description: Additional error context
               example:
-                field: "email"
-                reason: "must be a valid email address"
+                field: 'email'
+                reason: 'must be a valid email address'
             traceId:
               type: string
               description: Request trace ID for debugging
-              example: "abc-123-def-456"
+              example: 'abc-123-def-456'
             timestamp:
               type: string
               format: date-time
@@ -1651,10 +1651,10 @@ components:
           properties:
             code:
               type: string
-              example: "VALIDATION_ERROR"
+              example: 'VALIDATION_ERROR'
             message:
               type: string
-              example: "Validation failed"
+              example: 'Validation failed'
         validationErrors:
           type: array
           items:
@@ -1665,13 +1665,13 @@ components:
             properties:
               field:
                 type: string
-                example: "email"
+                example: 'email'
               message:
                 type: string
-                example: "must be a valid email address"
+                example: 'must be a valid email address'
               code:
                 type: string
-                example: "INVALID_FORMAT"
+                example: 'INVALID_FORMAT'
 
     ProblemDetails:
       type: object
@@ -1684,12 +1684,12 @@ components:
           type: string
           format: uri
           description: URI reference identifying the problem type
-          default: "about:blank"
-          example: "https://api.political-sphere.com/problems/validation-error"
+          default: 'about:blank'
+          example: 'https://api.political-sphere.com/problems/validation-error'
         title:
           type: string
           description: Short, human-readable summary of the problem type
-          example: "Validation Error"
+          example: 'Validation Error'
         status:
           type: integer
           description: HTTP status code
@@ -1699,22 +1699,22 @@ components:
         detail:
           type: string
           description: Human-readable explanation specific to this occurrence
-          example: "The email field must be a valid email address"
+          example: 'The email field must be a valid email address'
         instance:
           type: string
           format: uri
           description: URI reference identifying this specific occurrence
-          example: "/auth/register"
+          example: '/auth/register'
         traceId:
           type: string
           format: uuid
           description: Request trace ID for debugging and correlation
-          example: "550e8400-e29b-41d4-a716-446655440000"
+          example: '550e8400-e29b-41d4-a716-446655440000'
         timestamp:
           type: string
           format: date-time
           description: Timestamp when the error occurred
-          example: "2025-11-08T14:32:15Z"
+          example: '2025-11-08T14:32:15Z'
         errors:
           type: array
           description: Array of detailed field-specific validation errors
@@ -1727,20 +1727,20 @@ components:
               field:
                 type: string
                 description: Name of the field that failed validation
-                example: "email"
+                example: 'email'
               message:
                 type: string
                 description: Validation error message for this field
-                example: "must be a valid email address"
+                example: 'must be a valid email address'
               code:
                 type: string
                 description: Machine-readable error code for this field
-                example: "INVALID_FORMAT"
+                example: 'INVALID_FORMAT'
               location:
                 type: string
                 enum: [body, query, path, header]
                 description: Location of the invalid field
-                example: "body"
+                example: 'body'
       description: |
         RFC 7807 Problem Details for HTTP APIs.
 
@@ -1797,47 +1797,47 @@ components:
           type: string
           format: email
           description: User's email address
-          example: "john.citizen@example.com"
+          example: 'john.citizen@example.com'
         password:
           type: string
           format: password
           minLength: 12
           description: Strong password (min 12 chars, mixed case, numbers, symbols)
-          example: "SecurePass123!"
+          example: 'SecurePass123!'
         username:
           type: string
-          pattern: "^[a-zA-Z0-9_-]{3,30}$"
+          pattern: '^[a-zA-Z0-9_-]{3,30}$'
           description: Unique username (3-30 chars, alphanumeric, underscore, hyphen)
-          example: "john_citizen"
+          example: 'john_citizen'
         firstName:
           type: string
           minLength: 1
           maxLength: 50
-          example: "John"
+          example: 'John'
         lastName:
           type: string
           minLength: 1
           maxLength: 50
-          example: "Citizen"
+          example: 'Citizen'
         dateOfBirth:
           type: string
           format: date
           description: Date of birth (must be 18+ years ago)
-          example: "1990-01-15"
+          example: '1990-01-15'
         country:
           type: string
-          pattern: "^[A-Z]{2}$"
+          pattern: '^[A-Z]{2}$'
           description: ISO 3166-1 alpha-2 country code
-          example: "GB"
+          example: 'GB'
         acceptedTerms:
           type: boolean
           description: Must be true to register
           example: true
         preferredLanguage:
           type: string
-          pattern: "^[a-z]{2}(-[A-Z]{2})?$"
+          pattern: '^[a-z]{2}(-[A-Z]{2})?$'
           description: ISO 639-1 language code
-          example: "en-GB"
+          example: 'en-GB'
 
     LoginRequest:
       type: object
@@ -1848,11 +1848,11 @@ components:
         email:
           type: string
           format: email
-          example: "john.citizen@example.com"
+          example: 'john.citizen@example.com'
         password:
           type: string
           format: password
-          example: "SecurePass123!"
+          example: 'SecurePass123!'
         rememberMe:
           type: boolean
           default: false
@@ -1865,7 +1865,7 @@ components:
         - tokens
       properties:
         user:
-          $ref: "#/components/schemas/UserProfile"
+          $ref: '#/components/schemas/UserProfile'
         tokens:
           type: object
           required:
@@ -1876,18 +1876,18 @@ components:
             accessToken:
               type: string
               description: JWT access token
-              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
             refreshToken:
               type: string
               description: JWT refresh token (store securely)
-              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
             expiresIn:
               type: integer
               description: Access token expiration time in seconds
               example: 3600
             tokenType:
               type: string
-              example: "Bearer"
+              example: 'Bearer'
 
     RefreshTokenRequest:
       type: object
@@ -1897,7 +1897,7 @@ components:
         refreshToken:
           type: string
           description: Valid refresh token
-          example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+          example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
 
     EmailVerification:
       type: object
@@ -1907,7 +1907,7 @@ components:
         token:
           type: string
           description: Email verification token from email link
-          example: "abc123def456"
+          example: 'abc123def456'
 
     PasswordReset:
       type: object
@@ -1918,13 +1918,13 @@ components:
         token:
           type: string
           description: Password reset token from email
-          example: "reset_abc123def456"
+          example: 'reset_abc123def456'
         newPassword:
           type: string
           format: password
           minLength: 12
           description: New strong password
-          example: "NewSecurePass456!"
+          example: 'NewSecurePass456!'
 
     # User Management Schemas
     UserProfile:
@@ -1942,62 +1942,62 @@ components:
         id:
           type: string
           format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174000"
+          example: '123e4567-e89b-12d3-a456-426614174000'
         email:
           type: string
           format: email
-          example: "john.citizen@example.com"
+          example: 'john.citizen@example.com'
         username:
           type: string
-          example: "john_citizen"
+          example: 'john_citizen'
         firstName:
           type: string
-          example: "John"
+          example: 'John'
         lastName:
           type: string
-          example: "Citizen"
+          example: 'Citizen'
         avatar:
           type: string
           format: uri
           description: Avatar image URL
-          example: "https://api.political-sphere.com/avatars/123.jpg"
+          example: 'https://api.political-sphere.com/avatars/123.jpg'
         bio:
           type: string
           maxLength: 500
           description: User biography
-          example: "Passionate about democratic reform and civic engagement."
+          example: 'Passionate about democratic reform and civic engagement.'
         country:
           type: string
-          pattern: "^[A-Z]{2}$"
-          example: "GB"
+          pattern: '^[A-Z]{2}$'
+          example: 'GB'
         preferredLanguage:
           type: string
-          example: "en-GB"
+          example: 'en-GB'
         status:
           type: string
           enum: [active, suspended, banned, pending_verification]
-          example: "active"
+          example: 'active'
         emailVerified:
           type: boolean
           example: true
         lastLoginAt:
           type: string
           format: date-time
-          example: "2025-11-08T10:30:00Z"
+          example: '2025-11-08T10:30:00Z'
         createdAt:
           type: string
           format: date-time
-          example: "2025-01-15T09:00:00Z"
+          example: '2025-01-15T09:00:00Z'
         updatedAt:
           type: string
           format: date-time
-          example: "2025-11-08T10:30:00Z"
+          example: '2025-11-08T10:30:00Z'
         roles:
           type: array
           items:
             type: string
             enum: [user, journalist, moderator, party_leader, admin]
-          example: ["user", "journalist"]
+          example: ['user', 'journalist']
         stats:
           type: object
           properties:
@@ -2064,7 +2064,7 @@ components:
           maxLength: 500
         preferredLanguage:
           type: string
-          pattern: "^[a-z]{2}(-[A-Z]{2})?$"
+          pattern: '^[a-z]{2}(-[A-Z]{2})?$'
 
     UserActivityResponse:
       type: object
@@ -2102,7 +2102,7 @@ components:
                 type: object
                 description: Additional activity-specific data
         meta:
-          $ref: "#/components/schemas/PaginationMeta"
+          $ref: '#/components/schemas/PaginationMeta'
 
     # Political Party Schemas
     Party:
@@ -2119,52 +2119,52 @@ components:
         id:
           type: string
           format: uuid
-          example: "123e4567-e89b-12d3-a456-426614174001"
+          example: '123e4567-e89b-12d3-a456-426614174001'
         name:
           type: string
           minLength: 2
           maxLength: 100
-          example: "Progressive Alliance"
+          example: 'Progressive Alliance'
         shortName:
           type: string
           maxLength: 10
-          example: "PA"
+          example: 'PA'
         description:
           type: string
           minLength: 10
           maxLength: 2000
-          example: "A progressive party focused on social justice and environmental protection."
+          example: 'A progressive party focused on social justice and environmental protection.'
         manifesto:
           type: string
           description: Full party manifesto text
-          example: "We believe in..."
+          example: 'We believe in...'
         logo:
           type: string
           format: uri
           description: Party logo URL
         color:
           type: string
-          pattern: "^#[0-9A-Fa-f]{6}$"
+          pattern: '^#[0-9A-Fa-f]{6}$'
           description: Party brand color (hex)
-          example: "#FF6B6B"
+          example: '#FF6B6B'
         founded:
           type: string
           format: date
-          example: "2025-01-01"
+          example: '2025-01-01'
         status:
           type: string
           enum: [active, suspended, dissolved]
-          example: "active"
+          example: 'active'
         memberCount:
           type: integer
           minimum: 0
           example: 1250
         leader:
-          $ref: "#/components/schemas/PublicUserProfile"
+          $ref: '#/components/schemas/PublicUserProfile'
         officers:
           type: array
           items:
-            $ref: "#/components/schemas/PublicUserProfile"
+            $ref: '#/components/schemas/PublicUserProfile'
         policies:
           type: array
           items:
@@ -2224,7 +2224,7 @@ components:
           format: uri
         color:
           type: string
-          pattern: "^#[0-9A-Fa-f]{6}$"
+          pattern: '^#[0-9A-Fa-f]{6}$'
 
     PartyUpdate:
       type: object
@@ -2248,7 +2248,7 @@ components:
           format: uri
         color:
           type: string
-          pattern: "^#[0-9A-Fa-f]{6}$"
+          pattern: '^#[0-9A-Fa-f]{6}$'
 
     PartyListResponse:
       type: object
@@ -2259,9 +2259,9 @@ components:
         parties:
           type: array
           items:
-            $ref: "#/components/schemas/Party"
+            $ref: '#/components/schemas/Party'
         meta:
-          $ref: "#/components/schemas/PaginationMeta"
+          $ref: '#/components/schemas/PaginationMeta'
 
     PartyMembersResponse:
       type: object
@@ -2283,7 +2283,7 @@ components:
               - joinedAt
             properties:
               user:
-                $ref: "#/components/schemas/PublicUserProfile"
+                $ref: '#/components/schemas/PublicUserProfile'
               role:
                 type: string
                 enum: [leader, officer, member]
@@ -2291,7 +2291,7 @@ components:
                 type: string
                 format: date-time
         meta:
-          $ref: "#/components/schemas/PaginationMeta"
+          $ref: '#/components/schemas/PaginationMeta'
 
     # Voting and Governance Schemas
     Vote:
@@ -2337,14 +2337,13 @@ components:
             ]
         status:
           type: string
-          enum:
-            [draft, pending_approval, active, completed, cancelled, rejected]
+          enum: [draft, pending_approval, active, completed, cancelled, rejected]
         createdBy:
-          $ref: "#/components/schemas/PublicUserProfile"
+          $ref: '#/components/schemas/PublicUserProfile'
         proposer:
-          $ref: "#/components/schemas/PublicUserProfile"
+          $ref: '#/components/schemas/PublicUserProfile'
         sponsor:
-          $ref: "#/components/schemas/PublicUserProfile"
+          $ref: '#/components/schemas/PublicUserProfile'
         startDate:
           type: string
           format: date-time
@@ -2399,11 +2398,11 @@ components:
 
     VoteDetail:
       allOf:
-        - $ref: "#/components/schemas/Vote"
+        - $ref: '#/components/schemas/Vote'
         - type: object
           properties:
             currentResults:
-              $ref: "#/components/schemas/VoteResults"
+              $ref: '#/components/schemas/VoteResults'
             userVote:
               type: object
               description: Current user's vote (if authenticated)
@@ -2461,7 +2460,7 @@ components:
         majorityType:
           type: string
           enum: [simple, qualified, supermajority]
-          default: "simple"
+          default: 'simple'
         options:
           type: array
           minItems: 2
@@ -2630,9 +2629,9 @@ components:
         votes:
           type: array
           items:
-            $ref: "#/components/schemas/Vote"
+            $ref: '#/components/schemas/Vote'
         meta:
-          $ref: "#/components/schemas/PaginationMeta"
+          $ref: '#/components/schemas/PaginationMeta'
 
     # News and Content Schemas
     NewsArticle:
@@ -2672,7 +2671,7 @@ components:
             type: string
             maxLength: 50
         author:
-          $ref: "#/components/schemas/PublicUserProfile"
+          $ref: '#/components/schemas/PublicUserProfile'
         status:
           type: string
           enum: [draft, pending_review, published, archived, rejected]
@@ -2710,7 +2709,7 @@ components:
             approved:
               type: boolean
             moderator:
-              $ref: "#/components/schemas/PublicUserProfile"
+              $ref: '#/components/schemas/PublicUserProfile'
             reason:
               type: string
             moderatedAt:
@@ -2859,9 +2858,9 @@ components:
         articles:
           type: array
           items:
-            $ref: "#/components/schemas/NewsArticle"
+            $ref: '#/components/schemas/NewsArticle'
         meta:
-          $ref: "#/components/schemas/PaginationMeta"
+          $ref: '#/components/schemas/PaginationMeta'
 
     # Simulation Schemas
     SimulationState:
@@ -2959,7 +2958,7 @@ components:
         message:
           type: string
         newState:
-          $ref: "#/components/schemas/SimulationState"
+          $ref: '#/components/schemas/SimulationState'
 
     # Administrative Schemas
     AdminUserListResponse:
@@ -2972,7 +2971,7 @@ components:
           type: array
           items:
             allOf:
-              - $ref: "#/components/schemas/UserProfile"
+              - $ref: '#/components/schemas/UserProfile'
               - type: object
                 properties:
                   lastLoginIp:
@@ -2988,20 +2987,20 @@ components:
                     type: string
                     format: uuid
           example:
-            - id: "123e4567-e89b-12d3-a456-426614174000"
-              email: "user@example.com"
-              username: "testuser"
-              firstName: "Test"
-              lastName: "User"
-              status: "active"
+            - id: '123e4567-e89b-12d3-a456-426614174000'
+              email: 'user@example.com'
+              username: 'testuser'
+              firstName: 'Test'
+              lastName: 'User'
+              status: 'active'
               emailVerified: true
-              lastLoginAt: "2025-11-08T10:30:00Z"
-              createdAt: "2025-01-15T09:00:00Z"
-              roles: ["user"]
-              lastLoginIp: "192.168.1.100"
-              accountStatus: "active"
+              lastLoginAt: '2025-11-08T10:30:00Z'
+              createdAt: '2025-01-15T09:00:00Z'
+              roles: ['user']
+              lastLoginIp: '192.168.1.100'
+              accountStatus: 'active'
         meta:
-          $ref: "#/components/schemas/PaginationMeta"
+          $ref: '#/components/schemas/PaginationMeta'
 
     AdminUserStatusUpdate:
       type: object
@@ -3071,7 +3070,7 @@ components:
               errorMessage:
                 type: string
         meta:
-          $ref: "#/components/schemas/PaginationMeta"
+          $ref: '#/components/schemas/PaginationMeta'
 
   securitySchemes:
     bearerAuth:
@@ -3132,37 +3131,33 @@ components:
     UserRegistrationExample:
       summary: Example user registration
       value:
-        email: "john.citizen@example.com"
-        password: "SecurePass123!"
-        username: "john_citizen"
-        firstName: "John"
-        lastName: "Citizen"
-        dateOfBirth: "1990-01-01"
-        country: "GB"
+        email: 'john.citizen@example.com'
+        password: 'SecurePass123!'
+        username: 'john_citizen'
+        firstName: 'John'
+        lastName: 'Citizen'
+        dateOfBirth: '1990-01-01'
+        country: 'GB'
         acceptedTerms: true
 
     VoteCastExample:
       summary: Example vote casting
       value:
-        choice: "yes"
-        signature: "0x1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        publicKey: "0x04a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef0123456789abcdef"
-        timestamp: "2025-11-08T14:30:00Z"
+        choice: 'yes'
+        signature: '0x1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+        publicKey: '0x04a1b2c3d4e5f6789abcdef0123456789abcdef0123456789abcdef0123456789abcdef'
+        timestamp: '2025-11-08T14:30:00Z'
 
     PartyCreationExample:
       summary: Example party creation
       value:
-        name: "Progressive Alliance"
-        description: "A party focused on social justice and environmental protection"
-        platform: "Our platform focuses on climate action, social equality, and democratic reform"
+        name: 'Progressive Alliance'
+        description: 'A party focused on social justice and environmental protection'
+        platform: 'Our platform focuses on climate action, social equality, and democratic reform'
         foundingPrinciples:
-          [
-            "Environmental sustainability",
-            "Social justice",
-            "Democratic participation",
-          ]
-        leadership: "Democratic election"
-        membershipPolicy: "Open to all citizens who share our values"
+          ['Environmental sustainability', 'Social justice', 'Democratic participation']
+        leadership: 'Democratic election'
+        membershipPolicy: 'Open to all citizens who share our values'
 
   parameters:
     UserIdPathParam:
@@ -3173,7 +3168,7 @@ components:
         type: string
         format: uuid
       description: Unique identifier of the user
-      example: "550e8400-e29b-41d4-a716-446655440000"
+      example: '550e8400-e29b-41d4-a716-446655440000'
 
     PartyIdPathParam:
       name: partyId
@@ -3183,7 +3178,7 @@ components:
         type: string
         format: uuid
       description: Unique identifier of the political party
-      example: "550e8400-e29b-41d4-a716-446655440001"
+      example: '550e8400-e29b-41d4-a716-446655440001'
 
     VoteIdPathParam:
       name: voteId
@@ -3193,7 +3188,7 @@ components:
         type: string
         format: uuid
       description: Unique identifier of the vote or proposal
-      example: "550e8400-e29b-41d4-a716-446655440002"
+      example: '550e8400-e29b-41d4-a716-446655440002'
 
     ArticleIdPathParam:
       name: articleId
@@ -3203,7 +3198,7 @@ components:
         type: string
         format: uuid
       description: Unique identifier of the news article
-      example: "550e8400-e29b-41d4-a716-446655440003"
+      example: '550e8400-e29b-41d4-a716-446655440003'
 
     PaginationPageParam:
       name: page
@@ -3251,7 +3246,7 @@ components:
       description: Rate limiting information
       schema:
         type: string
-        example: "100:3600:50:1800"
+        example: '100:3600:50:1800'
       style: simple
       explode: false
 
@@ -3281,19 +3276,19 @@ components:
       schema:
         type: string
         format: uuid
-        example: "550e8400-e29b-41d4-a716-446655440004"
+        example: '550e8400-e29b-41d4-a716-446655440004'
       style: simple
 
     ContentLanguageHeader:
       description: Content language (ISO 639-1)
       schema:
         type: string
-        example: "en"
+        example: 'en'
       style: simple
 
   callbacks:
     VoteResultCallback:
-      "{$request.body#/callbackUrl}":
+      '{$request.body#/callbackUrl}':
         post:
           summary: Vote result notification
           description: Callback webhook when vote results are available
@@ -3316,18 +3311,18 @@ components:
                       type: string
                       enum: [completed, cancelled]
                     results:
-                      $ref: "#/components/schemas/VoteResults"
+                      $ref: '#/components/schemas/VoteResults'
                     timestamp:
                       type: string
                       format: date-time
           responses:
-            "200":
+            '200':
               description: Webhook received successfully
-            "410":
+            '410':
               description: Webhook URL no longer valid
 
     PartyEventCallback:
-      "{$request.body#/callbackUrl}":
+      '{$request.body#/callbackUrl}':
         post:
           summary: Party event notification
           description: Callback webhook for party-related events
@@ -3345,13 +3340,7 @@ components:
                   properties:
                     eventType:
                       type: string
-                      enum:
-                        [
-                          member_joined,
-                          member_left,
-                          leadership_changed,
-                          party_updated,
-                        ]
+                      enum: [member_joined, member_left, leadership_changed, party_updated]
                     partyId:
                       type: string
                       format: uuid
@@ -3362,11 +3351,11 @@ components:
                       type: string
                       format: date-time
           responses:
-            "200":
+            '200':
               description: Webhook received successfully
 
     NewsModerationCallback:
-      "{$request.body#/callbackUrl}":
+      '{$request.body#/callbackUrl}':
         post:
           summary: News moderation result
           description: Callback webhook when news article moderation is complete
@@ -3409,5 +3398,5 @@ components:
                       type: string
                       format: date-time
           responses:
-            "200":
+            '200':
               description: Webhook received successfully

@@ -82,11 +82,42 @@ For detailed onboarding instructions, see [docs/onboarding.md](../docs/onboardin
 ### Before Submitting
 
 - [ ] Code follows project style guidelines
-- [ ] Tests pass locally (`npm test`)
-- [ ] New tests added for new functionality
+- [ ] All tests pass locally (`npm test`)
+- [ ] New tests added for new functionality (maintain 100% pass rate)
+- [ ] Security audit passed (`npm run audit:full` - no new critical/high issues)
 - [ ] Documentation updated if needed
 - [ ] CHANGELOG.md updated with your changes
 - [ ] Commit messages are clear and descriptive
+
+### CI/CD Requirements
+
+All PRs must pass automated quality gates before merging:
+
+#### **Test Suite** (`.github/workflows/test.yml`)
+
+- ✅ Unit tests: 130/130 passing required
+- ✅ Coverage maintained or improved
+- ⏱️ Tests complete in <15 minutes
+
+#### **Security & Quality Audit** (`.github/workflows/audit.yml`)
+
+- ✅ No new critical or high severity issues
+- ✅ OpenAPI specification valid
+- ✅ No hardcoded secrets detected
+- ✅ App-specific audits pass for affected apps
+
+#### **Governance Controls** (`.github/workflows/controls.yml`)
+
+- ✅ ESLint zero-warning policy
+- ✅ TypeScript strict typecheck
+- ✅ Module boundary compliance
+- ✅ PR header validation
+
+#### **Security Scanning** (`.github/workflows/security-scan.yml`)
+
+- ✅ Gitleaks: No secrets committed
+- ✅ Semgrep: No prohibited patterns
+- ✅ npm audit: No high/critical vulnerabilities
 
 ### PR Guidelines
 
@@ -97,6 +128,7 @@ For detailed onboarding instructions, see [docs/onboarding.md](../docs/onboardin
    - Fast-secure: ≤200 lines changed, ≤8 files
 4. **Link related issues** - Reference issues in PR description
 5. **Request review** - Tag appropriate reviewers
+6. **Address audit findings** - Fix any issues found by automated audits
 
 ### PR Review Process
 

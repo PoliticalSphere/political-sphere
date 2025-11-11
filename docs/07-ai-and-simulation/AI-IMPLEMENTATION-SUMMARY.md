@@ -181,13 +181,11 @@ npm install jscpd ctags
 ### Phase 2: Advanced Capabilities (Next Sprint)
 
 1. **Incremental Indexing** (2-3 days)
-
    - Implement chokidar file watching
    - Update only changed files
    - Reduce full rebuild overhead
 
 2. **Vector Database** (2-3 days)
-
    - Set up LanceDB for persistent storage
    - Store ~100k code embeddings
    - Enable fast similarity search
@@ -200,7 +198,6 @@ npm install jscpd ctags
 ### Phase 3: Intelligence Layer (Following Sprint)
 
 1. **AI Code Review Bot** (3-4 days)
-
    - Combine all analyzers
    - GitHub Actions integration
    - Automated PR comments
@@ -283,13 +280,11 @@ npm install jscpd ctags
 **New Patterns Added:**
 
 1. **Multi-language AST parsing** with tree-sitter
-
    - Lazy-loaded parsers (save memory)
    - Error-tolerant parsing
    - Language detection from file extension
 
 2. **Local semantic embeddings** without API calls
-
    - Transformers.js in Node.js
    - Batch processing for efficiency
    - Disk-based caching

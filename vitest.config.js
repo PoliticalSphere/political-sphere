@@ -1,7 +1,11 @@
 /// <reference types="vitest" />
 
 import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+
 import { defineConfig } from "vite";
+
+const projectRoot = fileURLToPath(new URL(".", import.meta.url)); // Works where __dirname is undefined (Vitest extension, ESM)
 
 export default defineConfig({
   test: {
@@ -14,6 +18,8 @@ export default defineConfig({
       "**/playwright.config.js",
       // Exclude Playwright tests, a11y suites and tooling tests from Vitest collector
       "tools/**",
+      // Exclude Node.js native test runner files (use node:test instead)
+      "libs/shared/src/path-security.test.mjs",
     ],
     include:
       process.env.VITEST_SCOPE === "shared"
@@ -64,7 +70,7 @@ export default defineConfig({
     },
     maxThreads: 1,
     minThreads: 1,
-    setupFiles: ["./scripts/test-setup.ts"],
+    setupFiles: ["./tools/testing/test-env-setup.ts"],
     // Add caching to speed up repeated test runs (use Vite's cacheDir)
     // NOTE: Vitest deprecated test.cache.dir; use top-level cacheDir instead.
     // We'll set cacheDir at the root of this config object below.
@@ -73,20 +79,21 @@ export default defineConfig({
     // Opt-in by setting VITEST_CHANGED=1 in dev tasks.
     changed: process.env.VITEST_CHANGED === "1",
     // Add parallel execution for faster test runs
-    sequence: {
-      hooks: "parallel",
-    },
+    // TEMPORARILY DISABLED: parallel hooks may cause hangs with singleFork
+    // sequence: {
+    //   hooks: 'parallel',
+    // },
   },
   // Use Vite's cache directory; Vitest will nest under this path automatically
   cacheDir: ".vitest/cache",
   resolve: {
     alias: {
-      "@political-sphere/shared": resolve(__dirname, "libs/shared/cjs-shared.cjs"),
-      "@political-sphere/ui": resolve(__dirname, "libs/ui/src"),
-      "@political-sphere/platform": resolve(__dirname, "libs/platform/src"),
-      "@political-sphere/ci-utils": resolve(__dirname, "libs/ci/src"),
-      "@political-sphere/infrastructure": resolve(__dirname, "libs/infrastructure/src"),
-      "@political-sphere/game-engine": resolve(__dirname, "libs/game-engine/src"),
+      "@political-sphere/shared": resolve(projectRoot, "libs/shared/cjs-shared.cjs"),
+      "@political-sphere/ui": resolve(projectRoot, "libs/ui/src"),
+      "@political-sphere/platform": resolve(projectRoot, "libs/platform/src"),
+      "@political-sphere/ci-utils": resolve(projectRoot, "libs/ci/src"),
+      "@political-sphere/infrastructure": resolve(projectRoot, "libs/infrastructure/src"),
+      "@political-sphere/game-engine": resolve(projectRoot, "libs/game-engine/src"),
     },
   },
 });

@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+
 import { pick, safeAssign } from "../src/safe-assign.mjs";
 
 describe("safe-assign utilities", () => {

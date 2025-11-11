@@ -255,13 +255,13 @@ CREATE POLICY user_data_access ON user_data
 export function classifyData(fields: string[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     const classifications = fields.map(
-      (field) => FIELD_CLASSIFICATIONS[field]?.classification || DataClassification.INTERNAL
+      field => FIELD_CLASSIFICATIONS[field]?.classification || DataClassification.INTERNAL
     );
 
     // Set response headers for client handling
     res.set(
       'X-Data-Classification',
-      Math.max(...classifications.map((c) => Object.values(DataClassification).indexOf(c)))
+      Math.max(...classifications.map(c => Object.values(DataClassification).indexOf(c)))
     );
 
     // Apply appropriate security headers

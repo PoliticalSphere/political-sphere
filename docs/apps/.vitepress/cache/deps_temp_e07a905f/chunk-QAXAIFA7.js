@@ -2134,7 +2134,6 @@ function warn$1(msg, ...args) {
   const trace = getComponentTrace();
   if (appWarnHandler) {
     callWithErrorHandling(appWarnHandler, instance, 11, [
-      // eslint-disable-next-line no-restricted-syntax
       msg +
         args
           .map((a) => {
@@ -2697,7 +2696,6 @@ function setDevtoolsHook$1(hook, target) {
     // (#4815)
     typeof window !== "undefined" && // some envs mock window but not fully
     window.HTMLElement && // also exclude jsdom
-    // eslint-disable-next-line no-restricted-syntax
     !((_b = (_a = window.navigator) == null ? void 0 : _a.userAgent) == null
       ? void 0
       : _b.includes("jsdom"))
@@ -9629,7 +9627,7 @@ function hydrateSuspense(
     parentSuspense,
     parentComponent,
     node.parentNode,
-    // eslint-disable-next-line no-restricted-globals
+
     document.createElement("div"),
     null,
     namespace,

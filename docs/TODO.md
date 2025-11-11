@@ -67,6 +67,21 @@
 - [ ] Re-run security audit to confirm fixes
 - [ ] Update CHANGELOG.md with security fixes
 
+## Dependency Alignment - Zod (Added 2025-11-11)
+
+### Completed
+
+- [x] Immediate CI unblocker: add `--legacy-peer-deps` to npm ci steps in service Dockerfiles (api, web, worker, game-server)
+- [x] Align workspace to Zod v3: set `zod` to `^3.25.6` in root and tools/config package.json
+- [x] Add npm `overrides` in root to enforce consistent Zod version
+- [x] Validate with targeted tests (vitest --changed)
+
+### Next Steps
+
+- [ ] Track upstream support for Zod v4 in `@langchain/*` and `zod-to-json-schema`
+- [ ] Plan upgrade path back to Zod v4 when all peers officially support it (ADR + test pass)
+- [ ] Re-run Docker builds in CI to confirm fix (monitor `Docker Build and Publish` workflow)
+
 ### Notes
 
 - Tests failing due to 401 on auth routes (users, parties, bills, votes) as tests lack tokens

@@ -19,6 +19,11 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
   - Keeps `gitleaks` as the primary staged secret gate; full workspace scans still available in CI via strict mode
 
 ### Fixed
+- Dependencies: Aligned `zod` to `^3.25.6` and added npm overrides to resolve peer dependency conflicts with `@langchain/*` and `zod-to-json-schema` (2025-11-11)
+  - Downgraded root and tools/config workspace from v4 to v3 to satisfy stricter peer ranges
+  - Added `overrides` field in root `package.json` to enforce consistent version
+  - All affected tests passed after reinstall (vitest changed run)
+  - Follow-up: monitor upstream packages for formal Zod v4 support before re-upgrading
 - CI/CD: Application Audit matrix failing at dependency install due to peer-deps conflicts (2025-11-11)
   - Added `--legacy-peer-deps` to npm ci steps in `.github/workflows/audit.yml` Application Audit job
   - Updated remaining workflows for consistency, including `migrate.yml` and setup-node test workflow

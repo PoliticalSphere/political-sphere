@@ -1,33 +1,49 @@
-import { NewsService } from "../src/newsService.js";
-import { JsonNewsStore } from "../src/newsStore.js";
-import { createNewsServer } from "../src/server.js";
+import { NewsService } from "../../src/news-service.js";
+import { createNewsServer } from "../../src/server.ts";
 
-// Polyfill fetch for Node.js. Perform dynamic imports inside beforeAll so we avoid
-// top-level await and allow Jest to run transformed modules correctly.
-let _fetch;
+class MemoryStore {
+  constructor(initial = []) {
+    this.records = initial.map((item) => ({ ...item }));
+  }
+
+  async readAll() {
+    return this.records.map((item) => ({ ...item }));
+  }
+
+  async writeAll(nextRecords) {
+    this.records = nextRecords.map((item) => ({ ...item }));
+  }
+}
 
 describe("API Security Tests", () => {
   let server;
-  let service;
   // Use an ephemeral port to avoid conflicts when tests run in parallel
   let BASE_URL;
   beforeAll(async () => {
-    // Polyfill fetch at runtime
-    try {
-      const undici = await import("undici");
-      _fetch = undici.fetch;
-    } catch (e) {
+    if (!globalThis.fetch) {
       try {
+        const undici = await import("undici");
+        globalThis.fetch = undici.fetch;
+      } catch {
         const nodeFetch = await import("node-fetch");
-        _fetch = nodeFetch.default ?? nodeFetch;
-      } catch (e) {
-        // nothing
+        globalThis.fetch = nodeFetch.default ?? nodeFetch;
       }
     }
-    if (_fetch && !globalThis.fetch) globalThis.fetch = _fetch;
 
-    const store = new JsonNewsStore(new URL("../data/news.json", import.meta.url));
-    service = new NewsService(store);
+    const store = new MemoryStore([
+      {
+        id: "seed",
+        title: "Demo seed story",
+        excerpt: "Seed data for integration tests",
+        content: "Integration test seed content",
+        category: "politics",
+        tags: ["integration"],
+        status: "published",
+        createdAt: "2024-03-01T00:00:00.000Z",
+        updatedAt: "2024-03-01T00:00:00.000Z",
+      },
+    ]);
+    const service = new NewsService(store);
     server = createNewsServer(service);
 
     await new Promise((resolve) => {

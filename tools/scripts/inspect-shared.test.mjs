@@ -17,7 +17,6 @@ describe("inspect shared package", () => {
         ),
       );
     } catch (err) {
-      // eslint-disable-next-line no-console
       console.error("failed writing inspect file", String(err));
     }
   });

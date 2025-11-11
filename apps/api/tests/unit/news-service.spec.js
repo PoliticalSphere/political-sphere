@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import NewsServiceModule from "../news-service.js";
 
-const { NewsService } = NewsServiceModule;
+import { NewsService } from "../../src/news-service.js";
 
 /**
  * Simple in-memory store that mimics the persistence contract used by NewsService.

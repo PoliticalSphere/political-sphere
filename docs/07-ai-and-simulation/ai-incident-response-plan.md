@@ -2,8 +2,8 @@
 
 <div align="center">
 
-| Classification | Version | Last Updated |       Owner        | Review Cycle |    Status    |
-| :------------: | :-----: | :----------: | :----------------: | :----------: | :----------: |
+| Classification | Version | Last Updated |        Owner         | Review Cycle |    Status    |
+| :------------: | :-----: | :----------: | :------------------: | :----------: | :----------: |
 |  🔒 Internal   | `1.0.0` |  2025-11-01  | Technical Governance |  Quarterly   | **Approved** |
 
 </div>
@@ -33,8 +33,10 @@ This plan applies to incidents involving:
 ### AI-Specific Severity Levels
 
 #### P0 - Critical AI Incident
+
 **Impact:** Immediate threat to user safety, significant ethical violations, or system-wide AI failure
 **Examples:**
+
 - AI generating harmful political content
 - Complete AI system outage affecting core functionality
 - Major bias incident causing discrimination
@@ -44,8 +46,10 @@ This plan applies to incidents involving:
 **Escalation:** Immediate notification to all stakeholders
 
 #### P1 - High AI Incident
+
 **Impact:** Significant AI performance issues or ethical concerns with limited scope
 **Examples:**
+
 - AI model producing biased results in production
 - AI system performance degradation affecting user experience
 - Minor ethical violations or inappropriate content generation
@@ -55,8 +59,10 @@ This plan applies to incidents involving:
 **Escalation:** Technical team + management notification
 
 #### P2 - Medium AI Incident
+
 **Impact:** Noticeable AI issues with manageable impact
 **Examples:**
+
 - AI accuracy degradation in non-critical features
 - Minor bias in AI recommendations
 - AI system slowdowns or intermittent failures
@@ -66,8 +72,10 @@ This plan applies to incidents involving:
 **Escalation:** Technical team notification
 
 #### P3 - Low AI Incident
+
 **Impact:** Minor AI issues with minimal operational impact
 **Examples:**
+
 - AI logging errors
 - Minor performance variations
 - Non-critical AI feature failures
@@ -81,7 +89,9 @@ This plan applies to incidents involving:
 ### Core Response Team
 
 #### AI Incident Commander
+
 **Responsibilities:**
+
 - Overall incident management and coordination
 - Decision authority for AI-specific actions
 - Communication with stakeholders
@@ -90,7 +100,9 @@ This plan applies to incidents involving:
 **Qualifications:** Senior AI engineer or governance committee member
 
 #### AI Technical Lead
+
 **Responsibilities:**
+
 - Technical assessment and diagnosis
 - AI system isolation and containment
 - Model rollback and recovery coordination
@@ -99,7 +111,9 @@ This plan applies to incidents involving:
 **Qualifications:** AI/ML engineer with system expertise
 
 #### AI Ethics Officer
+
 **Responsibilities:**
+
 - Ethical impact assessment
 - Bias and fairness evaluation
 - User impact analysis
@@ -108,7 +122,9 @@ This plan applies to incidents involving:
 **Qualifications:** Ethics-trained team member or external consultant
 
 #### Communications Lead
+
 **Responsibilities:**
+
 - Internal and external communications
 - Stakeholder notifications
 - Public statements coordination
@@ -129,7 +145,9 @@ This plan applies to incidents involving:
 ### Phase 1: Detection and Assessment (0-15 minutes for P0)
 
 #### 1.1 Incident Detection
+
 **Automated Detection:**
+
 - AI performance monitoring alerts
 - Bias detection system triggers
 - Model accuracy threshold breaches
@@ -137,13 +155,16 @@ This plan applies to incidents involving:
 - User reports and feedback
 
 **Manual Detection:**
+
 - User complaints about AI behavior
 - Team member observations
 - Audit findings
 - Security monitoring alerts
 
 #### 1.2 Initial Assessment
+
 **Immediate Actions:**
+
 1. Acknowledge the incident report
 2. Gather initial information:
    - Incident description and symptoms
@@ -156,6 +177,7 @@ This plan applies to incidents involving:
 5. Notify incident commander
 
 **Assessment Checklist:**
+
 - [ ] What AI system(s) are affected?
 - [ ] What is the nature of the incident (bias, failure, security)?
 - [ ] How many users are impacted?
@@ -165,22 +187,27 @@ This plan applies to incidents involving:
 ### Phase 2: Containment (15-60 minutes for P0)
 
 #### 2.1 Immediate Containment
+
 **For Model Failures:**
+
 - Implement circuit breakers to stop AI processing
 - Route traffic away from affected AI systems
 - Activate fallback mechanisms (rule-based systems)
 
 **For Bias/Ethical Issues:**
+
 - Temporarily disable affected AI features
 - Implement content filters or moderation
 - Redirect users to human-reviewed alternatives
 
 **For Security Incidents:**
+
 - Isolate compromised AI systems
 - Disable external access to affected models
 - Implement emergency security controls
 
 #### 2.2 Evidence Preservation
+
 - Secure AI model versions and training data
 - Preserve system logs and monitoring data
 - Document incident conditions and symptoms
@@ -189,7 +216,9 @@ This plan applies to incidents involving:
 ### Phase 3: Investigation and Analysis (1-4 hours for P0)
 
 #### 3.1 Technical Investigation
+
 **Investigation Steps:**
+
 1. **Model Analysis:**
    - Review model performance metrics
    - Analyze training data for anomalies
@@ -209,7 +238,9 @@ This plan applies to incidents involving:
    - Consider long-term consequences
 
 #### 3.2 Root Cause Analysis
+
 **Common AI Incident Causes:**
+
 - **Data Issues:** Poisoned training data, data drift, quality degradation
 - **Model Issues:** Overfitting, underfitting, concept drift, adversarial attacks
 - **Infrastructure Issues:** Resource constraints, network failures, deployment errors
@@ -217,6 +248,7 @@ This plan applies to incidents involving:
 - **Ethical Issues:** Biased training data, inappropriate objectives, lack of oversight
 
 **Analysis Framework:**
+
 - **5 Whys Analysis:** Ask "why" repeatedly to find root causes
 - **Fishbone Diagram:** Categorize potential causes (People, Process, Technology, Environment)
 - **Timeline Analysis:** Reconstruct incident sequence
@@ -225,13 +257,16 @@ This plan applies to incidents involving:
 ### Phase 4: Recovery and Remediation (4-24 hours for P0)
 
 #### 4.1 Recovery Planning
+
 **Recovery Options:**
+
 1. **Model Rollback:** Revert to previous model version
 2. **Hotfix Deployment:** Quick patch for critical issues
 3. **Gradual Rollout:** Phased recovery with monitoring
 4. **Alternative Systems:** Activate backup AI systems
 
 **Recovery Checklist:**
+
 - [ ] Identify safe recovery point
 - [ ] Test recovery procedures
 - [ ] Prepare rollback mechanisms
@@ -239,13 +274,16 @@ This plan applies to incidents involving:
 - [ ] Plan user communications
 
 #### 4.2 Remediation Implementation
+
 **Short-term Fixes:**
+
 - Apply immediate patches or workarounds
 - Implement additional monitoring
 - Add emergency controls or filters
 - Update incident response procedures
 
 **Long-term Fixes:**
+
 - Retrain models with improved data
 - Implement architectural improvements
 - Enhance monitoring and alerting
@@ -254,14 +292,18 @@ This plan applies to incidents involving:
 ### Phase 5: Communication and Reporting (Ongoing)
 
 #### 5.1 Internal Communication
+
 **Communication Requirements:**
+
 - Regular updates to response team (every 30 minutes for P0)
 - Status updates to management (every 2 hours for P0)
 - Technical documentation of findings
 - Coordination with other teams
 
 #### 5.2 External Communication
+
 **Communication Guidelines:**
+
 - **Transparency:** Be honest about incidents and impacts
 - **Timeliness:** Communicate as soon as possible
 - **Accuracy:** Provide factual information only
@@ -297,7 +339,9 @@ Political Sphere Team
 ```
 
 #### 5.3 Regulatory Reporting
+
 **Reporting Requirements:**
+
 - **Data Breaches:** Report within 72 hours (GDPR)
 - **AI Safety Incidents:** Report to relevant authorities
 - **Ethical Violations:** Document for compliance records
@@ -306,7 +350,9 @@ Political Sphere Team
 ### Phase 6: Post-Incident Activities (1-7 days post-resolution)
 
 #### 6.1 Incident Review
+
 **Post-Mortem Meeting:**
+
 - Conduct within 48 hours of resolution
 - Include all response team members
 - Review timeline, decisions, and outcomes
@@ -321,6 +367,7 @@ Political Sphere Team
 [Brief description of what happened]
 
 **Timeline:**
+
 - Detection: [Time and method]
 - Response Start: [Time]
 - Containment: [Time]
@@ -328,6 +375,7 @@ Political Sphere Team
 - Total Duration: [Hours/Days]
 
 **Impact Assessment:**
+
 - Users Affected: [Number/Percentage]
 - Business Impact: [Financial/Operational]
 - Ethical/Societal Impact: [Description]
@@ -336,11 +384,13 @@ Political Sphere Team
 [Detailed analysis of underlying causes]
 
 **Response Effectiveness:**
+
 - What went well
 - What could be improved
 - Lessons learned
 
 **Action Items:**
+
 1. [Specific improvement actions with owners and timelines]
 
 **Prevention Measures:**
@@ -348,7 +398,9 @@ Political Sphere Team
 ```
 
 #### 6.2 Documentation Updates
+
 **Required Updates:**
+
 - Update incident response procedures
 - Document lessons learned
 - Update risk assessments
@@ -356,7 +408,9 @@ Political Sphere Team
 - Improve training materials
 
 #### 6.3 Follow-up Actions
+
 **Implementation:**
+
 - Assign action items with owners and deadlines
 - Track progress on improvements
 - Schedule follow-up reviews
@@ -422,12 +476,14 @@ Political Sphere Team
 ## Communication Channels
 
 ### Internal Channels
+
 - **Slack:** #ai-incident-response (primary coordination)
 - **Email:** ai-incident@political-sphere.com (formal notifications)
 - **Jira/ServiceNow:** Incident tracking and documentation
 - **Zoom/Teams:** Real-time coordination calls
 
 ### External Channels
+
 - **Status Page:** public-facing incident status
 - **Twitter:** Real-time updates for critical incidents
 - **Email:** Targeted communications to affected users
@@ -436,6 +492,7 @@ Political Sphere Team
 ## Tools and Resources
 
 ### Incident Response Tools
+
 - **Monitoring:** Grafana, Prometheus, custom AI metrics
 - **Logging:** ELK Stack, structured AI event logging
 - **Communication:** Slack, email distribution lists
@@ -443,6 +500,7 @@ Political Sphere Team
 - **Tracking:** Jira, ServiceNow incident management
 
 ### AI-Specific Tools
+
 - **Model Analysis:** Custom validation scripts, bias detection tools
 - **Performance Monitoring:** AI metrics dashboards, drift detection
 - **Backup Systems:** Model versioning, rollback mechanisms
@@ -451,12 +509,14 @@ Political Sphere Team
 ## Training and Preparedness
 
 ### Required Training
+
 - **Annual Training:** All AI team members complete incident response training
 - **Role-Specific Training:** Incident commanders receive advanced training
 - **Tabletop Exercises:** Quarterly AI incident simulation exercises
 - **Cross-Training:** Backup personnel trained for key roles
 
 ### Preparedness Activities
+
 - **Regular Drills:** Monthly incident response drills
 - **Tool Maintenance:** Ensure all response tools are operational
 - **Contact Updates:** Maintain current contact information
@@ -465,6 +525,7 @@ Political Sphere Team
 ## Continuous Improvement
 
 ### Lessons Learned Process
+
 1. **Collect Feedback:** Gather input from all response team members
 2. **Analyze Effectiveness:** Review response metrics and outcomes
 3. **Identify Improvements:** Determine procedural and tool enhancements
@@ -472,6 +533,7 @@ Political Sphere Team
 5. **Monitor Results:** Track effectiveness of improvements
 
 ### Metrics and KPIs
+
 - **Response Time:** Average time to acknowledge and respond
 - **Resolution Time:** Average time to contain and resolve incidents
 - **Communication Effectiveness:** Stakeholder satisfaction scores

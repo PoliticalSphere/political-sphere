@@ -277,7 +277,7 @@ Political Sphere is an advanced multiplayer simulation platform (set initially i
 ### What You Should Do
 
 - Generate production-grade code meeting all quality, security, and accessibility standards
-- Cite sources with version numbers (e.g., WCAG 2.2 AA, OWASP ASVS 4.0.3)
+- Cite sources with version numbers (e.g., WCAG 2.2 AA, OWASP ASVS v5.0.0)
 - Propose comprehensive solutions including tests, documentation, and validation
 - Flag risks explicitly, especially for security, privacy, and governance
 - Update `docs/TODO.md` and `CHANGELOG.md` when making changes
@@ -321,7 +321,7 @@ When proposing significant changes, structure your response as:
 
 ## Related Standards
 
-[Relevant standards: WCAG 2.2 AA, OWASP ASVS 4.0.3, NIST SP 800-53 r5, etc.]
+[Relevant standards: WCAG 2.2 AA, OWASP ASVS v5.0.0, NIST SP 800-53 r5, etc.]
 [Reference: docs/standards-overview.md for complete compliance requirements]
 
 ## Constitutional Check
@@ -370,7 +370,7 @@ If you encounter ambiguity or uncertainty:
 //
 // Which authorization boundary should apply here?// TODO: Implement chosen auth strategy
 function checkPermission(user: User, resource: Resource): boolean {
-  throw new Error("Authorization strategy not yet defined");
+  throw new Error('Authorization strategy not yet defined');
 }
 ```
 
@@ -419,7 +419,7 @@ When proposing significant changes, structure your response as:
 
 ## Related Standards
 
-[Relevant standards: WCAG 2.2 AA, OWASP ASVS 4.0.3, NIST SP 800-53 r5, etc.]
+[Relevant standards: WCAG 2.2 AA, OWASP ASVS v5.0.0, NIST SP 800-53 r5, etc.]
 [Reference: docs/standards-overview.md for complete compliance requirements]
 
 ## Constitutional Check
@@ -676,7 +676,7 @@ For any function marked `PENDING_IMPLEMENTATION` or `BLOCKED`, provide:
 // DEPENDENCIES: TimescaleDB deployment, migration scripts, connection pooling
 // ESTIMATED_READINESS: After infrastructure sprint (Sprint 24)
 async function storeTimeSeriesMetrics(data: MetricsData): Promise<void> {
-  throw new Error("TimescaleDB infrastructure not yet deployed");
+  throw new Error('TimescaleDB infrastructure not yet deployed');
 }
 ```
 
@@ -733,7 +733,6 @@ Testing is foundational to Political Sphere's quality assurance and is treated a
 Prioritize test types in this order for balanced coverage and efficiency:
 
 1. **Unit Tests** (Foundation - 70% of tests)
-
    - Test individual functions, methods, and components in isolation
    - Mock external dependencies
    - Fast execution (< 50ms per test)
@@ -741,14 +740,12 @@ Prioritize test types in this order for balanced coverage and efficiency:
    - Run on every code change
 
 2. **Integration Tests** (Middle - 20% of tests)
-
    - Test interactions between modules, services, and databases
    - Use test databases or containers for external dependencies
    - Validate API contracts, data flows, and service communication
    - Run on pull request creation and before merge
 
 3. **End-to-End Tests** (Top - 10% of tests)
-
    - Test critical user journeys through the entire system
    - Validate real-world scenarios and workflows
    - Run in staging environment before production deployment
@@ -949,12 +946,12 @@ Critical paths require performance benchmarks:
 
 ```typescript
 // Example: Vitest with performance monitoring
-import { bench } from "vitest";
+import { bench } from 'vitest';
 
 bench(
-  "API response time",
+  'API response time',
   async () => {
-    const response = await fetch("/api/critical-endpoint");
+    const response = await fetch('/api/critical-endpoint');
     expect(response).toBeDefined();
   },
   {
@@ -970,16 +967,16 @@ All input handling requires security validation:
 
 ```typescript
 // Example: Input validation testing
-describe("User input validation", () => {
-  it("should reject SQL injection attempts", () => {
+describe('User input validation', () => {
+  it('should reject SQL injection attempts', () => {
     const maliciousInput = "'; DROP TABLE users; --";
     expect(() => validateUserInput(maliciousInput)).toThrow();
   });
 
-  it("should sanitize XSS attempts", () => {
+  it('should sanitize XSS attempts', () => {
     const xssInput = '<script>alert("XSS")</script>';
     const sanitized = sanitizeInput(xssInput);
-    expect(sanitized).not.toContain("<script>");
+    expect(sanitized).not.toContain('<script>');
   });
 });
 ```
@@ -1107,8 +1104,8 @@ All user interfaces MUST meet WCAG 2.2 AA standards:
   role="button"
   tabIndex={0}
   onClick={handleClick}
-  onKeyDown={(e) => {
-    if (e.key === "Enter" || e.key === " ") {
+  onKeyDown={e => {
+    if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
       handleClick();
     }
@@ -1199,7 +1196,7 @@ Ask for clarification when:
 
 - Reference specific files, line numbers, and specs
 - Cite relevant standards (WCAG, OWASP, NIST, etc.) **with version numbers** when possible
-  - Example: "WCAG 2.2 AA" not just "WCAG", "OWASP ASVS 4.0.3" not just "OWASP"
+  - Example: "WCAG 2.2 AA" not just "WCAG", "OWASP ASVS v5.0.0" not just "OWASP"
   - Include links to official documentation when referencing specific requirements
 - Explain trade-offs and alternatives clearly
 - Provide concrete examples and reproduction steps

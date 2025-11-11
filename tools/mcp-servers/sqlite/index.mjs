@@ -1,8 +1,7 @@
-import { readdir } from "node:fs/promises";
+import { readFile, readdir } from "node:fs/promises";
 import { dirname, extname, relative, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-import Database from "better-sqlite3";
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
@@ -13,10 +12,12 @@ import {
   McpError,
   ReadResourceRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
+import Database from "better-sqlite3";
 
 const MODULE_DIR = dirname(fileURLToPath(import.meta.url));
-const REPO_ROOT = resolve(MODULE_DIR, "../../../..");
+const REPO_ROOT = resolve(MODULE_DIR, "../../..");
 const MAX_ROWS = 100;
+const DATASET_CATALOG_PATH = resolve(REPO_ROOT, "data/datasets/catalog.json");
 
 const DEFAULT_SCAN_DIRECTORIES = ["data", "apps/api", "apps/worker", "reports", "."]; // last is root for test DBs
 
@@ -38,6 +39,18 @@ function validateSelectQuery(query) {
     throw new McpError(ErrorCode.InvalidRequest, "Query contains forbidden statements");
   }
   return query;
+}
+
+async function loadDatasetCatalog() {
+  try {
+    const contents = await readFile(DATASET_CATALOG_PATH, "utf8");
+    return JSON.parse(contents);
+  } catch (error) {
+    throw new McpError(
+      ErrorCode.InternalError,
+      `Unable to read dataset catalog (${relative(REPO_ROOT, DATASET_CATALOG_PATH)}): ${error.message}`,
+    );
+  }
 }
 
 async function discoverDatabases() {
@@ -139,7 +152,10 @@ class SqliteServer extends Server {
           inputSchema: {
             type: "object",
             properties: {
-              dbPath: { type: "string", description: "Relative path to .db file" },
+              dbPath: {
+                type: "string",
+                description: "Relative path to .db file",
+              },
             },
             required: ["dbPath"],
           },
@@ -170,6 +186,19 @@ class SqliteServer extends Server {
               },
             },
             required: ["dbPath", "query"],
+          },
+        },
+        {
+          name: "sqlite_dataset_metadata",
+          description: "Surface dataset catalog entries (owners, refresh policy, tables)",
+          inputSchema: {
+            type: "object",
+            properties: {
+              name: {
+                type: "string",
+                description: "Optional dataset name to filter by",
+              },
+            },
           },
         },
       ],
@@ -231,6 +260,34 @@ class SqliteServer extends Server {
         };
       }
 
+      case "sqlite_dataset_metadata": {
+        const catalog = await loadDatasetCatalog();
+        const datasets = Array.isArray(catalog.datasets) ? catalog.datasets : [];
+        const filtered =
+          typeof args.name === "string" && args.name.trim() !== ""
+            ? datasets.filter((dataset) => dataset.name === args.name.trim())
+            : datasets;
+        if (typeof args.name === "string" && filtered.length === 0) {
+          throw new McpError(ErrorCode.InvalidRequest, `Dataset ${args.name} not found`);
+        }
+        return {
+          content: [
+            {
+              type: "text",
+              text: JSON.stringify(
+                {
+                  updatedAt: catalog.updatedAt,
+                  total: filtered.length,
+                  datasets: filtered,
+                },
+                null,
+                2,
+              ),
+            },
+          ],
+        };
+      }
+
       default:
         throw new McpError(ErrorCode.MethodNotFound, `Unknown tool: ${name}`);
     }
@@ -251,6 +308,12 @@ class SqliteServer extends Server {
           name: "Usage guidance",
           description: "Hints for safe database queries",
           mimeType: "text/plain",
+        },
+        {
+          uri: "sqlite://political-sphere/datasets",
+          name: "Dataset metadata",
+          description: "Owners, refresh cadence, and table notes for each dataset",
+          mimeType: "application/json",
         },
       ],
       databases,
@@ -278,6 +341,18 @@ class SqliteServer extends Server {
             uri,
             mimeType: "text/plain",
             text: `All queries are executed in read-only mode. Only SELECT statements are permitted and results are limited to ${MAX_ROWS} rows.`,
+          },
+        ],
+      };
+    }
+    if (uri === "sqlite://political-sphere/datasets") {
+      const catalog = await loadDatasetCatalog();
+      return {
+        contents: [
+          {
+            uri,
+            mimeType: "application/json",
+            text: JSON.stringify(catalog, null, 2),
           },
         ],
       };

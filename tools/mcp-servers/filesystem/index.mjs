@@ -135,8 +135,14 @@ class FilesystemServer extends Server {
           inputSchema: {
             type: "object",
             properties: {
-              path: { type: "string", description: "Relative path inside repo" },
-              limit: { type: "number", description: "Maximum entries to return" },
+              path: {
+                type: "string",
+                description: "Relative path inside repo",
+              },
+              limit: {
+                type: "number",
+                description: "Maximum entries to return",
+              },
             },
           },
         },
@@ -147,7 +153,10 @@ class FilesystemServer extends Server {
             type: "object",
             properties: {
               path: { type: "string" },
-              encoding: { type: "string", description: "File encoding (default utf8)" },
+              encoding: {
+                type: "string",
+                description: "File encoding (default utf8)",
+              },
             },
             required: ["path"],
           },

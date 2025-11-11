@@ -1,5 +1,5 @@
-import { Factory } from "fishery";
 import { faker } from "@faker-js/faker";
+import { Factory } from "fishery";
 
 export interface Bill {
   id: string;
@@ -44,10 +44,10 @@ export const BillFactory = Factory.define<Bill>(({ sequence, params }) => ({
   category: params.category ?? faker.helpers.arrayElement(BILL_CATEGORIES),
   tags:
     params.tags ??
-    faker.helpers.arrayElements(
-      ["reform", "budget", "emergency", "amendment", "regulation"],
-      { min: 1, max: 3 }
-    ),
+    faker.helpers.arrayElements(["reform", "budget", "emergency", "amendment", "regulation"], {
+      min: 1,
+      max: 3,
+    }),
   createdAt: params.createdAt ?? faker.date.past().toISOString(),
   updatedAt: params.updatedAt ?? faker.date.recent().toISOString(),
   votingStartsAt: params.votingStartsAt ?? null,
@@ -60,21 +60,27 @@ export const DraftBillFactory = BillFactory.params({
   status: "draft",
 });
 
-export const ActiveVotingBillFactory = BillFactory.params({
+export const ActiveVotingBillFactory = Factory.define<Bill>(({ params }) => ({
+  ...BillFactory.build(),
   status: "voting",
-  votingStartsAt: () => faker.date.past().toISOString(),
-  votingEndsAt: () => faker.date.future().toISOString(),
-});
+  votingStartsAt: faker.date.past().toISOString(),
+  votingEndsAt: faker.date.future().toISOString(),
+  ...params,
+}));
 
-export const PassedBillFactory = BillFactory.params({
+export const PassedBillFactory = Factory.define<Bill>(({ params }) => ({
+  ...BillFactory.build(),
   status: "passed",
-  votingStartsAt: () => faker.date.past({ years: 1 }).toISOString(),
-  votingEndsAt: () => faker.date.past({ days: 30 }).toISOString(),
-  passedAt: () => faker.date.past({ days: 30 }).toISOString(),
-});
+  votingStartsAt: faker.date.past({ years: 1 }).toISOString(),
+  votingEndsAt: faker.date.recent({ days: 30 }).toISOString(),
+  passedAt: faker.date.recent({ days: 30 }).toISOString(),
+  ...params,
+}));
 
-export const RejectedBillFactory = BillFactory.params({
+export const RejectedBillFactory = Factory.define<Bill>(({ params }) => ({
+  ...BillFactory.build(),
   status: "rejected",
-  votingStartsAt: () => faker.date.past({ years: 1 }).toISOString(),
-  votingEndsAt: () => faker.date.past({ days: 30 }).toISOString(),
-});
+  votingStartsAt: faker.date.past({ years: 1 }).toISOString(),
+  votingEndsAt: faker.date.recent({ days: 30 }).toISOString(),
+  ...params,
+}));

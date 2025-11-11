@@ -3,8 +3,10 @@
  * Provides secure database operations with proper error handling
  */
 
-import Database from "better-sqlite3";
 import path from "path";
+
+import Database from "better-sqlite3";
+
 import { getLogger } from "./logger.js";
 
 const logger = getLogger({ service: "database" });

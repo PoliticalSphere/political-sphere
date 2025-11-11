@@ -143,15 +143,15 @@ Monitoring, logging, and operational procedures.
 
 ### Incident Management
 
-- [Incident Response Plan](./INCIDENT-RESPONSE-PLAN.md)
-- [Incident Postmortem](./INCIDENT-POSTMORTEM.md)
-- [Disaster Recovery Runbook](./DISASTER-RECOVERY-RUNBOOK.md)
+- [Incident Response Plan](../09-observability-and-ops/INCIDENT-RESPONSE-PLAN.md)
+- [Incident Postmortem](../09-observability-and-ops/INCIDENT-POSTMORTEM.md)
+- [Disaster Recovery Runbook](../09-observability-and-ops/DISASTER-RECOVERY-RUNBOOK.md)
 
 ### Compliance and Audit
 
-- [Production Readiness Checklist](./PRODUCTION-READINESS-CHECKLIST.md)
-- [Security Audit Summary](./SECURITY-AUDIT-SUMMARY.md)
-- [Onboarding Guide](./onboarding.md)
+- [Production Readiness Checklist](../09-observability-and-ops/PRODUCTION-READINESS-CHECKLIST.md)
+- [Security Audit Summary](./SECURITY.md)
+- [Onboarding Guide](../apps/onboarding.md)
 
 ### Document Control
 
@@ -169,12 +169,12 @@ Monitoring, logging, and operational procedures.
 - **Security**: [06-security-and-risk/](./06-security-and-risk/), [04-architecture/](./04-architecture/)
 - **Product**: [01-strategy/](./01-strategy/), [08-game-design-and-mechanics/](./08-game-design-and-mechanics/)
 - **Legal/Compliance**: [03-legal-and-compliance/](./03-legal-and-compliance/), [02-governance/](./02-governance/)
-- **Operations**: [09-observability-and-ops/](./09-observability-and-ops/), [11-commercial-and-finance/](./11-commercial-and-finance/)
+- **Operations**: [09-observability-and-ops/](./09-observability-and-ops/), [11-communications-and-brand/](./11-communications-and-brand/)
 
 ### By Topic
 
-- **Getting Started**: [00-foundation/](./00-foundation/), [Contributing](./contributing.md)
-- **API Development**: [API Documentation](./api.md), [04-architecture/](./04-architecture/)
+- **Getting Started**: [00-foundation/](./00-foundation/), [Contributing](./CONTRIBUTING.md)
+- **API Development**: [API Documentation](../04-architecture/api.md), [04-architecture/](./04-architecture/)
 - **Security**: [06-security-and-risk/](./06-security-and-risk/), [Security Architecture](./04-architecture/security-architecture.md)
 - **AI/ML**: [07-ai-and-simulation/](./07-ai-and-simulation/)
 - **Game Design**: [08-game-design-and-mechanics/](./08-game-design-and-mechanics/)
@@ -213,20 +213,20 @@ This documentation is automatically maintained. To update:
 
 ### 🔌 API Documentation
 
-- **[API Reference](./api.md)**: Complete API specifications including endpoints, authentication, and examples
-- **[Architecture Overview](./architecture.md)**: System architecture, patterns, and design decisions
+- **[API Reference](../04-architecture/api.md)**: Complete API specifications including endpoints, authentication, and examples
+- **[Architecture Overview](../04-architecture/architecture.md)**: System architecture, patterns, and design decisions
 
 ### ⚙️ Operational Documentation
 
-- **[Contributing Guide](./contributing.md)**: How to contribute to the project
-- **[Disaster Recovery Runbook](./DISASTER-RECOVERY-RUNBOOK.md)**: Procedures for system recovery and failover
-- **[Incident Response Plan](./INCIDENT-RESPONSE-PLAN.md)**: Incident handling and response procedures
-- **[Production Readiness Checklist](./PRODUCTION-READINESS-CHECKLIST.md)**: Pre-deployment verification checklist
+- **[Contributing Guide](../CONTRIBUTING.md)**: How to contribute to the project
+- **[Disaster Recovery Runbook](../09-observability-and-ops/DISASTER-RECOVERY-RUNBOOK.md)**: Procedures for system recovery and failover
+- **[Incident Response Plan](../09-observability-and-ops/INCIDENT-RESPONSE-PLAN.md)**: Incident handling and response procedures
+- **[Production Readiness Checklist](../09-observability-and-ops/PRODUCTION-READINESS-CHECKLIST.md)**: Pre-deployment verification checklist
 
 ### 🔒 Compliance and Security
 
-- **[Security Audit Summary](./SECURITY-AUDIT-SUMMARY.md)**: Security assessment results and findings
-- **[Incident Postmortem](./INCIDENT-POSTMORTEM.md)**: Analysis of past incidents and lessons learned
+- **[Security Policy](../SECURITY.md)**: Security assessment results and findings
+- **[Incident Postmortem](../09-observability-and-ops/INCIDENT-POSTMORTEM.md)**: Analysis of past incidents and lessons learned
 
 ## How to Use This Documentation
 
@@ -248,13 +248,13 @@ Check **governance (02-governance/)**, **legal (03-legal-and-compliance/)**, and
 
 ## Navigation
 
-- **[📖 Table of Contents](./toc.md)**: Complete index of all documentation
+- **[📖 Table of Contents](./STRUCTURE.md)**: Complete index of all documentation
 - **🔍 Search**: Use your editor's search function or `grep` for specific topics
 - **🔗 Cross-references**: Documents link to related sections for easy navigation
 
 ## Contributing to Documentation
 
-This documentation is a **living resource** that evolves with the platform. See our **[Contributing Guide](./contributing.md)** for guidelines on:
+See our **[Contributing Guide](./CONTRIBUTING.md)** for guidelines on:
 
 - 📝 Documentation standards and formatting
 - 🔍 Review processes

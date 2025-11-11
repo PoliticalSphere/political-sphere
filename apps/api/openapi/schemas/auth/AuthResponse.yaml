@@ -8,13 +8,13 @@ properties:
   accessToken:
     type: string
     description: JWT access token for API authentication
-    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
   refreshToken:
     type: string
     description: JWT refresh token for obtaining new access tokens
-    example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    example: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
   user:
-    $ref: "../users/UserProfile.yaml"
+    $ref: '../users/UserProfile.yaml'
   expiresIn:
     type: integer
     description: Access token expiration time in seconds
@@ -22,4 +22,4 @@ properties:
   tokenType:
     type: string
     description: Token type (always "Bearer")
-    example: "Bearer"
+    example: 'Bearer'

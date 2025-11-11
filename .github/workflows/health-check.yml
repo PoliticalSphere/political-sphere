@@ -1,0 +1,51 @@
+# Placeholder: Health Check Monitoring
+#
+# STATUS: PENDING_IMPLEMENTATION
+# REASON: Requires production infrastructure deployment
+# DEPENDENCIES: Production URLs, monitoring service (e.g., DataDog, New Relic)
+# ESTIMATED_READINESS: After production deployment (Sprint 30+)
+#
+# This workflow will monitor application health endpoints and alert on failures.
+
+name: Health Check Monitoring
+
+on:
+  schedule:
+    # Run every 5 minutes
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+
+env:
+  API_HEALTH_URL: ${{ secrets.API_HEALTH_URL || 'https://api-staging.political-sphere.com/healthz' }}
+  FRONTEND_HEALTH_URL: ${{ secrets.FRONTEND_HEALTH_URL || 'https://www-staging.political-sphere.com' }}
+
+jobs:
+  health-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check API Health
+        run: |
+          echo "Checking API health at $API_HEALTH_URL"
+          # TODO: Implement actual health check when infrastructure is deployed
+          # response=$(curl -s -o /dev/null -w "%{http_code}" $API_HEALTH_URL)
+          # if [ $response -ne 200 ]; then
+          #   echo "API health check failed with status $response"
+          #   exit 1
+          # fi
+
+      - name: Check Frontend Health
+        run: |
+          echo "Checking frontend health at $FRONTEND_HEALTH_URL"
+          # TODO: Implement actual health check when infrastructure is deployed
+          # response=$(curl -s -o /dev/null -w "%{http_code}" $FRONTEND_HEALTH_URL)
+          # if [ $response -ne 200 ]; then
+          #   echo "Frontend health check failed with status $response"
+          #   exit 1
+          # fi
+
+      - name: Send Alert (if failure)
+        if: failure()
+        run: |
+          echo "Health check failed - would send alert to monitoring service"
+          # TODO: Integrate with Slack, PagerDuty, or other alerting service
+          # curl -X POST $SLACK_WEBHOOK_URL -d '{"text":"Health check failed"}'

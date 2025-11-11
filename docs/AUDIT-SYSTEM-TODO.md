@@ -79,7 +79,6 @@ Priority 3 (Development/Testing):
    ```
 
 2. **Create App-Specific Audits** (inherit from base)
-
    - `scripts/ci/app-audit-api.sh` - API-specific checks
    - `scripts/ci/app-audit-web.sh` - Web-specific checks
    - `scripts/ci/app-audit-worker.sh` - Worker-specific checks
@@ -170,7 +169,7 @@ on:
   pull_request:
     branches: [main, develop]
   schedule:
-    - cron: "0 0 * * 0" # Weekly on Sunday
+    - cron: '0 0 * * 0' # Weekly on Sunday
   workflow_dispatch:
 
 jobs:
@@ -182,7 +181,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: '18'
 
       - name: Install Dependencies
         run: npm ci
@@ -215,12 +214,10 @@ jobs:
 **Files to Update:**
 
 1. **Main README** (`README.md`)
-
    - Add "Audit Status" badge
    - Link to audit documentation
 
 2. **Audit Documentation** (`scripts/ci/README-audits.md`)
-
    - Update with new OpenAPI fast audit
    - Document app-specific audits
    - Add troubleshooting section

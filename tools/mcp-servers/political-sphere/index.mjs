@@ -140,8 +140,14 @@ class PoliticalSphereServer extends Server {
           inputSchema: {
             type: "object",
             properties: {
-              folder: { type: "string", description: "Relative folder (default docs)" },
-              limit: { type: "number", description: "Maximum files to return (default 25)" },
+              folder: {
+                type: "string",
+                description: "Relative folder (default docs)",
+              },
+              limit: {
+                type: "number",
+                description: "Maximum files to return (default 25)",
+              },
             },
           },
         },
@@ -152,7 +158,10 @@ class PoliticalSphereServer extends Server {
             type: "object",
             properties: {
               path: { type: "string" },
-              lines: { type: "number", description: "Number of lines to include" },
+              lines: {
+                type: "number",
+                description: "Number of lines to include",
+              },
             },
             required: ["path"],
           },
@@ -244,7 +253,9 @@ class PoliticalSphereServer extends Server {
 
       case "ps_governance_tasks": {
         const tasks = await extractGovernanceTasks();
-        return { content: [{ type: "text", text: JSON.stringify({ tasks }, null, 2) }] };
+        return {
+          content: [{ type: "text", text: JSON.stringify({ tasks }, null, 2) }],
+        };
       }
 
       default:

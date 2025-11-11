@@ -1,0 +1,10 @@
+{
+  "extends": "../../tools/config/tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": ".",
+    "baseUrl": "./",
+    "jsx": "react-jsx"
+  },
+  "include": ["src", "module-federation.config.ts"],
+  "exclude": ["dist", "node_modules"]
+}

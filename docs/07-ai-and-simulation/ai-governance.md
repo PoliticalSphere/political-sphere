@@ -1,6 +1,6 @@
 ---
-description: "AI governance safeguards, neutrality enforcement, and oversight checkpoints"
-applyTo: "**/*"
+description: 'AI governance safeguards, neutrality enforcement, and oversight checkpoints'
+applyTo: '**/*'
 ---
 
 # AI Governance (Constitutional Safeguards)

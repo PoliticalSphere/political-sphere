@@ -5,9 +5,10 @@
  * Based on proven patterns from @qdrant/js-client and langchain
  */
 
-const { QdrantClient } = require("@qdrant/js-client-rest");
 const fs = require("fs");
 const path = require("path");
+
+const { QdrantClient } = require("@qdrant/js-client-rest");
 
 const COLLECTION_NAME = "codebase-vectors";
 const VECTOR_SIZE = 1536; // OpenAI ada-002 embedding size

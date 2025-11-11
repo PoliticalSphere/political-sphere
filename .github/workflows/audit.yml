@@ -7,17 +7,17 @@ on:
     branches: [main]
   schedule:
     # Run weekly security scans on Mondays at 9 AM UTC
-    - cron: "0 9 * * 1"
+    - cron: '0 9 * * 1'
   workflow_dispatch:
     inputs:
       auto_fix:
-        description: "Enable auto-fix for fixable issues"
+        description: 'Enable auto-fix for fixable issues'
         required: false
-        default: "false"
+        default: 'false'
         type: choice
         options:
-          - "true"
-          - "false"
+          - 'true'
+          - 'false'
 
 permissions:
   contents: write # For auto-fix commits
@@ -25,7 +25,8 @@ permissions:
   pull-requests: write # For PR comments
 
 env:
-  NODE_VERSION: "20.x"
+  NODE_VERSION: '22'
+  FORCE_COLOR: '1'
 
 jobs:
   infrastructure-audit:
@@ -104,7 +105,7 @@ jobs:
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -120,10 +121,10 @@ jobs:
         env:
           APP_NAME: ${{ matrix.app }}
           AUTO_FIX: ${{ github.event.inputs.auto_fix || 'false' }}
-          GENERATE_SARIF: "true"
-          SKIP_NPM_AUDIT: "false"
-          SKIP_TSC: "false"
-          SKIP_ESLINT: "false"
+          GENERATE_SARIF: 'true'
+          SKIP_NPM_AUDIT: 'false'
+          SKIP_TSC: 'false'
+          SKIP_ESLINT: 'false'
         run: bash scripts/ci/app-audit-$APP_NAME.sh
         continue-on-error: true
 
@@ -131,8 +132,8 @@ jobs:
         if: github.event.inputs.auto_fix == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          commit_message: "fix: auto-fix issues in ${{ matrix.app }} [skip ci]"
-          file_pattern: "apps/${{ matrix.app }}/**"
+          commit_message: 'fix: auto-fix issues in ${{ matrix.app }} [skip ci]'
+          file_pattern: 'apps/${{ matrix.app }}/**'
 
       - name: Upload SARIF to GitHub Security
         if: always()

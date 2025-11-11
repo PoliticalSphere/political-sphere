@@ -1,0 +1,51 @@
+{
+  "updatedAt": "2025-11-10T00:00:00.000Z",
+  "datasets": [
+    {
+      "name": "political_sphere",
+      "path": "data/political_sphere.db",
+      "description": "Primary application datastore replicating the production schema for users, parties, issues, news, votes, and moderation activity.",
+      "owner": "Platform Engineering",
+      "refreshPolicy": "Created on demand via scripts/ops/init-database.js or npm run db:seed.",
+      "pii": true,
+      "tables": [
+        { "name": "users", "description": "Registered accounts + roles", "pii": true },
+        { "name": "parties", "description": "Political parties and metadata" },
+        { "name": "bills", "description": "Legislative proposals surfaced to users" },
+        { "name": "votes", "description": "Vote records for civic simulations" },
+        { "name": "news_items", "description": "Curated news used by the news service" },
+        { "name": "moderation_events", "description": "Audit log for abuse-prevention decisions" }
+      ],
+      "tags": ["primary", "sqlite", "prod-parity"]
+    },
+    {
+      "name": "test_debug",
+      "path": "data/test-debug.db",
+      "description": "Scratch database spun up by integration tests for ad-hoc debugging.",
+      "owner": "QA",
+      "refreshPolicy": "Created/removed automatically by scripts/testing/run-smoke.js and vitest setup.",
+      "pii": false,
+      "tables": [
+        { "name": "users", "description": "Subset of synthetic users" },
+        {
+          "name": "scenarios",
+          "description": "Synthetic civic scenarios used in integration tests"
+        }
+      ],
+      "tags": ["testing", "sqlite"]
+    },
+    {
+      "name": "test_manual",
+      "path": "data/test-manual.db",
+      "description": "Optional DB a developer can seed for manual QA sessions.",
+      "owner": "QA",
+      "refreshPolicy": "Created manually via npm run db:seed && npm run dev:web instructions in docs/apps/onboarding.md.",
+      "pii": false,
+      "tables": [
+        { "name": "users", "description": "Seed users for manual QA" },
+        { "name": "sessions", "description": "Ephemeral sessions for exploratory manual work" }
+      ],
+      "tags": ["manual-testing", "sqlite"]
+    }
+  ]
+}

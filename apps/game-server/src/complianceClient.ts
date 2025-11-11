@@ -1,13 +1,14 @@
 /**
  * Compliance Client for Game Server
- * Handles communication with the compliance API for audit logging
+ * Handles communication with the compliance API
  */
 
 import type { AxiosInstance } from "axios";
 import axios from "axios";
-import { CircuitBreaker } from "../api/src/utils/error-handler";
 
-interface ComplianceEvent {
+import { CircuitBreaker } from "./utils/circuit-breaker";
+
+interface ComplianceLogEntry {
   category: string;
   action: string;
   userId: string;
@@ -35,7 +36,7 @@ class ComplianceClient {
    * @param event - Compliance event details
    * @returns Event ID
    */
-  async logEvent(event: ComplianceEvent): Promise<string | null> {
+  async logEvent(event: ComplianceLogEntry): Promise<string | null> {
     try {
       // Fire and forget with circuit breaker protection
       this.circuitBreaker

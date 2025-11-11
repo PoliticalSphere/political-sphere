@@ -173,14 +173,12 @@ Error Budget = (1 - 0.95) × 1000 = 50 failed runs allowed
 ### Error Budget Policies
 
 1. **Budget Exhausted (0% remaining):**
-
    - Immediate feature freeze
    - Emergency incident declared
    - Focus 100% on reliability restoration
    - Daily leadership updates
 
 2. **Budget Recovery:**
-
    - Once budget recovers to >50%, resume normal operations
    - Require postmortem and action items before resuming
 

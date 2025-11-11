@@ -1,0 +1,11 @@
+{
+  "id": "test-user-001",
+  "email": "alice.voter@example.com",
+  "name": "Alice Voter",
+  "role": "voter",
+  "createdAt": "2025-01-01T00:00:00Z",
+  "preferences": {
+    "notifications": true,
+    "theme": "light"
+  }
+}

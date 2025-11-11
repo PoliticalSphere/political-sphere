@@ -39,7 +39,7 @@ Successfully implemented 10 prioritized AI development enhancement solutions to 
 **How to use:**
 
 ```typescript
-import { UserFactory, PartyFactory } from "@political-sphere/testing/factories";
+import { UserFactory, PartyFactory } from '@political-sphere/testing/factories';
 
 const admin = UserFactory.Admin().build();
 const majorParty = PartyFactory.Major().build();
@@ -485,7 +485,7 @@ npm run deps:interactive  # Open Nx graph
 - `docs/04-architecture/adr/INDEX.md`
 - `docs/examples/api/validation.example.ts` (360+ lines)
 - `docs/examples/api/error-handling.example.ts` (360+ lines)
-- `docs/examples/testing/patterns.example.ts` (400+ lines)
+- `docs/examples/testing/patterns.example.tsx` (400+ lines)
 - `docs/examples/react/data-fetching.example.tsx` (500+ lines)
 - `docs/architecture/dependency-graphs/README.md`
 

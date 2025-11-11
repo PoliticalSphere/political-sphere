@@ -3,8 +3,9 @@
  * Phase 1 Smoke Script
  * Verifies health, register/login, game create/list endpoints without Vitest overhead.
  */
-import { createApp } from "../src/app";
 import request from "supertest";
+
+import { createApp } from "../src/app";
 
 async function run() {
   const app = createApp();
@@ -55,9 +56,7 @@ async function run() {
       };
 
       // List games
-      const list = await agent
-        .get("/game/list")
-        .set("Authorization", `Bearer ${token}`);
+      const list = await agent.get("/game/list").set("Authorization", `Bearer ${token}`);
       results.gameList = {
         status: list.status,
         count: Array.isArray(list.body?.games) ? list.body.games.length : -1,
@@ -69,7 +68,6 @@ async function run() {
     server.close();
   }
 
-  // eslint-disable-next-line no-console
   console.log(JSON.stringify(results, null, 2));
 }
 

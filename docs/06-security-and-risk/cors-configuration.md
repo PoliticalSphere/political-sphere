@@ -17,7 +17,7 @@ Cross-Origin Resource Sharing (CORS) is a security feature that controls which o
 app.use(cors());
 
 // DANGEROUS - Explicitly allows all origins
-app.use(cors({ origin: "*" }));
+app.use(cors({ origin: '*' }));
 
 // DANGEROUS - Reflects the requesting origin
 app.use(cors({ origin: true }));
@@ -47,11 +47,11 @@ app.use(cors({ origin: true }));
 // ALLOWED_ORIGINS=https://app.example.com,https://admin.example.com
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",").map((origin) => origin.trim())
+  ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
   : [
-      "http://localhost:3000", // Frontend dev
-      "http://localhost:3001", // Alternative port
-      "http://localhost:5173", // Vite dev server
+      'http://localhost:3000', // Frontend dev
+      'http://localhost:3001', // Alternative port
+      'http://localhost:5173', // Vite dev server
     ];
 
 const corsOptions = {
@@ -70,8 +70,8 @@ const corsOptions = {
   },
   credentials: true, // Allow cookies/auth headers
   optionsSuccessStatus: 200,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
@@ -91,9 +91,7 @@ const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
 
-    const isAllowed = allowedOriginPatterns.some((pattern) =>
-      pattern.test(origin)
-    );
+    const isAllowed = allowedOriginPatterns.some(pattern => pattern.test(origin));
 
     if (isAllowed) {
       callback(null, true);
@@ -103,8 +101,8 @@ const corsOptions = {
     }
   },
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
@@ -116,10 +114,10 @@ For APIs with a single frontend:
 
 ```javascript
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || "http://localhost:3000",
+  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
   credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
 };
 
 app.use(cors(corsOptions));
@@ -231,7 +229,7 @@ curl -H "Origin: https://evil-site.com" \
 // This doesn't work - browsers reject it
 app.use(
   cors({
-    origin: "*",
+    origin: '*',
     credentials: true, // ❌ Incompatible with wildcard
   })
 );
@@ -243,7 +241,7 @@ app.use(
 // ❌ Wrong - origin doesn't accept arrays directly in some versions
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:5173"],
+    origin: ['http://localhost:3000', 'http://localhost:5173'],
   })
 );
 
@@ -251,7 +249,7 @@ app.use(
 app.use(
   cors({
     origin: (origin, callback) => {
-      const allowed = ["http://localhost:3000", "http://localhost:5173"];
+      const allowed = ['http://localhost:3000', 'http://localhost:5173'];
       callback(null, allowed.includes(origin));
     },
   })
@@ -262,47 +260,42 @@ app.use(
 
 ```javascript
 // ❌ Missing OPTIONS handler
-app.post("/api/endpoint", handler);
+app.post('/api/endpoint', handler);
 
 // ✅ Correct - CORS middleware handles OPTIONS automatically
 app.use(cors(corsOptions));
-app.post("/api/endpoint", handler);
+app.post('/api/endpoint', handler);
 ```
 
 ### ❌ Mistake 4: Port Mismatch
 
 ```javascript
 // ❌ Wrong - Missing port
-allowedOrigins: ["http://localhost"];
+allowedOrigins: ['http://localhost'];
 
 // ✅ Correct - Include port
-allowedOrigins: ["http://localhost:3000"];
+allowedOrigins: ['http://localhost:3000'];
 ```
 
 ## Security Best Practices
 
 1. **Never use wildcards in production**
-
    - Always use explicit allowlist
    - Validate origin on every request
 
 2. **Use HTTPS in production**
-
    - Don't allow `http://` origins in production
    - Only allow `https://` origins
 
 3. **Minimize exposed headers**
-
    - Only expose headers that frontend needs
    - Avoid exposing internal headers
 
 4. **Log blocked requests**
-
    - Monitor for unauthorized access attempts
    - Alert on suspicious origin patterns
 
 5. **Separate public/private APIs**
-
    - Public APIs: Relaxed CORS (still not wildcard!)
    - Private APIs: Strict CORS with credentials
 
@@ -361,16 +354,16 @@ When updating from insecure to secure CORS:
 
 ```javascript
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
-  : ["http://localhost:3000", "http://localhost:5173"];
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+  : ['http://localhost:3000', 'http://localhost:5173'];
 ```
 
 **API Server:** `apps/api/src/app.js`
 
 ```javascript
 const allowedOrigins = process.env.ALLOWED_ORIGINS
-  ? process.env.ALLOWED_ORIGINS.split(",").map((o) => o.trim())
-  : ["http://localhost:3000", "http://localhost:5173"];
+  ? process.env.ALLOWED_ORIGINS.split(',').map(o => o.trim())
+  : ['http://localhost:3000', 'http://localhost:5173'];
 ```
 
 ## References

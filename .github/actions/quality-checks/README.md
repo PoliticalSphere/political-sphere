@@ -39,7 +39,7 @@ steps:
 
   - uses: ./.github/actions/setup-node-deps
     with:
-      node-version: "22"
+      node-version: '22'
 
   - uses: ./.github/actions/quality-checks
 ```
@@ -50,9 +50,9 @@ steps:
 steps:
   - uses: ./.github/actions/quality-checks
     with:
-      run-lint: "true"
-      run-typecheck: "true"
-      run-format-check: "false"
+      run-lint: 'true'
+      run-typecheck: 'true'
+      run-format-check: 'false'
 ```
 
 ### Custom Commands
@@ -61,8 +61,8 @@ steps:
 steps:
   - uses: ./.github/actions/quality-checks
     with:
-      lint-command: "npx eslint . --max-warnings 0"
-      typecheck-command: "npx tsc --noEmit"
+      lint-command: 'npx eslint . --max-warnings 0'
+      typecheck-command: 'npx tsc --noEmit'
 ```
 
 ## Changelog

@@ -24,7 +24,7 @@ permissions:
   attestations: write
 
 env:
-  NODE_VERSION: "22"
+  NODE_VERSION: '22'
 
 jobs:
   release:
@@ -43,7 +43,7 @@ jobs:
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: "npm"
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci
@@ -96,7 +96,7 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
         with:
-          subject-path: "dist/**/*"
+          subject-path: 'dist/**/*'
 
   verify:
     name: Post-Release Verification

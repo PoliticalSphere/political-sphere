@@ -1,27 +1,62 @@
-const express = require("express");
-const { NewsService } = require("../news-service");
-const { NewsStore } = require("../news-store");
+import express from "express";
+
+import { FileNewsStore, NewsService } from "../news-service.js";
 
 const router = express.Router();
-const newsStore = new NewsStore();
-const newsService = new NewsService(newsStore);
+const newsService = new NewsService(new FileNewsStore());
+
+function handleValidationError(res, error) {
+  return res.status(400).json({
+    success: false,
+    error: error?.message || "Invalid request",
+    details: error?.details,
+  });
+}
 
 router.get("/news", async (req, res) => {
   try {
     const { category, tag, search, limit } = req.query;
     const options = {};
-    if (category) options.category = category;
-    if (tag) options.tag = tag;
-    if (search) options.search = search;
-    if (limit) options.limit = parseInt(limit, 10);
+
+    if (category) {
+      options.category = newsService.validateCategory(String(category));
+    }
+
+    if (tag) {
+      if (/<|>|script/i.test(String(tag))) {
+        return res.status(400).json({
+          success: false,
+          error: "Invalid tag format",
+        });
+      }
+      options.tag = String(tag);
+    }
+
+    if (search) {
+      options.search = newsService.validateSearchQuery(String(search));
+    }
+
+    if (limit) {
+      const limitValue = Number.parseInt(String(limit), 10);
+      if (Number.isNaN(limitValue) || limitValue <= 0 || limitValue > newsService.maxLimit) {
+        return res.status(400).json({
+          success: false,
+          error: `Invalid limit: must be between 1 and ${newsService.maxLimit}`,
+        });
+      }
+      options.limit = limitValue;
+    }
 
     const news = await newsService.list(options);
     res.json({ success: true, data: news });
   } catch (error) {
+    if (error?.code === "VALIDATION_ERROR") {
+      return handleValidationError(res, error);
+    }
     console.error("Error fetching news:", error);
-    res.status(400).json({
+    res.status(500).json({
       success: false,
-      error: error.message,
+      error: "Internal server error",
       message: "Failed to fetch news",
     });
   }
@@ -32,10 +67,13 @@ router.post("/news", async (req, res) => {
     const newsItem = await newsService.create(req.body);
     res.status(201).json({ success: true, data: newsItem });
   } catch (error) {
+    if (error?.code === "VALIDATION_ERROR") {
+      return handleValidationError(res, error);
+    }
     console.error("Error creating news:", error);
-    res.status(400).json({
+    res.status(500).json({
       success: false,
-      error: error.message,
+      error: "Internal server error",
       message: "Failed to create news item",
     });
   }
@@ -44,8 +82,7 @@ router.post("/news", async (req, res) => {
 router.get("/news/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const news = await newsService.list();
-    const item = news.find((n) => n.id === id);
+    const item = await newsService.getById(id);
     if (!item) {
       return res.status(404).json({
         success: false,
@@ -77,10 +114,13 @@ router.put("/news/:id", async (req, res) => {
     }
     res.json({ success: true, data: updatedItem });
   } catch (error) {
+    if (error?.code === "VALIDATION_ERROR") {
+      return handleValidationError(res, error);
+    }
     console.error("Error updating news:", error);
-    res.status(400).json({
+    res.status(500).json({
       success: false,
-      error: error.message,
+      error: "Internal server error",
       message: "Failed to update news item",
     });
   }
@@ -100,4 +140,4 @@ router.get("/metrics/news", async (_req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

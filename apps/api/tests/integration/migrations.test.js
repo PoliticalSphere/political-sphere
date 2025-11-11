@@ -5,21 +5,23 @@
  * @see docs/architecture/decisions/adr-0001-database-migrations.md
  */
 
-import { describe, it, beforeEach, afterEach } from "vitest";
 import assert from "node:assert";
-import fs from "fs";
-import path from "path";
+import fs from "node:fs";
+import path from "node:path";
+
+import { describe, it, beforeEach, afterEach } from "vitest";
+
+import { DEFAULT_DB_PATH } from "../../src/utils/config.js";
 import {
   initializeDatabase,
   runMigrations,
   rollbackAllMigrations,
-} from "../src/migrations/index.js";
+} from "../../src/utils/migrations/index.js";
 import {
   MigrationError,
   MigrationRollbackError,
   MigrationValidationError,
-} from "../src/migrations/migration-error.js";
-import { DEFAULT_DB_PATH } from "../src/config.js";
+} from "../../src/utils/migrations/migration-error.js";
 
 // Test database path - make it unique per test run
 const getTestDbPath = () =>

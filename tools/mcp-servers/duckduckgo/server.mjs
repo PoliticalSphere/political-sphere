@@ -21,7 +21,9 @@ app.get("/search", async (req, res) => {
     endpoint.searchParams.set("no_html", "1");
 
     const response = await fetch(endpoint, {
-      headers: { "User-Agent": "political-sphere-mcp/1.0 (+https://github.com/)" },
+      headers: {
+        "User-Agent": "political-sphere-mcp/1.0 (+https://github.com/)",
+      },
     });
 
     if (!response.ok) {

@@ -133,7 +133,10 @@ class GitHubServer extends Server {
                 enum: ["open", "closed", "all"],
                 description: "Defaults to open",
               },
-              limit: { type: "number", description: "Max PRs to return (default 20)" },
+              limit: {
+                type: "number",
+                description: "Max PRs to return (default 20)",
+              },
             },
           },
         },
@@ -145,7 +148,10 @@ class GitHubServer extends Server {
             properties: {
               repository: { type: "string" },
               query: { type: "string", description: "Search query" },
-              limit: { type: "number", description: "Max results (default 20)" },
+              limit: {
+                type: "number",
+                description: "Max results (default 20)",
+              },
             },
             required: ["query"],
           },
@@ -205,7 +211,9 @@ class GitHubServer extends Server {
           url: pr.html_url,
         }));
 
-        return { content: [{ type: "text", text: JSON.stringify({ pulls }, null, 2) }] };
+        return {
+          content: [{ type: "text", text: JSON.stringify({ pulls }, null, 2) }],
+        };
       }
 
       case "github_search_issues": {
@@ -233,7 +241,9 @@ class GitHubServer extends Server {
           url: item.html_url,
         }));
 
-        return { content: [{ type: "text", text: JSON.stringify({ results }, null, 2) }] };
+        return {
+          content: [{ type: "text", text: JSON.stringify({ results }, null, 2) }],
+        };
       }
 
       default:

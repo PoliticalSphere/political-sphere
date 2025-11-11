@@ -11,9 +11,9 @@ o; /**
  */
 
 import bcrypt from "bcrypt";
+import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import { z } from "zod";
-import type { Request, Response, NextFunction } from "express";
 
 // ============================================================================
 // SCHEMAS
@@ -67,10 +67,10 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
     const data = RegisterSchema.parse(req.body);
 
     // 2. Check if user already exists
-    const existingUser = await db.query(
-      "SELECT id FROM users WHERE email = $1 OR username = $2",
-      [data.email, data.username]
-    );
+    const existingUser = await db.query("SELECT id FROM users WHERE email = $1 OR username = $2", [
+      data.email,
+      data.username,
+    ]);
 
     if (existingUser.rows.length > 0) {
       res.status(409).json({
@@ -87,7 +87,7 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
       `INSERT INTO users (username, email, password_hash, role, is_active, created_at, updated_at)
        VALUES ($1, $2, $3, 'user', true, NOW(), NOW())
        RETURNING id, username, email, role, created_at`,
-      [data.username, data.email, passwordHash]
+      [data.username, data.email, passwordHash],
     );
 
     const user = result.rows[0];
@@ -105,7 +105,7 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
     // 6. Store refresh token (for revocation capability)
     await db.query(
       "INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, NOW() + INTERVAL '7 days')",
-      [user.id, refreshToken]
+      [user.id, refreshToken],
     );
 
     // 7. Send response (NEVER send password hash)
@@ -149,7 +149,7 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
     // 2. Find user by email
     const result = await db.query(
       "SELECT id, username, email, password_hash, role, is_active FROM users WHERE email = $1",
-      [data.email]
+      [data.email],
     );
 
     const user = result.rows[0];
@@ -157,10 +157,7 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
     // 3. Check if user exists (use constant-time comparison to prevent timing attacks)
     if (!user) {
       // Perform dummy bcrypt to prevent timing attacks
-      await bcrypt.compare(
-        data.password,
-        "$2b$12$dummyhashtopreventtimingattack"
-      );
+      await bcrypt.compare(data.password, "$2b$12$dummyhashtopreventtimingattack");
       res.status(401).json({ error: "Invalid credentials" });
       return;
     }
@@ -191,13 +188,11 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
     // 7. Store refresh token
     await db.query(
       "INSERT INTO refresh_tokens (user_id, token, expires_at) VALUES ($1, $2, NOW() + INTERVAL '7 days')",
-      [user.id, refreshToken]
+      [user.id, refreshToken],
     );
 
     // 8. Update last login
-    await db.query("UPDATE users SET last_login_at = NOW() WHERE id = $1", [
-      user.id,
-    ]);
+    await db.query("UPDATE users SET last_login_at = NOW() WHERE id = $1", [user.id]);
 
     // 9. Send response
     res.status(200).json({
@@ -231,11 +226,7 @@ export async function loginUser(req: Request, res: Response): Promise<void> {
 // EXAMPLE 3: Authentication Middleware
 // ============================================================================
 
-export function authenticate(
-  req: Request,
-  res: Response,
-  next: NextFunction
-): void {
+export function authenticate(req: Request, res: Response, next: NextFunction): void {
   try {
     // 1. Extract token from Authorization header
     const authHeader = req.headers.authorization;

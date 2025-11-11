@@ -61,6 +61,12 @@
       "rules": {
         "@nx/enforce-module-boundaries": ["error", { "enforceBuildableLibDependency": true }]
       }
+    },
+    {
+      "files": ["**/migrations/**/*.{js,ts}"],
+      "rules": {
+        "filenames/match-regex": "off"
+      }
     }
   ]
 }

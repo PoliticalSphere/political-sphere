@@ -14,9 +14,9 @@
  * @date 2025-11-10
  */
 
+import { execSync } from "child_process";
 import fs from "fs/promises";
 import path from "path";
-import { execSync } from "child_process";
 import { fileURLToPath } from "url";
 
 const __filename = fileURLToPath(import.meta.url);
@@ -165,7 +165,10 @@ class StructureAligner {
       const targetDir = path.dirname(path.join(ROOT_DIR, target));
       await fs.mkdir(targetDir, { recursive: true });
 
-      execSync(`git mv "${source}" "${target}"`, { cwd: ROOT_DIR, stdio: "pipe" });
+      execSync(`git mv "${source}" "${target}"`, {
+        cwd: ROOT_DIR,
+        stdio: "pipe",
+      });
       this.log(`  ✓ Moved ${source} to ${target}`);
       return true;
     } catch (error) {

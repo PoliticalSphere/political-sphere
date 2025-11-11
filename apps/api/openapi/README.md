@@ -243,13 +243,13 @@ npm run test:examples
 The generated client SDK can be used for integration testing:
 
 ```typescript
-import { DefaultApi } from "./generated/client";
+import { DefaultApi } from './generated/client';
 
 // Test authentication flow
 const api = new DefaultApi();
 const response = await api.authLogin({
-  email: "test@example.com",
-  password: "password123",
+  email: 'test@example.com',
+  password: 'password123',
 });
 expect(response.accessToken).toBeDefined();
 ```

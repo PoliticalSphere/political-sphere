@@ -2,8 +2,9 @@
 // Tests business logic in isolation from external dependencies
 
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import { UserService } from "../../src/domain/user-service";
-import { closeDatabase, getDatabase } from "../../src/stores";
+import { closeDatabase, getDatabase } from "../../src/modules/stores/index.ts";
 
 describe("UserService Unit Tests", () => {
   let db;

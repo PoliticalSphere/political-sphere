@@ -1,34 +1,34 @@
-name: "Setup Node.js with Dependencies"
-description: "Setup Node.js and install dependencies with caching"
-author: "Political Sphere"
+name: 'Setup Node.js with Dependencies'
+description: 'Setup Node.js and install dependencies with caching'
+author: 'Political Sphere'
 
 inputs:
   node-version:
-    description: "Node.js version to use"
+    description: 'Node.js version to use'
     required: false
-    default: "22"
+    default: '22'
 
   cache:
-    description: "Enable dependency caching (npm|yarn|pnpm|none)"
+    description: 'Enable dependency caching (npm|yarn|pnpm|none)'
     required: false
-    default: "npm"
+    default: 'npm'
 
   install-command:
-    description: "Command to install dependencies"
+    description: 'Command to install dependencies'
     required: false
-    default: "npm ci"
+    default: 'npm ci'
 
 outputs:
   node-version:
-    description: "Resolved Node.js version"
+    description: 'Resolved Node.js version'
     value: ${{ steps.setup-node.outputs.node-version }}
 
   cache-hit:
-    description: "Whether cache was hit"
+    description: 'Whether cache was hit'
     value: ${{ steps.setup-node.outputs.cache-hit }}
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Setup Node.js
       id: setup-node

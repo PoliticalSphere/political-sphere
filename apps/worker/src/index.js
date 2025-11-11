@@ -24,6 +24,7 @@ try {
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import process from "node:process";
+
 import { summarizeNews } from "./aggregator.js";
 import { API_URL, INTERVAL, OUTPUT_PATH } from "./config.js";
 // Prefer the shared logger when available, otherwise fall back to a compact local logger.

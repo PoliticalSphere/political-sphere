@@ -1,5 +1,5 @@
-import { Factory } from "fishery";
 import { faker } from "@faker-js/faker";
+import { Factory } from "fishery";
 
 export interface User {
   id: string;
@@ -15,7 +15,7 @@ export interface User {
 
 export const UserFactory = Factory.define<User>(({ sequence, params }) => ({
   id: params.id ?? `user-${sequence}`,
-  username: params.username ?? faker.internet.userName().toLowerCase(),
+  username: params.username ?? faker.internet.username().toLowerCase(),
   email: params.email ?? faker.internet.email().toLowerCase(),
   passwordHash: params.passwordHash ?? faker.string.alphanumeric(60),
   createdAt: params.createdAt ?? faker.date.past().toISOString(),
@@ -26,15 +26,19 @@ export const UserFactory = Factory.define<User>(({ sequence, params }) => ({
 }));
 
 // Specialized factories
-export const AdminUserFactory = UserFactory.params({
+export const AdminUserFactory = Factory.define<User>(({ params }) => ({
+  ...UserFactory.build(),
   role: "admin",
-  username: () => `admin_${faker.internet.userName().toLowerCase()}`,
-});
+  username: `admin_${faker.internet.username().toLowerCase()}`,
+  ...params,
+}));
 
-export const ModeratorUserFactory = UserFactory.params({
+export const ModeratorUserFactory = Factory.define<User>(({ params }) => ({
+  ...UserFactory.build(),
   role: "moderator",
-  username: () => `mod_${faker.internet.userName().toLowerCase()}`,
-});
+  username: `mod_${faker.internet.username().toLowerCase()}`,
+  ...params,
+}));
 
 export const InactiveUserFactory = UserFactory.params({
   isActive: false,

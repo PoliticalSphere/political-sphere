@@ -106,8 +106,10 @@ export class SanitizeInputsTransformer {
 
     // Remove common SQL injection patterns
     const dangerous = [
-      /('|(\\')|(--)|(%7C)/gi,
-      /(;|\||`|\\|<|>|\^|\[|\]|\{|\})/gi,
+      /'/gi, // Single quotes
+      /--/gi, // SQL comments
+      /%7C/gi, // URL encoded pipe
+      /[;\x7C`\\<>^[\]{}]/gi, // Special characters
       /(\bUNION\b|\bSELECT\b|\bDROP\b|\bINSERT\b|\bDELETE\b|\bUPDATE\b)/gi,
     ];
 

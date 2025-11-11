@@ -71,7 +71,10 @@ class MicrosoftLearnServer extends Server {
             type: "object",
             properties: {
               keyword: { type: "string" },
-              limit: { type: "number", description: "Maximum results (default 5)" },
+              limit: {
+                type: "number",
+                description: "Maximum results (default 5)",
+              },
             },
             required: ["keyword"],
           },
@@ -94,7 +97,10 @@ class MicrosoftLearnServer extends Server {
             type: "object",
             properties: {
               skill: { type: "string" },
-              limit: { type: "number", description: "Maximum results (default 5)" },
+              limit: {
+                type: "number",
+                description: "Maximum results (default 5)",
+              },
             },
             required: ["skill"],
           },
@@ -143,7 +149,9 @@ class MicrosoftLearnServer extends Server {
         if (!topic) {
           throw new McpError(ErrorCode.InvalidRequest, `Unknown topic id: ${id}`);
         }
-        return { content: [{ type: "text", text: JSON.stringify(topic, null, 2) }] };
+        return {
+          content: [{ type: "text", text: JSON.stringify(topic, null, 2) }],
+        };
       }
 
       case "learn_recommend_for_skill": {

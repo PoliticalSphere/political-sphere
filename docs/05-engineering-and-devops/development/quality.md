@@ -1,6 +1,6 @@
 ---
-description: "Quality, reliability, and validation standards applied across all workstreams"
-applyTo: "**/*"
+description: 'Quality, reliability, and validation standards applied across all workstreams'
+applyTo: '**/*'
 ---
 
 # Quality Standards

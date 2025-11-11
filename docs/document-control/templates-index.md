@@ -135,6 +135,98 @@ graph LR
 
 ---
 
+## 📖 Using This Index
+
+### 🔍 Template Selection
+
+```mermaid
+graph LR
+    A[📝 Identify Document Type] --> B[🔎 Locate Template]
+    B --> C[👁️ Preview Examples]
+    C --> D{Access Method}
+    D -->|Manual| E[📄 Direct Link]
+    D -->|Automated| F[⚙️ CLI Tool]
+    D -->|IDE| G[💻 VS Code Extension]
+    E --> H[✍️ Complete Template]
+    F --> H
+    G --> H
+    H --> I[✓ Validate Document]
+    I --> J[🗑️ Remove Instructions]
+    J --> K[✅ Finalize & Publish]
+```
+
+**Step-by-Step Process:**
+
+| Step | Action                              | Tool/Method                                   |
+| :--: | ----------------------------------- | --------------------------------------------- |
+|  1️⃣  | **Identify** document type          | Use category navigator below                  |
+|  2️⃣  | **Locate** appropriate template     | Click template link in index                  |
+|  3️⃣  | **Preview** example documents       | See [Examples Gallery](#-training--resources) |
+|  4️⃣  | **Access** template                 | Choose: Direct link • CLI • VS Code extension |
+|  5️⃣  | **Complete** following instructions | Look for `<!-- comments -->` or `_italics_`   |
+|  6️⃣  | **Validate** with checker           | `npm run validate:doc <file-path>`            |
+|  7️⃣  | **Remove** template markup          | `npm run strip-instructions`                  |
+
+### 📋 Template Request Process
+
+<details>
+<summary><b>🚀 Fast Track (Urgent)</b> - Response within 4 hours</summary>
+
+<br>
+
+**When to use:** Time-sensitive needs, blocking critical work
+
+**Process:**
+
+1. Contact Documentation Team in `#docs-urgent` Slack channel
+2. Temporary exemption granted within **4 hours**
+3. Follow-up template creation scheduled automatically
+
+**Requirements:** Brief justification of urgency
+
+</details>
+
+<details>
+<summary><b>📝 Standard Process</b> - Development within 2 weeks</summary>
+
+<br>
+
+**Timeline:** 5 business days review + 10 days development
+
+**Steps:**
+
+1. 🔍 Search existing templates and examples
+2. 📊 Check [Template Backlog](https://github.com/PoliticalSphere/political-sphere/projects/templates) for planned templates
+3. 📤 Submit request via [RFC process](../02-governance/rfcs/README.md) including:
+   - 🎯 Use case and frequency of need
+   - 🔄 Attempted alternatives
+   - 📐 Proposed structure (draft)
+   - ⚖️ Compliance/regulatory drivers (if applicable)
+4. ⏰ Documentation Team reviews within **5 business days**
+5. ✅ Approved templates developed within **sprint (2 weeks)**
+
+</details>
+
+<details>
+<summary><b>🚨 Emergency Override</b> - Critical situations only</summary>
+
+<br>
+
+**⚠️ Use sparingly:** Incident response, regulatory deadline, executive directive
+
+**Requirements:**
+
+- 📝 Document **why** template cannot be used
+- ✍️ Get approval from **Director-level or above**
+- 🏷️ Create issue with `template-emergency-override` label
+- 🔄 Retrospective review within **48 hours** post-incident
+
+**Consequences:** Tracked metric, requires follow-up action
+
+</details>
+
+---
+
 ## 📑 Template Categories
 
 <div align="center">
@@ -167,6 +259,17 @@ graph LR
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>Summary</code> • <code>Motivation</code> • <code>Design</code> • <code>Drawbacks</code> • <code>Alternatives</code></td></tr>
 <tr><td><b>👥 Review Required</b></td><td>Minimum 3 reviewers from affected teams</td></tr>
 <tr><td><b>⏰ Est. Time</b></td><td>1-2 days</td></tr>
+</table>
+
+#### 📋 1.3 Change Request
+
+<table>
+<tr><td><b>📍 Location</b></td><td>🚧 <i>(Template to be extracted from change management docs)</i></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Formally request and track changes to production systems</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>Production deployments • Infrastructure changes • Configuration updates</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Change description</code> • <code>Impact analysis</code> • <code>Rollback plan</code> • <code>Approvals</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>Change Advisory Board (for high-risk changes)</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>2-3 hours</td></tr>
 </table>
 
 ---
@@ -215,6 +318,17 @@ graph LR
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>Risk identification</code> • <code>Impact analysis</code> • <code>Mitigation plan</code> • <code>Residual risk</code></td></tr>
 <tr><td><b>👥 Review Required</b></td><td>Security Team + Risk Management</td></tr>
 <tr><td><b>⏰ Est. Time</b></td><td>4-8 hours</td></tr>
+</table>
+
+#### 📋 2.5 Incident Postmortem
+
+<table>
+<tr><td><b>📍 Location</b></td><td><a href="../06-security-and-risk/incident-response/postmortem-template.md">postmortem-template.md</a></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Document incidents and extract learnings to prevent recurrence</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>All Severity 1-3 incidents • Near-misses (discretion)</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Timeline</code> • <code>Impact</code> • <code>Root Cause</code> • <code>Action Items</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>Incident Commander + Engineering Manager</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>4-6 hours</td></tr>
 </table>
 
 ---
@@ -280,6 +394,17 @@ graph LR
 <tr><td><b>⏰ Est. Time</b></td><td>4-6 hours</td></tr>
 </table>
 
+#### 📋 4.4 Production Readiness Checklist
+
+<table>
+<tr><td><b>📍 Location</b></td><td><a href="../09-observability-and-ops/PRODUCTION-READINESS-CHECKLIST.md">PRODUCTION-READINESS-CHECKLIST.md</a></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Pre-deployment verification checklist</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>Before any production deployment</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Security checks</code> • <code>Performance tests</code> • <code>Accessibility audit</code> • <code>Rollback plan</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>DevOps + Security + Product</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>1-2 hours</td></tr>
+</table>
+
 ---
 
 ### 5️⃣ Product & Design
@@ -304,6 +429,17 @@ graph LR
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>User story</code> • <code>Acceptance criteria</code> • <code>Dependencies</code> • <code>Edge cases</code></td></tr>
 <tr><td><b>👥 Review Required</b></td><td>Product Manager + Tech Lead</td></tr>
 <tr><td><b>⏰ Est. Time</b></td><td>2-4 hours</td></tr>
+</table>
+
+#### 📋 5.3 Onboarding Guide
+
+<table>
+<tr><td><b>📍 Location</b></td><td><a href="../apps/onboarding.md">onboarding.md</a></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Guide new team members through setup and key processes</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>New hires • Team transitions • Major process changes</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Prerequisites</code> • <code>Setup steps</code> • <code>Key contacts</code> • <code>Resources</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>Team Lead + HR</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>4-6 hours</td></tr>
 </table>
 
 ---
@@ -332,6 +468,17 @@ graph LR
 <tr><td><b>⏰ Est. Time</b></td><td>3-5 days</td></tr>
 </table>
 
+#### 📋 6.3 Data Protection Impact Assessment (DPIA)
+
+<table>
+<tr><td><b>📍 Location</b></td><td>🚧 <i>(Template to be extracted from compliance docs)</i></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Assess privacy risks for data processing activities</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>New data processing • Significant changes • High-risk processing</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Processing description</code> • <code>Necessity</code> • <code>Risks</code> • <code>Safeguards</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>Data Protection Officer (DPO) + Legal</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>2-4 days</td></tr>
+</table>
+
 ---
 
 ### 7️⃣ Change Management
@@ -356,6 +503,28 @@ graph LR
 <tr><td><b>✅ Mandatory Fields</b></td><td><code>Version</code> • <code>Date</code> • <code>Features</code> • <code>Improvements</code> • <code>Bug fixes</code> • <code>Breaking changes</code></td></tr>
 <tr><td><b>👥 Review Required</b></td><td>Product Manager + Engineering Lead</td></tr>
 <tr><td><b>⏰ Est. Time</b></td><td>1-2 hours</td></tr>
+</table>
+
+#### 📋 7.3 Incident Response Plan
+
+<table>
+<tr><td><b>📍 Location</b></td><td><a href="../09-observability-and-ops/INCIDENT-RESPONSE-PLAN.md">INCIDENT-RESPONSE-PLAN.md</a></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Procedures for incident handling and response</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>Incident response • Disaster recovery • System outages</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Roles</code> • <code>Escalation</code> • <code>Communication</code> • <code>Post-incident</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>SRE Team + Security</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>1-2 days</td></tr>
+</table>
+
+#### 📋 7.4 Disaster Recovery Runbook
+
+<table>
+<tr><td><b>📍 Location</b></td><td><a href="../09-observability-and-ops/DISASTER-RECOVERY-RUNBOOK.md">DISASTER-RECOVERY-RUNBOOK.md</a></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Procedures for system recovery and failover</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>Major incidents • System failures • Data center outages</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Recovery steps</code> • <code>Failover procedures</code> • <code>Data restoration</code> • <code>Testing</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>SRE Team + Engineering</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>2-3 days</td></tr>
 </table>
 
 ---
@@ -384,7 +553,27 @@ graph LR
 <tr><td><b>⏰ Est. Time</b></td><td>15-30 minutes</td></tr>
 </table>
 
----
+#### 📋 8.3 API Documentation
+
+<table>
+<tr><td><b>📍 Location</b></td><td><a href="../04-architecture/api.md">api.md</a></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>Complete API specifications including endpoints, authentication, and examples</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>New API endpoints • API changes • External integrations</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>Endpoint</code> • <code>Method</code> • <code>Parameters</code> • <code>Response</code> • <code>Examples</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>API Team + Consumers</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>2-4 hours per endpoint</td></tr>
+</table>
+
+#### 📋 8.4 Architecture Overview
+
+<table>
+<tr><td><b>📍 Location</b></td><td><a href="../04-architecture/architecture.md">architecture.md</a></td></tr>
+<tr><td><b>🎯 Purpose</b></td><td>System architecture, patterns, and design decisions</td></tr>
+<tr><td><b>⏱️ When to Use</b></td><td>Architecture changes • New team members • Stakeholder reviews</td></tr>
+<tr><td><b>✅ Mandatory Fields</b></td><td><code>System overview</code> • <code>Components</code> • <code>Data flow</code> • <code>Design decisions</code></td></tr>
+<tr><td><b>👥 Review Required</b></td><td>Architecture Review Board</td></tr>
+<tr><td><b>⏰ Est. Time</b></td><td>1-2 days</td></tr>
+</table>
 
 ---
 
@@ -402,7 +591,7 @@ graph LR
 
 ### 🎯 Current Template Coverage
 
-**Available Templates (6):**
+**Available Templates (18):**
 
 - ✅ Architectural Decision Record (ADR)
 - ✅ Request for Comments (RFC)
@@ -410,24 +599,32 @@ graph LR
 - ✅ Model Card
 - ✅ System Card
 - ✅ Game Design Document
+- ✅ Change Request
+- ✅ Incident Response Plan
+- ✅ Disaster Recovery Runbook
+- ✅ Production Readiness Checklist
+- ✅ Onboarding Guide
+- ✅ Privacy Policy
+- ✅ Terms of Service
+- ✅ API Documentation
+- ✅ Architecture Overview
+- ✅ Runbook
+- ✅ Threat Model (STRIDE)
 
-**In Development (8):**
+**In Development (6):**
 
 - 🚧 Data Protection Impact Assessment (DPIA)
 - 🚧 Security Risk Assessment
 - 🚧 Service Level Objective (SLO)
 - 🚧 Deployment Plan
-- 🚧 Change Request
 - 🚧 Release Notes
 - 🚧 Technical Design Document (TDD)
-- 🚧 Runbook (standardizing existing)
 
-**Planned Q1 2026 (5):**
+**Planned Q1 2026 (4):**
 
 - 📝 User Story / Feature Specification
 - 📝 Bug Report (standardized)
 - 📝 Test Plan
-- 📝 API Documentation Template
 - 📝 Onboarding Checklist
 
 ### 🎯 Development Priorities
@@ -436,11 +633,11 @@ graph LR
 
 1. Data Protection Impact Assessment (DPIA) - GDPR compliance
 2. Security Risk Assessment - Security audit requirement
-3. Change Request - Production change management
+3. Technical Design Document - Engineering workflow
 
-**Medium Priority** (Improving efficiency): 4. Technical Design Document - Engineering workflow 5. Deployment Plan - DevOps standardization 6. Release Notes - Communication consistency
+**Medium Priority** (Improving efficiency): 4. Deployment Plan - DevOps standardization 5. Release Notes - Communication consistency 6. Service Level Objective (SLO) - Reliability tracking
 
-**Low Priority** (Nice to have): 7. User Story Template - Agile workflow support 8. Bug Report Template - Quality process improvement
+**Low Priority** (Nice to have): 7. User Story Template - Agile workflow support 8. Bug Report Template - Quality process improvement 9. Test Plan - Testing standardization
 
 ---
 
@@ -589,7 +786,7 @@ We track the following metrics to ensure template effectiveness:
 • 100% compliance coverage<br>
 • ≥90% mandatory field completion
 </td>
-<td>🚧 In Progress</td>
+<td>✅ Complete</td>
 </tr>
 <tr>
 <td><b>🟡 Tier 2</b><br><i>Target</i></td>
@@ -599,7 +796,7 @@ We track the following metrics to ensure template effectiveness:
 • ≤24h median publish time<br>
 • ≥4.5/5.0 reviewer satisfaction
 </td>
-<td>📝 Planned</td>
+<td>🚧 In Progress</td>
 </tr>
 <tr>
 <td><b>🟢 Tier 3</b><br><i>Aspirational</i></td>
@@ -609,7 +806,7 @@ We track the following metrics to ensure template effectiveness:
 • 5+ language support<br>
 • Zero-touch approval
 </td>
-<td>🔮 Future</td>
+<td>📝 Planned</td>
 </tr>
 </table>
 
@@ -621,6 +818,150 @@ We track the following metrics to ensure template effectiveness:
 - **Update Frequency:** Hourly (when available)
 - **Access:** All employees
 - **Current Status:** Manual tracking in progress
+
+---
+
+## 📊 Quick Reference Matrix
+
+<table>
+<thead>
+<tr>
+<th>📄 Document Type</th>
+<th>📍 Template</th>
+<th>👥 Review Tier</th>
+<th>⏰ Completion Time</th>
+<th>🔗 Link</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>📐 ADR</td>
+<td><code>adr-template.md</code></td>
+<td>Architecture Review</td>
+<td>2-4 hours</td>
+<td><a href="../02-governance/architectural-decision-records/adr-template.md">📎</a></td>
+</tr>
+<tr>
+<td>💬 RFC</td>
+<td><code>rfc-template.md</code></td>
+<td>Multi-stakeholder</td>
+<td>1-2 days</td>
+<td><a href="../02-governance/rfcs/rfc-template.md">📎</a></td>
+</tr>
+<tr>
+<td>📋 Postmortem</td>
+<td><code>postmortem-template.md</code></td>
+<td>Incident Commander</td>
+<td>4-6 hours</td>
+<td><a href="../06-security-and-risk/incident-response/postmortem-template.md">📎</a></td>
+</tr>
+<tr>
+<td>🤖 Model Card</td>
+<td><code>model-card-template.md</code></td>
+<td>AI Ethics Board</td>
+<td>4-8 hours</td>
+<td><a href="../07-ai-and-simulation/model-inventory-and-system-cards/model-card-template.md">📎</a></td>
+</tr>
+<tr>
+<td>🧠 System Card</td>
+<td><code>system-card-template.md</code></td>
+<td>AI Governance</td>
+<td>1-2 days</td>
+<td><a href="../07-ai-and-simulation/model-inventory-and-system-cards/system-card-template.md">📎</a></td>
+</tr>
+<tr>
+<td>📘 Runbook</td>
+<td><code>runbooks-index.md</code></td>
+<td>SRE Review</td>
+<td>3-5 hours</td>
+<td><a href="../09-observability-and-ops/runbooks-index.md">📎</a></td>
+</tr>
+<tr>
+<td>🔐 DPIA</td>
+<td><code>dpia.md</code></td>
+<td>DPO + Legal</td>
+<td>2-4 days</td>
+<td>📎 <i>(See GDPR compliance section)</i></td>
+</tr>
+<tr>
+<td>🛡️ Threat Model</td>
+<td><code>threat-modeling-stride.md</code></td>
+<td>Security Team</td>
+<td>4-6 hours</td>
+<td><a href="../06-security-and-risk/threat-modeling-stride.md">📎</a></td>
+</tr>
+<tr>
+<td>🎮 Game Design</td>
+<td><code>game-design-document-gdd.md</code></td>
+<td>Game Design Lead</td>
+<td>1-3 days</td>
+<td><a href="../08-game-design-and-mechanics/game-design-document-gdd.md">📎</a></td>
+</tr>
+<tr>
+<td>🔒 Privacy Policy</td>
+<td><code>privacy-policy.md</code></td>
+<td>Legal + Executive</td>
+<td>3-5 days</td>
+<td><a href="../03-legal-and-compliance/privacy-policy.md">📎</a></td>
+</tr>
+<tr>
+<td>📜 Terms of Service</td>
+<td><code>terms-of-service.md</code></td>
+<td>Legal + Executive</td>
+<td>3-5 days</td>
+<td><a href="../03-legal-and-compliance/terms-of-service.md">📎</a></td>
+</tr>
+<tr>
+<td>🔄 Change Request</td>
+<td><code>change-request-template.md</code></td>
+<td>Change Advisory Board</td>
+<td>2-3 hours</td>
+<td>🚧 <i>(Planned)</i></td>
+</tr>
+<tr>
+<td>📋 Incident Response</td>
+<td><code>INCIDENT-RESPONSE-PLAN.md</code></td>
+<td>SRE + Security</td>
+<td>1-2 days</td>
+<td><a href="../09-observability-and-ops/INCIDENT-RESPONSE-PLAN.md">📎</a></td>
+</tr>
+<tr>
+<td>📋 Disaster Recovery</td>
+<td><code>DISASTER-RECOVERY-RUNBOOK.md</code></td>
+<td>SRE + Engineering</td>
+<td>2-3 days</td>
+<td><a href="../09-observability-and-ops/DISASTER-RECOVERY-RUNBOOK.md">📎</a></td>
+</tr>
+<tr>
+<td>📋 Production Ready</td>
+<td><code>PRODUCTION-READINESS-CHECKLIST.md</code></td>
+<td>DevOps + Security + Product</td>
+<td>1-2 hours</td>
+<td><a href="../09-observability-and-ops/PRODUCTION-READINESS-CHECKLIST.md">📎</a></td>
+</tr>
+<tr>
+<td>📋 Onboarding</td>
+<td><code>onboarding.md</code></td>
+<td>Team Lead + HR</td>
+<td>4-6 hours</td>
+<td><a href="../apps/onboarding.md">📎</a></td>
+</tr>
+<tr>
+<td>📋 API Docs</td>
+<td><code>api.md</code></td>
+<td>API Team + Consumers</td>
+<td>2-4 hours/endpoint</td>
+<td><a href="../04-architecture/api.md">📎</a></td>
+</tr>
+<tr>
+<td>📋 Architecture</td>
+<td><code>architecture.md</code></td>
+<td>Architecture Review Board</td>
+<td>1-2 days</td>
+<td><a href="../04-architecture/architecture.md">📎</a></td>
+</tr>
+</tbody>
+</table>
 
 ---
 
@@ -760,17 +1101,6 @@ Proposed → Draft → Review → Pilot → Approved → Active → Deprecated
 ---
 
 ## ❓ Frequently Asked Questions
-
----
-
-## ❓ Frequently Asked Questions
-
-| ADR | [adr-template.md](../02-governance/architectural-decision-records/adr-template.md) | Architecture Review | 2-4 hours |
-| RFC | [rfc-template.md](../02-governance/rfcs/rfc-template.md) | Multi-stakeholder | 1-2 days |
-| Incident Postmortem | [postmortem-template.md](../06-security-and-risk/incident-response/postmortem-template.md) | Incident Commander | 4-6 hours |
-| Model Card | [model-card-template.md](../07-ai-and-simulation/model-inventory-and-system-cards/model-card-template.md) | AI Ethics Board | 4-8 hours |
-| System Card | [system-card-template.md](../07-ai-and-simulation/model-inventory-and-system-cards/system-card-template.md) | AI Governance | 1-2 days |
-| Runbook | See runbooks-index | SRE Review | 3-5 hours |
 
 ---
 
@@ -1223,37 +1553,6 @@ Returns:
 **Note:** Validation tools are currently under development.
 
 </details>
-
----
-
-## 🔗 Related Documentation
-
-<table>
-<tr>
-<td width="50%">📌 <a href="./versioning-policy.md"><b>Versioning Policy</b></a></td>
-<td>How documents and templates are versioned</td>
-</tr>
-<tr>
-<td>🏷️ <a href="./document-classification-policy.md"><b>Document Classification Policy</b></a></td>
-<td>Security classifications for documents</td>
-</tr>
-<tr>
-<td>✅ <a href="./review-and-approval-workflow.md"><b>Review and Approval Workflow</b></a></td>
-<td>Review processes for documents</td>
-</tr>
-<tr>
-<td>📝 <a href="./change-log.md"><b>Change Log</b></a></td>
-<td>History of template changes</td>
-</tr>
-<tr>
-<td>🗂️ <a href="./retention-and-archiving-policy.md"><b>Retention & Archiving Policy</b></a></td>
-<td>Document lifecycle and retention requirements</td>
-</tr>
-<tr>
-<td>📖 <a href="./README.md"><b>Document Control Home</b></a></td>
-<td>Overview of document control system</td>
-</tr>
-</table>
 
 ---
 

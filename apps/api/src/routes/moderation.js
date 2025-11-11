@@ -5,14 +5,16 @@
  */
 
 const express = require("express");
+
 const router = express.Router();
-const moderationService = require("../moderationService");
+const rateLimit = require("express-rate-limit");
+
 const { authenticate, requireRole } = require("../middleware/auth");
 const { validateContent, validateReport } = require("../middleware/validation");
+const moderationService = require("../moderationService");
 const logger = require("../utils/logger.js");
 
 // Rate limiting for moderation endpoints
-const rateLimit = require("express-rate-limit");
 const moderationLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 100, // limit each IP to 100 requests per windowMs

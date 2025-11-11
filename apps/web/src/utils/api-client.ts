@@ -3,7 +3,8 @@
  * Handles all API communication with authentication
  */
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+const API_BASE_URL =
+  (import.meta.env?.VITE_API_URL as string | undefined) || "http://localhost:3001";
 
 class ApiClient {
   private accessToken: string | null = null;
@@ -35,9 +36,9 @@ class ApiClient {
 
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
-    const headers: HeadersInit = {
+    const headers: Record<string, string> = {
       "Content-Type": "application/json",
-      ...options.headers,
+      ...(options.headers as Record<string, string>),
     };
 
     if (this.accessToken) {

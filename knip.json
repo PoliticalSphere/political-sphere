@@ -1,0 +1,29 @@
+{
+  "$schema": "https://unpkg.com/knip@latest/schema.json",
+  "entry": [
+    "apps/**/src/**/*.{ts,tsx,js,jsx}",
+    "libs/**/src/**/*.{ts,tsx,js,jsx}",
+    "tools/**/*.{ts,tsx,js,jsx}",
+    "scripts/**/*.{ts,tsx,js,jsx}"
+  ],
+  "project": [
+    "apps/**/*.{ts,tsx,js,jsx,json}",
+    "libs/**/*.{ts,tsx,js,jsx,json}",
+    "tools/**/*.{ts,tsx,js,jsx,json}",
+    "scripts/**/*.{ts,tsx,js,jsx,json}"
+  ],
+  "ignore": [
+    "**/*.spec.*",
+    "**/*.test.*",
+    "apps/dev/**",
+    "node_modules/**",
+    "coverage/**",
+    "dist/**",
+    ".devcontainer/**",
+    ".github/**",
+    "docs/**"
+  ],
+  "typescript": {
+    "project": ["tsconfig.json", "apps/**/tsconfig*.json", "libs/**/tsconfig*.json"]
+  }
+}

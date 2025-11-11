@@ -1,5 +1,5 @@
-import { Factory } from "fishery";
 import { faker } from "@faker-js/faker";
+import { Factory } from "fishery";
 
 export interface Party {
   id: string;
@@ -50,13 +50,17 @@ export const PartyFactory = Factory.define<Party>(({ sequence, params }) => ({
 }));
 
 // Specialized factories
-export const MajorPartyFactory = PartyFactory.params({
-  memberCount: () => faker.number.int({ min: 5000, max: 50000 }),
-});
+export const MajorPartyFactory = Factory.define<Party>(({ params }) => ({
+  ...PartyFactory.build(),
+  memberCount: faker.number.int({ min: 5000, max: 50000 }),
+  ...params,
+}));
 
-export const MinorPartyFactory = PartyFactory.params({
-  memberCount: () => faker.number.int({ min: 10, max: 500 }),
-});
+export const MinorPartyFactory = Factory.define<Party>(({ params }) => ({
+  ...PartyFactory.build(),
+  memberCount: faker.number.int({ min: 10, max: 500 }),
+  ...params,
+}));
 
 export const InactivePartyFactory = PartyFactory.params({
   isActive: false,

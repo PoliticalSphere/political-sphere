@@ -1,0 +1,88 @@
+# Minimal SigNoz stack for local observability tinkering.
+version: '3.8'
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    restart: unless-stopped
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+    ports:
+      - '2181:2181'
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    restart: unless-stopped
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+    ports:
+      - '9092:9092'
+
+  clickhouse:
+    image: clickhouse/clickhouse-server:23.8-alpine
+    restart: unless-stopped
+    environment:
+      CLICKHOUSE_DB: signoz
+      CLICKHOUSE_DEFAULT_ACCESS_MANAGEMENT: '1'
+    ports:
+      - '9000:9000'
+      - '8123:8123'
+    volumes:
+      - clickhouse_data:/var/lib/clickhouse
+
+  query-service:
+    image: signoz/query-service:0.38.3
+    restart: unless-stopped
+    depends_on:
+      - kafka
+      - clickhouse
+    environment:
+      - SIGNOZ_DB_HOST=clickhouse
+      - SIGNOZ_KAFKA_BROKER=kafka:9092
+      - SIGNOZ_TELEMETRY_ENABLED=false
+    ports:
+      - '8081:8080'
+
+  alertmanager:
+    image: signoz/alertmanager:0.25.0
+    restart: unless-stopped
+    depends_on:
+      - query-service
+    ports:
+      - '9093:9093'
+
+  frontend:
+    image: signoz/frontend:0.38.3
+    restart: unless-stopped
+    depends_on:
+      - query-service
+      - alertmanager
+    environment:
+      - SIGNOZ_FRONTEND_PORT=3301
+      - SIGNOZ_QUERY_SERVICE=http://query-service:8080
+      - SIGNOZ_ALERTMANAGER=http://alertmanager:9093
+    ports:
+      - '3301:3301'
+
+  otel-collector:
+    image: signoz/signoz-otel-collector:0.79.7
+    restart: unless-stopped
+    depends_on:
+      - query-service
+    environment:
+      - SIGNOZ_INGESTION_HOST=query-service:8080
+    ports:
+      - '4317:4317'
+      - '4318:4318'
+
+volumes:
+  clickhouse_data:
+    driver: local

@@ -737,7 +737,7 @@ describe('API Integration Tests', () => {
     test('filters by category', async () => {
       const response = await request(server).get('/api/news?category=politics');
       expect(response.status).toBe(200);
-      expect(response.body.data.every((item) => item.category === 'politics')).toBe(true);
+      expect(response.body.data.every(item => item.category === 'politics')).toBe(true);
     });
 
     test('validates input and returns 400 for invalid category', async () => {
@@ -788,7 +788,7 @@ describe('API Integration Tests', () => {
         .fill()
         .map(() => request(server).get('/api/news'));
       const responses = await Promise.all(requests);
-      const tooManyRequests = responses.filter((r) => r.status === 429);
+      const tooManyRequests = responses.filter(r => r.status === 429);
       expect(tooManyRequests.length).toBeGreaterThan(0);
     });
   });
@@ -1176,7 +1176,7 @@ const redis = new Redis({
   host: process.env.REDIS_HOST,
   port: process.env.REDIS_PORT,
   password: process.env.REDIS_PASSWORD,
-  retryStrategy: (times) => Math.min(times * 50, 2000),
+  retryStrategy: times => Math.min(times * 50, 2000),
 });
 
 // Cache middleware
@@ -1191,7 +1191,7 @@ async function cacheMiddleware(req, res, next) {
   }
 
   const originalJson = res.json.bind(res);
-  res.json = (data) => {
+  res.json = data => {
     redis.setex(key, 300, JSON.stringify(data)); // 5 min TTL
     return originalJson(data);
   };

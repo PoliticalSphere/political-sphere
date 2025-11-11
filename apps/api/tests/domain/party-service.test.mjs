@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import { PartyService } from "../../src/domain/party-service";
-import { closeDatabase, getDatabase } from "../../src/stores";
+import { closeDatabase, getDatabase } from "../../src/modules/stores/index.ts";
 
 describe("PartyService", () => {
   beforeEach(() => {

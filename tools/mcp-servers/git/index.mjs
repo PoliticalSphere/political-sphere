@@ -77,8 +77,14 @@ class GitServer extends Server {
           inputSchema: {
             type: "object",
             properties: {
-              revision: { type: "string", description: "Target revision (default HEAD)" },
-              path: { type: "string", description: "Optional file path to focus on" },
+              revision: {
+                type: "string",
+                description: "Target revision (default HEAD)",
+              },
+              path: {
+                type: "string",
+                description: "Optional file path to focus on",
+              },
             },
           },
         },
@@ -88,7 +94,10 @@ class GitServer extends Server {
           inputSchema: {
             type: "object",
             properties: {
-              commit: { type: "string", description: "Commit SHA or reference" },
+              commit: {
+                type: "string",
+                description: "Commit SHA or reference",
+              },
             },
             required: ["commit"],
           },

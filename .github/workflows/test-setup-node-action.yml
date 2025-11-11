@@ -2,12 +2,12 @@ name: setup-node-integration
 on:
   push:
     paths:
-      - ".github/actions/setup-node/**"
-      - ".github/workflows/test-setup-node-action.yml"
+      - '.github/actions/setup-node/**'
+      - '.github/workflows/test-setup-node-action.yml'
   pull_request:
     paths:
-      - ".github/actions/setup-node/**"
-      - ".github/workflows/test-setup-node-action.yml"
+      - '.github/actions/setup-node/**'
+      - '.github/workflows/test-setup-node-action.yml'
 
 permissions:
   contents: read

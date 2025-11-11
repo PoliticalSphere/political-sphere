@@ -1,6 +1,6 @@
 ---
-description: "Compliance, privacy, and auditability requirements for Political Sphere"
-applyTo: "**/*"
+description: 'Compliance, privacy, and auditability requirements for Political Sphere'
+applyTo: '**/*'
 ---
 
 # Compliance & Auditability

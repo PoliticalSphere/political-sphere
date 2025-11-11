@@ -4,8 +4,9 @@
  * Supports multiple regulatory frameworks (DSA, GDPR, ISO 27001, etc.)
  */
 
-import logger from "../logger.js";
 import crypto from "crypto";
+
+import logger from "../logger.js";
 
 class ComplianceService {
   // accept optional complianceDb for tests

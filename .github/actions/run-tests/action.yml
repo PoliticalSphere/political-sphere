@@ -1,9 +1,9 @@
-name: "Run Tests"
-description: "Enterprise-grade test orchestration with coverage reporting, sharding, and result parsing"
-author: "Political Sphere"
+name: 'Run Tests'
+description: 'Enterprise-grade test orchestration with coverage reporting, sharding, and result parsing'
+author: 'Political Sphere'
 branding:
-  icon: "check-circle"
-  color: "green"
+  icon: 'check-circle'
+  color: 'green'
 
 # Version: 1.0.0
 # Purpose: Orchestrate test execution with comprehensive reporting and artifact management
@@ -12,164 +12,164 @@ branding:
 inputs:
   # Core test configuration
   test-type:
-    description: "Type of tests to run: unit, integration, e2e, coverage, api, frontend, shared"
+    description: 'Type of tests to run: unit, integration, e2e, coverage, api, frontend, shared'
     required: false
-    default: "unit"
+    default: 'unit'
 
   test-command:
-    description: "Custom test command to execute (overrides test-type)"
+    description: 'Custom test command to execute (overrides test-type)'
     required: false
-    default: ""
+    default: ''
 
   # Coverage configuration
   coverage-enabled:
-    description: "Enable coverage collection and reporting"
+    description: 'Enable coverage collection and reporting'
     required: false
-    default: "false"
+    default: 'false'
 
   coverage-threshold:
-    description: "Minimum coverage percentage required (0-100)"
+    description: 'Minimum coverage percentage required (0-100)'
     required: false
-    default: "0"
+    default: '0'
 
   coverage-config:
-    description: "Path to coverage configuration JSON file"
+    description: 'Path to coverage configuration JSON file'
     required: false
-    default: ".github/actions/run-tests/coverage.config.json"
+    default: '.github/actions/run-tests/coverage.config.json'
 
   # Sharding configuration (for parallel execution)
   shard-index:
-    description: "Current shard index (1-based)"
+    description: 'Current shard index (1-based)'
     required: false
-    default: "1"
+    default: '1'
 
   shard-total:
-    description: "Total number of shards"
+    description: 'Total number of shards'
     required: false
-    default: "1"
+    default: '1'
 
   # Test execution configuration
   timeout-minutes:
-    description: "Test execution timeout in minutes"
+    description: 'Test execution timeout in minutes'
     required: false
-    default: "15"
+    default: '15'
 
   max-workers:
-    description: "Maximum parallel test workers"
+    description: 'Maximum parallel test workers'
     required: false
-    default: "2"
+    default: '2'
 
   changed-only:
-    description: "Run only tests for changed files (faster CI)"
+    description: 'Run only tests for changed files (faster CI)'
     required: false
-    default: "false"
+    default: 'false'
 
   # Environment configuration
   environment:
-    description: "Test environment: development, staging, production, ci"
+    description: 'Test environment: development, staging, production, ci'
     required: false
-    default: "ci"
+    default: 'ci'
 
   node-version:
-    description: "Node.js version to use for tests"
+    description: 'Node.js version to use for tests'
     required: false
-    default: "20"
+    default: '20'
 
   # Artifact and reporting configuration
   upload-results:
-    description: "Upload test results as artifacts"
+    description: 'Upload test results as artifacts'
     required: false
-    default: "true"
+    default: 'true'
 
   upload-coverage:
-    description: "Upload coverage reports as artifacts"
+    description: 'Upload coverage reports as artifacts'
     required: false
-    default: "true"
+    default: 'true'
 
   artifact-retention-days:
-    description: "Days to retain test artifacts"
+    description: 'Days to retain test artifacts'
     required: false
-    default: "30"
+    default: '30'
 
   # Result parsing and annotations
   parse-results:
-    description: "Parse test results and create GitHub annotations"
+    description: 'Parse test results and create GitHub annotations'
     required: false
-    default: "true"
+    default: 'true'
 
   fail-fast:
-    description: "Fail immediately on first test failure"
+    description: 'Fail immediately on first test failure'
     required: false
-    default: "false"
+    default: 'false'
 
   # Retry configuration (for flaky tests)
   retry-failed-tests:
-    description: "Retry failed tests automatically"
+    description: 'Retry failed tests automatically'
     required: false
-    default: "false"
+    default: 'false'
 
   retry-count:
-    description: "Number of retry attempts for failed tests"
+    description: 'Number of retry attempts for failed tests'
     required: false
-    default: "2"
+    default: '2'
 
   # Integration with external services
   codecov-token:
-    description: "Codecov token for coverage upload (optional)"
+    description: 'Codecov token for coverage upload (optional)'
     required: false
-    default: ""
+    default: ''
 
   github-token:
-    description: "GitHub token for PR annotations and status checks"
+    description: 'GitHub token for PR annotations and status checks'
     required: false
-    default: "${{ github.token }}"
+    default: '${{ github.token }}'
 
   # Observability and metrics
   enable-metrics:
-    description: "Enable CloudWatch metrics emission"
+    description: 'Enable CloudWatch metrics emission'
     required: false
-    default: "false"
+    default: 'false'
 
   cloudwatch-namespace:
-    description: "CloudWatch namespace for test metrics"
+    description: 'CloudWatch namespace for test metrics'
     required: false
-    default: "PoliticalSphere/CI/Tests"
+    default: 'PoliticalSphere/CI/Tests'
 
 outputs:
   tests-passed:
-    description: "Boolean indicating if all tests passed"
+    description: 'Boolean indicating if all tests passed'
     value: ${{ steps.run-tests.outputs.tests-passed }}
 
   tests-run:
-    description: "Total number of tests executed"
+    description: 'Total number of tests executed'
     value: ${{ steps.run-tests.outputs.tests-run }}
 
   tests-failed:
-    description: "Number of tests that failed"
+    description: 'Number of tests that failed'
     value: ${{ steps.run-tests.outputs.tests-failed }}
 
   coverage-percentage:
-    description: "Overall test coverage percentage"
+    description: 'Overall test coverage percentage'
     value: ${{ steps.run-tests.outputs.coverage-percentage }}
 
   coverage-passed-threshold:
-    description: "Boolean indicating if coverage meets threshold"
+    description: 'Boolean indicating if coverage meets threshold'
     value: ${{ steps.run-tests.outputs.coverage-passed-threshold }}
 
   result-path:
-    description: "Path to test result JSON file"
+    description: 'Path to test result JSON file'
     value: ${{ steps.run-tests.outputs.result-path }}
 
   coverage-path:
-    description: "Path to coverage report directory"
+    description: 'Path to coverage report directory'
     value: ${{ steps.run-tests.outputs.coverage-path }}
 
   duration-seconds:
-    description: "Total test execution duration in seconds"
+    description: 'Total test execution duration in seconds'
     value: ${{ steps.run-tests.outputs.duration-seconds }}
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - name: Validate inputs
       id: validate-inputs
@@ -230,7 +230,7 @@ runs:
       uses: actions/setup-node@60edb5dd545a775178f52524783378180af0d1f8 # v4.0.2
       with:
         node-version: ${{ inputs.node-version }}
-        cache: "npm"
+        cache: 'npm'
 
     - name: Install dependencies
       shell: bash

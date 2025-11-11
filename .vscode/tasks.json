@@ -47,40 +47,12 @@
       "label": "test:vitest-changed",
       "type": "shell",
       "command": "bash",
-      "args": [
-        "-lc",
-        "npm run test:changed --if-present || npx vitest --run --changed"
-      ],
+      "args": ["-lc", "npm run test:changed --if-present || npx vitest --run --changed"],
       "problemMatcher": ["$tsc"],
       "group": { "kind": "test", "isDefault": true },
       "presentation": { "reveal": "always", "panel": "shared" },
       "runOptions": { "runOn": "default" }
     },
-    {
-      "label": "test:vitest-watch-changed",
-      "type": "shell",
-      "command": "bash",
-      "args": ["-lc", "npm run test:watch --if-present || npx vitest --watch"],
-      "isBackground": true,
-      "problemMatcher": {
-        "owner": "vitest",
-        "pattern": {
-          "regexp": "^(.*):(\\d+):(\\d+)\\s+-\\s+(.*)$",
-          "file": 1,
-          "line": 2,
-          "column": 3,
-          "message": 4
-        },
-        "background": {
-          "activeOnStart": true,
-          "beginsPattern": "^.*RERUN.*$",
-          "endsPattern": "^.*Waiting for file changes.*$"
-        }
-      },
-      "presentation": { "reveal": "always", "panel": "dedicated" },
-      "runOptions": { "runOn": "default" }
-    },
-
     // AI Context & Performance Tasks
     {
       "label": "AI: Build Context",

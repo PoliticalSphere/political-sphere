@@ -95,16 +95,16 @@ Results (sorted by similarity):
 
 ```javascript
 // In tools/scripts/ai/ai-assistant.cjs
-const MultiLanguageParser = require("./tree-sitter-parser.cjs");
-const EmbeddingEngine = require("./embedding-engine.cjs");
+const MultiLanguageParser = require('./tree-sitter-parser.cjs');
+const EmbeddingEngine = require('./embedding-engine.cjs');
 
 const parser = new MultiLanguageParser();
 const embedder = new EmbeddingEngine();
 await embedder.initialize();
 
 // Parse any language
-const tree = parser.parse(code, "py"); // Python
-const symbols = parser.extractSymbols(tree, "py");
+const tree = parser.parse(code, 'py'); // Python
+const symbols = parser.extractSymbols(tree, 'py');
 
 // Generate embeddings
 const embedding = await embedder.embed(code);

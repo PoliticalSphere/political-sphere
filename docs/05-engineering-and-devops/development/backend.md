@@ -1,6 +1,6 @@
 ---
-description: "Backend API design, validation, security, database operations, and health check patterns"
-applyTo: "**/apps/api/**/*,**/apps/worker/**/*,**/apps/game-server/**/*"
+description: 'Backend API design, validation, security, database operations, and health check patterns'
+applyTo: '**/apps/api/**/*,**/apps/worker/**/*,**/apps/game-server/**/*'
 ---
 
 # Backend Service Instructions
@@ -22,7 +22,7 @@ Follow RESTful principles:
 Validate all inputs at the boundary:
 
 ```typescript
-import { z } from "zod";
+import { z } from 'zod';
 
 const createUserSchema = z.object({
   email: z.string().email(),
@@ -30,7 +30,7 @@ const createUserSchema = z.object({
   age: z.number().int().positive().optional(),
 });
 
-app.post("/users", async (req, res) => {
+app.post('/users', async (req, res) => {
   try {
     const data = createUserSchema.parse(req.body);
     const user = await userService.create(data);
@@ -39,7 +39,7 @@ app.post("/users", async (req, res) => {
     if (error instanceof z.ZodError) {
       res.status(400).json({ errors: error.errors });
     } else {
-      res.status(500).json({ error: "Internal server error" });
+      res.status(500).json({ error: 'Internal server error' });
     }
   }
 });
@@ -58,12 +58,12 @@ class AppError extends Error {
     public details?: unknown
   ) {
     super(message);
-    this.name = "AppError";
+    this.name = 'AppError';
   }
 }
 
 // Usage
-throw new AppError(404, "USER_NOT_FOUND", "User with ID 123 not found");
+throw new AppError(404, 'USER_NOT_FOUND', 'User with ID 123 not found');
 
 // Error handler middleware
 app.use((err: Error, req, res, next) => {
@@ -76,8 +76,8 @@ app.use((err: Error, req, res, next) => {
       },
     });
   } else {
-    logger.error("Unhandled error", { err, req });
-    res.status(500).json({ error: "Internal server error" });
+    logger.error('Unhandled error', { err, req });
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
 ```
@@ -94,15 +94,15 @@ Apply defense in depth:
 - Helmet middleware for security headers
 
 ```typescript
-import helmet from "helmet";
-import rateLimit from "express-rate-limit";
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 
 app.use(helmet());
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // limit each IP to 100 requests per windowMs
-    message: "Too many requests from this IP",
+    message: 'Too many requests from this IP',
   })
 );
 ```
@@ -112,9 +112,9 @@ app.use(
 ```typescript
 // JWT middleware
 const authenticate = async (req, res, next) => {
-  const token = req.headers.authorization?.split(" ")[1];
+  const token = req.headers.authorization?.split(' ')[1];
   if (!token) {
-    return res.status(401).json({ error: "No token provided" });
+    return res.status(401).json({ error: 'No token provided' });
   }
 
   try {
@@ -122,7 +122,7 @@ const authenticate = async (req, res, next) => {
     req.user = payload;
     next();
   } catch (error) {
-    res.status(401).json({ error: "Invalid token" });
+    res.status(401).json({ error: 'Invalid token' });
   }
 };
 
@@ -130,14 +130,14 @@ const authenticate = async (req, res, next) => {
 const authorize = (...roles: string[]) => {
   return (req, res, next) => {
     if (!req.user || !roles.includes(req.user.role)) {
-      return res.status(403).json({ error: "Insufficient permissions" });
+      return res.status(403).json({ error: 'Insufficient permissions' });
     }
     next();
   };
 };
 
 // Usage
-app.get("/admin/users", authenticate, authorize("admin"), getUsers);
+app.get('/admin/users', authenticate, authorize('admin'), getUsers);
 ```
 
 ## Database Operations
@@ -147,31 +147,23 @@ Use repositories pattern:
 ```typescript
 class UserRepository {
   async findById(id: string): Promise<User | null> {
-    return db
-      .query("SELECT * FROM users WHERE id = $1", [id])
-      .then((rows) => rows[0] || null);
+    return db.query('SELECT * FROM users WHERE id = $1', [id]).then(rows => rows[0] || null);
   }
 
   async create(data: CreateUserData): Promise<User> {
     return db
-      .query("INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *", [
-        data.email,
-        data.name,
-      ])
-      .then((rows) => rows[0]);
+      .query('INSERT INTO users (email, name) VALUES ($1, $2) RETURNING *', [data.email, data.name])
+      .then(rows => rows[0]);
   }
 
   async update(id: string, data: Partial<User>): Promise<User> {
     const fields = Object.keys(data)
       .map((key, i) => `${key} = $${i + 2}`)
-      .join(", ");
+      .join(', ');
 
     return db
-      .query(`UPDATE users SET ${fields} WHERE id = $1 RETURNING *`, [
-        id,
-        ...Object.values(data),
-      ])
-      .then((rows) => rows[0]);
+      .query(`UPDATE users SET ${fields} WHERE id = $1 RETURNING *`, [id, ...Object.values(data)])
+      .then(rows => rows[0]);
   }
 }
 ```
@@ -181,18 +173,18 @@ class UserRepository {
 Use structured logging:
 
 ```typescript
-import { logger } from "./logger";
+import { logger } from './logger';
 
 // Include context
-logger.info("User created", {
+logger.info('User created', {
   userId: user.id,
   email: user.email,
   ip: req.ip,
-  userAgent: req.headers["user-agent"],
+  userAgent: req.headers['user-agent'],
 });
 
 // Log errors with stack traces
-logger.error("Failed to process payment", {
+logger.error('Failed to process payment', {
   error: err.message,
   stack: err.stack,
   orderId: order.id,
@@ -205,25 +197,25 @@ logger.error("Failed to process payment", {
 Use queue-based processing:
 
 ```typescript
-import { Queue } from "bullmq";
+import { Queue } from 'bullmq';
 
-const emailQueue = new Queue("email", {
+const emailQueue = new Queue('email', {
   connection: redisConnection,
 });
 
 // Add job
-await emailQueue.add("welcome-email", {
+await emailQueue.add('welcome-email', {
   userId: user.id,
   email: user.email,
 });
 
 // Process job
 const worker = new Worker(
-  "email",
-  async (job) => {
+  'email',
+  async job => {
     const { userId, email } = job.data;
     await sendWelcomeEmail(email);
-    logger.info("Welcome email sent", { userId, email });
+    logger.info('Welcome email sent', { userId, email });
   },
   { connection: redisConnection }
 );
@@ -234,29 +226,29 @@ const worker = new Worker(
 Test multiple layers:
 
 ```typescript
-describe("UserService", () => {
-  it("should create user with hashed password", async () => {
-    const userData = { email: "test@example.com", password: "secret" };
+describe('UserService', () => {
+  it('should create user with hashed password', async () => {
+    const userData = { email: 'test@example.com', password: 'secret' };
     const user = await userService.create(userData);
 
-    expect(user.password).not.toBe("secret");
-    expect(await bcrypt.compare("secret", user.password)).toBe(true);
+    expect(user.password).not.toBe('secret');
+    expect(await bcrypt.compare('secret', user.password)).toBe(true);
   });
 
-  it("should reject duplicate email", async () => {
-    await userService.create({ email: "test@example.com", password: "pass" });
+  it('should reject duplicate email', async () => {
+    await userService.create({ email: 'test@example.com', password: 'pass' });
 
     await expect(
-      userService.create({ email: "test@example.com", password: "pass" })
-    ).rejects.toThrow("Email already exists");
+      userService.create({ email: 'test@example.com', password: 'pass' })
+    ).rejects.toThrow('Email already exists');
   });
 });
 
-describe("API Integration", () => {
-  it("should return 400 for invalid email", async () => {
+describe('API Integration', () => {
+  it('should return 400 for invalid email', async () => {
     const response = await request(app)
-      .post("/api/v1/users")
-      .send({ email: "invalid", password: "test123" });
+      .post('/api/v1/users')
+      .send({ email: 'invalid', password: 'test123' });
 
     expect(response.status).toBe(400);
     expect(response.body.errors).toBeDefined();
@@ -278,9 +270,9 @@ describe("API Integration", () => {
 Provide status endpoints:
 
 ```typescript
-app.get("/health", async (req, res) => {
+app.get('/health', async (req, res) => {
   const health = {
-    status: "ok",
+    status: 'ok',
     timestamp: new Date().toISOString(),
     uptime: process.uptime(),
     checks: {
@@ -289,7 +281,7 @@ app.get("/health", async (req, res) => {
     },
   };
 
-  const isHealthy = Object.values(health.checks).every((c) => c === "ok");
+  const isHealthy = Object.values(health.checks).every(c => c === 'ok');
   res.status(isHealthy ? 200 : 503).json(health);
 });
 ```

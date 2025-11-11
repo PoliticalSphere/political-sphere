@@ -1,0 +1,53 @@
+{
+  "updatedAt": "2025-11-10T00:00:00.000Z",
+  "features": [
+    {
+      "key": "age_verification_required",
+      "description": "Require ID verification workflow when users attempt sensitive civic actions.",
+      "status": "beta",
+      "default": false,
+      "owner": "Safety & Compliance",
+      "envVar": "ENABLE_AGE_VERIFICATION",
+      "rollout": {
+        "cohort": "users > 16 in regulated markets",
+        "metrics": ["conversion_rate", "false_positive_rate"]
+      }
+    },
+    {
+      "key": "ai_contextual_assistant",
+      "description": "Embed Copilot-style assistant inside the moderation dashboard with MCP-powered actions.",
+      "status": "experiment",
+      "default": false,
+      "owner": "AI Platform",
+      "envVar": "ENABLE_AI_ASSISTANT",
+      "rollout": {
+        "cohort": "moderators only",
+        "metrics": ["avg_response_time", "auto_fix_success"]
+      }
+    },
+    {
+      "key": "civic_feed_virtualization",
+      "description": "Virtualized scrolling and caching for the civic feed UI to reduce render times.",
+      "status": "planned",
+      "default": false,
+      "owner": "Civic Experience",
+      "envVar": "ENABLE_CIVIC_FEED_VIRTUALIZATION",
+      "rollout": {
+        "cohort": "web beta channel",
+        "metrics": ["frame_time_p95", "memory_usage"]
+      }
+    },
+    {
+      "key": "nightly_compliance_report",
+      "description": "Generate compliance CSV/JSON artifacts nightly for internal audit review.",
+      "status": "on",
+      "default": true,
+      "owner": "Operations",
+      "envVar": "ENABLE_COMPLIANCE_REPORTING",
+      "rollout": {
+        "cohort": "all",
+        "metrics": ["job_success_rate"]
+      }
+    }
+  ]
+}

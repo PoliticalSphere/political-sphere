@@ -1,11 +1,11 @@
-import { closeDatabase, getDatabase } from "../../src/stores";
+import { closeDatabase, getDatabase } from "../../src/modules/stores/index.ts";
 
 function createStubCache() {
   const calls = [];
   return {
     calls,
-    async get() {
-      calls.push({ method: "get", args: Array.from(arguments) });
+    async get(...args) {
+      calls.push({ method: "get", args });
       return null;
     },
     async set(key, value, ttl) {

@@ -4,17 +4,17 @@ on:
   pull_request:
     branches: [main, develop]
     paths:
-      - "apps/web/**"
-      - "apps/shell/**"
-      - "apps/feature-*/**"
-      - "libs/ui/**"
+      - 'apps/web/**'
+      - 'apps/shell/**'
+      - 'apps/feature-*/**'
+      - 'libs/ui/**'
   push:
     branches: [main]
     paths:
-      - "apps/web/**"
-      - "apps/shell/**"
-      - "apps/feature-*/**"
-      - "libs/ui/**"
+      - 'apps/web/**'
+      - 'apps/shell/**'
+      - 'apps/feature-*/**'
+      - 'libs/ui/**'
   workflow_dispatch:
 
 permissions:
@@ -35,8 +35,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4.1.0
         with:
-          node-version: "22"
-          cache: "npm"
+          node-version: '22'
+          cache: 'npm'
 
       - name: Install dependencies
         run: npm ci

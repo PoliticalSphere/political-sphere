@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import express from "express";
 import request from "supertest";
+
 import usersRouter from "../../apps/api/src/routes/users.js";
 import { closeDatabase, getDatabase } from "../../apps/api/src/stores/index.js";
 

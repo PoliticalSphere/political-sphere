@@ -326,13 +326,11 @@ node tools/scripts/ai/embedding-engine.cjs similar "login function" "auth" "sum"
 ### Short-term (Next Sprint)
 
 1. **Integrate with AI Assistant** (`tools/scripts/ai/ai-assistant.cjs`)
-
    - Use tree-sitter for multi-language support
    - Add semantic search capabilities
    - Enhance code analysis
 
 2. **Add Unit Tests**
-
    - Test tree-sitter parser with various languages
    - Test embedding engine edge cases
    - Achieve 80%+ coverage
@@ -345,7 +343,6 @@ node tools/scripts/ai/embedding-engine.cjs similar "login function" "auth" "sum"
 ### Medium-term (Next Month)
 
 1. **Complete Phase 2**
-
    - Deploy incremental indexing
    - Set up vector storage
    - Build code graph queries

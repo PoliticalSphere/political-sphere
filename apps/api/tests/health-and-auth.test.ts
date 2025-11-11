@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import request from "supertest";
+import { describe, it, expect, beforeAll, afterAll } from "vitest";
+
 import { app } from "../src/app.ts";
 
 let server: import("http").Server;
@@ -26,11 +27,12 @@ describe("Health and Auth endpoints", () => {
 
   it("can register and login", async () => {
     const username = `alpha-${Date.now()}`;
+    const email = `${username}@example.com`;
     const password = "alphapass123";
 
     const reg = await agent
       .post("/auth/register")
-      .send({ username, password })
+      .send({ username, password, email })
       .set("Content-Type", "application/json");
 
     expect([200, 201]).toContain(reg.status);
@@ -47,11 +49,12 @@ describe("Health and Auth endpoints", () => {
 
   it("can create and list games", async () => {
     const username = `beta-${Date.now()}`;
+    const email = `${username}@example.com`;
     const password = "betapass123";
 
     const reg = await agent
       .post("/auth/register")
-      .send({ username, password })
+      .send({ username, password, email })
       .set("Content-Type", "application/json");
 
     const token = reg.body.tokens.accessToken as string;
@@ -64,9 +67,7 @@ describe("Health and Auth endpoints", () => {
     expect([200, 201]).toContain(created.status);
     expect(created.body?.game?.id).toBeDefined();
 
-    const list = await agent
-      .get("/game/list")
-      .set("Authorization", `Bearer ${token}`);
+    const list = await agent.get("/game/list").set("Authorization", `Bearer ${token}`);
 
     expect(list.status).toBe(200);
     expect(Array.isArray(list.body.games)).toBe(true);

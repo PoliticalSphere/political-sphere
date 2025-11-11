@@ -1,6 +1,3 @@
-const fs = require("fs").promises;
-const path = require("path");
-
 class UserStore {
   constructor(db, cache = null) {
     this.db = db;
@@ -69,4 +66,4 @@ class UserStore {
   }
 }
 
-module.exports = { UserStore };
+export { UserStore };

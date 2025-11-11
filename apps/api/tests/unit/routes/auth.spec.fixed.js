@@ -2,174 +2,155 @@ import express from "express";
 import request from "supertest";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-// Use ESM imports and clean mocks. Tests in this repo run under ESM.
-vi.mock("@political-sphere/shared", () => ({
-	logger: {
-		info: vi.fn(),
-		warn: vi.fn(),
-		error: vi.fn(),
-	},
-	security: {
-		hashPassword: vi.fn(),
-		verifyPassword: vi.fn(),
-		generateToken: vi.fn(),
-		verifyToken: vi.fn(),
-	},
-}));
-
-vi.mock("../../index.js", () => ({
-	getDatabase: vi.fn(() => ({
-		users: {
-			create: vi.fn(),
-			const { getDatabase } = await import("../../modules/stores/index.js");
-getById: vi.fn(),
-},
-	})),
-}))
-
-// Import the route under test (ensure .js extension for ESM resolution)
 import authRoutes from "../../routes/auth.js";
 
-describe("Auth Routes (fixed)", () => {
-	let app;
+const bcryptMock = { hash: vi.fn(), compare: vi.fn() };
+const jwtMock = { sign: vi.fn() };
+const loggerMock = {
+  info: vi.fn(),
+  warn: vi.fn(),
+  error: vi.fn(),
+};
 
-	beforeEach(() => {
-		vi.clearAllMocks();
-		app = express();
-		app.use(express.json());
-		app.use("/auth", authRoutes);
-	});
+let mockUsersStore = { create: vi.fn(), getUserForAuth: vi.fn() };
 
-	describe("POST /auth/register", () => {
-		it("should register a new user successfully", async () => {
-			const { getDatabase } = await import("../../index.js");
-			const mockDb = getDatabase();
-			const { security } = await import("@political-sphere/shared");
+vi.mock("bcrypt", () => ({
+  default: bcryptMock,
+}));
 
-			mockDb.users.create.mockResolvedValue({
-				id: "user-123",
-				username: "testuser",
-				email: "test@example.com",
-				passwordHash: "hashed-password",
-			});
-			security.verifyPassword.mockResolvedValue(true);
-			security.generateToken.mockResolvedValue("jwt-token");
+vi.mock("jsonwebtoken", () => ({
+  default: jwtMock,
+}));
 
-			const response = await request(app)
-				.post("/auth/register")
-				.send({
-					username: "testuser",
-					email: "test@example.com",
-					password: "password123",
-			const { getDatabase } = await import("../../modules/stores/index.js");
-			.expect(200)
+vi.mock("../../modules/stores/index.ts", () => ({
+  getDatabase: () => ({ users: mockUsersStore }),
+}));
 
-			expect(response.body.success).toBe(true);
-			expect(response.body.data).toHaveProperty("id", "user-123");
-			expect(mockDb.users.create).toHaveBeenCalled();
-		});
+vi.mock("../../logger.js", () => ({
+  default: loggerMock,
+}));
 
-		it("should return 400 for invalid input", async () => {
-			const response = await request(app)
-				.post("/auth/register")
-				.send({
-					username: "",
-					email: "invalid-email",
-				})
-				.expect(400);
+describe("auth routes", () => {
+  let app;
 
-			expect(response.body.success).toBe(false);
-			expect(response.body.error).toBeDefined();
-		});
+  beforeEach(() => {
+    vi.clearAllMocks();
+    mockUsersStore = {
+      create: vi.fn(),
+      getUserForAuth: vi.fn(),
+    };
+    app = express();
+    app.use(express.json());
+    app.use("/auth", authRoutes);
+  });
 
-		it("should return 409 for duplicate username", async () => {
-			const { getDatabase } = await import("../../modules/stores/index.js");
-			const mockDb = getDatabase();
-			mockDb.users.create.mockRejectedValue(
-				new Error("UNIQUE constraint failed: users.username"),
-			);
+  describe("POST /auth/register", () => {
+    it("creates a user when payload is valid", async () => {
+      bcryptMock.hash.mockResolvedValue("hashed-password");
+      mockUsersStore.create.mockResolvedValue({
+        id: "user-123",
+        username: "demo",
+        email: "demo@example.com",
+      });
 
-			const response = await request(app)
-				.post("/auth/register")
-				.send({
-					username: "existinguser",
-					email: "test@example.com",
-					password: "password123",
-				})
-				.expect(409);
+      const response = await request(app)
+        .post("/auth/register")
+        .send({ username: "demo", email: "demo@example.com", password: "secret" });
 
-			expect(response.body.success).toBe(false);
-			expect(response.body.error).toBe("User already exists");
-		});
-	});
+      expect(response.status).toBe(201);
+      expect(response.body.success).toBe(true);
+      expect(mockUsersStore.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          username: "demo",
+          email: "demo@example.com",
+          passwordHash: "hashed-password",
+          role: "VIEWER",
+        }),
+      );
+    });
 
-	describe("POST /auth/login", () => {
-		it("should login user successfully", async () => {
-			const { getDatabase } = await import("../../index.js");
-			const mockDb = getDatabase();
-			const { security } = await import("@political-sphere/shared");
+    it("returns 400 when fields are missing", async () => {
+      const response = await request(app)
+        .post("/auth/register")
+        .send({ email: "only@example.com" });
 
-			mockDb.users.getByUsername.mockResolvedValue({
-			const { getDatabase } = await import("../../modules/stores/index.js");
-			username: "testuser", email;
-			: "test@example.com",
-				passwordHash: "hashed-password",
-		});
-		security.verifyPassword.mockResolvedValue(true);
-		security.generateToken.mockResolvedValue("jwt-token");
+      expect(response.status).toBe(400);
+      expect(response.body.success).toBe(false);
+      expect(mockUsersStore.create).not.toHaveBeenCalled();
+    });
 
-		const response = await request(app)
-				.post("/auth/login")
-				.send({
-					username: "testuser",
-					password: "password123",
-				})
-				.expect(200);
+    it("returns 409 on duplicate users", async () => {
+      bcryptMock.hash.mockResolvedValue("hashed-password");
+      mockUsersStore.create.mockRejectedValue(
+        new Error("UNIQUE constraint failed: users.username"),
+      );
 
-		expect(response.body.success).toBe(true);
-		const { getDatabase } = await import("../../modules/stores/index.js");
-		expect(response.body.data).toHaveProperty("user");
-	});
+      const response = await request(app)
+        .post("/auth/register")
+        .send({ username: "demo", email: "demo@example.com", password: "secret" });
 
-	it("should return 401 for invalid credentials", async () => {
-		const { getDatabase } = await import("../../index.js");
-		const mockDb = getDatabase();
-		mockDb.users.getByUsername.mockResolvedValue(null);
+      expect(response.status).toBe(409);
+      expect(response.body.error).toBe("User already exists");
+    });
+  });
 
-		const response = await request(app)
-			.post("/auth/login")
-			.send({
-				username: "nonexistent",
-				password: "wrongpassword",
-			})
-			.expect(401);
+  describe("POST /auth/login", () => {
+    it("returns a token when credentials are valid", async () => {
+      const dbUser = {
+        id: "user-123",
+        username: "demo",
+        email: "demo@example.com",
+        passwordHash: "hashed-password",
+      };
+      mockUsersStore.getUserForAuth.mockResolvedValue(dbUser);
+      bcryptMock.compare.mockResolvedValue(true);
+      jwtMock.sign.mockReturnValue("signed.jwt.token");
 
-		expect(response.body.success).toBe(false);
-		expect(response.body.error).toBe("Invalid credentials");
-	});
+      const response = await request(app)
+        .post("/auth/login")
+        .send({ email: "demo@example.com", password: "secret" });
 
-	it("should return 401 for wrong password", async () => {
-		const { getDatabase } = await import("../../index.js");
-		const mockDb = getDatabase();
-		const { security } = await import("@political-sphere/shared");
+      expect(response.status).toBe(200);
+      expect(response.body.success).toBe(true);
+      expect(response.body.data.token).toBe("signed.jwt.token");
+    });
 
-		mockDb.users.getByUsername.mockResolvedValue({
-			id: "user-123",
-			username: "testuser",
-			passwordHash: "hashed-password",
-		});
-		security.verifyPassword.mockResolvedValue(false);
+    it("returns 401 when user is missing", async () => {
+      mockUsersStore.getUserForAuth.mockResolvedValue(null);
 
-		const response = await request(app)
-			.post("/auth/login")
-			.send({
-				username: "testuser",
-				password: "wrongpassword",
-			})
-			.expect(401);
+      const response = await request(app)
+        .post("/auth/login")
+        .send({ email: "missing@example.com", password: "secret" });
 
-		expect(response.body.success).toBe(false);
-		expect(response.body.error).toBe("Invalid credentials");
-	});
+      expect(response.status).toBe(401);
+      expect(response.body.error).toBe("Invalid credentials");
+    });
+
+    it("returns 401 when password is invalid", async () => {
+      mockUsersStore.getUserForAuth.mockResolvedValue({
+        id: "user-123",
+        username: "demo",
+        email: "demo@example.com",
+        passwordHash: "hashed-password",
+      });
+      bcryptMock.compare.mockResolvedValue(false);
+
+      const response = await request(app)
+        .post("/auth/login")
+        .send({ email: "demo@example.com", password: "wrong" });
+
+      expect(response.status).toBe(401);
+      expect(response.body.error).toBe("Invalid credentials");
+    });
+  });
+
+  it("POST /auth/logout responds with success", async () => {
+    const response = await request(app).post("/auth/logout");
+
+    expect(response.status).toBe(200);
+    expect(response.body).toEqual({
+      success: true,
+      message: "Logged out successfully",
+    });
+  });
 });
-})

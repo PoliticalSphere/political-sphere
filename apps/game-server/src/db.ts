@@ -1,6 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
+
 import type BetterSqlite3 from "better-sqlite3";
+
 import { Logger } from "../../../libs/shared/src/logger";
 
 const logger = new Logger({ service: "game-server-db" });
@@ -36,7 +38,6 @@ interface DatabaseAdapter {
 // Use better-sqlite3 if available for synchronous, simple usage. Fall back to sqlite3 if not.
 let Database: typeof BetterSqlite3 | null = null;
 try {
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
   Database = require("better-sqlite3") as typeof BetterSqlite3;
 } catch {
   // will attempt to use sqlite3 and a small wrapper
@@ -116,7 +117,7 @@ function initWithBetterSqlite(): DatabaseAdapter {
 
 async function initWithSqlite3(): Promise<DatabaseAdapter> {
   // Basic async wrapper using sqlite3
-  // eslint-disable-next-line @typescript-eslint/no-var-requires
+
   const sqlite3 = require("better-sqlite3");
   ensureDir(DB_PATH);
   const db = new sqlite3.Database(DB_PATH);

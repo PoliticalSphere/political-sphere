@@ -73,13 +73,11 @@ We use STRIDE (Spoofing, Tampering, Repudiation, Information Disclosure, Denial 
 ### External Actors
 
 1. **Nation-State Attackers**
-
    - **Capability**: Advanced persistent threats (APT)
    - **Motivation**: Disrupt democratic processes, steal data
    - **Likelihood**: MEDIUM (democratic tech is a target)
 
 2. **Cybercriminals**
-
    - **Capability**: Automated attacks, ransomware
    - **Motivation**: Financial gain
    - **Likelihood**: HIGH
@@ -92,7 +90,6 @@ We use STRIDE (Spoofing, Tampering, Repudiation, Information Disclosure, Denial 
 ### Internal Actors
 
 4. **Malicious Insider**
-
    - **Capability**: Authorized access to systems
    - **Motivation**: Sabotage, theft
    - **Likelihood**: LOW

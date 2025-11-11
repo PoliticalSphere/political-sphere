@@ -1,10 +1,11 @@
+import { getDatabase } from "../modules/stores/index.js";
+
 import {
   type Bill,
   type BillStatus,
   type CreateBillInput,
   CreateBillSchema,
 } from "@political-sphere/shared";
-import { getDatabase } from "../modules/stores/index.js";
 
 export class BillService {
   // Lazy getter to avoid stale DB connections in tests
@@ -22,11 +23,33 @@ export class BillService {
       throw new Error("Proposer does not exist");
     }
 
-    return this.db.bills.create(input);
+    // Force initial status to 'proposed' regardless of caller input for consistency
+    const billData = await this.db.bills.create({
+      title: input.title,
+      ...(input.description !== undefined && { description: input.description }),
+      proposerId: input.proposerId,
+      status: "proposed",
+    });
+
+    // Map database result to Bill type (handle null description and ensure status type)
+    const bill: Bill = {
+      ...billData,
+      status: billData.status as BillStatus,
+      description: billData.description ?? undefined,
+    };
+    return bill;
   }
 
   async getBillById(id: string): Promise<Bill | null> {
-    return this.db.bills.getById(id);
+    const billData = await this.db.bills.getById(id);
+    if (!billData) return null;
+
+    // Map database result to Bill type
+    return {
+      ...billData,
+      status: billData.status as BillStatus,
+      description: billData.description ?? undefined,
+    };
   }
 
   async getAllBills(
@@ -38,17 +61,52 @@ export class BillService {
     hasNext: boolean;
     hasPrev: boolean;
   }> {
-    const result = await this.db.bills.getAll(page, limit);
-    const hasNext = page * limit < result.total;
+    const allBills = await this.db.bills.getAll();
+
+    // Map database results to Bill type
+    const bills = allBills.map((bill) => ({
+      ...bill,
+      status: bill.status as BillStatus,
+      description: bill.description ?? undefined,
+    }));
+
+    // Manual pagination since store doesn't support it
+    const total = bills.length;
+    const start = (page - 1) * limit;
+    const end = start + limit;
+    const paginatedBills = bills.slice(start, end);
+
+    const hasNext = end < total;
     const hasPrev = page > 1;
-    return { ...result, hasNext, hasPrev };
+
+    return { bills: paginatedBills, total, hasNext, hasPrev };
   }
 
   async getBillsByProposer(proposerId: string): Promise<Bill[]> {
-    return this.db.bills.getByProposerId(proposerId);
+    // BillStore doesn't have getByProposerId, so filter all bills
+    const allBills = await this.db.bills.getAll();
+    return allBills
+      .filter((bill) => bill.proposerId === proposerId)
+      .map((bill) => ({
+        ...bill,
+        status: bill.status as BillStatus,
+        description: bill.description ?? undefined,
+      }));
   }
 
   async updateBillStatus(id: string, status: BillStatus): Promise<Bill | null> {
-    return this.db.bills.updateStatus(id, status);
+    // BillStore doesn't have updateStatus, so get and update
+    const bill = await this.db.bills.getById(id);
+    if (!bill) return null;
+
+    // Update using the generic update method
+    const updated = await this.db.bills.update(id, { status });
+    if (!updated) return null;
+
+    return {
+      ...updated,
+      status: updated.status as BillStatus,
+      description: updated.description ?? undefined,
+    };
   }
 }

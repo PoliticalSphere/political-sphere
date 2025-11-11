@@ -1,5 +1,7 @@
 const path = require("path");
+
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 const mfGenerated = require("../../tools/module-federation/generated/remote.webpack.config.cjs");
 
 module.exports = {
@@ -33,7 +35,9 @@ module.exports = {
     },
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: path.resolve(__dirname, "public", "index.html") }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "public", "index.html"),
+    }),
     // apply generated Module Federation plugin options
     ...mfGenerated.plugins,
   ],

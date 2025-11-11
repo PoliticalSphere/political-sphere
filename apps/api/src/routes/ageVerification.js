@@ -5,14 +5,16 @@
  */
 
 const express = require("express");
+
 const router = express.Router();
+const rateLimit = require("express-rate-limit");
+
 const ageVerificationService = require("../ageVerificationService");
 const { authenticate } = require("../middleware/auth");
 const { validate, schemas } = require("../middleware/validation");
 const logger = require("../utils/logger.js");
 
 // Rate limiting for age verification endpoints
-const rateLimit = require("express-rate-limit");
 const ageVerificationLimiter = rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 5, // limit each IP to 5 verification attempts per hour

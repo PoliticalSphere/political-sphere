@@ -6,8 +6,8 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - ".github/actions/run-tests/**"
-      - ".github/workflows/test-run-tests-action.yml"
+      - '.github/actions/run-tests/**'
+      - '.github/workflows/test-run-tests-action.yml'
 
 jobs:
   test-action-unit:
@@ -37,8 +37,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
@@ -47,8 +47,8 @@ jobs:
         id: basic-test
         uses: ./.github/actions/run-tests
         with:
-          test-type: "unit"
-          coverage-enabled: "false"
+          test-type: 'unit'
+          coverage-enabled: 'false'
           timeout-minutes: 10
 
       - name: Verify Outputs
@@ -80,8 +80,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
@@ -90,10 +90,10 @@ jobs:
         id: coverage-test
         uses: ./.github/actions/run-tests
         with:
-          test-type: "coverage"
-          coverage-enabled: "true"
+          test-type: 'coverage'
+          coverage-enabled: 'true'
           coverage-threshold: 0
-          upload-coverage: "true"
+          upload-coverage: 'true'
         continue-on-error: true
 
       - name: Verify Coverage Outputs
@@ -126,8 +126,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
@@ -135,10 +135,10 @@ jobs:
       - name: Run Sharded Tests
         uses: ./.github/actions/run-tests
         with:
-          test-type: "unit"
+          test-type: 'unit'
           shard-index: ${{ matrix.shard }}
           shard-total: 3
-          upload-results: "true"
+          upload-results: 'true'
         continue-on-error: true
 
       - name: Verify Shard Artifacts
@@ -165,8 +165,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
@@ -174,8 +174,8 @@ jobs:
       - name: Run Changed Tests Only
         uses: ./.github/actions/run-tests
         with:
-          test-type: "unit"
-          changed-only: "true"
+          test-type: 'unit'
+          changed-only: 'true'
           timeout-minutes: 5
         continue-on-error: true
 

@@ -1,5 +1,7 @@
 const path = require("path");
+
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+
 const mfGenerated = require("../../tools/module-federation/generated/host.webpack.config.cjs");
 
 module.exports = {
@@ -22,7 +24,9 @@ module.exports = {
     devMiddleware: { stats: "errors-only" },
   },
   plugins: [
-    new HtmlWebpackPlugin({ template: path.resolve(__dirname, "public", "index.html") }),
+    new HtmlWebpackPlugin({
+      template: path.resolve(__dirname, "public", "index.html"),
+    }),
     // merge in the generated Module Federation plugin
     ...mfGenerated.plugins.map((p) => p),
   ],

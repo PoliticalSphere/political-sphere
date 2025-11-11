@@ -1,0 +1,62 @@
+# Placeholder: Ingress Configuration
+#
+# STATUS: PENDING_IMPLEMENTATION
+# REASON: Requires ingress controller (NGINX/Traefik), TLS certificates, domain setup
+# DEPENDENCIES: Cert-manager, DNS configuration, load balancer
+# ESTIMATED_READINESS: After K8s cluster setup (Sprint 29+)
+
+# TODO: Implement Ingress configuration
+# - HTTPS-only with TLS termination
+# - Rate limiting
+# - CORS configuration
+# - Path-based routing to services
+# - WAF integration
+
+# Example structure (to be implemented):
+#
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: main-ingress
+#   namespace: political-sphere
+#   annotations:
+#     cert-manager.io/cluster-issuer: "letsencrypt-prod"
+#     nginx.ingress.kubernetes.io/ssl-redirect: "true"
+#     nginx.ingress.kubernetes.io/rate-limit: "100"
+#     nginx.ingress.kubernetes.io/enable-cors: "true"
+# spec:
+#   tls:
+#   - hosts:
+#     - api.political-sphere.com
+#     - www.political-sphere.com
+#     secretName: tls-secret
+#   rules:
+#   - host: api.political-sphere.com
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: api
+#             port:
+#               number: 80
+#   - host: www.political-sphere.com
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: frontend
+#             port:
+#               number: 80
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ingress-placeholder
+  namespace: default
+data:
+  status: 'PENDING_IMPLEMENTATION'
+  note: 'Ingress pending ingress controller setup, TLS certificates, and domain configuration'

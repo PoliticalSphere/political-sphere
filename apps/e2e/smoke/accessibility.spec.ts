@@ -7,15 +7,13 @@
  * Run with: npm run test:smoke
  */
 
-import { test, expect } from "@playwright/test";
 import AxeBuilder from "@axe-core/playwright";
+import { test, expect } from "@playwright/test";
 
 const WEB_BASE = process.env.WEB_BASE_URL || "http://localhost:3002";
 
 test.describe("Accessibility - WCAG 2.2 AA Compliance", () => {
-  test("homepage should have no critical accessibility violations", async ({
-    page,
-  }) => {
+  test("homepage should have no critical accessibility violations", async ({ page }) => {
     await page.goto(WEB_BASE);
 
     // Run axe-core accessibility scan
@@ -36,9 +34,7 @@ test.describe("Accessibility - WCAG 2.2 AA Compliance", () => {
 
     // Test tab navigation reaches interactive elements
     await page.keyboard.press("Tab");
-    const focusedElement = await page.evaluate(
-      () => document.activeElement?.tagName
-    );
+    const focusedElement = await page.evaluate(() => document.activeElement?.tagName);
 
     // Verify something received focus (not just <body>)
     expect(focusedElement).not.toBe("BODY");
@@ -60,9 +56,7 @@ test.describe("Accessibility - WCAG 2.2 AA Compliance", () => {
     expect(viewportMeta).toBe(1);
   });
 
-  test("interactive elements should have accessible names", async ({
-    page,
-  }) => {
+  test("interactive elements should have accessible names", async ({ page }) => {
     await page.goto(WEB_BASE);
 
     // Get all buttons and links
@@ -77,7 +71,7 @@ test.describe("Accessibility - WCAG 2.2 AA Compliance", () => {
 
       expect(
         text?.trim() || ariaLabel || ariaLabelledBy,
-        "Button must have accessible name"
+        "Button must have accessible name",
       ).toBeTruthy();
     }
 
@@ -89,7 +83,7 @@ test.describe("Accessibility - WCAG 2.2 AA Compliance", () => {
 
       expect(
         text?.trim() || ariaLabel || ariaLabelledBy,
-        "Link must have accessible name"
+        "Link must have accessible name",
       ).toBeTruthy();
     }
   });
@@ -104,9 +98,7 @@ test.describe("Accessibility - WCAG 2.2 AA Compliance", () => {
       .analyze();
 
     // Filter for color contrast violations
-    const contrastViolations = contrastResults.violations.filter(
-      (v) => v.id === "color-contrast"
-    );
+    const contrastViolations = contrastResults.violations.filter((v) => v.id === "color-contrast");
 
     expect(contrastViolations).toHaveLength(0);
   });

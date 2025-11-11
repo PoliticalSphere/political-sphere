@@ -4,28 +4,46 @@
  */
 
 import bcrypt from "bcrypt";
-import { randomBytes } from "crypto";
-import jwt from "jsonwebtoken";
+import jwt, { type SignOptions } from "jsonwebtoken";
+
+import { getDatabase } from "../modules/stores/index.ts";
 
 const SALT_ROUNDS = 10;
-const JWT_SECRET = process.env.JWT_SECRET || randomBytes(64).toString("hex");
-const JWT_REFRESH_SECRET =
-  process.env.JWT_REFRESH_SECRET || randomBytes(64).toString("hex");
-const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "15m";
-const JWT_REFRESH_EXPIRES_IN = process.env.JWT_REFRESH_EXPIRES_IN || "7d";
 
-// In-memory user store (replace with DB in Phase 2)
-interface User {
-  id: string;
-  username: string;
-  passwordHash: string;
-  email?: string;
-  createdAt: string;
-  reputation: number;
+// Validate required secrets on module load - fail fast if missing
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!JWT_SECRET || JWT_SECRET.length < 32) {
+  throw new Error("JWT_SECRET must be set and at least 32 characters long");
+}
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET;
+if (!JWT_REFRESH_SECRET || JWT_REFRESH_SECRET.length < 32) {
+  throw new Error("JWT_REFRESH_SECRET must be set and at least 32 characters long");
+}
+if (JWT_SECRET === JWT_REFRESH_SECRET) {
+  throw new Error("JWT_SECRET and JWT_REFRESH_SECRET must be different");
 }
 
-const users = new Map<string, User>();
-const usersByUsername = new Map<string, User>();
+// After validation, we know these are strings
+const JWT_SECRET_VALIDATED: string = JWT_SECRET;
+const JWT_REFRESH_SECRET_VALIDATED: string = JWT_REFRESH_SECRET;
+
+type JwtExpiry = SignOptions["expiresIn"];
+
+const DEFAULT_ACCESS_TOKEN_TTL: JwtExpiry = "15m";
+const DEFAULT_REFRESH_TOKEN_TTL: JwtExpiry = "7d";
+
+const JWT_EXPIRES_IN_VALIDATED: JwtExpiry =
+  typeof process.env.JWT_EXPIRES_IN === "string" && process.env.JWT_EXPIRES_IN.trim().length > 0
+    ? process.env.JWT_EXPIRES_IN
+    : DEFAULT_ACCESS_TOKEN_TTL;
+const JWT_REFRESH_EXPIRES_IN_VALIDATED: JwtExpiry =
+  typeof process.env.JWT_REFRESH_EXPIRES_IN === "string" &&
+  process.env.JWT_REFRESH_EXPIRES_IN.trim().length > 0
+    ? process.env.JWT_REFRESH_EXPIRES_IN
+    : DEFAULT_REFRESH_TOKEN_TTL;
+
+// In-memory store for refresh token revocation (in production, use DB or Redis)
+const revokedTokens = new Set<string>();
 
 export interface RegisterInput {
   username: string;
@@ -46,7 +64,7 @@ export interface TokenPayload {
 
 export class AuthService {
   async register(input: RegisterInput): Promise<{
-    user: Omit<User, "passwordHash">;
+    user: { id: string; username: string; email?: string; createdAt: Date; updatedAt: Date };
     tokens: { accessToken: string; refreshToken: string };
   }> {
     const { username, password, email } = input;
@@ -56,44 +74,46 @@ export class AuthService {
     if (!password || password.length < 8) {
       throw new Error("Password must be at least 8 characters");
     }
-    if (usersByUsername.has(username.toLowerCase())) {
-      throw new Error("Username already exists");
+    const db = getDatabase();
+    const existingUser =
+      (await db.users.getByUsername(username)) || (await db.users.getByEmail(email || ""));
+    if (existingUser) {
+      throw new Error("Username or email already exists");
     }
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-    const user: User = {
-      id: `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    const user = await db.users.create({
       username,
+      email: email || "",
       passwordHash,
-      email,
-      createdAt: new Date().toISOString(),
-      reputation: 0,
-    };
-    users.set(user.id, user);
-    usersByUsername.set(username.toLowerCase(), user);
+      role: "VIEWER",
+    });
     const tokens = this.generateTokens(user);
-    const { passwordHash: _ignored, ...userWithoutPassword } = user;
-    return { user: userWithoutPassword, tokens };
+    return { user, tokens };
   }
 
   async login(input: LoginInput): Promise<{
-    user: Omit<User, "passwordHash">;
+    user: { id: string; username: string; email?: string; createdAt: Date; updatedAt: Date };
     tokens: { accessToken: string; refreshToken: string };
   }> {
     const { username, password } = input;
-    const user = usersByUsername.get(username.toLowerCase());
-    if (!user) {
+    const db = getDatabase();
+    const userForAuth = await db.users.getUserForAuth(username);
+    if (!userForAuth) {
       throw new Error("Invalid username or password");
     }
-    const isValid = await bcrypt.compare(password, user.passwordHash);
+    const isValid = await bcrypt.compare(password, userForAuth.passwordHash);
     if (!isValid) {
       throw new Error("Invalid username or password");
     }
+    const user = await db.users.getById(userForAuth.id);
+    if (!user) {
+      throw new Error("User not found");
+    }
     const tokens = this.generateTokens(user);
-    const { passwordHash: _ignored, ...userWithoutPassword } = user;
-    return { user: userWithoutPassword, tokens };
+    return { user, tokens };
   }
 
-  private generateTokens(user: User): {
+  private generateTokens(user: { id: string; username: string }): {
     accessToken: string;
     refreshToken: string;
   } {
@@ -107,18 +127,18 @@ export class AuthService {
       username: user.username,
       type: "refresh",
     };
-    const accessToken = jwt.sign(accessPayload, JWT_SECRET, {
-      expiresIn: JWT_EXPIRES_IN,
+    const accessToken = jwt.sign(accessPayload, JWT_SECRET_VALIDATED, {
+      expiresIn: JWT_EXPIRES_IN_VALIDATED,
     });
-    const refreshToken = jwt.sign(refreshPayload, JWT_REFRESH_SECRET, {
-      expiresIn: JWT_REFRESH_EXPIRES_IN,
+    const refreshToken = jwt.sign(refreshPayload, JWT_REFRESH_SECRET_VALIDATED, {
+      expiresIn: JWT_REFRESH_EXPIRES_IN_VALIDATED,
     });
     return { accessToken, refreshToken };
   }
 
   verifyAccessToken(token: string): TokenPayload {
     try {
-      const payload = jwt.verify(token, JWT_SECRET) as TokenPayload;
+      const payload = jwt.verify(token, JWT_SECRET_VALIDATED) as TokenPayload;
       if (payload.type !== "access") {
         throw new Error("Invalid token type");
       }
@@ -128,18 +148,17 @@ export class AuthService {
     }
   }
 
-  async refreshAccessToken(
-    refreshToken: string
-  ): Promise<{ accessToken: string }> {
+  async refreshAccessToken(refreshToken: string): Promise<{ accessToken: string }> {
     try {
-      const payload = jwt.verify(
-        refreshToken,
-        JWT_REFRESH_SECRET
-      ) as TokenPayload;
+      if (revokedTokens.has(refreshToken)) {
+        throw new Error("Token has been revoked");
+      }
+      const payload = jwt.verify(refreshToken, JWT_REFRESH_SECRET_VALIDATED) as TokenPayload;
       if (payload.type !== "refresh") {
         throw new Error("Invalid token type");
       }
-      const user = users.get(payload.userId);
+      const db = getDatabase();
+      const user = await db.users.getById(payload.userId);
       if (!user) {
         throw new Error("User not found");
       }
@@ -148,31 +167,28 @@ export class AuthService {
         username: user.username,
         type: "access",
       };
-      const accessToken = jwt.sign(accessPayload, JWT_SECRET, {
-        expiresIn: JWT_EXPIRES_IN,
+      const newAccessToken = jwt.sign(accessPayload, JWT_SECRET_VALIDATED, {
+        expiresIn: JWT_EXPIRES_IN_VALIDATED,
       });
-      return { accessToken };
+      return { accessToken: newAccessToken };
     } catch {
       throw new Error("Invalid or expired refresh token");
     }
   }
 
-  async getUserById(
-    userId: string
-  ): Promise<Omit<User, "passwordHash"> | null> {
-    const user = users.get(userId);
-    if (!user) {
-      return null;
-    }
-    const { passwordHash: _ignored, ...userWithoutPassword } = user;
-    return userWithoutPassword;
+  async revokeRefreshToken(refreshToken: string): Promise<void> {
+    revokedTokens.add(refreshToken);
   }
 
-  async updateReputation(userId: string, delta: number): Promise<void> {
-    const user = users.get(userId);
-    if (user) {
-      user.reputation = Math.max(0, user.reputation + delta);
-    }
+  async getUserById(userId: string): Promise<{
+    id: string;
+    username: string;
+    email?: string;
+    createdAt: Date;
+    updatedAt: Date;
+  } | null> {
+    const db = getDatabase();
+    return await db.users.getById(userId);
   }
 }
 

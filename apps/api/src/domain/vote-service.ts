@@ -1,5 +1,6 @@
-import { type CreateVoteInput, CreateVoteSchema, type Vote } from "@political-sphere/shared";
 import { getDatabase } from "../modules/stores/index.js";
+
+import { type CreateVoteInput, CreateVoteSchema, type Vote } from "@political-sphere/shared";
 
 export class VoteService {
   // Lazy getter to avoid stale DB connections in tests

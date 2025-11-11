@@ -87,10 +87,10 @@ npm start
 ### Run Pipelines
 
 ```typescript
-import { UserDataPipeline } from "./pipelines/user-data-pipeline.js";
+import { UserDataPipeline } from './pipelines/user-data-pipeline.js';
 
 const pipeline = new UserDataPipeline({
-  name: "user-data",
+  name: 'user-data',
   batchSize: 100,
 });
 
@@ -100,7 +100,7 @@ await pipeline.execute(userData);
 ### Transform Data
 
 ```typescript
-import { NormalizeUserDataTransformer } from "./transformers/normalize-user-data.js";
+import { NormalizeUserDataTransformer } from './transformers/normalize-user-data.js';
 
 const transformer = new NormalizeUserDataTransformer();
 const normalized = transformer.transform(rawUserData);
@@ -109,14 +109,14 @@ const normalized = transformer.transform(rawUserData);
 ### Schedule Jobs
 
 ```typescript
-import { ScheduledImportsJob } from "./jobs/scheduled-imports.js";
+import { ScheduledImportsJob } from './jobs/scheduled-imports.js';
 
 const importsJob = new ScheduledImportsJob(externalSources, database);
 
 importsJob.registerJob({
-  name: "daily-import",
-  source: "uk-parliament-api",
-  schedule: "0 0 * * *", // Daily at midnight
+  name: 'daily-import',
+  source: 'uk-parliament-api',
+  schedule: '0 0 * * *', // Daily at midnight
   enabled: true,
 });
 

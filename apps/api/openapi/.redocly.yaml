@@ -39,13 +39,13 @@ theme:
     theme:
       colors:
         primary:
-          main: "#1f2937"
+          main: '#1f2937'
       typography:
-        fontFamily: "Inter, sans-serif"
+        fontFamily: 'Inter, sans-serif'
         headings:
-          fontFamily: "Inter, sans-serif"
+          fontFamily: 'Inter, sans-serif'
         code:
-          fontFamily: "Fira Code, monospace"
+          fontFamily: 'Fira Code, monospace'
 
 apis:
   main:

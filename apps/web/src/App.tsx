@@ -4,7 +4,8 @@
  */
 
 import { useEffect, useState } from "react";
-import { GameBoard } from "./components/GameBoard";
+
+import GameBoard from "./components/GameBoard";
 import { Lobby } from "./components/Lobby";
 import { Login } from "./components/Login";
 import { apiClient } from "./utils/api-client";

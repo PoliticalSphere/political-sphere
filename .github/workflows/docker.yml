@@ -6,17 +6,17 @@ on:
       - main
       - develop
     tags:
-      - "v*.*.*"
+      - 'v*.*.*'
   pull_request:
     branches:
       - main
       - develop
     paths:
-      - "apps/**"
-      - "libs/**"
-      - "**/Dockerfile"
-      - "docker-compose*.yml"
-      - ".github/workflows/docker.yml"
+      - 'apps/**'
+      - 'libs/**'
+      - '**/Dockerfile'
+      - 'docker-compose*.yml'
+      - '.github/workflows/docker.yml'
   workflow_dispatch:
 
 env:
@@ -152,15 +152,15 @@ jobs:
         uses: aquasecurity/trivy-action@0.24.0
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}/${{ matrix.service }}:latest
-          format: "sarif"
-          output: "trivy-results-${{ matrix.service }}.sarif"
-          severity: "CRITICAL,HIGH"
+          format: 'sarif'
+          output: 'trivy-results-${{ matrix.service }}.sarif'
+          severity: 'CRITICAL,HIGH'
 
       - name: Upload Trivy results to GitHub Security
         uses: github/codeql-action/upload-sarif@v3
         with:
-          sarif_file: "trivy-results-${{ matrix.service }}.sarif"
-          category: "docker-${{ matrix.service }}"
+          sarif_file: 'trivy-results-${{ matrix.service }}.sarif'
+          category: 'docker-${{ matrix.service }}'
 
   docker-compose-test:
     name: Test Docker Compose

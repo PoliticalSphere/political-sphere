@@ -244,19 +244,16 @@ git branch -d refactor/apps-structure-migration
 ### Post-Merge Tasks
 
 1. **Implement Placeholder Apps:**
-
    - Flesh out `e2e` with Playwright/Cypress tooling
    - Integrate k6/Artillery into `load-test`
    - Add real Module Federation config for `feature-dashboard-remote`
 
 2. **Update CI/CD Pipelines:**
-
    - Verify GitHub Actions workflows reference correct app names
    - Update deployment scripts if they hardcode app paths
    - Check Docker build contexts
 
 3. **Update Documentation:**
-
    - [x] `file-structure.md` - Already updated with intended structure
    - [ ] `README.md` - Update app descriptions if needed
    - [ ] Developer onboarding docs - Update app name references

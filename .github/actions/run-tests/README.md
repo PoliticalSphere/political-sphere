@@ -26,8 +26,8 @@ This composite GitHub Action provides enterprise-grade test orchestration for th
 - name: Run Tests
   uses: ./.github/actions/run-tests
   with:
-    test-type: "unit"
-    coverage-enabled: "true"
+    test-type: 'unit'
+    coverage-enabled: 'true'
     coverage-threshold: 80
 ```
 
@@ -42,10 +42,10 @@ steps:
   - name: Run Tests (Shard ${{ matrix.shard }})
     uses: ./.github/actions/run-tests
     with:
-      test-type: "unit"
+      test-type: 'unit'
       shard-index: ${{ matrix.shard }}
       shard-total: 3
-      coverage-enabled: "true"
+      coverage-enabled: 'true'
 ```
 
 ### Custom Test Command
@@ -54,7 +54,7 @@ steps:
 - name: Run Custom Tests
   uses: ./.github/actions/run-tests
   with:
-    test-command: "npm run test:custom -- --coverage"
+    test-command: 'npm run test:custom -- --coverage'
     timeout-minutes: 30
 ```
 
@@ -141,10 +141,10 @@ None. All inputs have sensible defaults.
   id: unit-tests
   uses: ./.github/actions/run-tests
   with:
-    test-type: "unit"
-    coverage-enabled: "true"
+    test-type: 'unit'
+    coverage-enabled: 'true'
     coverage-threshold: 80
-    upload-coverage: "true"
+    upload-coverage: 'true'
     codecov-token: ${{ secrets.CODECOV_TOKEN }}
 
 - name: Check Results
@@ -169,7 +169,7 @@ jobs:
       - name: Run Integration Tests
         uses: ./.github/actions/run-tests
         with:
-          test-type: "integration"
+          test-type: 'integration'
           shard-index: ${{ matrix.shard }}
           shard-total: 4
           timeout-minutes: 30
@@ -182,8 +182,8 @@ jobs:
 - name: Run E2E Tests
   uses: ./.github/actions/run-tests
   with:
-    test-type: "e2e"
-    retry-failed-tests: "true"
+    test-type: 'e2e'
+    retry-failed-tests: 'true'
     retry-count: 3
     timeout-minutes: 60
     fail-fast: false
@@ -195,8 +195,8 @@ jobs:
 - name: Run Tests for Changed Files
   uses: ./.github/actions/run-tests
   with:
-    test-type: "unit"
-    changed-only: "true"
+    test-type: 'unit'
+    changed-only: 'true'
     timeout-minutes: 10
 ```
 
@@ -206,10 +206,10 @@ jobs:
 - name: Run API Tests
   uses: ./.github/actions/run-tests
   with:
-    test-type: "api"
-    coverage-enabled: "true"
-    enable-metrics: "true"
-    cloudwatch-namespace: "PoliticalSphere/Production/Tests"
+    test-type: 'api'
+    coverage-enabled: 'true'
+    enable-metrics: 'true'
+    cloudwatch-namespace: 'PoliticalSphere/Production/Tests'
 ```
 
 ## Architecture
@@ -409,7 +409,7 @@ npx vitest --shard=1/3 --run --reporter=verbose
 ```yaml
 - uses: ./.github/actions/run-tests
   with:
-    upload-results: "true"
+    upload-results: 'true'
     artifact-retention-days: 30
 ```
 
@@ -421,8 +421,8 @@ npx vitest --shard=1/3 --run --reporter=verbose
 ```yaml
 - uses: actions/setup-node@v4.0.2
   with:
-    node-version: "20"
-    cache: "npm"
+    node-version: '20'
+    cache: 'npm'
 
 - run: npm ci # Install dependencies
 
@@ -445,7 +445,7 @@ jobs:
   test:
     strategy:
       matrix:
-        test-type: ["unit", "integration"]
+        test-type: ['unit', 'integration']
         shard: [1, 2, 3]
 
     runs-on: ubuntu-latest
@@ -458,8 +458,8 @@ jobs:
 
       - uses: actions/setup-node@v4.0.2
         with:
-          node-version: "20"
-          cache: "npm"
+          node-version: '20'
+          cache: 'npm'
 
       - name: Install Dependencies
         run: npm ci
@@ -471,7 +471,7 @@ jobs:
           test-type: ${{ matrix.test-type }}
           shard-index: ${{ matrix.shard }}
           shard-total: 3
-          coverage-enabled: "true"
+          coverage-enabled: 'true'
           coverage-threshold: 80
           codecov-token: ${{ secrets.CODECOV_TOKEN }}
           enable-metrics: ${{ github.ref == 'refs/heads/main' }}

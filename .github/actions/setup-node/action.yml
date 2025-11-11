@@ -1,33 +1,33 @@
-name: "Setup Node (local)"
-description: "Locally-resolved Node.js version using runner toolcache. Optional dependency caching for npm/yarn/pnpm."
+name: 'Setup Node (local)'
+description: 'Locally-resolved Node.js version using runner toolcache. Optional dependency caching for npm/yarn/pnpm.'
 
 inputs:
   node-version:
-    description: "Requested Node.js version (e.g., 18.x, 20.x)"
+    description: 'Requested Node.js version (e.g., 18.x, 20.x)'
     required: true
   cache:
     description: "Enable package manager cache (npm|yarn|pnpm|none). If 'none', caching is disabled."
     required: false
-    default: "none"
+    default: 'none'
   cache-dependency-path:
-    description: "Path or glob to lockfile(s) used to compute cache key (e.g., package-lock.json, yarn.lock, pnpm-lock.yaml)."
+    description: 'Path or glob to lockfile(s) used to compute cache key (e.g., package-lock.json, yarn.lock, pnpm-lock.yaml).'
     required: false
-    default: ""
+    default: ''
   package-manager-cache:
     description: "Auto-detect package manager from package.json when cache input is 'none'. Set to 'false' to disable autodetection."
     required: false
-    default: "true"
+    default: 'true'
 
 outputs:
   resolved-version:
-    description: "Resolved concrete Node.js version from runner toolcache"
+    description: 'Resolved concrete Node.js version from runner toolcache'
     value: ${{ steps.resolve.outputs.resolved-version }}
   cache-hit:
-    description: "Whether a dependency cache was restored (exact key match)."
+    description: 'Whether a dependency cache was restored (exact key match).'
     value: ${{ steps.cache.outputs.cache-hit }}
 
 runs:
-  using: "composite"
+  using: 'composite'
   steps:
     - id: resolve
       name: Resolve and activate Node from toolcache

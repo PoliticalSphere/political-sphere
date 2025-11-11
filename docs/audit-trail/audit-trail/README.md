@@ -81,6 +81,7 @@ Each JSON log contains:
 **Function**: Collects event data, signs with cryptographic hash, commits to git
 
 **Jobs**:
+
 - `collect-audit-event`: Capture workflow run data
 - `verify-integrity`: Check hash chain continuity
 - `export-audit-trail`: Generate compliance reports
@@ -94,31 +95,35 @@ Each JSON log contains:
 
 ## Security Controls
 
-| Control | Implementation | Compliance |
-|---------|---------------|------------|
-| **Cryptographic Signing** | SHA-256 hash of each entry | SOC 2, ISO 27001 |
-| **Hash Chain** | Links entries to prevent tampering | NIST CSF |
-| **Immutable Storage** | Git history + S3 Glacier | ISO 27001 |
-| **Tamper Detection** | Automated integrity verification | SOC 2 |
-| **Access Control** | GitHub branch protection | ISO 27001 |
-| **Retention Policy** | 7-year archive | GDPR Article 30 |
+| Control                   | Implementation                     | Compliance       |
+| ------------------------- | ---------------------------------- | ---------------- |
+| **Cryptographic Signing** | SHA-256 hash of each entry         | SOC 2, ISO 27001 |
+| **Hash Chain**            | Links entries to prevent tampering | NIST CSF         |
+| **Immutable Storage**     | Git history + S3 Glacier           | ISO 27001        |
+| **Tamper Detection**      | Automated integrity verification   | SOC 2            |
+| **Access Control**        | GitHub branch protection           | ISO 27001        |
+| **Retention Policy**      | 7-year archive                     | GDPR Article 30  |
 
 ## Compliance Mappings
 
 ### SOC 2 Type II
+
 - **CC7.2**: Activity logging with integrity controls
 - **CC7.3**: Audit trail retention and protection
 
 ### ISO 27001
+
 - **A.12.4.1**: Event logging
 - **A.12.4.2**: Protection of log information
 - **A.12.4.3**: Administrator and operator logs
 
 ### NIST Cybersecurity Framework
+
 - **DE.CM-7**: Monitoring for unauthorized activity
 - **PR.PT-1**: Audit/log records
 
 ### GDPR
+
 - **Article 30**: Records of processing activities
 - **Article 32**: Security of processing
 
@@ -160,6 +165,7 @@ cat .github/audit-trail/logs/2025-01/2025-01-15-12345.json | jq .
 **Alert**: Hash chain verification fails
 
 **Immediate Actions**:
+
 1. **Freeze CI/CD**: Emergency stop via error budget policy
 2. **Preserve Evidence**: Copy entire `.github/audit-trail/` directory
 3. **Investigate**: Determine which entry was modified
@@ -167,6 +173,7 @@ cat .github/audit-trail/logs/2025-01/2025-01-15-12345.json | jq .
 5. **Remediate**: Restore from backup if necessary
 
 **Root Cause Analysis**:
+
 - Check git blame: `git log --all -- .github/audit-trail/`
 - Review access logs: Who had write access?
 - Verify GPG signatures: `git log --show-signature`
@@ -176,6 +183,7 @@ cat .github/audit-trail/logs/2025-01/2025-01-15-12345.json | jq .
 **Alert**: Gap detected in audit trail
 
 **Actions**:
+
 1. Check GitHub Actions logs for failed audit-trail.yml runs
 2. Verify network connectivity during logging window
 3. Manually reconstruct missing entries from GitHub API
@@ -215,14 +223,17 @@ tar -xzf audit-trail-2024-01-15.tar.gz
 ## Access Controls
 
 ### Write Access
+
 - **GitHub Actions Bot**: Automated logging only
 - **Repository Admins**: Emergency access (requires MFA)
 
 ### Read Access
+
 - **All Team Members**: Read-only via git
 - **Auditors**: Export compliance reports
 
 ### Branch Protection
+
 - `.github/audit-trail/**` requires:
   - Code review approval (except for automation)
   - Status checks pass
@@ -240,11 +251,11 @@ tar -xzf audit-trail-2024-01-15.tar.gz
 
 ### Alerts Triggered On
 
-| Condition | Severity | Notification |
-|-----------|----------|--------------|
-| Hash chain broken | **Critical** | PagerDuty + Email |
-| Missing log entry | **High** | Email |
-| Failed backup | **High** | Email |
+| Condition               | Severity     | Notification      |
+| ----------------------- | ------------ | ----------------- |
+| Hash chain broken       | **Critical** | PagerDuty + Email |
+| Missing log entry       | **High**     | Email             |
+| Failed backup           | **High**     | Email             |
 | Integrity check failure | **Critical** | PagerDuty + Slack |
 
 ## References

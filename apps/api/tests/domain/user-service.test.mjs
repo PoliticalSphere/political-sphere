@@ -1,15 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
+
 import { UserService } from "../../src/domain/user-service";
-import { closeDatabase, getDatabase } from "../../src/stores";
+import { closeDatabase, getDatabase } from "../../src/modules/stores/index";
 
 describe("UserService", () => {
-  let db;
-
   beforeEach(() => {
-    db = getDatabase();
+    // Initialize fresh database connection for this test
+    getDatabase();
   });
 
   afterEach(() => {
+    // Close database connection to reset for next test
     closeDatabase();
   });
 

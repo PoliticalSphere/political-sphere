@@ -4,8 +4,10 @@
  */
 
 import { Router } from "express";
+
 import type { AuthRequest } from "../auth/auth.middleware.ts";
 import { authenticate } from "../auth/auth.middleware.ts";
+
 import { gameService } from "./game.service.ts";
 
 const router = Router();
@@ -25,16 +27,11 @@ router.post("/create", async (req: AuthRequest, res) => {
     }
 
     const { name } = req.body;
-    const game = gameService.createGame(
-      req.user.userId,
-      req.user.username,
-      name
-    );
+    const game = gameService.createGame(req.user.userId, req.user.username, name);
 
     res.status(201).json({ game });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to create game";
+    const message = error instanceof Error ? error.message : "Failed to create game";
     res.status(400).json({ error: message });
   }
 });
@@ -48,8 +45,7 @@ router.get("/list", async (_req: AuthRequest, res) => {
     const games = gameService.listGames();
     res.json({ games });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to list games";
+    const message = error instanceof Error ? error.message : "Failed to list games";
     res.status(500).json({ error: message });
   }
 });
@@ -68,8 +64,7 @@ router.get("/my-games", async (req: AuthRequest, res) => {
     const games = gameService.getPlayerGames(req.user.userId);
     res.json({ games });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to get games";
+    const message = error instanceof Error ? error.message : "Failed to get games";
     res.status(500).json({ error: message });
   }
 });
@@ -81,6 +76,11 @@ router.get("/my-games", async (req: AuthRequest, res) => {
 router.get("/:gameId", async (req: AuthRequest, res) => {
   try {
     const { gameId } = req.params;
+    if (!gameId) {
+      res.status(400).json({ error: "Game ID is required" });
+      return;
+    }
+
     const game = gameService.getGame(gameId);
 
     if (!game) {
@@ -90,8 +90,7 @@ router.get("/:gameId", async (req: AuthRequest, res) => {
 
     res.json({ game });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to get game";
+    const message = error instanceof Error ? error.message : "Failed to get game";
     res.status(500).json({ error: message });
   }
 });
@@ -108,16 +107,16 @@ router.post("/:gameId/join", async (req: AuthRequest, res) => {
     }
 
     const { gameId } = req.params;
-    const game = gameService.joinGame(
-      gameId,
-      req.user.userId,
-      req.user.username
-    );
+    if (!gameId) {
+      res.status(400).json({ error: "Game ID is required" });
+      return;
+    }
+
+    const game = gameService.joinGame(gameId, req.user.userId, req.user.username);
 
     res.json({ game });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to join game";
+    const message = error instanceof Error ? error.message : "Failed to join game";
     res.status(400).json({ error: message });
   }
 });
@@ -134,12 +133,16 @@ router.post("/:gameId/start", async (req: AuthRequest, res) => {
     }
 
     const { gameId } = req.params;
+    if (!gameId) {
+      res.status(400).json({ error: "Game ID is required" });
+      return;
+    }
+
     const game = gameService.startGame(gameId, req.user.userId);
 
     res.json({ game });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to start game";
+    const message = error instanceof Error ? error.message : "Failed to start game";
     res.status(400).json({ error: message });
   }
 });
@@ -156,6 +159,11 @@ router.post("/:gameId/action", async (req: AuthRequest, res) => {
     }
 
     const { gameId } = req.params;
+    if (!gameId) {
+      res.status(400).json({ error: "Game ID is required" });
+      return;
+    }
+
     const { type, payload } = req.body;
 
     if (!type) {
@@ -173,8 +181,7 @@ router.post("/:gameId/action", async (req: AuthRequest, res) => {
 
     res.json({ game });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to process action";
+    const message = error instanceof Error ? error.message : "Failed to process action";
     res.status(400).json({ error: message });
   }
 });
@@ -191,12 +198,16 @@ router.delete("/:gameId", async (req: AuthRequest, res) => {
     }
 
     const { gameId } = req.params;
+    if (!gameId) {
+      res.status(400).json({ error: "Game ID is required" });
+      return;
+    }
+
     gameService.deleteGame(gameId, req.user.userId);
 
     res.json({ success: true });
   } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Failed to delete game";
+    const message = error instanceof Error ? error.message : "Failed to delete game";
     res.status(400).json({ error: message });
   }
 });

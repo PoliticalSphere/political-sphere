@@ -341,11 +341,11 @@ npm install eslint @eslint/js
 ```javascript
 module.exports = {
   rules: {
-    "no-unhandled-promises": require("./rules/no-unhandled-promises"),
-    "require-error-logging": require("./rules/require-error-logging"),
-    "enforce-wcag-aria": require("./rules/enforce-wcag-aria"),
-    "no-hardcoded-secrets": require("./rules/no-hardcoded-secrets"),
-    "require-audit-trail": require("./rules/require-audit-trail"),
+    'no-unhandled-promises': require('./rules/no-unhandled-promises'),
+    'require-error-logging': require('./rules/require-error-logging'),
+    'enforce-wcag-aria': require('./rules/enforce-wcag-aria'),
+    'no-hardcoded-secrets': require('./rules/no-hardcoded-secrets'),
+    'require-audit-trail': require('./rules/require-audit-trail'),
   },
 };
 ```
@@ -356,25 +356,25 @@ module.exports = {
 // rules/require-error-logging.js
 module.exports = {
   meta: {
-    type: "problem",
-    docs: { description: "Require error logging in catch blocks" },
-    fixable: "code",
+    type: 'problem',
+    docs: { description: 'Require error logging in catch blocks' },
+    fixable: 'code',
   },
   create(context) {
     return {
       CatchClause(node) {
         const hasLogging = node.body.body.some(
-          (stmt) =>
-            stmt.type === "ExpressionStatement" &&
-            stmt.expression.callee?.object?.name === "console"
+          stmt =>
+            stmt.type === 'ExpressionStatement' &&
+            stmt.expression.callee?.object?.name === 'console'
         );
 
         if (!hasLogging) {
           context.report({
             node,
-            message: "Catch block must log errors for auditability",
+            message: 'Catch block must log errors for auditability',
             fix(fixer) {
-              const param = node.param?.name || "error";
+              const param = node.param?.name || 'error';
               return fixer.insertTextAfter(
                 node.body.body[0],
                 `\nconsole.error('Error:', ${param});`
@@ -662,10 +662,10 @@ All proposed tools use permissive licenses compatible with project governance:
 
 ```javascript
 // tools/scripts/ai/tree-sitter-parser.cjs
-const Parser = require("tree-sitter");
-const JavaScript = require("tree-sitter-javascript");
-const TypeScript = require("tree-sitter-typescript").typescript;
-const Python = require("tree-sitter-python");
+const Parser = require('tree-sitter');
+const JavaScript = require('tree-sitter-javascript');
+const TypeScript = require('tree-sitter-typescript').typescript;
+const Python = require('tree-sitter-python');
 
 class MultiLanguageParser {
   constructor() {
@@ -700,13 +700,10 @@ class MultiLanguageParser {
     const symbols = [];
 
     function traverse(node) {
-      if (
-        node.type === "function_declaration" ||
-        node.type === "class_declaration"
-      ) {
+      if (node.type === 'function_declaration' || node.type === 'class_declaration') {
         symbols.push({
-          type: node.type.replace("_declaration", ""),
-          name: node.childForFieldName("name")?.text,
+          type: node.type.replace('_declaration', ''),
+          name: node.childForFieldName('name')?.text,
           startPosition: node.startPosition,
           endPosition: node.endPosition,
         });
@@ -729,7 +726,7 @@ module.exports = MultiLanguageParser;
 
 ```javascript
 // tools/scripts/ai/embedding-engine.cjs
-const { pipeline } = require("@xenova/transformers");
+const { pipeline } = require('@xenova/transformers');
 
 class EmbeddingEngine {
   constructor() {
@@ -738,9 +735,9 @@ class EmbeddingEngine {
   }
 
   async initialize() {
-    console.log("Loading embedding model (one-time setup)...");
-    this.pipe = await pipeline("feature-extraction", "Xenova/all-MiniLM-L6-v2");
-    console.log("Model loaded!");
+    console.log('Loading embedding model (one-time setup)...');
+    this.pipe = await pipeline('feature-extraction', 'Xenova/all-MiniLM-L6-v2');
+    console.log('Model loaded!');
   }
 
   async embed(text) {
@@ -752,7 +749,7 @@ class EmbeddingEngine {
 
     // Generate embedding
     const output = await this.pipe(text, {
-      pooling: "mean",
+      pooling: 'mean',
       normalize: true,
     });
 

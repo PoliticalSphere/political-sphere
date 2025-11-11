@@ -77,6 +77,7 @@ Engineering and DevOps documentation covers the entire software development life
 
 - **[Developer Experience](./developer-experience/)**: Local development setup and tooling
 - **IDE Configuration**: VS Code settings, extensions, and workspace configuration
+- **[Data Versioning](./tools/data-versioning.md)**: DVC workflows for fixtures and seeds
 - **Debugging and Troubleshooting**: Development debugging tools and techniques
 
 ### Tooling and Automation

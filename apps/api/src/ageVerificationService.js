@@ -40,4 +40,4 @@ class AgeVerificationService {
   }
 }
 
-module.exports = { AgeVerificationService };
+export { AgeVerificationService };

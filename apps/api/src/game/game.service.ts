@@ -48,14 +48,8 @@ export class GameService {
   /**
    * Create a new game
    */
-  createGame(
-    creatorId: string,
-    creatorUsername: string,
-    name: string
-  ): GameState {
-    const gameId = `game-${Date.now()}-${Math.random()
-      .toString(36)
-      .substr(2, 9)}`;
+  createGame(creatorId: string, creatorUsername: string, name: string): GameState {
+    const gameId = `game-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
     const game: GameState = {
       id: gameId,
@@ -192,12 +186,17 @@ export class GameService {
       ...action,
       payload: { ...(action.payload || {}) },
     };
-    if (enrichedAction.type === "vote" && !enrichedAction.payload?.playerId) {
+    if (
+      enrichedAction.type === "vote" &&
+      enrichedAction.payload &&
+      !enrichedAction.payload.playerId
+    ) {
       enrichedAction.payload.playerId = enrichedAction.playerId;
     }
     if (
       enrichedAction.type === "propose" &&
-      !enrichedAction.payload?.proposerId
+      enrichedAction.payload &&
+      !enrichedAction.payload.proposerId
     ) {
       enrichedAction.payload.proposerId = enrichedAction.playerId;
     }
@@ -229,7 +228,7 @@ export class GameService {
     }
 
     // Verify player is creator (first player)
-    if (game.players[0].id !== playerId) {
+    if (!game.players[0] || game.players[0].id !== playerId) {
       throw new Error("Only game creator can start the game");
     }
 
@@ -257,7 +256,7 @@ export class GameService {
     }
 
     // Only creator can delete
-    if (game.players[0].id !== playerId) {
+    if (!game.players[0] || game.players[0].id !== playerId) {
       throw new Error("Only game creator can delete the game");
     }
 

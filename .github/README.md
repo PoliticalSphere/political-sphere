@@ -207,9 +207,9 @@ Sets up Node.js and installs dependencies with caching.
 ```yaml
 - uses: ./.github/actions/setup-node-deps
   with:
-    node-version: "22" # default: '22'
-    cache: "npm" # default: 'npm'
-    install-command: "npm ci" # default: 'npm ci'
+    node-version: '22' # default: '22'
+    cache: 'npm' # default: 'npm'
+    install-command: 'npm ci' # default: 'npm ci'
 ```
 
 ### setup-node
@@ -219,8 +219,8 @@ Sets up Node.js with optional package manager caching (no installation).
 ```yaml
 - uses: ./.github/actions/setup-node
   with:
-    node-version: "20"
-    cache: "npm" # npm|yarn|pnpm|none
+    node-version: '20'
+    cache: 'npm' # npm|yarn|pnpm|none
 ```
 
 ### quality-checks
@@ -230,9 +230,9 @@ Runs linting, type checking, and format validation.
 ```yaml
 - uses: ./.github/actions/quality-checks
   with:
-    run-lint: "true" # default: 'true'
-    run-typecheck: "true" # default: 'true'
-    run-format-check: "true" # default: 'true'
+    run-lint: 'true' # default: 'true'
+    run-typecheck: 'true' # default: 'true'
+    run-format-check: 'true' # default: 'true'
 ```
 
 ### run-tests
@@ -242,8 +242,8 @@ Orchestrates test execution with coverage and sharding support.
 ```yaml
 - uses: ./.github/actions/run-tests
   with:
-    test-type: "unit" # unit|integration|e2e|coverage
-    coverage-enabled: "true"
+    test-type: 'unit' # unit|integration|e2e|coverage
+    coverage-enabled: 'true'
     coverage-threshold: 80
 ```
 

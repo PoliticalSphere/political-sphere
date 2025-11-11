@@ -1,6 +1,6 @@
 ---
-description: "React component patterns, hooks, accessibility (WCAG 2.2 AA), and performance best practices"
-applyTo: "**/apps/frontend/**/*.tsx,**/libs/ui/**/*.tsx"
+description: 'React component patterns, hooks, accessibility (WCAG 2.2 AA), and performance best practices'
+applyTo: '**/apps/frontend/**/*.tsx,**/libs/ui/**/*.tsx'
 ---
 
 # React Component Instructions
@@ -123,13 +123,13 @@ Use controlled components with validation:
 
 ```tsx
 function LoginForm() {
-  const [email, setEmail] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     if (!validateEmail(email)) {
-      setError("Please enter a valid email");
+      setError('Please enter a valid email');
       return;
     }
     // Submit logic
@@ -142,9 +142,9 @@ function LoginForm() {
         id="email"
         type="email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={e => setEmail(e.target.value)}
         aria-invalid={!!error}
-        aria-describedby={error ? "email-error" : undefined}
+        aria-describedby={error ? 'email-error' : undefined}
       />
       {error && (
         <span id="email-error" role="alert">

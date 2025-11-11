@@ -1,0 +1,78 @@
+# Placeholder: API Deployment
+#
+# STATUS: PENDING_IMPLEMENTATION
+# REASON: Requires container registry, API image build, and K8s cluster
+# DEPENDENCIES: Docker image, secrets management, ingress controller
+# ESTIMATED_READINESS: After containerization (Sprint 29+)
+
+# TODO: Implement API deployment manifest
+# - Deployment with multiple replicas
+# - Health checks (liveness and readiness probes)
+# - Resource limits and requests
+# - Horizontal Pod Autoscaler
+# - ConfigMaps and Secrets
+# - Service account with RBAC
+
+# Example structure (to be implemented):
+#
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: api
+#   namespace: political-sphere
+#   labels:
+#     app: api
+#     version: v1
+# spec:
+#   replicas: 3
+#   selector:
+#     matchLabels:
+#       app: api
+#   template:
+#     metadata:
+#       labels:
+#         app: api
+#         version: v1
+#     spec:
+#       containers:
+#       - name: api
+#         image: political-sphere/api:latest
+#         ports:
+#         - containerPort: 3000
+#           name: http
+#         env:
+#         - name: NODE_ENV
+#           value: production
+#         - name: JWT_SECRET
+#           valueFrom:
+#             secretKeyRef:
+#               name: api-secrets
+#               key: jwt-secret
+#         livenessProbe:
+#           httpGet:
+#             path: /healthz
+#             port: 3000
+#           initialDelaySeconds: 30
+#           periodSeconds: 10
+#         readinessProbe:
+#           httpGet:
+#             path: /ready
+#             port: 3000
+#           initialDelaySeconds: 5
+#           periodSeconds: 5
+#         resources:
+#           requests:
+#             memory: "256Mi"
+#             cpu: "250m"
+#           limits:
+#             memory: "512Mi"
+#             cpu: "500m"
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: api-deployment-placeholder
+  namespace: default
+data:
+  status: 'PENDING_IMPLEMENTATION'
+  note: 'API deployment pending containerization and K8s cluster setup'

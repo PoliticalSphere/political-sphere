@@ -8,10 +8,10 @@ properties:
     properties:
       code:
         type: string
-        example: "VALIDATION_ERROR"
+        example: 'VALIDATION_ERROR'
       message:
         type: string
-        example: "Validation failed"
+        example: 'Validation failed'
   validationErrors:
     type: array
     items:
@@ -22,10 +22,10 @@ properties:
       properties:
         field:
           type: string
-          example: "email"
+          example: 'email'
         message:
           type: string
-          example: "must be a valid email address"
+          example: 'must be a valid email address'
         code:
           type: string
-          example: "INVALID_FORMAT"
+          example: 'INVALID_FORMAT'

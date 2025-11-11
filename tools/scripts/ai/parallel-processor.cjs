@@ -16,10 +16,10 @@
  * @source Node.js worker_threads
  */
 
-const { Worker } = require("worker_threads");
+const fs = require("fs");
 const os = require("os");
 const path = require("path");
-const fs = require("fs");
+const { Worker } = require("worker_threads");
 
 class ParallelProcessor {
   constructor(options = {}) {

@@ -5,10 +5,13 @@
  * @see docs/architecture/decisions/adr-0001-database-migrations.md
  */
 
-const Database = require("better-sqlite3");
 const fs = require("fs");
 const path = require("path");
+
+const Database = require("better-sqlite3");
+
 const { DB_PATH, DEFAULT_DB_PATH } = require("../config");
+
 const {
   MigrationError,
   MigrationRollbackError,

@@ -4,12 +4,12 @@
  * Incremental codebase indexer (delta indexing using git)
  * Updates existing ai-index/codebase-index.json with only changed files since last commit.
  */
+import { execSync } from "child_process";
+import crypto from "crypto";
 import fs from "fs";
 import { promises as fsp } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
-import { execSync } from "child_process";
-import crypto from "crypto";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

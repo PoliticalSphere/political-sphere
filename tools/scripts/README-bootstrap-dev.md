@@ -7,6 +7,7 @@ To ensure all required infrastructure for fast AI and development sessions is ru
 ```
 
 This script will:
+
 - Start Docker Desktop if not running
 - Start the monitoring stack (Grafana, Prometheus, Otel Collector, Jaeger)
 - Start the semantic code index server
@@ -21,6 +22,7 @@ You can also add this to your onboarding instructions, Makefile, or as a pre-hoo
 ---
 
 For troubleshooting, check the logs in:
+
 - `ai-cache/index-server.log`
 - `ai-cache/context-preloader.log`
 - `ai-metrics/metrics-server.log`

@@ -1,4 +1,5 @@
 import { vi } from "vitest";
+
 import { createLogger, getLogger, LOG_LEVELS } from "../logger.js";
 
 describe("Logger (shared)", () => {

@@ -3,6 +3,7 @@
  * Verifies auth and game routes end-to-end without manual server control.
  */
 import request from "supertest";
+
 import app from "../src/index";
 
 async function run() {

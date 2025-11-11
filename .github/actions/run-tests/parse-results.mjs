@@ -11,10 +11,6 @@
 
 import fs from "node:fs/promises";
 import path from "node:path";
-import { fileURLToPath } from "node:url";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Constants
 const VERSION = "1.0.0";
@@ -23,9 +19,7 @@ const MAX_SUMMARY_LENGTH = 65536; // GitHub step summary size limit (64KB)
 
 // Get environment variables
 const RESULT_PATH = process.env.RESULT_PATH || "./test-output/results/results.json";
-const GITHUB_WORKSPACE = process.env.GITHUB_WORKSPACE || process.cwd();
 const GITHUB_STEP_SUMMARY = process.env.GITHUB_STEP_SUMMARY;
-const GITHUB_OUTPUT = process.env.GITHUB_OUTPUT;
 
 /**
  * Structured logging
@@ -225,8 +219,7 @@ function generateMarkdownSummary(results, failedTests) {
   // Truncate if exceeds GitHub limit
   if (summary.length > MAX_SUMMARY_LENGTH) {
     log("WARN", `Summary exceeds ${MAX_SUMMARY_LENGTH} bytes, truncating`);
-    summary =
-      summary.slice(0, MAX_SUMMARY_LENGTH - 100) + "\n\n_...summary truncated due to size limit_\n";
+    summary = `${summary.slice(0, MAX_SUMMARY_LENGTH - 100)}\n\n_...summary truncated due to size limit_\n`;
   }
 
   return summary;

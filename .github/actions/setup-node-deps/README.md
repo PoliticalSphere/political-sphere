@@ -35,7 +35,7 @@ steps:
 
   - uses: ./.github/actions/setup-node-deps
     with:
-      node-version: "20"
+      node-version: '20'
 ```
 
 ### Custom Install Command
@@ -44,8 +44,8 @@ steps:
 steps:
   - uses: ./.github/actions/setup-node-deps
     with:
-      node-version: "22"
-      install-command: "npm ci --prefer-offline"
+      node-version: '22'
+      install-command: 'npm ci --prefer-offline'
 ```
 
 ### Skip Dependency Installation

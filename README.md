@@ -1,8 +1,23 @@
 # Political Sphere — Monorepo (developer workspace)
 
 [![Version](https://img.shields.io/badge/version-1.2.6-blue.svg)](CHANGELOG.md)
-[![Node.js](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen)](package.json)
+[![Node.js](https://img.shields.io/badge/node-%3E%3D22.0.0-brightgreen)](package.json)
 [![License](https://img.shields.io/badge/license-All%20Rights%20Reserved-red.svg)](LICENSE)
+[![Tests](https://img.shields.io/badge/tests-130%2F130%20passing-success)](docs/TODO.md)
+[![Coverage](https://img.shields.io/badge/coverage-100%25-brightgreen)](coverage/)
+[![Audit](https://img.shields.io/badge/audit-in%20progress-yellow)](#audit-status)
+
+> A democratically-governed multiplayer political simulation game with strict constitutional governance. Built as a monorepo using Nx, featuring React frontend, Node.js/NestJS backend, comprehensive testing, and AI-assisted development tooling.
+
+## 🎯 Project Status
+
+| Category             | Status            | Details                                |
+| -------------------- | ----------------- | -------------------------------------- |
+| **Unit Tests**       | ✅ 100% (130/130) | All unit tests passing                 |
+| **Test Coverage**    | ✅ 100%           | Complete test suite stabilized         |
+| **Security Audit**   | 🔄 In Progress    | 10 critical, 21 high issues identified |
+| **CI/CD Pipeline**   | ✅ Active         | Test & audit workflows enabled         |
+| **Production Ready** | ⚠️ Not Yet        | Addressing audit findings              |
 
 > A democratically-governed multiplayer political simulation game with strict constitutional governance. Built as a monorepo using Nx, featuring React frontend, Node.js/NestJS backend, comprehensive testing, and AI-assisted development tooling.
 
@@ -87,6 +102,7 @@ tools/         # Build tools and utilities
 
 - `npm run preflight` — lint, test, and build checks when available
 - `npm run lint:fix` — ESLint with auto-fix for JS/TS sources
+- `npm run lint:unused` — Knip-powered unused file/export scan
 - `npm run format` — Prettier formatting for the full workspace
 - `npm run test` — Vitest unit tests (node environment)
 - `npm run test:coverage` — Vitest coverage with Istanbul reporter
@@ -102,6 +118,15 @@ tools/         # Build tools and utilities
 - `npm run ai:review` — AI code review and suggestions
 - `npm run ai:blackbox` — Governance compliance checking
 - `npm run ai:performance` — Performance monitoring and optimization
+
+### Data Tooling
+
+- `dvc repro track-datasets` — Capture `data/` fixtures metadata without bloating Git
+- `scripts/data/dvc-track.sh` — Validates required directories before running DVC
+
+### Local Observability
+
+- `scripts/observability/signoz.sh up` — Launch the SigNoz stack (ClickHouse + OTEL collector + UI) for trace inspection
 
 ### Model Context Protocol Servers
 
@@ -120,6 +145,30 @@ tools/         # Build tools and utilities
 - `npm run lint:boundaries` — Verify Nx module boundary compliance
 - `npm run test:a11y` — WCAG 2.2 AA+ accessibility validation
 - `npm run docs:lint` — Markdown and spelling checks
+- `npm run audit:full` — Comprehensive security & quality audit across all apps
+
+## Audit Status
+
+Run comprehensive audits with `npm run audit:full` to assess production readiness:
+
+**Current Status (2025-11-10):**
+
+- ✅ **100% Unit Tests** - All 130 tests passing
+- 🔄 **Security & Quality Audits** - In progress
+  - 10 Critical issues identified
+  - 21 High severity issues
+  - 43 Medium severity issues
+- ⚠️ **Not Production Ready** - Addressing critical findings
+
+**Focus Areas:**
+
+- API authentication & authorization hardening
+- Input validation & rate limiting
+- OpenAPI specification updates
+- Module Federation configuration
+- WebSocket security (game-server)
+
+See `scripts/docs/audit-trail/` for detailed audit reports.
 
 ## CI/CD & Quality Infrastructure
 
@@ -173,8 +222,12 @@ Runtime readiness checks:
 k6 smoke tests with thresholds:
 
 - **API**: p95 < 200ms, error rate < 1%
-- **Frontend**: p95 < 500ms, cold start < 2s
-- **Worker**: p95 < 100ms, error rate < 0.1%
+  - **Frontend**: p95 < 500ms, cold start < 2s
+  - **Worker**: p95 < 100ms, error rate < 0.1%
+
+#### **OpenSSF Scorecard** (`.github/workflows/scorecard.yml`)
+
+A scheduled Scorecard run publishes security-signal SARIF to GitHub Security and produces an artifact developers can review locally.
 
 ### Required Secrets
 

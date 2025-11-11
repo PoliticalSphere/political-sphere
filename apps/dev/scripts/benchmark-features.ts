@@ -225,7 +225,8 @@ function benchmarkObjectCreation(runner: BenchmarkRunner): void {
         email: "test@example.com",
         createdAt: new Date(),
       };
-      return obj;
+      // Prevent dead code elimination
+      void obj;
     },
     { iterations: 10000 },
   );

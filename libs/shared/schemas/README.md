@@ -138,7 +138,7 @@ export interface User {
   email: string;
 
   /** User's role in the system */
-  role: "user" | "moderator" | "admin";
+  role: 'user' | 'moderator' | 'admin';
 
   /** Whether the user account is active */
   isActive: boolean;
@@ -160,7 +160,7 @@ npm run schemas:validate
 Import generated types:
 
 ```typescript
-import { User, Bill, Vote } from "@political-sphere/shared/types/generated";
+import { User, Bill, Vote } from '@political-sphere/shared/types/generated';
 
 // Type-safe function
 function createBill(bill: Bill): Promise<Bill> {
@@ -174,8 +174,8 @@ function createBill(bill: Bill): Promise<Bill> {
 Factories in `libs/testing/factories/` are aligned with these schemas:
 
 ```typescript
-import { UserFactory } from "@political-sphere/testing/factories";
-import type { User } from "@political-sphere/shared/types/generated";
+import { UserFactory } from '@political-sphere/testing/factories';
+import type { User } from '@political-sphere/shared/types/generated';
 
 // Generated user matches User type exactly
 const user: User = UserFactory.build();
@@ -217,14 +217,7 @@ Define explicit enum values for constrained fields:
 {
   "status": {
     "type": "string",
-    "enum": [
-      "draft",
-      "proposed",
-      "active_voting",
-      "passed",
-      "rejected",
-      "withdrawn"
-    ]
+    "enum": ["draft", "proposed", "active_voting", "passed", "rejected", "withdrawn"]
   }
 }
 ```
@@ -304,13 +297,13 @@ Update schemas when:
 Use schemas to validate API requests/responses:
 
 ```typescript
-import Ajv from "ajv";
-import userSchema from "../../../schemas/json-schema/user.schema.json";
+import Ajv from 'ajv';
+import userSchema from '../../../schemas/json-schema/user.schema.json';
 
 const ajv = new Ajv();
 const validate = ajv.compile(userSchema);
 
-app.post("/users", (req, res) => {
+app.post('/users', (req, res) => {
   if (!validate(req.body)) {
     return res.status(400).json({ errors: validate.errors });
   }
@@ -326,7 +319,7 @@ Reference schemas in OpenAPI specs:
 components:
   schemas:
     User:
-      $ref: "../../../schemas/json-schema/user.schema.json"
+      $ref: '../../../schemas/json-schema/user.schema.json'
 ```
 
 ### Database Migrations

@@ -13,6 +13,8 @@ export type User = z.infer<typeof UserSchema>;
 export const CreateUserSchema = z.object({
   username: z.string().min(3).max(50),
   email: z.string().email(),
+  passwordHash: z.string().optional(),
+  role: z.string().optional(),
 });
 
 export type CreateUserInput = z.infer<typeof CreateUserSchema>;

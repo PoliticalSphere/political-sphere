@@ -61,12 +61,7 @@ export function useData<T>(url: string): UseDataResult<T> {
 
 // Usage Example
 export function BillsList() {
-  const {
-    data: bills,
-    loading,
-    error,
-    refetch,
-  } = useData<Bill[]>("/api/bills");
+  const { data: bills, loading, error, refetch } = useData<Bill[]>("/api/bills");
 
   if (loading) {
     return (
@@ -122,10 +117,7 @@ interface UsePaginationResult<T> {
   goToPage: (page: number) => void;
 }
 
-export function usePagination<T>(
-  baseUrl: string,
-  pageSize = 20
-): UsePaginationResult<T> {
+export function usePagination<T>(baseUrl: string, pageSize = 20): UsePaginationResult<T> {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -198,11 +190,7 @@ export function PaginatedBillsList() {
       </ul>
 
       <nav aria-label="Pagination" className="pagination">
-        <button
-          onClick={prevPage}
-          disabled={!hasPrevPage}
-          aria-label="Previous page"
-        >
+        <button onClick={prevPage} disabled={!hasPrevPage} aria-label="Previous page">
           Previous
         </button>
 
@@ -210,11 +198,7 @@ export function PaginatedBillsList() {
           Page {page} of {totalPages}
         </span>
 
-        <button
-          onClick={nextPage}
-          disabled={!hasNextPage}
-          aria-label="Next page"
-        >
+        <button onClick={nextPage} disabled={!hasNextPage} aria-label="Next page">
           Next
         </button>
       </nav>
@@ -235,10 +219,7 @@ interface UseInfiniteScrollResult<T> {
   sentinelRef: React.RefObject<HTMLDivElement>;
 }
 
-export function useInfiniteScroll<T>(
-  baseUrl: string,
-  pageSize = 20
-): UseInfiniteScrollResult<T> {
+export function useInfiniteScroll<T>(baseUrl: string, pageSize = 20): UseInfiniteScrollResult<T> {
   const [data, setData] = useState<T[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -280,7 +261,7 @@ export function useInfiniteScroll<T>(
           loadMore();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     const sentinel = sentinelRef.current;
@@ -359,15 +340,11 @@ export function useRealTimeData<T>(url: string, initialData: T[] = []) {
           break;
         case "ITEM_UPDATED":
           setData((prev) =>
-            prev.map((item: any) =>
-              item.id === message.item.id ? message.item : item
-            )
+            prev.map((item: any) => (item.id === message.item.id ? message.item : item)),
           );
           break;
         case "ITEM_DELETED":
-          setData((prev) =>
-            prev.filter((item: any) => item.id !== message.itemId)
-          );
+          setData((prev) => prev.filter((item: any) => item.id !== message.itemId));
           break;
       }
     };
@@ -391,9 +368,7 @@ export function useRealTimeData<T>(url: string, initialData: T[] = []) {
 
 // Usage Example
 export function RealTimeVotes() {
-  const { data: votes, connected } = useRealTimeData<Vote>(
-    "ws://localhost:3000/votes"
-  );
+  const { data: votes, connected } = useRealTimeData<Vote>("ws://localhost:3000/votes");
 
   return (
     <div>
@@ -428,7 +403,7 @@ interface UseMutationOptions<T, V> {
 
 export function useMutation<T, V>(
   mutationFn: (variables: V) => Promise<T>,
-  options: UseMutationOptions<T, V> = {}
+  options: UseMutationOptions<T, V> = {},
 ) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Error | null>(null);
@@ -487,17 +462,13 @@ export function VoteButton({ billId }: { billId: string }) {
         // Rollback on error
         setVoteCount((prev) => prev - 1);
       },
-    }
+    },
   );
 
   return (
     <div>
       <p>Vote Count: {voteCount}</p>
-      <button
-        onClick={() => castVote("for")}
-        disabled={loading}
-        aria-busy={loading}
-      >
+      <button onClick={() => castVote("for")} disabled={loading} aria-busy={loading}>
         {loading ? "Voting..." : "Vote For"}
       </button>
     </div>

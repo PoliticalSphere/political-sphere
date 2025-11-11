@@ -5,9 +5,10 @@
  * Initializes SQLite database with proper schema and security settings
  */
 
-import Database from "better-sqlite3";
 import fs from "fs";
 import path from "path";
+
+import Database from "better-sqlite3";
 
 // Simple console logger for database initialization
 // Security: Use structured logging to prevent format string injection

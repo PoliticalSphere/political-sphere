@@ -15,11 +15,11 @@ Multiple files across the codebase use `path.join()` and `path.resolve()` with p
 // ❌ VULNERABLE: Direct use of external input
 function loadFile(userInput) {
   const filePath = path.join(baseDir, userInput); // UNSAFE
-  return fs.readFileSync(filePath, "utf8");
+  return fs.readFileSync(filePath, 'utf8');
 }
 
 // Attack example:
-loadFile("../../../etc/passwd"); // Escapes baseDir!
+loadFile('../../../etc/passwd'); // Escapes baseDir!
 ```
 
 ## Security Library
@@ -40,8 +40,8 @@ Validates a simple filename (no directories allowed)
 - Allows only: `a-zA-Z0-9_.-`
 
 ```javascript
-validateFilename("safe.txt"); // ✅ Returns: 'safe.txt'
-validateFilename("../etc/passwd"); // ❌ Throws: path separators not allowed
+validateFilename('safe.txt'); // ✅ Returns: 'safe.txt'
+validateFilename('../etc/passwd'); // ❌ Throws: path separators not allowed
 ```
 
 #### `validateRelativePath(relativePath)`
@@ -54,9 +54,9 @@ Validates a relative path (subdirectories allowed)
 - Normalizes the path
 
 ```javascript
-validateRelativePath("sub/dir/file.txt"); // ✅ Returns: 'sub/dir/file.txt'
-validateRelativePath("../escape"); // ❌ Throws: parent references not allowed
-validateRelativePath("/abs/path"); // ❌ Throws: must be relative
+validateRelativePath('sub/dir/file.txt'); // ✅ Returns: 'sub/dir/file.txt'
+validateRelativePath('../escape'); // ❌ Throws: parent references not allowed
+validateRelativePath('/abs/path'); // ❌ Throws: must be relative
 ```
 
 #### `safeJoin(baseDir, userInput, options)`
@@ -68,9 +68,9 @@ Safely joins paths with validation
 - Verifies result is within baseDir
 
 ```javascript
-safeJoin("/base", "file.txt"); // ✅ '/base/file.txt'
-safeJoin("/base", "sub/dir/file.txt", { allowSubdirs: true }); // ✅ '/base/sub/dir/file.txt'
-safeJoin("/base", "../escape"); // ❌ Throws: outside base
+safeJoin('/base', 'file.txt'); // ✅ '/base/file.txt'
+safeJoin('/base', 'sub/dir/file.txt', { allowSubdirs: true }); // ✅ '/base/sub/dir/file.txt'
+safeJoin('/base', '../escape'); // ❌ Throws: outside base
 ```
 
 #### `validateTrustedPath(trustedPath, baseDir)`
@@ -82,8 +82,8 @@ For paths from trusted sources (e.g., git, config files)
 - Optional baseDir validation
 
 ```javascript
-validateTrustedPath("src/index.js", "/project"); // ✅ '/project/src/index.js'
-validateTrustedPath("../etc/passwd"); // ❌ Throws: parent references
+validateTrustedPath('src/index.js', '/project'); // ✅ '/project/src/index.js'
+validateTrustedPath('../etc/passwd'); // ❌ Throws: parent references
 ```
 
 ## Fix Patterns
@@ -95,7 +95,7 @@ validateTrustedPath("../etc/passwd"); // ❌ Throws: parent references
 const filePath = path.join(uploadsDir, req.body.filename);
 
 // After:
-import { safeJoin } from "../../libs/shared/src/path-security.mjs";
+import { safeJoin } from '../../libs/shared/src/path-security.mjs';
 const filePath = safeJoin(uploadsDir, req.body.filename);
 ```
 
@@ -105,14 +105,14 @@ const filePath = safeJoin(uploadsDir, req.body.filename);
 // Before:
 function analyzeFile(gitFilePath) {
   const fullPath = path.join(ROOT, gitFilePath);
-  return fs.readFileSync(fullPath, "utf8");
+  return fs.readFileSync(fullPath, 'utf8');
 }
 
 // After:
-import { validateTrustedPath } from "../../libs/shared/src/path-security.mjs";
+import { validateTrustedPath } from '../../libs/shared/src/path-security.mjs';
 function analyzeFile(gitFilePath) {
   const validatedPath = validateTrustedPath(gitFilePath, ROOT);
-  return fs.readFileSync(validatedPath, "utf8");
+  return fs.readFileSync(validatedPath, 'utf8');
 }
 ```
 
@@ -120,7 +120,7 @@ function analyzeFile(gitFilePath) {
 
 ```javascript
 // Before:
-files.forEach((file) => {
+files.forEach(file => {
   const fullPath = path.join(dir, file); // file from fs.readdirSync
   processFile(fullPath);
 });
@@ -128,8 +128,8 @@ files.forEach((file) => {
 // After (false positive - fs.readdirSync is safe):
 // No change needed! fs.readdirSync returns basenames only.
 // However, if defensive programming desired:
-import { isPathWithinBase } from "../../libs/shared/src/path-security.mjs";
-files.forEach((file) => {
+import { isPathWithinBase } from '../../libs/shared/src/path-security.mjs';
+files.forEach(file => {
   const fullPath = path.join(dir, file);
   if (isPathWithinBase(dir, fullPath)) {
     processFile(fullPath);
@@ -203,25 +203,21 @@ Create test files for each security function:
 
 ```javascript
 // libs/shared/src/path-security.test.mjs
-import { test } from "node:test";
-import assert from "node:assert";
-import {
-  validateFilename,
-  safeJoin,
-  validateTrustedPath,
-} from "./path-security.mjs";
+import { test } from 'node:test';
+import assert from 'node:assert';
+import { validateFilename, safeJoin, validateTrustedPath } from './path-security.mjs';
 
-test("validateFilename rejects traversal", () => {
-  assert.throws(() => validateFilename("../etc/passwd"), /path separators/);
+test('validateFilename rejects traversal', () => {
+  assert.throws(() => validateFilename('../etc/passwd'), /path separators/);
 });
 
-test("safeJoin prevents escape", () => {
-  assert.throws(() => safeJoin("/base", "../escape"), /outside base/);
+test('safeJoin prevents escape', () => {
+  assert.throws(() => safeJoin('/base', '../escape'), /outside base/);
 });
 
-test("validateTrustedPath allows subdirs", () => {
-  const result = validateTrustedPath("src/index.js", "/project");
-  assert.ok(result.includes("/project/src/index.js"));
+test('validateTrustedPath allows subdirs', () => {
+  const result = validateTrustedPath('src/index.js', '/project');
+  assert.ok(result.includes('/project/src/index.js'));
 });
 ```
 

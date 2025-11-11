@@ -6,11 +6,11 @@
  * so the guard remains resilient as the toolchain evolves.
  */
 
-import { fileURLToPath } from "node:url";
-import { dirname, join } from "node:path";
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import { spawn } from "node:child_process";
 import fs from "fs";
+import { spawn } from "node:child_process";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -156,10 +156,17 @@ const main = async () => {
     if (!check) return;
     try {
       console.log(`\n🔍 Running ${check.name} via npm run ${check.script}...`);
-      await runCommand("npm", ["run", check.script], { env: check.env, timeoutMs: guardTimeoutMs });
+      await runCommand("npm", ["run", check.script], {
+        env: check.env,
+        timeoutMs: guardTimeoutMs,
+      });
       results.push({ name: check.name, status: "passed" });
     } catch (error) {
-      results.push({ name: check.name, status: "failed", reason: error.message });
+      results.push({
+        name: check.name,
+        status: "failed",
+        reason: error.message,
+      });
       console.error(`❌ ${check.name} failed: ${error.message}`);
       hasFailures = true;
     }

@@ -525,9 +525,19 @@ async function handleRequest(
         return;
       }
 
-      const user = getUserById((decoded as { userId: string }).userId);
-      if (!user) {
-        sendError(res, 401, "User not found");
+      if (
+        typeof decoded === "object" &&
+        decoded !== null &&
+        "userId" in decoded &&
+        typeof (decoded as any).userId === "string"
+      ) {
+        const user = getUserById((decoded as { userId: string }).userId);
+        if (!user) {
+          sendError(res, 401, "User not found");
+          return;
+        }
+      } else {
+        sendError(res, 401, "Invalid or expired refresh token");
         return;
       }
 

@@ -35,7 +35,7 @@ COPY --chown=nodejs:nodejs package.json package-lock.json ./
 
 # Install ALL dependencies with BuildKit npm cache
 RUN --mount=type=cache,target=/home/nodejs/.npm,uid=1001,gid=1001 \
-    npm ci --workspaces=false && \
+    npm ci --workspaces=false --legacy-peer-deps && \
     npm cache clean --force
 
 # ============================================================================
@@ -50,7 +50,7 @@ COPY --chown=nodejs:nodejs package.json package-lock.json ./
 
 # Install all dependencies (including devDependencies for build)
 RUN --mount=type=cache,target=/home/nodejs/.npm,uid=1001,gid=1001 \
-    npm ci --workspaces=false && \
+    npm ci --workspaces=false --legacy-peer-deps && \
     npm cache clean --force
 
 # Copy source code
@@ -73,7 +73,7 @@ COPY --chown=nodejs:nodejs package.json package-lock.json ./
 
 # Install dependencies with cache mount
 RUN --mount=type=cache,target=/home/nodejs/.npm,uid=1001,gid=1001 \
-    npm ci --workspaces=false && \
+    npm ci --workspaces=false --legacy-peer-deps && \
     npm cache clean --force
 
 # Copy all source code
@@ -105,7 +105,7 @@ CMD ["npm", "run", "dev", "-w", "apps/web"]
 # ============================================================================
 # Production Stage - Static SPA served by nginx
 # ============================================================================
-FROM nginx:1.29-alpine AS production
+FROM nginx:1.29-alpine@sha256:b3c656d55d7ad751196f21b7fd2e8d4da9cb430e32f646adcf92441b72f82b14 AS production
 
 # OCI labels with build-time metadata
 LABEL org.opencontainers.image.title="Political Sphere Frontend" \

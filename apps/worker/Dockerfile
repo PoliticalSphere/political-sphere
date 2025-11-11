@@ -35,7 +35,7 @@ COPY --chown=nodejs:nodejs package.json package-lock.json ./
 
 # Install ALL dependencies with BuildKit npm cache
 RUN --mount=type=cache,target=/home/nodejs/.npm,uid=1001,gid=1001 \
-    npm ci --workspaces=false && \
+    npm ci --workspaces=false --legacy-peer-deps && \
     npm cache clean --force
 
 # ============================================================================
@@ -50,7 +50,7 @@ COPY --chown=nodejs:nodejs package.json package-lock.json ./
 
 # Install dependencies with cache mount
 RUN --mount=type=cache,target=/home/nodejs/.npm,uid=1001,gid=1001 \
-    npm ci --workspaces=false && \
+    npm ci --workspaces=false --legacy-peer-deps && \
     npm cache clean --force
 
 # Copy all source code
@@ -92,7 +92,7 @@ COPY --chown=nodejs:nodejs package.json package-lock.json ./
 
 # Install all dependencies (including devDependencies for build)
 RUN --mount=type=cache,target=/home/nodejs/.npm,uid=1001,gid=1001 \
-    npm ci --workspaces=false && \
+    npm ci --workspaces=false --legacy-peer-deps && \
     npm cache clean --force
 
 # Copy source code
@@ -125,7 +125,7 @@ USER nodejs
 # Install production dependencies only
 COPY --chown=nodejs:nodejs package.json package-lock.json ./
 RUN --mount=type=cache,target=/home/nodejs/.npm,uid=1001,gid=1001 \
-    npm ci --omit=dev --workspaces=false && \
+    npm ci --omit=dev --workspaces=false --legacy-peer-deps && \
     npm cache clean --force
 
 # Copy built artifacts from builder stage

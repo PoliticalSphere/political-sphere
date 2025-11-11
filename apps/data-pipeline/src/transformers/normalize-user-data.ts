@@ -7,20 +7,21 @@
  * @module transformers/normalize-user-data
  */
 
-import { z } from "zod";
+import { z } from 'zod';
 
 // Constants for field names and limits
 const FIELD_NAMES = {
-  ID: "id",
-  USER_ID: "userId",
-  EMAIL: "email",
-  NAME: "name",
-  USERNAME: "username",
-  CREATED_AT: "createdAt",
-  METADATA: "metadata",
+  ID: 'id',
+  USER_ID: 'userId',
+  EMAIL: 'email',
+  NAME: 'name',
+  USERNAME: 'username',
+  CREATED_AT: 'createdAt',
+  METADATA: 'metadata',
 } as const;
 
-const LIMITS = {
+// Reserved for future use - length validation
+const _LIMITS = {
   MAX_EMAIL_LENGTH: 254,
   MAX_NAME_LENGTH: 100,
   MAX_ID_LENGTH: 50,
@@ -30,25 +31,27 @@ const LIMITS = {
 export class ValidationError extends Error {
   constructor(
     message: string,
-    public readonly field?: string,
+    public readonly field?: string
   ) {
     super(message);
-    this.name = "ValidationError";
+    this.name = 'ValidationError';
   }
 }
 
 export class TransformationError extends Error {
   constructor(
     message: string,
-    public readonly originalError?: Error,
+    public readonly originalError?: Error
   ) {
     super(message);
-    this.name = "TransformationError";
+    this.name = 'TransformationError';
   }
 }
 
 // Zod schema for input validation
-// Note: Email validation is lenient - we trim/lowercase in normalizeEmail
+// Note: Email validation happens in two stages:
+// 1. Basic string check here (for raw input)
+// 2. Comprehensive RFC 5322 validation in normalizeEmail after normalization
 const RawUserDataSchema = z.object({
   id: z.string().optional(),
   userId: z.string().optional(),
@@ -92,7 +95,7 @@ export class NormalizeUserDataTransformer {
     try {
       // Validate input structure
       if (!this.isValidRawData(rawData)) {
-        throw new ValidationError("Invalid user data format");
+        throw new ValidationError('Invalid user data format');
       }
 
       // Validate with Zod schema
@@ -100,10 +103,10 @@ export class NormalizeUserDataTransformer {
 
       // Manual validation for required field combinations
       if (!validatedData[FIELD_NAMES.ID] && !validatedData[FIELD_NAMES.USER_ID]) {
-        throw new ValidationError("Either id or userId must be provided");
+        throw new ValidationError('Either id or userId must be provided');
       }
       if (!validatedData[FIELD_NAMES.NAME] && !validatedData[FIELD_NAMES.USERNAME]) {
-        throw new ValidationError("Either name or username must be provided");
+        throw new ValidationError('Either name or username must be provided');
       }
 
       // Sanitize and normalize fields
@@ -119,12 +122,12 @@ export class NormalizeUserDataTransformer {
     } catch (error) {
       if (error instanceof z.ZodError) {
         // Re-throw as Invalid user data format for consistency with tests
-        throw new ValidationError("Invalid user data format");
+        throw new ValidationError('Invalid user data format');
       }
       if (error instanceof ValidationError || error instanceof TransformationError) {
         throw error;
       }
-      throw new TransformationError("Unexpected error during transformation", error as Error);
+      throw new TransformationError('Unexpected error during transformation', error as Error);
     }
   }
 
@@ -132,7 +135,7 @@ export class NormalizeUserDataTransformer {
    * Validate raw data structure (basic type check)
    */
   private isValidRawData(data: unknown): data is Record<string, unknown> {
-    return typeof data === "object" && data !== null;
+    return typeof data === 'object' && data !== null;
   }
 
   /**
@@ -144,14 +147,25 @@ export class NormalizeUserDataTransformer {
 
   /**
    * Normalize email: lowercase, trim, validate format
+   *
+   * Uses Zod's built-in email validation which follows RFC 5322 standards.
+   * This prevents common invalid formats like:
+   * - test@domain..com (consecutive dots)
+   * - test@.com (domain starting with dot)
+   * - test@domain. (domain ending with dot)
+   * - @domain.com (missing local part)
    */
   private normalizeEmail(email: string): string {
     const normalized = email.toLowerCase().trim();
-    // Validate email format after normalization
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(normalized)) {
-      throw new ValidationError("Invalid email format", "email");
+
+    // Use Zod's RFC 5322 compliant email validation
+    const emailSchema = z.string().email();
+    const result = emailSchema.safeParse(normalized);
+
+    if (!result.success) {
+      throw new ValidationError('Invalid email format', 'email');
     }
+
     return normalized;
   }
 
@@ -185,11 +199,11 @@ export class NormalizeUserDataTransformer {
 
     for (const [key, value] of Object.entries(metadata)) {
       // Remove keys that might be dangerous (basic filtering)
-      if (typeof key === "string" && !key.includes("<script") && !key.includes("javascript:")) {
+      if (typeof key === 'string' && !key.includes('<script') && !key.includes('javascript:')) {
         // For string values, basic sanitization
-        if (typeof value === "string") {
-          sanitized[key] = value.replace(/<[^>]*>/g, "").trim(); // Remove HTML tags
-        } else if (typeof value === "object" && value !== null) {
+        if (typeof value === 'string') {
+          sanitized[key] = value.replace(/<[^>]*>/g, '').trim(); // Remove HTML tags
+        } else if (typeof value === 'object' && value !== null) {
           // Recursively sanitize nested objects (basic)
           sanitized[key] = this.sanitizeMetadata(value as Record<string, unknown>);
         } else {
@@ -215,7 +229,7 @@ export class NormalizeUserDataTransformer {
       } catch (error) {
         throw new TransformationError(
           `Failed to transform record at index ${index}`,
-          error as Error,
+          error as Error
         );
       }
     });

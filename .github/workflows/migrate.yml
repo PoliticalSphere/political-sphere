@@ -11,8 +11,7 @@ on:
       postgres_password:
         required: false
 
-permissions:
-  contents: read
+permissions: read-all
 
 jobs:
   migrate:
@@ -28,7 +27,7 @@ jobs:
 
       - name: Install repo dependencies
         run: |
-          npm ci --workspaces --ignore-scripts
+          npm ci --workspaces --ignore-scripts --legacy-peer-deps
 
       - name: Run migrations
         env:

@@ -24,9 +24,7 @@ on:
         required: false
         description: GitHub token for authenticated dependency checks
 
-permissions:
-  contents: read
-  security-events: write
+permissions: read-all
 
 jobs:
   scan:
@@ -37,7 +35,7 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
       - name: Install dependencies (npm)
         if: inputs.npm_audit
@@ -69,6 +67,6 @@ jobs:
           grype "dir:${SCAN_PATH}" --fail-on high ${GRYPE_CONFIG}
 
       - name: Gitleaks scan
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc # v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

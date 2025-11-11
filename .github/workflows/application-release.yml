@@ -1,4 +1,4 @@
-stname: application-release
+name: application-release
 
 on:
   workflow_call:
@@ -42,10 +42,7 @@ on:
       argocd_token:
         required: true
 
-permissions:
-  contents: read
-  id-token: write
-  packages: write
+permissions: read-all
 
 jobs:
   build-and-push:
@@ -61,12 +58,15 @@ jobs:
       aws_region: ${{ secrets.aws_region }}
       ecr_registry: ${{ secrets.ecr_registry }}
 
-  deploy:
+  prepare-deploy:
+    name: Prepare deploy artifacts
     needs: build-and-push
     runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.image.outputs.image_tag }}
     steps:
       - name: Download image artifact
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: image-uri
       - name: Extract image metadata
@@ -75,12 +75,14 @@ jobs:
           IMAGE_URI=$(cat image-uri/image-uri.txt)
           echo "image_uri=${IMAGE_URI}" >> "${GITHUB_OUTPUT}"
           echo "image_tag=${IMAGE_URI##*:}" >> "${GITHUB_OUTPUT}"
-      - name: Deploy via Argo CD
-        uses: ./.github/workflows/deploy-argocd.yml
-        with:
-          application_name: ${{ inputs.argocd_application }}
-          argocd_server: ${{ inputs.argocd_server }}
-          parameter_overrides: |
-            image.tag=${{ steps.image.outputs.image_tag }}
-        secrets:
-          argocd_token: ${{ secrets.argocd_token }}
+
+  deploy:
+    needs: [build-and-push, prepare-deploy]
+    uses: ./.github/workflows/deploy-argocd.yml
+    with:
+      application_name: ${{ inputs.argocd_application }}
+      argocd_server: ${{ inputs.argocd_server }}
+      parameter_overrides: |
+        image.tag=${{ needs.prepare-deploy.outputs.image_tag }}
+    secrets:
+      argocd_token: ${{ secrets.argocd_token }}

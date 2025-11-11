@@ -14,8 +14,7 @@ on:
       vault_addr:
         required: false
 
-permissions:
-  contents: read
+permissions: read-all
 
 jobs:
   fetch:

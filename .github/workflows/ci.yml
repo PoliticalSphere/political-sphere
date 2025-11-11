@@ -89,7 +89,7 @@ jobs:
           done
 
       - name: Check for secrets in code
-        uses: gitleaks/gitleaks-action@v2
+        uses: gitleaks/gitleaks-action@dcedce43c6f43de0b836d1fe38946645c9c638dc # v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -105,7 +105,7 @@ jobs:
             echo "Installing dependencies..."
             npm ci --omit=dev --include=optional || {
               echo "::warning::npm ci --omit=dev failed, trying full install"
-              npm ci --include=optional
+              npm ci --include=optional --legacy-peer-deps
             }
           fi
 
@@ -265,9 +265,11 @@ jobs:
           echo "✅ All \"${DOWNLOADED_SHARDS}\" shards downloaded successfully"
 
       - name: Combine coverage reports
+        env:
+          ISTANBUL_COMBINE_VERSION: '0.3.0'
         run: |
-          npm install -g istanbul-combine
-          find coverage-shards -name "lcov.info" -print0 | xargs -0 istanbul-combine --output combined-coverage.json --report json
+          find coverage-shards -name "lcov.info" -print0 | \
+            xargs -0 npx "istanbul-combine@${ISTANBUL_COMBINE_VERSION}" --output combined-coverage.json --report json
 
       - name: Check combined coverage threshold
         run: |

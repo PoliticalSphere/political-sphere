@@ -7,6 +7,9 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
 ## [Unreleased]
 
 ### Changed
+- CI installs: use `npm ci --legacy-peer-deps` in CI workflows to avoid peer dependency resolution failures on Node 22 (2025-11-11)
+  - Updated across audit, test, build-and-test, security, lighthouse, release, e2e, and migrate workflows
+  - Keeps CI deterministic while we rationalize peer dependency graph
 - Pre-commit environment validation now scans only staged files and skips lockfiles (2025-11-11)
   - Updated `.lefthook.yml` to pass staged file paths to validator (`--files {staged_files}`)
   - Enhanced `tools/scripts/validation/validate-environment.mjs` to accept `--files` and ignore lockfiles
@@ -16,6 +19,10 @@ The format follows Keep a Changelog (https://keepachangelog.com/en/1.0.0/) and t
   - Keeps `gitleaks` as the primary staged secret gate; full workspace scans still available in CI via strict mode
 
 ### Fixed
+- CI/CD: Application Audit matrix failing at dependency install due to peer-deps conflicts (2025-11-11)
+  - Added `--legacy-peer-deps` to npm ci steps in `.github/workflows/audit.yml` Application Audit job
+  - Updated remaining workflows for consistency, including `migrate.yml` and setup-node test workflow
+  - Corrected YAML typo in `.github/workflows/application-release.yml` (name key)
 - **CI/CD:** Fixed missing ESLint dependencies causing lint job failures (2025-11-11)
   - Added ESLint and all required plugins to package.json devDependencies
   - Installed: eslint, @typescript-eslint/eslint-plugin, @typescript-eslint/parser, eslint-config-prettier, eslint-plugin-filenames, eslint-plugin-import, eslint-plugin-prettier, eslint-plugin-react, eslint-plugin-react-hooks, typescript-eslint, @vitest/eslint-plugin, globals, prettier, @eslint/js

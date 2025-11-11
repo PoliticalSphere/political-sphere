@@ -37,9 +37,7 @@ on:
         required: false
         description: 'Optional DATABASE_URL secret (if not provided via input)'
 
-permissions:
-  contents: read
-  id-token: write
+permissions: read-all
 
 jobs:
   migrate:

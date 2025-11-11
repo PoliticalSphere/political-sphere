@@ -19,10 +19,7 @@ on:
           - 'true'
           - 'false'
 
-permissions:
-  contents: write # For auto-fix commits
-  security-events: write # For SARIF upload
-  pull-requests: write # For PR comments
+permissions: read-all
 
 env:
   NODE_VERSION: '22'
@@ -85,6 +82,10 @@ jobs:
   app-audit:
     name: Application Audit (${{ matrix.app }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      security-events: write
+      pull-requests: write
     strategy:
       fail-fast: false
       matrix:
@@ -108,7 +109,7 @@ jobs:
           cache: 'npm'
 
       - name: Install dependencies
-        run: npm ci --include=optional
+        run: npm ci --include=optional --legacy-peer-deps
 
       - name: Install OWASP Dependency-Check
         run: |
@@ -130,14 +131,14 @@ jobs:
 
       - name: Commit auto-fixes
         if: inputs.auto_fix == 'true'
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@b863ae1933cb653a53c021fe36dbb774e1fb9403 # v5
         with:
           commit_message: 'fix: auto-fix issues in ${{ matrix.app }} [skip ci]'
           file_pattern: 'apps/${{ matrix.app }}/**'
 
       - name: Upload SARIF to GitHub Security
         if: always()
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@ab2e54f42aa112ff08704159b88a57517f6f0ebb # v3
         with:
           sarif_file: reports/app-audit/${{ matrix.app }}/audit-results.sarif
           category: app-audit-${{ matrix.app }}
@@ -184,7 +185,7 @@ jobs:
 
       - name: Comment PR with results
         if: github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: actions/github-script@f28e40c7f34bde8b3046d885e986cb6290c5673b # v7
         with:
           script: |
             const fs = require('fs');

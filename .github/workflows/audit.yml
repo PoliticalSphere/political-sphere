@@ -120,7 +120,7 @@ jobs:
       - name: Run app audit
         env:
           APP_NAME: ${{ matrix.app }}
-          AUTO_FIX: ${{ github.event.inputs.auto_fix || 'false' }}
+          AUTO_FIX: ${{ inputs.auto_fix || 'false' }}
           GENERATE_SARIF: 'true'
           SKIP_NPM_AUDIT: 'false'
           SKIP_TSC: 'false'
@@ -129,7 +129,7 @@ jobs:
         continue-on-error: true
 
       - name: Commit auto-fixes
-        if: github.event.inputs.auto_fix == 'true'
+        if: inputs.auto_fix == 'true'
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: 'fix: auto-fix issues in ${{ matrix.app }} [skip ci]'

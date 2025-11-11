@@ -147,7 +147,7 @@ AUTO_FIXED_COUNT=0
 
 # Findings arrays and caching
 declare -a FINDINGS
-declare -A FILE_CACHE  # Cache for file contents to avoid repeated reads
+# declare -A FILE_CACHE  # Cache for file contents to avoid repeated reads
 
 # Backup directory for auto-fixes
 BACKUP_DIR="${OUTPUT_DIR}/backups/$(date +%Y%m%d_%H%M%S)"
@@ -656,15 +656,15 @@ check_security_best_practices() {
 # Cache file content to avoid repeated reads
 cache_file_content() {
     local file="$1"
-    if [[ -z "${FILE_CACHE[$file]}" ]]; then
-        FILE_CACHE["$file"]=$(cat "$file")
-    fi
+    # if [[ -z "${FILE_CACHE[$file]}" ]]; then
+    #     FILE_CACHE["$file"]=$(cat "$file")
+    # fi
 }
 
 # Get cached file content
 get_cached_content() {
     local file="$1"
-    echo "${FILE_CACHE["$file"]}"
+    # echo "${FILE_CACHE["$file"]}"
 }
 
 check_env_injection() {

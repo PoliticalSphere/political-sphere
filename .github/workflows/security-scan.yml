@@ -24,13 +24,14 @@ on:
         required: false
         description: GitHub token for authenticated dependency checks
 
+permissions:
+  contents: read
+  security-events: write
+
 jobs:
   scan:
     name: Security Scans
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      security-events: write
     defaults:
       run:
         working-directory: ${{ inputs.working_directory }}

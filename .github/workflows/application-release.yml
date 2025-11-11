@@ -1,4 +1,4 @@
-name: application-release
+stname: application-release
 
 on:
   workflow_call:
@@ -42,9 +42,14 @@ on:
       argocd_token:
         required: true
 
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
 jobs:
   build-and-push:
-    uses: political-sphere/ci/.github/workflows/build-and-test.yaml@main
+    uses: ./.github/workflows/build-and-test.yml
     with:
       node_version: ${{ inputs.node_version }}
       services: ${{ inputs.services }}
@@ -71,7 +76,7 @@ jobs:
           echo "image_uri=${IMAGE_URI}" >> "${GITHUB_OUTPUT}"
           echo "image_tag=${IMAGE_URI##*:}" >> "${GITHUB_OUTPUT}"
       - name: Deploy via Argo CD
-        uses: political-sphere/ci/.github/workflows/deploy-argocd.yaml@main
+        uses: ./.github/workflows/deploy-argocd.yml
         with:
           application_name: ${{ inputs.argocd_application }}
           argocd_server: ${{ inputs.argocd_server }}

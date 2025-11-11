@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-11-11T21:35:31Z",
+  "app": "api",
+  "summary": {
+    "critical": 4,
+    "high": 2,
+    "medium": 9,
+    "low": 1,
+    "pass": 34
+  },
+  "app_dir": "/Users/morganlowman/GitHub/political-sphere/apps/api",
+  "audit_dir": "/Users/morganlowman/GitHub/political-sphere/app-audit/api"
+}

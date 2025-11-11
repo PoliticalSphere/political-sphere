@@ -1,0 +1,13 @@
+{
+  "timestamp": "2025-11-11T21:35:32Z",
+  "app": "game-server",
+  "summary": {
+    "critical": 1,
+    "high": 2,
+    "medium": 4,
+    "low": 2,
+    "pass": 20
+  },
+  "app_dir": "/Users/morganlowman/GitHub/political-sphere/apps/game-server",
+  "audit_dir": "/Users/morganlowman/GitHub/political-sphere/app-audit/game-server"
+}

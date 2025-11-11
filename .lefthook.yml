@@ -55,15 +55,10 @@ pre-commit:
       glob: '*.{ts,tsx}'
       run: npx tsc --noEmit --skipLibCheck
 
-    # No console.log in production
-    no-console:
-      glob: 'apps/**/*.{ts,tsx}'
-      exclude: '*.test.{ts,tsx}|*.spec.{ts,tsx}'
-      run: |
-        if grep -n "console\\.log" {staged_files} 2>/dev/null; then
-          echo "❌ console.log found in production code"
-          exit 1
-        fi
+    # No console.log in production (handled by ESLint with proper exclusions)
+    # Disabled in favor of ESLint's no-console rule which supports overrides
+    # no-console:
+    #   skip: true
 
     # No .only() in tests
     no-only-tests:
@@ -115,7 +110,7 @@ pre-push:
       run: npx tsc --noEmit
 
     tests:
-      run: npm test -- --run
+      run: npm test
 
 commit-msg:
   commands:

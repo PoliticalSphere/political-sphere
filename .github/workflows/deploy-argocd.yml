@@ -7,11 +7,11 @@ on:
         description: Argo CD application name
         type: string
       run_migrations:
-        description: "If true, run database migrations before syncing the Argo app"
+        description: 'If true, run database migrations before syncing the Argo app'
         type: boolean
         default: false
       database_url:
-        description: "Optional DATABASE_URL to use for migrations (if run_migrations=true)"
+        description: 'Optional DATABASE_URL to use for migrations (if run_migrations=true)'
         type: string
         default: ''
       argocd_server:
@@ -35,7 +35,11 @@ on:
         description: Argo CD API token (bearer token)
       DATABASE_URL:
         required: false
-        description: "Optional DATABASE_URL secret (if not provided via input)"
+        description: 'Optional DATABASE_URL secret (if not provided via input)'
+
+permissions:
+  contents: read
+  id-token: write
 
 jobs:
   migrate:

@@ -42,14 +42,15 @@ on:
         required: false
         description: Full ECR registry URI (e.g. 123.dkr.ecr.us-east-1.amazonaws.com)
 
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
 jobs:
   build:
     name: Build & Test
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      id-token: write
-      packages: write
     defaults:
       run:
         working-directory: ${{ inputs.working_directory }}

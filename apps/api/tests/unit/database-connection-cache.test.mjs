@@ -1,33 +1,33 @@
-import { closeDatabase, getDatabase } from "../../src/modules/stores/index.ts";
+import { closeDatabase, getDatabase } from '../../src/modules/stores/index.ts';
 
 function createStubCache() {
   const calls = [];
   return {
     calls,
     async get(...args) {
-      calls.push({ method: "get", args });
+      calls.push({ method: 'get', args });
       return null;
     },
     async set(key, value, ttl) {
-      calls.push({ method: "set", key, ttl, value });
+      calls.push({ method: 'set', key, ttl, value });
     },
     async del(key) {
-      calls.push({ method: "del", key });
+      calls.push({ method: 'del', key });
     },
     async invalidatePattern(pattern) {
-      calls.push({ method: "invalidate", pattern });
+      calls.push({ method: 'invalidate', pattern });
     },
     async close() {
-      calls.push({ method: "close" });
+      calls.push({ method: 'close' });
     },
   };
 }
 
-describe("DatabaseConnection cache integration", () => {
+describe('DatabaseConnection cache integration', () => {
   const originalEnableCache = process.env.API_ENABLE_CACHE;
 
   beforeEach(() => {
-    process.env.API_ENABLE_CACHE = "false";
+    process.env.API_ENABLE_CACHE = 'false';
     closeDatabase();
   });
 
@@ -40,41 +40,41 @@ describe("DatabaseConnection cache integration", () => {
     }
   });
 
-  test("reuses provided cache instance across all stores", async () => {
+  test('reuses provided cache instance across all stores', async () => {
     const cache = createStubCache();
     const db = getDatabase({ cache });
 
     const user = await db.users.create({
-      username: "cache-user",
-      email: "cache-user@example.com",
+      username: 'cache-user',
+      email: 'cache-user@example.com',
     });
 
     const bill = await db.bills.create({
-      title: "Transparency Bill",
-      description: "Improve spending disclosures",
+      title: 'Transparency Bill',
+      description: 'Improve spending disclosures',
       proposerId: user.id,
     });
 
     await db.votes.create({
       billId: bill.id,
       userId: user.id,
-      vote: "aye",
+      vote: 'aye',
     });
 
     const userSets = cache.calls.filter(
-      (call) => call.method === "set" && String(call.key).startsWith("user:"),
+      (call) => call.method === 'set' && String(call.key).startsWith('user:'),
     );
     expect(userSets.length).toBeGreaterThanOrEqual(3);
 
     expect(
-      cache.calls.some((call) => call.method === "del" && call.key === `bill:${bill.id}:votes`),
+      cache.calls.some((call) => call.method === 'del' && call.key === `bill:${bill.id}:votes`),
     ).toBe(true);
     expect(
-      cache.calls.some((call) => call.method === "del" && call.key === `user:${user.id}:votes`),
+      cache.calls.some((call) => call.method === 'del' && call.key === `user:${user.id}:votes`),
     ).toBe(true);
 
     closeDatabase();
 
-    expect(cache.calls.some((call) => call.method === "close")).toBe(false);
+    expect(cache.calls.some((call) => call.method === 'close')).toBe(false);
   });
 });

@@ -1,12 +1,12 @@
 // Unit tests for UserService
 // Tests business logic in isolation from external dependencies
 
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { UserService } from "../../src/domain/user-service";
-import { closeDatabase, getDatabase } from "../../src/modules/stores/index.ts";
+import { UserService } from '../../src/domain/user-service';
+import { closeDatabase, getDatabase } from '../../src/modules/stores/index.ts';
 
-describe("UserService Unit Tests", () => {
+describe('UserService Unit Tests', () => {
   let db;
   let userService;
 
@@ -19,11 +19,11 @@ describe("UserService Unit Tests", () => {
     closeDatabase();
   });
 
-  describe("createUser", () => {
-    it("should create a user with valid data", async () => {
+  describe('createUser', () => {
+    it('should create a user with valid data', async () => {
       const userData = {
-        username: "testuser",
-        email: "test@example.com",
+        username: 'testuser',
+        email: 'test@example.com',
       };
 
       const user = await userService.createUser(userData);
@@ -35,10 +35,10 @@ describe("UserService Unit Tests", () => {
       expect(user.updatedAt).toBeTruthy();
     });
 
-    it("should throw error for duplicate username", async () => {
+    it('should throw error for duplicate username', async () => {
       const userData = {
-        username: "duplicateuser",
-        email: "test1@example.com",
+        username: 'duplicateuser',
+        email: 'test1@example.com',
       };
 
       // Create first user
@@ -50,14 +50,14 @@ describe("UserService Unit Tests", () => {
       );
     });
 
-    it("should throw error for duplicate email", async () => {
+    it('should throw error for duplicate email', async () => {
       const userData1 = {
-        username: "user1",
-        email: "duplicate@example.com",
+        username: 'user1',
+        email: 'duplicate@example.com',
       };
       const userData2 = {
-        username: "user2",
-        email: "duplicate@example.com",
+        username: 'user2',
+        email: 'duplicate@example.com',
       };
 
       // Create first user
@@ -70,11 +70,11 @@ describe("UserService Unit Tests", () => {
     });
   });
 
-  describe("getUserById", () => {
-    it("should return user by ID", async () => {
+  describe('getUserById', () => {
+    it('should return user by ID', async () => {
       const userData = {
-        username: "getbyiduser",
-        email: "getbyid@example.com",
+        username: 'getbyiduser',
+        email: 'getbyid@example.com',
       };
 
       const createdUser = await userService.createUser(userData);
@@ -85,17 +85,17 @@ describe("UserService Unit Tests", () => {
       expect(retrievedUser.email).toBe(userData.email);
     });
 
-    it("should return null for non-existent user", async () => {
-      const user = await userService.getUserById("non-existent-id");
+    it('should return null for non-existent user', async () => {
+      const user = await userService.getUserById('non-existent-id');
       expect(user).toBeNull();
     });
   });
 
-  describe("getUserByUsername", () => {
-    it("should return user by username", async () => {
+  describe('getUserByUsername', () => {
+    it('should return user by username', async () => {
       const userData = {
-        username: "getbyusername",
-        email: "getbyusername@example.com",
+        username: 'getbyusername',
+        email: 'getbyusername@example.com',
       };
 
       const createdUser = await userService.createUser(userData);
@@ -105,17 +105,17 @@ describe("UserService Unit Tests", () => {
       expect(retrievedUser.username).toBe(userData.username);
     });
 
-    it("should return null for non-existent username", async () => {
-      const user = await userService.getUserByUsername("non-existent-username");
+    it('should return null for non-existent username', async () => {
+      const user = await userService.getUserByUsername('non-existent-username');
       expect(user).toBeNull();
     });
   });
 
-  describe("getUserByEmail", () => {
-    it("should return user by email", async () => {
+  describe('getUserByEmail', () => {
+    it('should return user by email', async () => {
       const userData = {
-        username: "getbyemailuser",
-        email: "getbyemail@example.com",
+        username: 'getbyemailuser',
+        email: 'getbyemail@example.com',
       };
 
       const createdUser = await userService.createUser(userData);
@@ -125,8 +125,8 @@ describe("UserService Unit Tests", () => {
       expect(retrievedUser.email).toBe(userData.email);
     });
 
-    it("should return null for non-existent email", async () => {
-      const user = await userService.getUserByEmail("non-existent@example.com");
+    it('should return null for non-existent email', async () => {
+      const user = await userService.getUserByEmail('non-existent@example.com');
       expect(user).toBeNull();
     });
   });

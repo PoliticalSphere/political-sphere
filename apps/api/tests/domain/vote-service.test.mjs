@@ -1,11 +1,11 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { BillService } from "../../src/domain/bill-service";
-import { UserService } from "../../src/domain/user-service";
-import { VoteService } from "../../src/domain/vote-service";
-import { closeDatabase, getDatabase } from "../../src/modules/stores/index.ts";
+import { BillService } from '../../src/domain/bill-service';
+import { UserService } from '../../src/domain/user-service';
+import { VoteService } from '../../src/domain/vote-service';
+import { closeDatabase, getDatabase } from '../../src/modules/stores/index.ts';
 
-describe("VoteService", () => {
+describe('VoteService', () => {
   let userService;
   let billService;
   let voteService;
@@ -21,23 +21,23 @@ describe("VoteService", () => {
     closeDatabase();
   });
 
-  describe("castVote", () => {
-    it("should create a new vote", async () => {
+  describe('castVote', () => {
+    it('should create a new vote', async () => {
       const user = await userService.createUser({
-        username: "testuser",
-        email: "test@example.com",
+        username: 'testuser',
+        email: 'test@example.com',
       });
 
       const bill = await billService.proposeBill({
-        title: "Test Bill",
-        description: "A test bill",
+        title: 'Test Bill',
+        description: 'A test bill',
         proposerId: user.id,
       });
 
       const input = {
         billId: bill.id,
         userId: user.id,
-        vote: "aye",
+        vote: 'aye',
       };
 
       const vote = await voteService.castVote(input);
@@ -49,58 +49,58 @@ describe("VoteService", () => {
       expect(vote.createdAt).toBeInstanceOf(Date);
     });
 
-    it("should throw error for non-existent bill", async () => {
+    it('should throw error for non-existent bill', async () => {
       const user = await userService.createUser({
-        username: "testuser",
-        email: "test@example.com",
+        username: 'testuser',
+        email: 'test@example.com',
       });
 
       const input = {
-        billId: "non-existent-bill",
+        billId: 'non-existent-bill',
         userId: user.id,
-        vote: "aye",
+        vote: 'aye',
       };
 
       await expect(voteService.castVote(input)).rejects.toThrow(/Bill does not exist/);
     });
 
-    it("should throw error for non-existent user", async () => {
+    it('should throw error for non-existent user', async () => {
       const user = await userService.createUser({
-        username: "testuser",
-        email: "test@example.com",
+        username: 'testuser',
+        email: 'test@example.com',
       });
 
       const bill = await billService.proposeBill({
-        title: "Test Bill",
-        description: "A test bill",
+        title: 'Test Bill',
+        description: 'A test bill',
         proposerId: user.id,
       });
 
       const input = {
         billId: bill.id,
-        userId: "non-existent-user",
-        vote: "aye",
+        userId: 'non-existent-user',
+        vote: 'aye',
       };
 
       await expect(voteService.castVote(input)).rejects.toThrow(/User does not exist/);
     });
 
-    it("should throw error for duplicate vote", async () => {
+    it('should throw error for duplicate vote', async () => {
       const user = await userService.createUser({
-        username: "testuser",
-        email: "test@example.com",
+        username: 'testuser',
+        email: 'test@example.com',
       });
 
       const bill = await billService.proposeBill({
-        title: "Test Bill",
-        description: "A test bill",
+        title: 'Test Bill',
+        description: 'A test bill',
         proposerId: user.id,
       });
 
       const input = {
         billId: bill.id,
         userId: user.id,
-        vote: "aye",
+        vote: 'aye',
       };
 
       await voteService.castVote(input);
@@ -111,34 +111,34 @@ describe("VoteService", () => {
     });
   });
 
-  describe("getBillVotes", () => {
-    it("should return votes for a bill", async () => {
+  describe('getBillVotes', () => {
+    it('should return votes for a bill', async () => {
       const user1 = await userService.createUser({
-        username: "user1",
-        email: "user1@example.com",
+        username: 'user1',
+        email: 'user1@example.com',
       });
 
       const user2 = await userService.createUser({
-        username: "user2",
-        email: "user2@example.com",
+        username: 'user2',
+        email: 'user2@example.com',
       });
 
       const bill = await billService.proposeBill({
-        title: "Test Bill",
-        description: "A test bill",
+        title: 'Test Bill',
+        description: 'A test bill',
         proposerId: user1.id,
       });
 
       const vote1 = await voteService.castVote({
         billId: bill.id,
         userId: user1.id,
-        vote: "aye",
+        vote: 'aye',
       });
 
       const vote2 = await voteService.castVote({
         billId: bill.id,
         userId: user2.id,
-        vote: "nay",
+        vote: 'nay',
       });
 
       const votes = await voteService.getBillVotes(bill.id);
@@ -149,45 +149,45 @@ describe("VoteService", () => {
     });
   });
 
-  describe("getVoteCounts", () => {
-    it("should return vote counts for a bill", async () => {
+  describe('getVoteCounts', () => {
+    it('should return vote counts for a bill', async () => {
       const user1 = await userService.createUser({
-        username: "user1",
-        email: "user1@example.com",
+        username: 'user1',
+        email: 'user1@example.com',
       });
 
       const user2 = await userService.createUser({
-        username: "user2",
-        email: "user2@example.com",
+        username: 'user2',
+        email: 'user2@example.com',
       });
 
       const user3 = await userService.createUser({
-        username: "user3",
-        email: "user3@example.com",
+        username: 'user3',
+        email: 'user3@example.com',
       });
 
       const bill = await billService.proposeBill({
-        title: "Test Bill",
-        description: "A test bill",
+        title: 'Test Bill',
+        description: 'A test bill',
         proposerId: user1.id,
       });
 
       await voteService.castVote({
         billId: bill.id,
         userId: user1.id,
-        vote: "aye",
+        vote: 'aye',
       });
 
       await voteService.castVote({
         billId: bill.id,
         userId: user2.id,
-        vote: "aye",
+        vote: 'aye',
       });
 
       await voteService.castVote({
         billId: bill.id,
         userId: user3.id,
-        vote: "nay",
+        vote: 'nay',
       });
 
       const counts = await voteService.getVoteCounts(bill.id);

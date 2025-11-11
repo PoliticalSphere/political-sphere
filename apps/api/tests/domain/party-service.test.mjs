@@ -1,9 +1,9 @@
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 
-import { PartyService } from "../../src/domain/party-service";
-import { closeDatabase, getDatabase } from "../../src/modules/stores/index.ts";
+import { PartyService } from '../../src/domain/party-service';
+import { closeDatabase, getDatabase } from '../../src/modules/stores/index.ts';
 
-describe("PartyService", () => {
+describe('PartyService', () => {
   beforeEach(() => {
     getDatabase();
   });
@@ -12,13 +12,13 @@ describe("PartyService", () => {
     closeDatabase();
   });
 
-  describe("createParty", () => {
-    it("should create a new party", async () => {
+  describe('createParty', () => {
+    it('should create a new party', async () => {
       const service = new PartyService();
       const input = {
-        name: "Test Party",
-        description: "A test party",
-        color: "#FF0000",
+        name: 'Test Party',
+        description: 'A test party',
+        color: '#FF0000',
       };
 
       const party = await service.createParty(input);
@@ -30,12 +30,12 @@ describe("PartyService", () => {
       expect(party.createdAt).toBeInstanceOf(Date);
     });
 
-    it("should throw error for duplicate party name", async () => {
+    it('should throw error for duplicate party name', async () => {
       const service = new PartyService();
       const input = {
-        name: "Test Party",
-        description: "A test party",
-        color: "#FF0000",
+        name: 'Test Party',
+        description: 'A test party',
+        color: '#FF0000',
       };
 
       await service.createParty(input);
@@ -44,13 +44,13 @@ describe("PartyService", () => {
     });
   });
 
-  describe("getPartyById", () => {
-    it("should return party by id", async () => {
+  describe('getPartyById', () => {
+    it('should return party by id', async () => {
       const service = new PartyService();
       const input = {
-        name: "Test Party",
-        description: "A test party",
-        color: "#FF0000",
+        name: 'Test Party',
+        description: 'A test party',
+        color: '#FF0000',
       };
 
       const created = await service.createParty(input);
@@ -59,26 +59,26 @@ describe("PartyService", () => {
       expect(retrieved).toEqual(created);
     });
 
-    it("should return null for non-existent party", async () => {
+    it('should return null for non-existent party', async () => {
       const service = new PartyService();
-      const party = await service.getPartyById("non-existent-id");
+      const party = await service.getPartyById('non-existent-id');
       expect(party).toBeNull();
     });
   });
 
-  describe("getAllParties", () => {
-    it("should return all parties", async () => {
+  describe('getAllParties', () => {
+    it('should return all parties', async () => {
       const service = new PartyService();
 
       const input1 = {
-        name: "Party 1",
-        description: "First party",
-        color: "#FF0000",
+        name: 'Party 1',
+        description: 'First party',
+        color: '#FF0000',
       };
       const input2 = {
-        name: "Party 2",
-        description: "Second party",
-        color: "#00FF00",
+        name: 'Party 2',
+        description: 'Second party',
+        color: '#00FF00',
       };
 
       const party1 = await service.createParty(input1);

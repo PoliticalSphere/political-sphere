@@ -1,4 +1,5 @@
 # TODO.md
+<<<<<<< Updated upstream
 
 <<<<<<< Updated upstream
 ## Legend
@@ -85,6 +86,13 @@
 - [x] **Verify test suite after lint updates** — Ensure linting changes introduce no regressions.
       `Priority: High` · `Status: Complete` · `Owner: Unassigned`
 =======
+=======
+
+## Current Tasks
+
+### Fix Linter Issues in error-handler.ts
+
+>>>>>>> Stashed changes
 - [ ] Convert ErrorHandler class to exported functions
 - [ ] Prefix unused 'next' parameter with '\_'
 - [ ] Replace 'Function' type with explicit type in asyncHandler
@@ -92,6 +100,7 @@
 - [ ] Fix non-null assertion on 'lastError' in retryWithBackoff
 - [ ] Run linter to verify fixes
 - [ ] Update CHANGELOG.md
+<<<<<<< Updated upstream
 >>>>>>> Stashed changes
 
 ## Completed Tasks
@@ -336,5 +345,11 @@
 - [ ] **Type-checking gaps** — TS errors: missing extensions, undefined JWT secrets, store mismatches.
       `Priority: Medium` · `Status: Not Started` · `Owner: Unassigned`
 =======
+## Backlog
+>>>>>>> Stashed changes
+=======
+
+## Completed Tasks
+
 ## Backlog
 >>>>>>> Stashed changes

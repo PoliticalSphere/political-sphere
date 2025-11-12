@@ -34,11 +34,13 @@
 
 ### Priority 1: Utilities (Low dependency)
 
-- [x] `/apps/api/src/utils/http-utils.js` → `.mjs` (Converted 2025-11-11)
-- [ ] `/apps/api/src/utils/log-sanitizer.js` (Blocked: consumed by CommonJS app.js)
-- [ ] `/apps/api/src/utils/config.js`
-- [ ] `/apps/api/src/utils/database-connection.js`
-- [ ] `/apps/api/src/utils/database-performance-monitor.js`
+- [x] `/apps/api/src/utils/http-utils.js` → `.mjs` (Converted 2025-11-11, commit dcb2e46)
+- [x] `/apps/api/src/utils/database-connection.js` → `.mjs` (Converted 2025-11-12, commit b52aa33)
+- [x] `/apps/api/src/utils/database-transactions.js` → `.mjs` (Converted 2025-11-12, commit b52aa33)
+- [x] `/apps/api/src/utils/database-export-import.js` → `.mjs` (Converted 2025-11-12, commit b52aa33)
+- [x] `/apps/api/src/utils/database-performance-monitor.js` → `.mjs` (Converted 2025-11-12, commit b52aa33)
+- [ ] `/apps/api/src/utils/log-sanitizer.js` → `.mjs` (Converted but blocked: consumed by CommonJS app.js)
+- [ ] `/apps/api/src/utils/config.js` (Already ESM)
 
 ### Priority 2: Stores (Medium dependency)
 

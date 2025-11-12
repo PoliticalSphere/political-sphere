@@ -1,12 +1,12 @@
 {
-  "timestamp": "2025-11-11T23:35:54Z",
+  "timestamp": "2025-11-11T23:57:56Z",
   "openapi_version": "3.1.0",
   "summary": {
     "critical": 0,
-    "high": 0,
+    "high": 1,
     "medium": 1,
-    "low": 3,
-    "pass": 9
+    "low": 2,
+    "pass": 8
   },
   "files": {
     "entry": "/Users/morganlowman/GitHub/political-sphere/apps/api/openapi/api.yaml",

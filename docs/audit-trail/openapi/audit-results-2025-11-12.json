@@ -1,5 +1,9 @@
 {
+<<<<<<< Updated upstream:docs/audit-trail/openapi/audit-results-2025-11-12.json
   "timestamp": "2025-11-12T13:32:35Z",
+=======
+  "timestamp": "2025-11-11T23:57:56Z",
+>>>>>>> Stashed changes:openapi-audit/openapi-audit-results.json
   "openapi_version": "3.1.0",
   "summary": {
     "critical": 0,

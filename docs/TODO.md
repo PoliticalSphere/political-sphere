@@ -1,5 +1,6 @@
-# TODO.md - Political Sphere Development Tasks
+# TODO.md
 
+<<<<<<< Updated upstream
 ## Legend
 
 - `[x]` Completed · `[ ]` Not completed yet (see `Status` for details like In Progress or Blocked).
@@ -68,9 +69,13 @@
 **Target**: 30+ console calls → 0, full structured logging compliance
 
 ## Linting & Code Quality (Completed 2025-11-11)
+=======
+## Current Tasks
+>>>>>>> Stashed changes
 
-### Phase 1: ESLint Configuration & Prettier Auto-fixes ✅ COMPLETE
+### Fix Linter Issues in error-handler.ts
 
+<<<<<<< Updated upstream
 - [x] **CommonJS override for `eslint.config.js`** — Add `/apps/api/**/*.js` override so ESLint inspects CommonJS files.
       `Priority: High` · `Status: Complete` · `Owner: Unassigned`
 - [x] **Prettier auto-fixes across API files** — Apply formatting (single quotes, spacing) to stabilize lint output.
@@ -79,9 +84,19 @@
       `Priority: High` · `Status: Complete` · `Owner: Unassigned`
 - [x] **Verify test suite after lint updates** — Ensure linting changes introduce no regressions.
       `Priority: High` · `Status: Complete` · `Owner: Unassigned`
+=======
+- [ ] Convert ErrorHandler class to exported functions
+- [ ] Prefix unused 'next' parameter with '\_'
+- [ ] Replace 'Function' type with explicit type in asyncHandler
+- [ ] Remove unused 'monitoringPeriod' in CircuitBreaker
+- [ ] Fix non-null assertion on 'lastError' in retryWithBackoff
+- [ ] Run linter to verify fixes
+- [ ] Update CHANGELOG.md
+>>>>>>> Stashed changes
 
-### Phase 2: Manual ESLint Error Fixes ✅ COMPLETE
+## Completed Tasks
 
+<<<<<<< Updated upstream
 - [x] **Clean up `moderationService.js`** — Remove 8 unused variables uncovered by ESLint.
       `Priority: High` · `Status: Complete` · `Owner: Unassigned`
 - [x] **Prune unused catches in `auth.js`** — Drop 2 unused catch parameters to silence warnings.
@@ -320,3 +335,6 @@
       `Priority: Low` · `Status: Not Started` · `Owner: Unassigned`
 - [ ] **Type-checking gaps** — TS errors: missing extensions, undefined JWT secrets, store mismatches.
       `Priority: Medium` · `Status: Not Started` · `Owner: Unassigned`
+=======
+## Backlog
+>>>>>>> Stashed changes

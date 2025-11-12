@@ -1,17 +1,17 @@
 Central Audit System v2.1.0 Summary
-Timestamp: 2025-11-11T23:35:24Z
+Timestamp: 2025-11-11T23:57:26Z
 Auto-Fix: false
 Selected Format: full
 
 Overall:
     Total Audits  : 13
-    Passed        : 2
-    Failed/Issues : 11
+    Passed        : 1
+    Failed/Issues : 12
 Severity Totals:
     Critical      : 6
-    High          : 18
+    High          : 19
     Medium        : 58
-    Low           : 15
+    Low           : 14
 Status: NOT_PRODUCTION_READY: Critical/High issues present
 Reason: Critical or High severity issues found
 Production Ready: false

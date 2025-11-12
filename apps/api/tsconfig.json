@@ -32,7 +32,9 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "declaration": false,
-    "noEmit": true
+    "noEmit": true,
+    // Allow explicit .ts imports within this app until we normalize import specifiers
+    "allowImportingTsExtensions": true
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "tsconfig.base.json"]

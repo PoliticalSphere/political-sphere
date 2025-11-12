@@ -7,7 +7,7 @@ import { defineConfig } from 'vitest/config';
 
 const projectRoot = fileURLToPath(new URL('.', import.meta.url)); // Works where __dirname is undefined (Vitest extension, ESM)
 
-/** @type {import('vitest/config').UserConfig} */
+/** @type {import('vitest/config').InlineConfig} */
 const config = {
   test: {
     globals: false,

@@ -44,13 +44,15 @@ class ComplianceClient {
           await this.client.post('/compliance/log', event);
         })
         .catch((err: Error) => {
+          // TODO: Add structured logger import
           console.warn('Compliance logging failed (circuit breaker):', err.message);
         });
 
       // Return a local event ID for immediate response
-      return `local_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+      return `local-${Date.now()}-${Math.random()}`;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // TODO: Add structured logger import
       console.warn('Compliance logging error:', errorMessage);
       return null;
     }

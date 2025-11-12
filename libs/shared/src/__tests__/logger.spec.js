@@ -98,7 +98,9 @@ describe('Logger (shared)', () => {
     // Ensure file does not exist
     try {
       await fs.rm(filePath);
-    } catch {}
+    } catch {
+      // File may not exist yet
+    }
 
     const logger = createLogger({ file: filePath, console: false });
 
@@ -131,7 +133,9 @@ describe('Logger (shared)', () => {
     logger.close();
     try {
       await fs.rm(filePath);
-    } catch {}
+    } catch {
+      // Ignore cleanup errors
+    }
   });
 
   it('development console uses ANSI colour prefix when environment=development', () => {

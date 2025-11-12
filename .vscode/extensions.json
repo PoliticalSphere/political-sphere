@@ -17,7 +17,6 @@
     "dbaeumer.vscode-eslint", // Code quality and consistency
     "esbenp.prettier-vscode", // Code formatting
     "streetsidesoftware.code-spell-checker", // Documentation quality
-    "ms-vscode.vscode-typescript-next", // TypeScript support
     "nrwl.angular-console", // Nx Console GUI for monorepo targets
 
     // Testing - Keep only necessary test runners (Level 4: Integrated testing)
@@ -47,6 +46,7 @@
     // Heavy/slow extensions (removed for performance)
     "usernamehw.errorlens", // Resource intensive
     "gruntfuggly.todo-tree", // High memory usage
+    "ms-vscode.vscode-typescript-next", // Nightly TS server spawns duplicate tsserver processes
 
     // Duplicate functionality (conflicts with recommended tools)
     "firsttris.vscode-jest-runner", // Conflicts with Vitest

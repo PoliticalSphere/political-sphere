@@ -33,7 +33,7 @@ function initializeDatabase(dbPath) {
   // Enable WAL mode for better concurrency when supported
   try {
     db.pragma('journal_mode = WAL');
-  } catch (e) {
+  } catch {
     // Some environments (e.g., in-memory or restricted FS) may not support WAL
     // Proceed without failing; tests and dev can run with default journal mode
   }
@@ -82,7 +82,7 @@ async function loadMigrations() {
  * @param {Database.Database} db - Database connection
  * @throws {MigrationValidationError} If validation fails
  */
-function validateSchema(db) {
+function _validateSchema(db) {
   try {
     // Check if all expected tables exist
     const tables = db
@@ -198,7 +198,7 @@ async function runMigrations(db, rollbackOnError = true) {
   }
 
   // Temporarily skip validation due to connection state issue
-  // validateSchema(db);
+  // _validateSchema(db);
   console.log('All migrations applied (validation skipped for now)');
 }
 

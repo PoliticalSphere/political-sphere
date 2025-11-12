@@ -1,8 +1,9 @@
 // STATUS: PENDING_IMPLEMENTATION
 // k6 game simulation load test
 
-import { check } from 'k6';
-import ws from 'k6/ws';
+// TODO: Re-enable when implementing test
+// import { check } from 'k6';
+// import ws from 'k6/ws';
 
 export const options = {
   vus: 100,

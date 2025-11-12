@@ -4,7 +4,8 @@
 import { createHash, randomBytes, timingSafeEqual } from 'node:crypto';
 import process from 'node:process';
 
-const DEFAULT_ALLOWED_PROTOCOLS = ['http', 'https'];
+// Reserved for future protocol validation
+const _DEFAULT_ALLOWED_PROTOCOLS = ['http', 'https'];
 
 const DEFAULT_ALLOWED_ORIGINS = [
   'https://political-sphere.com',

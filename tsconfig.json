@@ -2,11 +2,13 @@
   "$schema": "https://json.schemastore.org/tsconfig",
   "extends": "./tools/config/tsconfig.base.json",
   "compilerOptions": {
-    "baseUrl": ".",
     "rootDir": ".",
     "allowJs": true,
     "checkJs": false,
-    "noEmit": true
+    "noEmit": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
   },
   "include": [
     "apps/**/*.ts",
@@ -52,6 +54,12 @@
     ".cache",
     ".nx",
     ".git",
+    ".vitest",
+    ".playwright",
+    ".turbo",
+    ".temp",
+    ".bh",
+    ".biome-home",
     "ai-index",
     "ai-cache",
     "ai-metrics",
@@ -64,7 +72,17 @@
     "tools/scripts/ai",
     "logs",
     "docs",
+    "reports",
+    "test-results",
+    "app-audit",
+    "github-audit",
+    "openapi-audit",
+    "devcontainer-audit",
     "**/*.spec.*",
-    "**/*.test.*"
+    "**/*.test.*",
+    "**/*.db",
+    "**/*.db-shm",
+    "**/*.db-wal",
+    "**/*.log"
   ]
 }

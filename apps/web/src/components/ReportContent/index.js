@@ -73,7 +73,7 @@ const ReportContent = ({ contentId, contentType = 'proposal', onClose, onReportS
       setTimeout(() => {
         if (onClose) onClose();
       }, 2000);
-    } catch (err) {
+    } catch {
       setError('Failed to submit report. Please try again.');
       announce('Failed to submit report. Please try again.', 'assertive');
     } finally {

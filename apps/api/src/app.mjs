@@ -34,7 +34,7 @@ app.use(
         imgSrc: ["'self'", 'data:', 'https:'],
       },
     },
-  })
+  }),
 );
 
 // Configure CORS with secure origin allowlist
@@ -70,7 +70,7 @@ app.use(
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-CSRF-Token'],
-  })
+  }),
 );
 
 app.use(requestId);

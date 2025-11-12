@@ -1,7 +1,7 @@
 {
   "npmScope": "political",
-  "useDaemonProcess": false,
-  "useInferencePlugins": false,
+  "useDaemonProcess": true,
+  "useInferencePlugins": true,
   "daemonSettings": {
     "debounceDelay": 1000,
     "aggregateChangesDelay": 500

@@ -21,6 +21,7 @@ Thumbs.db
 
 # Development tools
 .lefthook/
+.husky/
 
 # Environment files
 .env
@@ -66,6 +67,8 @@ temp/
 
 # Nx cache/workspace artifacts (don't commit generated caches or workspace DBs)
 .nx/
+.nx/cache/
+.nx/workspace-data/
 graph.json
 
 # AI indexes and generated artifacts
@@ -88,13 +91,20 @@ node_modules/.vite/
 ai-metrics/
 ai/ai-knowledge/semantic-index.json
 ai/ai-knowledge/semantic-index-*.json
+.temp/
+.bh/
+.biome-home/
 
-# Performance optimization ignores
+# Performance optimization ignores (additional)
 *.tsbuildinfo
 .vitest/
 .playwright/
 *.log
 .cache/
+app-audit/
+github-audit/
+openapi-audit/
+devcontainer-audit/
 
 # AI System - Write Tier (dynamic data)
 .ai/write/cache/*

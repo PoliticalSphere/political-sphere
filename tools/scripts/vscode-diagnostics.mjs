@@ -20,6 +20,7 @@ const COMMANDS = {
   'check-extensions': checkExtensionCompatibility,
   'health-check': checkVSCodeHealth,
   'audit-security': auditSecuritySettings,
+  'profile-performance': profileWorkspacePerformance,
 };
 
 const command = process.argv[2];
@@ -32,6 +33,7 @@ Available commands:
   check-extensions   - Check installed extension compatibility
   health-check       - Monitor VS Code process health
   audit-security     - Audit security-related settings
+  profile-performance - Profile large folders and tsserver settings
 
 Example:
   node tools/scripts/vscode-diagnostics.mjs validate-config`);
@@ -188,6 +190,95 @@ function checkVSCodeHealth() {
 }
 
 /**
+ * Profile common VS Code hotspots that slow extension host or tsserver
+ */
+function profileWorkspacePerformance() {
+  console.log('Profiling VS Code workspace hotspots...\n');
+
+  const hotspots = [
+    {
+      label: 'Workspace node_modules',
+      path: 'node_modules',
+      warnMB: 600,
+      tip: "Run 'npm run perf:cache-clear' to shrink root dependencies if needed.",
+    },
+    {
+      label: '.nx cache',
+      path: '.nx/cache',
+      warnMB: 50,
+      tip: "Clean with 'npm run perf:cache-clear' to reduce watch load.",
+    },
+    {
+      label: 'logs',
+      path: 'logs',
+      warnMB: 25,
+      tip: "Rotate logs via 'npm run cleanup' to keep search snappy.",
+    },
+    {
+      label: 'test-results',
+      path: 'test-results',
+      warnMB: 10,
+      tip: 'Delete stale coverage/result artifacts when not needed.',
+    },
+    {
+      label: 'apps/api/openapi/node_modules',
+      path: 'apps/api/openapi/node_modules',
+      warnMB: 200,
+      tip: 'Prune OpenAPI generator dependencies if they are only needed in CI.',
+    },
+  ];
+
+  const followUps = [];
+
+  for (const hotspot of hotspots) {
+    const sizeMb = getDirectorySizeMB(hotspot.path);
+    if (sizeMb === null) {
+      console.log(`⚪️  ${hotspot.label}: not found (skipped)`);
+      continue;
+    }
+
+    const rounded = sizeMb.toFixed(1);
+    if (hotspot.warnMB && sizeMb > hotspot.warnMB) {
+      console.log(`⚠️  ${hotspot.label}: ${rounded} MB (target < ${hotspot.warnMB} MB)`);
+      followUps.push(`${hotspot.label} is ${rounded} MB. ${hotspot.tip}`);
+    } else {
+      console.log(`✅ ${hotspot.label}: ${rounded} MB`);
+    }
+  }
+
+  const trackedFiles = getTrackedJsTsFileCount();
+  if (trackedFiles !== null) {
+    console.log(`\nℹ️  Tracked JS/TS sources: ${trackedFiles}`);
+    if (trackedFiles > 2500) {
+      followUps.push(
+        'Very large TypeScript surface detected. Consider enabling partial semantic server mode.'
+      );
+    }
+  }
+
+  const tsserverMemory = readTsserverMemorySetting();
+  if (tsserverMemory !== null) {
+    console.log(`ℹ️  TypeScript server memory limit: ${tsserverMemory} MB`);
+    if (tsserverMemory > 4096) {
+      followUps.push(
+        `TypeScript server memory is capped at ${tsserverMemory} MB. Lowering to 4096 MB helps on 16 GB machines.`
+      );
+    }
+  }
+
+  if (followUps.length) {
+    console.log('\nRecommended follow-ups:');
+    for (const item of followUps) {
+      console.log(`  - ${item}`);
+    }
+  } else {
+    console.log('\n✅ No immediate VS Code hotspots detected.');
+  }
+
+  console.log("\nTip: run 'npm run perf:vscode-profile' after cleanups to verify improvements.");
+}
+
+/**
  * Audit security-related settings in .vscode directory
  * Scans for security/trust/secret keywords
  */
@@ -235,5 +326,69 @@ function auditSecuritySettings() {
       console.log(`  ${content}\n`);
     });
     console.log('⚠️  Review these settings to ensure no secrets are hardcoded');
+  }
+}
+
+function getDirectorySizeMB(relativePath) {
+  const directory = join(process.cwd(), relativePath);
+  if (!existsSync(directory)) {
+    return null;
+  }
+
+  try {
+    if (process.platform === 'win32') {
+      const escaped = directory.replace(/'/g, "''");
+      const output = execSync(
+        `powershell -NoProfile -Command "(Get-ChildItem -LiteralPath '${escaped}' -ErrorAction SilentlyContinue -Recurse | Measure-Object -Property Length -Sum).Sum"`,
+        { encoding: 'utf-8', stdio: ['pipe', 'pipe', 'ignore'] }
+      ).trim();
+      const bytes = parseInt(output, 10);
+      if (Number.isNaN(bytes)) {
+        return null;
+      }
+      return bytes / (1024 * 1024);
+    }
+
+    const sanitized = directory.replace(/"/g, '\\"');
+    const output = execSync(`du -sk "${sanitized}"`, {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    }).trim();
+    const kilobytes = parseInt(output.split(/\s+/)[0], 10);
+    if (Number.isNaN(kilobytes)) {
+      return null;
+    }
+    return kilobytes / 1024;
+  } catch {
+    return null;
+  }
+}
+
+function getTrackedJsTsFileCount() {
+  try {
+    const output = execSync('git ls-files -- "*.ts" "*.tsx" "*.js" "*.jsx"', {
+      encoding: 'utf-8',
+      stdio: ['pipe', 'pipe', 'ignore'],
+    }).trim();
+    if (!output) {
+      return 0;
+    }
+    return output.split('\n').filter(Boolean).length;
+  } catch {
+    return null;
+  }
+}
+
+function readTsserverMemorySetting() {
+  try {
+    const settingsPath = join(process.cwd(), '.vscode', 'settings.json');
+    if (!existsSync(settingsPath)) {
+      return null;
+    }
+    const content = readFileSync(settingsPath, 'utf-8');
+    const match = content.match(/"typescript\.tsserver\.maxTsServerMemory"\s*:\s*(\d+)/);
+    return match ? Number(match[1]) : null;
+  } catch {
+    return null;
   }
 }

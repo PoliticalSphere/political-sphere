@@ -103,7 +103,7 @@ Before creating new code, search for existing implementations. Consolidate share
 Ensure files are placed correctly per governance rules:
 
 - **CI Enforcement**: `scripts/ci/check-file-placement.mjs` validates placements in PR workflows
-- **Pre-commit Hook**: Use Husky or Lefthook for local enforcement
+- **Pre-commit Hook**: Use Lefthook for local enforcement
 - **IDE Guidance**: VS Code settings warn on incorrect placements
 - **Code Review**: Reviewers verify compliance
 

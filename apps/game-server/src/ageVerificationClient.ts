@@ -63,6 +63,7 @@ class AgeVerificationClient {
       return result;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // TODO(#11): Add structured logger - replace console.error with logger.error
       console.error('Age verification status check failed:', errorMessage);
       // Fail safe - assume unverified
       return { verified: false, age: null };
@@ -97,6 +98,7 @@ class AgeVerificationClient {
       return result;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // TODO(#11): Add structured logger - replace console.error with logger.error
       console.error('Content access check failed:', errorMessage);
       // Fail safe - deny access
       return { canAccess: false, userAge: null, contentRating };
@@ -118,6 +120,7 @@ class AgeVerificationClient {
       return response.data.data as AgeRestrictions;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // TODO(#11): Add structured logger - replace console.error with logger.error
       console.error('Age restrictions check error:', errorMessage);
       return { verified: false, restrictions: { contentRating: 'U' } };
     }
@@ -152,6 +155,7 @@ class AgeVerificationClient {
       return serviceToken;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // TODO(#11): Add structured logger - replace console.error with logger.error
       console.error('Token retrieval failed:', errorMessage);
       // Return a fallback token or throw error
       throw new Error('Unable to retrieve authentication token');
@@ -185,6 +189,7 @@ class AgeVerificationClient {
       return token;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // TODO(#11): Add structured logger - replace console.error with logger.error
       console.error('Service authentication failed:', errorMessage);
       // Fallback to environment token if available
       return process.env.GAME_SERVER_API_TOKEN || 'fallback-service-token';

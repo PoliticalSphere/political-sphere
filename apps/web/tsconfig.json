@@ -2,8 +2,12 @@
   "extends": "../../tools/config/tsconfig.base.json",
   "compilerOptions": {
     "rootDir": ".",
-    "baseUrl": "./",
-    "types": ["vitest/globals", "node"]
+    "noEmit": true,
+    "types": ["vitest/globals", "node"],
+    "paths": {
+      "@/*": ["./*"],
+      "~/*": ["./src/*"]
+    }
   },
   "include": ["src", "tests", "test-setup.*", "vite.config.*", "environment.d.ts", "vite-env.d.ts"],
   "exclude": ["dist", "node_modules"]

@@ -1,8 +1,10 @@
 // STATUS: PENDING_IMPLEMENTATION
 // k6 concurrent users test
 
-import { check, sleep } from 'k6';
-import http from 'k6/http';
+import { sleep } from 'k6';
+// TODO: Re-enable when implementing test
+// import { check } from 'k6';
+// import http from 'k6/http';
 
 export const options = {
   stages: [

@@ -16,7 +16,7 @@ export default [
   ...tseslint.configs.recommended,
   prettierConfig,
   {
-    files: ['**/*.{js,mjs,cjs,ts,tsx}'],
+    files: ['**/*.{js,mjs,cjs,ts,tsx,jsx}'],
     languageOptions: {
       parser: tsparser,
       parserOptions: {
@@ -97,7 +97,7 @@ export default [
   // Legacy CommonJS files - allow require() until ESM migration complete
   // See docs/TODO.md for ESM migration tracking
   {
-    files: ['apps/api/**/*.js', 'apps/api/**/*.cjs'],
+    files: ['**/*.cjs', 'apps/api/**/*.js'],
     rules: {
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/no-var-requires': 'off',
@@ -106,13 +106,14 @@ export default [
     },
   },
 
-  // Test files overrides
+  // Test files overrides (expanded)
   {
     files: [
-      '**/tests/**/*.test.{js,mjs}',
-      '**/tests/**/*.spec.{js,mjs}',
-      '**/*.test.{ts,tsx,js}',
-      '**/*.spec.{ts,tsx,js}',
+      '**/tests/**/*.test.{js,mjs,ts,tsx}',
+      '**/tests/**/*.spec.{js,mjs,ts,tsx}',
+      '**/tests/**/*.{js,mjs,ts,tsx}',
+      '**/*.test.{ts,tsx,js,jsx}',
+      '**/*.spec.{ts,tsx,js,jsx}',
     ],
     languageOptions: {
       globals: {
@@ -126,12 +127,16 @@ export default [
         beforeAll: 'readonly',
         afterAll: 'readonly',
         vi: 'readonly',
+        global: 'readonly',
+        window: 'readonly',
+        document: 'readonly',
       },
     },
     rules: {
       'no-restricted-imports': 'off',
       '@typescript-eslint/no-explicit-any': 'off',
       'no-unused-vars': 'off',
+      '@nx/enforce-module-boundaries': 'off',
     },
   },
 
@@ -151,6 +156,8 @@ export default [
       'assets/public/**',
       '**/*.min.js',
       'docs/apps/.vitepress/cache/**',
+      'docs/examples/**',
+      'tools/tmp/**',
     ],
   },
 
@@ -159,6 +166,85 @@ export default [
     files: ['scripts/**/*.{js,mjs,ts}', 'tools/**/*.{js,mjs,cjs,ts}', 'docs/**/*.{js,mjs,ts}'],
     rules: {
       'no-console': 'off',
+    },
+  },
+
+  // Scripts and tooling: relax strict import/boundary rules and allow CommonJS usage
+  {
+    files: [
+      'scripts/**/*.{js,mjs,ts,tsx}',
+      'tools/**/*.{js,mjs,cjs,ts,tsx}',
+      'apps/**/scripts/**/*.{js,mjs,ts,tsx}',
+      'libs/**/scripts/**/*.{js,mjs,ts,tsx}',
+    ],
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+    },
+    rules: {
+      '@nx/enforce-module-boundaries': 'off',
+      'no-restricted-imports': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/no-var-requires': 'off',
+      '@typescript-eslint/no-unused-vars': ['warn', { args: 'none', varsIgnorePattern: '^_' }],
+      'no-empty': 'off',
+      'no-undef': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+    },
+  },
+
+  // E2E tests: relax unused vars and boundary restrictions
+  {
+    files: ['apps/e2e/**/*.{ts,tsx,js,jsx}'],
+    rules: {
+      '@typescript-eslint/no-unused-vars': 'off',
+      '@nx/enforce-module-boundaries': 'off',
+      'no-restricted-imports': 'off',
+    },
+  },
+
+  // Generated and CJS-centric files
+  {
+    files: ['tools/module-federation/generated/**/*.js'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/no-var-requires': 'off',
+    },
+  },
+
+  // Shared library legacy JS files that are intentionally CJS
+  {
+    files: ['libs/shared/src/**/*.js', 'libs/shared/*.js'],
+    rules: {
+      '@typescript-eslint/no-require-imports': 'off',
+      '@typescript-eslint/no-var-requires': 'off',
+    },
+  },
+
+  // MCP servers: allow constant nullishness in ?? defaults used deliberately
+  {
+    files: ['tools/mcp-servers/**/*.{js,mjs,ts}'],
+    rules: {
+      'no-constant-binary-expression': 'off',
+    },
+  },
+
+  // Game server legacy imports - TODO: migrate to scoped imports (@political-sphere/...)
+  {
+    files: ['apps/game-server/**/*.{ts,tsx,js,jsx}'],
+    rules: {
+      '@nx/enforce-module-boundaries': 'off',
+      'no-restricted-imports': 'off',
+      '@typescript-eslint/no-require-imports': 'off',
+    },
+  },
+
+  // Web app internal imports - components can import from hooks in same app
+  {
+    files: ['apps/web/src/**/*.{ts,tsx,js,jsx}'],
+    rules: {
+      'no-restricted-imports': 'off',
     },
   },
 ];

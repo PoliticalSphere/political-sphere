@@ -14,6 +14,7 @@ import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 
 import { advanceGameState } from '../../../libs/game-engine/src/engine';
+import { Logger, LOG_LEVELS } from '../../../libs/shared/src/logger';
 
 import complianceClient from './complianceClient';
 
@@ -132,6 +133,15 @@ interface GameAction {
 let db: Database | null = null;
 let games = new Map<string, Game>();
 
+// Initialize structured logger
+const logger = new Logger({
+  service: 'game-server',
+  environment: process.env.NODE_ENV || 'development',
+  level: process.env.LOG_LEVEL === 'debug' ? LOG_LEVELS.DEBUG : LOG_LEVELS.INFO,
+  console: true,
+  file: process.env.LOG_FILE,
+});
+
 // Configure CORS with secure origin allowlist
 const allowedOrigins = process.env.ALLOWED_ORIGINS
   ? process.env.ALLOWED_ORIGINS.split(',').map(origin => origin.trim())
@@ -151,7 +161,7 @@ const corsOptions: CorsOptions = {
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      console.warn(`CORS: Blocked request from unauthorized origin: ${origin}`);
+      logger.warn('CORS: Blocked request from unauthorized origin', { origin });
       callback(new Error(`Origin ${origin} not allowed by CORS policy`));
     }
   },
@@ -254,7 +264,12 @@ async function remoteModeration(
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Moderation circuit breaker failed:', errorMessage);
+    logger.error('Moderation circuit breaker failed', {
+      error: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+      endpoint: MODERATION_ENDPOINT,
+      userId,
+    });
 
     // Record failure in compliance logs for audit
     await complianceClient
@@ -355,7 +370,12 @@ async function checkAgeVerification(userId: string): Promise<AgeVerificationStat
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Age verification circuit breaker failed:', errorMessage);
+    logger.error('Age verification circuit breaker failed', {
+      error: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+      endpoint: AGE_STATUS_ENDPOINT,
+      userId,
+    });
     return { verified: false, age: null };
   }
 }
@@ -393,7 +413,13 @@ async function checkContentAccess(userId: string, contentRating: string): Promis
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    console.error('Age check access circuit breaker failed:', errorMessage);
+    logger.error('Age check access circuit breaker failed', {
+      error: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+      endpoint: AGE_CHECK_ACCESS_ENDPOINT,
+      userId,
+      contentRating,
+    });
     return false;
   }
 }
@@ -708,7 +734,7 @@ async function start(): Promise<void> {
     // load games from DB (works for both sync and async adapters)
     const loaded = await db.getAllGames();
     games = loaded || new Map();
-    console.log(`Loaded ${games.size} games from DB`);
+    logger.info('Games loaded from database', { count: games.size });
 
     // Import legacy JSON store if present
     try {
@@ -727,22 +753,28 @@ async function start(): Promise<void> {
         // rename legacy file after import
         try {
           fs.renameSync(legacy, legacy + '.imported');
-        } catch (_) {
+        } catch {
           // Ignore rename errors
         }
-        console.log(`Imported ${entries.length} games from legacy JSON store`);
+        logger.info('Imported games from legacy JSON store', {
+          count: entries.length,
+          source: legacy,
+        });
       }
     } catch (impErr) {
       const errorMessage = impErr instanceof Error ? impErr.message : String(impErr);
-      console.warn('Legacy JSON import failed:', errorMessage);
+      logger.warn('Legacy JSON import failed', { error: errorMessage });
     }
 
     app.listen(Number(PORT), () =>
-      console.log(`Game server listening on http://localhost:${PORT}`)
+      logger.info('Game server started', { port: PORT, url: `http://localhost:${PORT}` })
     );
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : String(err);
-    console.error('Failed to start server, DB init error:', errorMessage);
+    logger.fatal('Failed to start server - DB initialization error', {
+      error: errorMessage,
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     process.exit(1);
   }
 }

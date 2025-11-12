@@ -60,6 +60,7 @@ class ModerationClient {
       return result;
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      // TODO(#11): Add structured logger - replace console.error with logger.error
       console.error('Moderation API failed:', errorMessage);
       // Fail safe - assume unsafe on API failure
       return {
